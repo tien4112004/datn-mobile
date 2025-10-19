@@ -79,5 +79,13 @@
         "network_error": "Đã xảy ra lỗi mạng. Vui lòng thử lại.",
         "unknown_error": "Đã xảy ra lỗi không xác định. Vui lòng thử lại."
     },
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "profile": {
+        "permissionRequired": "Yêu cầu quyền truy cập",
+        "permissionMessage": "Ứng dụng này cần quyền truy cập vào ảnh của bạn để cập nhật ảnh đại diện. Vui lòng cấp quyền trong cài đặt.",
+        "cancel": "Hủy",
+        "openSettings": "Mở cài đặt",
+        "avatarUpdatedSuccess": "Cập nhật ảnh đại diện thành công!",
+        "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
+    }
 }

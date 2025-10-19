@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
 import 'package:datn_mobile/features/setting/widget/profile_picture.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,36 +13,42 @@ import 'package:permission_handler/permission_handler.dart';
 class SettingProfilePicture extends ConsumerWidget {
   const SettingProfilePicture({super.key});
 
-  Future<void> _requestPermission(BuildContext context) async {
+  Future<void> _requestPermission(BuildContext context, WidgetRef ref) async {
     // Request appropriate permission based on Android version
-    final status = await Permission.photos.request();
+    final t = ref.read(translationsPod);
 
-    if (!status.isGranted && context.mounted) {
+    final plugin = DeviceInfoPlugin();
+    final android = await plugin.androidInfo;
+
+    if (android.version.sdkInt >= 33) return;
+
+    final status = await Permission.photos.request();
+    if (!status.isPermanentlyDenied && context.mounted) {
       final shouldOpenSettings = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Permission Required'),
-          content: const Text(
-            'This app needs access to your photos to update your profile picture. '
-            'Please grant permission in settings.',
-          ),
+          title: Text(t.profile.permissionRequired),
+          content: Text(t.profile.permissionMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(t.profile.cancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Open Settings'),
+              child: Text(t.profile.openSettings),
             ),
           ],
         ),
       );
 
       if (shouldOpenSettings == true) {
-        await openAppSettings();
+        openAppSettings();
       }
     }
+
+    // if (Platform.isIOS) {
+    // } else if (Platform.isAndroid) {}
   }
 
   Future<void> _pickImage(BuildContext context, WidgetRef ref) async {
@@ -48,7 +58,7 @@ class SettingProfilePicture extends ConsumerWidget {
 
       if (status.isDenied || status.isPermanentlyDenied) {
         if (!context.mounted) return;
-        await _requestPermission(context);
+        await _requestPermission(context, ref);
 
         // Check again after requesting
         final newStatus = await Permission.photos.status;
@@ -69,12 +79,13 @@ class SettingProfilePicture extends ConsumerWidget {
       if (image != null && context.mounted) {
         // Update avatar with the selected image
         await ref.read(avatarProvider.notifier).updateAvatar(image.path);
+        final t = ref.read(translationsPod);
 
         // Show success message
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Avatar updated successfully!'),
+            SnackBar(
+              content: Text(t.profile.avatarUpdatedSuccess),
               backgroundColor: Colors.green,
             ),
           );
@@ -82,9 +93,10 @@ class SettingProfilePicture extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
+        final t = ref.read(translationsPod);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update avatar: $e'),
+            content: Text(t.profile.avatarUpdateFailed),
             backgroundColor: Colors.red,
           ),
         );

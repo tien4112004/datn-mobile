@@ -79,5 +79,13 @@
     "network_error": "Network error occurred. Please try again.",
     "unknown_error": "An unknown error occurred. Please try again."
   },
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "profile": {
+    "permissionRequired": "Permission Required",
+    "permissionMessage": "This app needs access to your photos to update your profile picture. Please grant permission in settings.",
+    "cancel": "Cancel",
+    "openSettings": "Open Settings",  
+    "avatarUpdatedSuccess": "Avatar updated successfully!",
+    "avatarUpdateFailed": "Failed to update avatar: $error"
+  }
 }

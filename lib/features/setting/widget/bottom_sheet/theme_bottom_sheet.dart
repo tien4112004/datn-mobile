@@ -41,9 +41,4 @@ void showThemeBottomSheet(BuildContext context, WidgetRef ref) {
       };
     },
   );
-
-  LoadingOverlay.withFuture(
-    future: showBottomSheet,
-    child: const SizedBox.shrink(),
-  );
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:datn_mobile/shared/helper/global_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,63 +10,83 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SettingProfilePicture extends ConsumerWidget {
   const SettingProfilePicture({super.key});
 
-  Future<void> _requestPermission(BuildContext context, WidgetRef ref) async {
-    // Request appropriate permission based on Android version
-    final t = ref.read(translationsPod);
+  Future<Permission> _getRequiredPermission() async {
+    if (Platform.isAndroid) {
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
 
-    final plugin = DeviceInfoPlugin();
-    final android = await plugin.androidInfo;
-
-    if (android.version.sdkInt >= 33) return;
-
-    final status = await Permission.photos.request();
-    if (!status.isPermanentlyDenied && context.mounted) {
-      final shouldOpenSettings = await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(t.profile.permissionRequired),
-          content: Text(t.profile.permissionMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(t.profile.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(t.profile.openSettings),
-            ),
-          ],
-        ),
-      );
-
-      if (shouldOpenSettings == true) {
-        openAppSettings();
+      // For Android 13+ (API 33+), use photos permission
+      if (androidInfo.version.sdkInt >= 33) {
+        return Permission.photos;
+      }
+      // For Android 12 and below, use storage permission
+      else {
+        return Permission.storage;
       }
     }
+    // For iOS
+    return Permission.photos;
+  }
 
-    // if (Platform.isIOS) {
-    // } else if (Platform.isAndroid) {}
+  Future<bool> _requestPermission(BuildContext context, WidgetRef ref) async {
+    final t = ref.read(translationsPod);
+    final permission = await _getRequiredPermission();
+
+    // Check current status
+    var status = await permission.status;
+
+    // If already granted, return true
+    if (status.isGranted) {
+      return true;
+    }
+
+    // If denied but not permanently, request permission
+    if (status.isDenied) {
+      status = await permission.request();
+    }
+
+    // If still denied after request or permanently denied, show dialog
+    if (status.isDenied || status.isPermanentlyDenied) {
+      if (context.mounted) {
+        final shouldOpenSettings = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(t.profile.permissionRequired),
+            content: Text(t.profile.permissionMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(t.profile.cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(t.profile.openSettings),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldOpenSettings == true) {
+          await openAppSettings();
+        }
+      }
+      return false;
+    }
+
+    return status.isGranted;
   }
 
   Future<void> _pickImage(BuildContext context, WidgetRef ref) async {
     try {
       // Check and request permission
-      final status = await Permission.photos.status;
+      final hasPermission = await _requestPermission(context, ref);
 
-      if (status.isDenied || status.isPermanentlyDenied) {
-        if (!context.mounted) return;
-        await _requestPermission(context, ref);
-
-        // Check again after requesting
-        final newStatus = await Permission.photos.status;
-        if (!newStatus.isGranted) {
-          return; // User denied permission
-        }
-      }
+      if (!hasPermission) return;
 
       // Permission granted, open image picker
       final ImagePicker picker = ImagePicker();
@@ -96,7 +117,7 @@ class SettingProfilePicture extends ConsumerWidget {
         final t = ref.read(translationsPod);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(t.profile.avatarUpdateFailed),
+            content: Text(t.profile.avatarUpdateFailed(error: e)),
             backgroundColor: Colors.red,
           ),
         );

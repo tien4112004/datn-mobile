@@ -15,7 +15,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  void _handleGoogleSignIn() {
+  void _handleGoogleSignUp() {
     // TODO: Implement Google Sign In logic
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Google Sign In button pressed')),
@@ -74,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   const SizedBox(height: 24),
 
                   // Google Sign In Button
-                  GoogleSignInButton(onPressed: _handleGoogleSignIn),
+                  GoogleSignInButton(onPressed: _handleGoogleSignUp),
                   const SizedBox(height: 24),
 
                   SwitchPageSection(

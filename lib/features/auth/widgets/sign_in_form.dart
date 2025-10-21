@@ -52,13 +52,11 @@ class _SignInFormState extends State<SignInForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Email',
               hintText: 'Enter your email',
-              prefixIcon: const Icon(LucideIcons.mail),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              prefixIcon: Icon(LucideIcons.mail),
+              border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -90,9 +88,7 @@ class _SignInFormState extends State<SignInForm> {
                   });
                 },
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -142,9 +138,7 @@ class _SignInFormState extends State<SignInForm> {
             onPressed: _handleSignIn,
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: const RoundedRectangleBorder(),
             ),
             child: const Text(
               'Sign In',

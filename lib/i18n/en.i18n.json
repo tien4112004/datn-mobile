@@ -33,6 +33,34 @@
       "systemDescription": "Follow system settings"
     }
   },
+  "auth": {
+    "signUp": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get started",
+      "fullName": "Full Name",
+      "fullNameHint": "Enter your full name",
+      "email": "Email",
+      "emailHint": "Enter your email",
+      "password": "Password",
+      "passwordHint": "Enter your password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordHint": "Re-enter your password",
+      "agreeToTerms": "I agree to the ",
+      "termsAndConditions": "Terms & Conditions",
+      "signUpButton": "Sign Up",
+      "validation": {
+        "enterName": "Please enter your name",
+        "nameMinLength": "Name must be at least 2 characters",
+        "enterEmail": "Please enter your email",
+        "invalidEmail": "Please enter a valid email",
+        "enterPassword": "Please enter your password",
+        "passwordMinLength": "Password must be at least 6 characters",
+        "confirmPassword": "Please confirm your password",
+        "passwordsNotMatch": "Passwords do not match",
+        "agreeToTerms": "Please agree to Terms & Conditions"
+      }
+    }
+  },
   "homeGreeting": "Hello!",
   "upgradePlan": "Upgrade plan",
   "todayWorks": "Today Works!",
@@ -84,7 +112,7 @@
     "permissionRequired": "Permission Required",
     "permissionMessage": "This app needs access to your photos to update your profile picture. Please grant permission in settings.",
     "cancel": "Cancel",
-    "openSettings": "Open Settings",  
+    "openSettings": "Open Settings",
     "avatarUpdatedSuccess": "Avatar updated successfully!",
     "avatarUpdateFailed": "Failed to update avatar: $error"
   }

@@ -18,7 +18,7 @@ class MainWrapperPage extends StatelessWidget {
   ) {
     if (isActive) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(50),
@@ -46,6 +46,7 @@ class MainWrapperPage extends StatelessWidget {
         ),
       );
     }
+
     return Icon(
       icon,
       size: 20,
@@ -60,78 +61,83 @@ class MainWrapperPage extends StatelessWidget {
         const HomeRoute(),
         const ProjectsRoute(),
         PlaceholderRouteSchedule(),
-        PlaceholderRouteAnnounce(),
         const SettingRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
-        return BottomNavigationBar(
-          currentIndex: tabsRouter.activeIndex,
-          onTap: tabsRouter.setActiveIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          type: BottomNavigationBarType.shifting,
-          items: [
-            BottomNavigationBarItem(
-              icon: _bottomItemActivated(
-                LucideIcons.house,
-                "Home",
-                false,
-                context,
+        return Theme(
+          data: Theme.of(context).copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
+            currentIndex: tabsRouter.activeIndex,
+            onTap: tabsRouter.setActiveIndex,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.shifting,
+            items: [
+              BottomNavigationBarItem(
+                icon: _bottomItemActivated(
+                  LucideIcons.house,
+                  "Home",
+                  false,
+                  context,
+                ),
+                activeIcon: _bottomItemActivated(
+                  LucideIcons.house400,
+                  "Home",
+                  true,
+                  context,
+                ),
+                label: "",
               ),
-              activeIcon: _bottomItemActivated(
-                LucideIcons.house400,
-                "Home",
-                true,
-                context,
+              BottomNavigationBarItem(
+                icon: _bottomItemActivated(
+                  LucideIcons.folder,
+                  "Project",
+                  false,
+                  context,
+                ),
+                activeIcon: _bottomItemActivated(
+                  LucideIcons.folder,
+                  "Project",
+                  true,
+                  context,
+                ),
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: _bottomItemActivated(
-                LucideIcons.folder,
-                "Project",
-                false,
-                context,
+              BottomNavigationBarItem(
+                icon: _bottomItemActivated(
+                  LucideIcons.calendarDays,
+                  "Schedule",
+                  false,
+                  context,
+                ),
+                activeIcon: _bottomItemActivated(
+                  LucideIcons.calendarDays,
+                  "Schedule",
+                  true,
+                  context,
+                ),
+                label: "",
               ),
-              activeIcon: _bottomItemActivated(
-                LucideIcons.folder,
-                "Project",
-                true,
-                context,
+              BottomNavigationBarItem(
+                icon: _bottomItemActivated(
+                  LucideIcons.user,
+                  "Profile",
+                  false,
+                  context,
+                ),
+                activeIcon: _bottomItemActivated(
+                  LucideIcons.user,
+                  "Profile",
+                  true,
+                  context,
+                ),
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: _bottomItemActivated(
-                LucideIcons.calendarDays,
-                "Schedule",
-                false,
-                context,
-              ),
-              activeIcon: _bottomItemActivated(
-                LucideIcons.calendarDays,
-                "Schedule",
-                true,
-                context,
-              ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: _bottomItemActivated(
-                LucideIcons.user,
-                "Profile",
-                false,
-                context,
-              ),
-              activeIcon: _bottomItemActivated(
-                LucideIcons.user,
-                "Profile",
-                true,
-                context,
-              ),
-              label: "",
-            ),
-          ],
+            ],
+          ),
         );
       },
     ).monitorConnection();

@@ -7,6 +7,7 @@ class Themes {
   static ThemeData get theme => FlexThemeData.light(
     scheme: FlexScheme.brandBlue,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+    lightIsWhite: true,
     blendLevel: 20,
     appBarOpacity: 0.95,
     swapColors: true,
@@ -36,7 +37,6 @@ class Themes {
     scheme: FlexScheme.brandBlue,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
     blendLevel: 15,
-    appBarStyle: FlexAppBarStyle.background,
     appBarOpacity: 0.90,
     tabBarStyle: FlexTabBarStyle.forBackground,
     subThemesData: const FlexSubThemesData(

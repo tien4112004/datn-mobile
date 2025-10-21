@@ -8,6 +8,31 @@
   "personalInformation": "Personal Information",
   "passwordAndSecurity": "Password and Security",
   "paymentMethods": "Payment Methods",
+  "settings": {
+    "appSettings": "App Settings",
+    "support": "Support",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "helpCenter": "Help Center",
+    "contactUs": "Contact Us",
+    "logOut": "Log Out",
+    "save": "Save",
+    "languageBottomSheet": {
+      "title": "Language",
+      "english": "English",
+      "vietnamese": "Tiếng Việt"
+    },
+    "themeBottomSheet": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "lightDescription": "Always use light theme",
+      "darkDescription": "Always use dark theme",
+      "systemDescription": "Follow system settings"
+    }
+  },
   "homeGreeting": "Hello!",
   "upgradePlan": "Upgrade plan",
   "todayWorks": "Today Works!",
@@ -49,5 +74,18 @@
     "hours_ago": "$count hours ago",
     "yesterday": "Yesterday",
     "days_ago": "$count days ago"
+  },
+  "errors": {
+    "network_error": "Network error occurred. Please try again.",
+    "unknown_error": "An unknown error occurred. Please try again."
+  },
+  "loading": "Loading...",
+  "profile": {
+    "permissionRequired": "Permission Required",
+    "permissionMessage": "This app needs access to your photos to update your profile picture. Please grant permission in settings.",
+    "cancel": "Cancel",
+    "openSettings": "Open Settings",  
+    "avatarUpdatedSuccess": "Avatar updated successfully!",
+    "avatarUpdateFailed": "Failed to update avatar: $error"
   }
 }

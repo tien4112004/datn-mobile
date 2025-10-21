@@ -1,23 +1,32 @@
+import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfilePicture extends StatelessWidget {
-  // Mock URL for demonstration purposes
-  final String imageUrl =
-      "https://claritycareconsulting.co.uk/wp-content/uploads/et_temp/Blank-Profile-Picture-34126_1080x675.jpg";
+class ProfilePicture extends ConsumerWidget {
   final double size;
 
-  const ProfilePicture({
-    super.key,
-    // required this.imageUrl,
-    this.size = 100.0,
-  });
+  const ProfilePicture({super.key, this.size = 50.0});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final avatarState = ref.watch(avatarProvider);
+
     return CircleAvatar(
       radius: size / 2,
-      backgroundImage: NetworkImage(imageUrl),
+      backgroundImage: _getImageProvider(avatarState),
       backgroundColor: Colors.grey[200],
+      child: avatarState.isLoading
+          ? const CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
+          : null,
     );
+  }
+
+  ImageProvider? _getImageProvider(AvatarState state) {
+    if (state.localAvatarFile != null) {
+      return FileImage(state.localAvatarFile!);
+    } else if (state.avatarUrl != null) {
+      return NetworkImage(state.avatarUrl!);
+    }
+    return null;
   }
 }

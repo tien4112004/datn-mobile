@@ -8,6 +8,31 @@
     "personalInformation": "Thông tin cá nhân",
     "passwordAndSecurity": "Mật khẩu và bảo mật",
     "paymentMethods": "Phương thức thanh toán",
+    "settings": {
+        "appSettings": "Cài đặt ứng dụng",
+        "support": "Hỗ trợ",
+        "notifications": "Thông báo",
+        "language": "Ngôn ngữ",
+        "theme": "Giao diện",
+        "helpCenter": "Trung tâm trợ giúp",
+        "contactUs": "Liên hệ chúng tôi",
+        "logOut": "Đăng xuất",
+        "save": "Lưu",
+        "languageBottomSheet": {
+            "title": "Ngôn ngữ",
+            "english": "English",
+            "vietnamese": "Tiếng Việt"
+        },
+        "themeBottomSheet": {
+            "title": "Giao diện",
+            "light": "Sáng",
+            "dark": "Tối",
+            "system": "Hệ thống",
+            "lightDescription": "Luôn sử dụng giao diện sáng",
+            "darkDescription": "Luôn sử dụng giao diện tối",
+            "systemDescription": "Theo cài đặt hệ thống"
+        }
+    },
     "homeGreeting": "Xin chào!",
     "upgradePlan": "Nâng cấp gói",
     "todayWorks": "Công việc hôm nay!",
@@ -49,5 +74,18 @@
         "hours_ago": "$count giờ trước",
         "yesterday": "Hôm qua",
         "days_ago": "$count ngày trước"
+    },
+    "errors": {
+        "network_error": "Đã xảy ra lỗi mạng. Vui lòng thử lại.",
+        "unknown_error": "Đã xảy ra lỗi không xác định. Vui lòng thử lại."
+    },
+    "loading": "Đang tải...",
+    "profile": {
+        "permissionRequired": "Yêu cầu quyền truy cập",
+        "permissionMessage": "Ứng dụng này cần quyền truy cập vào ảnh của bạn để cập nhật ảnh đại diện. Vui lòng cấp quyền trong cài đặt.",
+        "cancel": "Hủy",
+        "openSettings": "Mở cài đặt",
+        "avatarUpdatedSuccess": "Cập nhật ảnh đại diện thành công!",
+        "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
     }
 }

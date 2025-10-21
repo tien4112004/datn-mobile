@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -88,7 +89,9 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: t.auth.signUp.firstName,
                     hintText: t.auth.signUp.firstNameHint,
                     prefixIcon: const Icon(LucideIcons.user),
-                    border: const OutlineInputBorder(),
+                    border: const OutlineInputBorder(
+                      borderRadius: Themes.boxRadius,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -107,7 +110,9 @@ class _SignUpFormState extends State<SignUpForm> {
                     labelText: t.auth.signUp.lastName,
                     hintText: t.auth.signUp.lastNameHint,
                     prefixIcon: const Icon(LucideIcons.user),
-                    border: const OutlineInputBorder(),
+                    border: const OutlineInputBorder(
+                      borderRadius: Themes.boxRadius,
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -129,7 +134,7 @@ class _SignUpFormState extends State<SignUpForm> {
               labelText: t.auth.signUp.email,
               hintText: t.auth.signUp.emailHint,
               prefixIcon: const Icon(LucideIcons.mail),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -161,7 +166,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   });
                 },
               ),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -195,7 +200,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   });
                 },
               ),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -220,7 +225,7 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: InputDecoration(
               labelText: t.auth.signUp.dateOfBirth,
               prefixIcon: const Icon(Icons.calendar_today),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -262,7 +267,7 @@ class _SignUpFormState extends State<SignUpForm> {
               labelText: t.auth.signUp.phoneNumber,
               hintText: t.auth.signUp.phoneNumberHint,
               prefixIcon: const Icon(LucideIcons.phone),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -340,7 +345,9 @@ class _SignUpFormState extends State<SignUpForm> {
             onPressed: _handleSignUp,
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: const RoundedRectangleBorder(),
+              shape: const RoundedRectangleBorder(
+                borderRadius: Themes.boxRadius,
+              ),
             ),
             child: Text(
               t.auth.signUp.signUpButton,

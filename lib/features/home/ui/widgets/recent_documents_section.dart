@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -60,12 +61,12 @@ class RecentDocumentsSection extends ConsumerWidget {
         // TODO: Navigate to document detail page
         debugPrint('Document tapped: $fileName');
       },
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: Themes.boxRadius,
       child: Container(
         width: 200,
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: Themes.boxRadius,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -84,8 +85,8 @@ class RecentDocumentsSection extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: Colors.grey.shade100,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+                  topLeft: Radius.circular(Themes.boxRadiusValue),
+                  topRight: Radius.circular(Themes.boxRadiusValue),
                 ),
               ),
               child: Center(

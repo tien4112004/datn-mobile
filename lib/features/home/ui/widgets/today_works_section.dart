@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -77,7 +78,7 @@ class TodayWorksSection extends ConsumerWidget {
             height: 48,
             decoration: BoxDecoration(
               color: iconBgColor,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: Themes.boxRadius,
             ),
             child: Icon(icon, color: iconColor, size: 24),
           ),

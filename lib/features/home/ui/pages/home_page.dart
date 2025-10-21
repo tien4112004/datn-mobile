@@ -1,4 +1,5 @@
 import 'package:auto_route/annotations.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/home/ui/widgets/today_works_section.dart';
@@ -66,14 +67,14 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Ink(
                   decoration: BoxDecoration(
                     color: Colors.amber.shade50,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: Themes.boxRadius,
                   ),
                   child: InkWell(
                     onTap: () {
                       // TODO: Navigate to credits/purchase page
                       debugPrint('Credits tapped');
                     },
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: Themes.boxRadius,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,

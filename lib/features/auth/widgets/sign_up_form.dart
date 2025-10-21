@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -31,7 +31,7 @@ class _SignUpFormState extends State<SignUpForm> {
     if (_formKey.currentState?.validate() ?? false) {
       if (!_agreeToTerms) {
         setState(() {
-          _termsErrorText = 'You must agree to the Terms & Conditions';
+          _termsErrorText = t.auth.signUp.validation.agreeToTerms;
         });
         return;
       }
@@ -84,15 +84,15 @@ class _SignUpFormState extends State<SignUpForm> {
                 child: TextFormField(
                   controller: _firstNameController,
                   keyboardType: TextInputType.name,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    hintText: 'Enter your first name',
-                    prefixIcon: Icon(LucideIcons.user),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: t.auth.signUp.firstName,
+                    hintText: t.auth.signUp.firstNameHint,
+                    prefixIcon: const Icon(LucideIcons.user),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return t.auth.signUp.validation.enterName;
                     }
                     return null;
                   },
@@ -103,15 +103,15 @@ class _SignUpFormState extends State<SignUpForm> {
                 child: TextFormField(
                   controller: _lastNameController,
                   keyboardType: TextInputType.name,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    hintText: 'Enter your last name',
-                    prefixIcon: Icon(LucideIcons.user),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: t.auth.signUp.lastName,
+                    hintText: t.auth.signUp.lastNameHint,
+                    prefixIcon: const Icon(LucideIcons.user),
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return t.auth.signUp.validation.enterName;
                     }
                     return null;
                   },
@@ -125,18 +125,18 @@ class _SignUpFormState extends State<SignUpForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
-              prefixIcon: Icon(LucideIcons.mail),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: t.auth.signUp.email,
+              hintText: t.auth.signUp.emailHint,
+              prefixIcon: const Icon(LucideIcons.mail),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
+                return t.auth.signUp.validation.enterEmail;
               }
               if (!value.contains('@')) {
-                return 'Please enter a valid email';
+                return t.auth.signUp.validation.invalidEmail;
               }
               return null;
             },
@@ -148,8 +148,8 @@ class _SignUpFormState extends State<SignUpForm> {
             controller: _passwordController,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
+              labelText: t.auth.signUp.password,
+              hintText: t.auth.signUp.passwordHint,
               prefixIcon: const Icon(LucideIcons.lock),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -165,10 +165,10 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return t.auth.signUp.validation.enterPassword;
               }
               if (value.length < 6) {
-                return 'Password must be at least 6 characters';
+                return t.auth.signUp.validation.passwordMinLength;
               }
               return null;
             },
@@ -180,8 +180,8 @@ class _SignUpFormState extends State<SignUpForm> {
             controller: _confirmPasswordController,
             obscureText: _obscureConfirmPassword,
             decoration: InputDecoration(
-              labelText: 'Confirm Password',
-              hintText: 'Re-enter your password',
+              labelText: t.auth.signUp.confirmPassword,
+              hintText: t.auth.signUp.confirmPasswordHint,
               prefixIcon: const Icon(LucideIcons.lock),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -199,10 +199,10 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
+                return t.auth.signUp.validation.confirmPassword;
               }
               if (value != _passwordController.text) {
-                return 'Passwords do not match';
+                return t.auth.signUp.validation.passwordsNotMatch;
               }
               return null;
             },
@@ -217,18 +217,18 @@ class _SignUpFormState extends State<SignUpForm> {
               // Format the date for display (requires `intl` package)
               text: DateFormat('yyyy-MM-dd').format(_selectedDate),
             ),
-            decoration: const InputDecoration(
-              labelText: 'Date of Birth',
-              prefixIcon: Icon(Icons.calendar_today),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: t.auth.signUp.dateOfBirth,
+              prefixIcon: const Icon(Icons.calendar_today),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please select your date of birth';
+                return t.auth.signUp.validation.selectDateOfBirth;
               }
 
               if (_selectedDate.isAfter(DateTime.now())) {
-                return 'Date of birth cannot be in the future';
+                return t.auth.signUp.validation.dateOfBirthFuture;
               }
 
               return null;
@@ -258,15 +258,15 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             initialValue: PhoneNumber(isoCode: 'US'),
             inputBorder: const OutlineInputBorder(),
-            inputDecoration: const InputDecoration(
-              labelText: 'Phone Number',
-              hintText: 'Enter your phone number',
-              prefixIcon: Icon(LucideIcons.phone),
-              border: OutlineInputBorder(),
+            inputDecoration: InputDecoration(
+              labelText: t.auth.signUp.phoneNumber,
+              hintText: t.auth.signUp.phoneNumberHint,
+              prefixIcon: const Icon(LucideIcons.phone),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Phone number is required';
+                return t.auth.signUp.validation.phoneNumberRequired;
               }
               return null;
             },
@@ -300,11 +300,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     Expanded(
                       child: Text.rich(
                         TextSpan(
-                          text: 'I agree to the ',
+                          text: t.auth.signUp.agreeToTerms,
                           style: theme.textTheme.bodyMedium,
                           children: [
                             TextSpan(
-                              text: 'Terms & Conditions',
+                              text: t.auth.signUp.termsAndConditions,
                               style: TextStyle(
                                 color: colorScheme.primary,
                                 fontWeight: FontWeight.w600,
@@ -342,9 +342,9 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: const RoundedRectangleBorder(),
             ),
-            child: const Text(
-              'Sign Up',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: Text(
+              t.auth.signUp.signUpButton,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -52,18 +53,18 @@ class _SignInFormState extends State<SignInForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              hintText: 'Enter your email',
-              prefixIcon: Icon(LucideIcons.mail),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: t.auth.signIn.email,
+              hintText: t.auth.signIn.emailHint,
+              prefixIcon: const Icon(LucideIcons.mail),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your email';
+                return t.auth.signIn.validation.enterEmail;
               }
               if (!value.contains('@')) {
-                return 'Please enter a valid email';
+                return t.auth.signIn.validation.invalidEmail;
               }
               return null;
             },
@@ -75,8 +76,8 @@ class _SignInFormState extends State<SignInForm> {
             controller: _passwordController,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
+              labelText: t.auth.signIn.password,
+              hintText: t.auth.signIn.passwordHint,
               prefixIcon: const Icon(LucideIcons.lock),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -92,10 +93,10 @@ class _SignInFormState extends State<SignInForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your password';
+                return t.auth.signIn.validation.enterPassword;
               }
               if (value.length < 6) {
-                return 'Password must be at least 6 characters';
+                return t.auth.signIn.validation.passwordMinLength;
               }
               return null;
             },
@@ -116,13 +117,16 @@ class _SignInFormState extends State<SignInForm> {
                       });
                     },
                   ),
-                  Text('Remember me', style: theme.textTheme.bodyMedium),
+                  Text(
+                    t.auth.signIn.rememberMe,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
               ),
               TextButton(
                 onPressed: _handleForgotPassword,
                 child: Text(
-                  'Forgot Password?',
+                  t.auth.signIn.forgotPassword,
                   style: TextStyle(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w600,
@@ -140,9 +144,9 @@ class _SignInFormState extends State<SignInForm> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: const RoundedRectangleBorder(),
             ),
-            child: const Text(
-              'Sign In',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            child: Text(
+              t.auth.signIn.signInButton,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ),
         ],

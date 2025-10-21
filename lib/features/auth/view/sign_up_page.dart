@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
-import 'package:auth_buttons/auth_buttons.dart';
+import 'package:datn_mobile/features/auth/widgets/google_sign_in_button.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_up_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -78,18 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(height: 24),
 
                       // Google Sign In Button
-                      GoogleAuthButton(
-                        onPressed: _handleGoogleSignUp,
-                        style: const AuthButtonStyle(
-                          iconSize: 20.0,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        text: t.auth.signUp.googleSignInButton,
-                      ),
+                      GoogleSignInButton(onPressed: _handleGoogleSignUp),
                       const SizedBox(height: 24),
 
                       SwitchPageSection(

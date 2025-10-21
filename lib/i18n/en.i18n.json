@@ -37,25 +37,17 @@
     "signUp": {
       "title": "Create Account",
       "subtitle": "Sign up to get started",
-      "firstName": "First Name",
-      "firstNameHint": "Enter your first name",
-      "lastName": "Last Name",
-      "lastNameHint": "Enter your last name",
+      "fullName": "Full Name",
+      "fullNameHint": "Enter your full name",
       "email": "Email",
       "emailHint": "Enter your email",
       "password": "Password",
       "passwordHint": "Enter your password",
       "confirmPassword": "Confirm Password",
       "confirmPasswordHint": "Re-enter your password",
-      "dateOfBirth": "Date of Birth",
-      "phoneNumber": "Phone Number",
-      "phoneNumberHint": "Enter your phone number",
       "agreeToTerms": "I agree to the ",
       "termsAndConditions": "Terms & Conditions",
       "signUpButton": "Sign Up",
-      "haveAccount": "Already have an account? ",
-      "signIn": "Sign In",
-      "googleSignInButton": "Sign in with Google",
       "validation": {
         "enterName": "Please enter your name",
         "nameMinLength": "Name must be at least 2 characters",
@@ -65,30 +57,7 @@
         "passwordMinLength": "Password must be at least 6 characters",
         "confirmPassword": "Please confirm your password",
         "passwordsNotMatch": "Passwords do not match",
-        "selectDateOfBirth": "Please select your date of birth",
-        "dateOfBirthFuture": "Date of birth cannot be in the future",
-        "phoneNumberRequired": "Phone number is required",
         "agreeToTerms": "Please agree to Terms & Conditions"
-      }
-    },
-    "signIn": {
-      "welcome": "Welcome Back",
-      "subtitle": "Sign in to continue",
-      "email": "Email",
-      "emailHint": "Enter your email",
-      "password": "Password",
-      "passwordHint": "Enter your password",
-      "rememberMe": "Remember me",
-      "forgotPassword": "Forgot Password?",
-      "signInButton": "Sign In",
-      "noAccount": "Don't have an account? ",
-      "signUp": "Sign Up",
-      "googleSignInButton": "Sign in with Google",
-      "validation": {
-        "enterEmail": "Please enter your email",
-        "invalidEmail": "Please enter a valid email",
-        "enterPassword": "Please enter your password",
-        "passwordMinLength": "Password must be at least 6 characters"
       }
     }
   },

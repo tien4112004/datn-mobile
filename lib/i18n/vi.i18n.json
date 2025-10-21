@@ -22,15 +22,9 @@
       "passwordHint": "Nhập mật khẩu của bạn",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordHint": "Nhập lại mật khẩu của bạn",
-      "dateOfBirth": "Ngày sinh",
-      "phoneNumber": "Số điện thoại",
-      "phoneNumberHint": "Nhập số điện thoại của bạn",
       "agreeToTerms": "Tôi đồng ý với ",
       "termsAndConditions": "Điều khoản và Điều kiện",
       "signUpButton": "Đăng ký",
-      "haveAccount": "Đã có tài khoản? ",
-      "signIn": "Đăng nhập",
-      "googleSignInButton": "Đăng nhập bằng Google",
       "validation": {
         "enterName": "Vui lòng nhập tên của bạn",
         "nameMinLength": "Tên phải có ít nhất 2 ký tự",
@@ -40,30 +34,7 @@
         "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
         "confirmPassword": "Vui lòng xác nhận mật khẩu của bạn",
         "passwordsNotMatch": "Mật khẩu không khớp",
-        "selectDateOfBirth": "Vui lòng chọn ngày sinh của bạn",
-        "dateOfBirthFuture": "Ngày sinh không thể ở tương lai",
-        "phoneNumberRequired": "Số điện thoại là bắt buộc",
         "agreeToTerms": "Vui lòng đồng ý với Điều khoản và Điều kiện"
-      }
-    },
-    "signIn": {
-      "welcome": "Chào mừng trở lại",
-      "subtitle": "Đăng nhập để tiếp tục",
-      "email": "Email",
-      "emailHint": "Nhập email của bạn",
-      "password": "Mật khẩu",
-      "passwordHint": "Nhập mật khẩu của bạn",
-      "rememberMe": "Ghi nhớ đăng nhập",
-      "forgotPassword": "Quên mật khẩu?",
-      "signInButton": "Đăng nhập",
-      "noAccount": "Chưa có tài khoản? ",
-      "signUp": "Đăng ký",
-      "googleSignInButton": "Đăng nhập bằng Google",
-      "validation": {
-        "enterEmail": "Vui lòng nhập email của bạn",
-        "invalidEmail": "Vui lòng nhập email hợp lệ",
-        "enterPassword": "Vui lòng nhập mật khẩu của bạn",
-        "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự"
       }
     }
   },
@@ -149,3 +120,4 @@
     "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
   }
 }
+

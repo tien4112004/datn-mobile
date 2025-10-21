@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
@@ -57,7 +58,7 @@ class _SignInFormState extends State<SignInForm> {
               labelText: t.auth.signIn.email,
               hintText: t.auth.signIn.emailHint,
               prefixIcon: const Icon(LucideIcons.mail),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -89,7 +90,7 @@ class _SignInFormState extends State<SignInForm> {
                   });
                 },
               ),
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -142,7 +143,9 @@ class _SignInFormState extends State<SignInForm> {
             onPressed: _handleSignIn,
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: const RoundedRectangleBorder(),
+              shape: const RoundedRectangleBorder(
+                borderRadius: Themes.boxRadius,
+              ),
             ),
             child: Text(
               t.auth.signIn.signInButton,

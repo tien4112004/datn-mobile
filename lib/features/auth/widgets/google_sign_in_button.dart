@@ -6,10 +6,7 @@ class GoogleSignInButton extends StatelessWidget {
   /// Callback function when the button is pressed
   final VoidCallback onPressed;
 
-  const GoogleSignInButton({
-    super.key,
-    required this.onPressed,
-  });
+  const GoogleSignInButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +18,7 @@ class GoogleSignInButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 16),
         side: BorderSide(color: colorScheme.outline),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -37,13 +32,10 @@ class GoogleSignInButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
-              child: Text(
-                'G',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
+              child: Image.asset(
+                "assets/google_logo.png",
+                width: 18,
+                height: 18,
               ),
             ),
           ),

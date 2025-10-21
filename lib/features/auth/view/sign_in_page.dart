@@ -33,6 +33,7 @@ class _SignInPageState extends State<SignInPage> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -13,6 +13,7 @@ class PresentationDto {
   DateTime createdAt;
   DateTime updatedAt;
   bool isParsed;
+  Map<String, double> viewport;
 
   PresentationDto({
     required this.id,
@@ -22,6 +23,7 @@ class PresentationDto {
     required this.createdAt,
     required this.updatedAt,
     required this.isParsed,
+    required this.viewport,
   });
 
   factory PresentationDto.fromJson(Map<String, dynamic> json) =>
@@ -40,6 +42,7 @@ extension PresentationMapper on PresentationDto {
     slides: slides.map((e) => e.toEntity()).toList(),
     metaData: {},
     deletedAt: DateTime.now(),
+    viewport: {'width': 1000, 'height': 562.5},
   );
 }
 
@@ -52,5 +55,6 @@ extension PresentationEntityMapper on Presentation {
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     isParsed: false,
+    viewport: {'width': 1000, 'height': 562.5},
   );
 }

@@ -9,6 +9,7 @@ class Presentation {
   bool isParsed;
   Object metaData;
   DateTime deletedAt;
+  Map<String, double> viewport;
 
   Presentation({
     required this.id,
@@ -19,5 +20,6 @@ class Presentation {
     required this.isParsed,
     required this.metaData,
     required this.deletedAt,
+    required this.viewport,
   });
 }

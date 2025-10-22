@@ -47,6 +47,7 @@ dependencies:
   device_info_plus: ^12.1.0
   intl_phone_number_input: ^0.7.5
   auth_buttons: ^3.0.3
+  flutter_inappwebview: ^6.1.5
 
 dev_dependencies:
   flutter_test:

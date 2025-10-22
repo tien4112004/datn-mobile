@@ -3,6 +3,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/presentation_thumbnail.dart';
 
 class PresentationListItem extends ConsumerWidget {
   final dynamic presentation;
@@ -36,23 +37,29 @@ class PresentationListItem extends ConsumerWidget {
         child: Row(
           children: [
             // Thumbnail
-            Container(
-              width: 80,
-              height: 60,
-              decoration: BoxDecoration(
-                color: presentation.thumbnail?.background.color != null
-                    ? _parseColor(presentation.thumbnail!.background.color)
-                    : Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Icon(
-                  LucideIcons.presentation,
-                  color: Colors.white.withValues(alpha: 0.7),
-                  size: 32,
-                ),
-              ),
-            ),
+            presentation.thumbnail != null
+                ? PresentationThumbnail(
+                    slide: presentation.thumbnail!,
+                    width: 120,
+                    height: 120 * 9 / 16,
+                    borderRadius: 8,
+                    showLoadingIndicator: false,
+                  )
+                : Container(
+                    width: 120,
+                    height: 120 * 9 / 16,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        LucideIcons.presentation,
+                        color: Colors.white.withValues(alpha: 0.7),
+                        size: 32,
+                      ),
+                    ),
+                  ),
             const SizedBox(width: 16),
             // Title and metadata
             Expanded(
@@ -87,15 +94,6 @@ class PresentationListItem extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Color _parseColor(String colorString) {
-    try {
-      final hexColor = colorString.replaceAll('#', '');
-      return Color(int.parse('FF$hexColor', radix: 16));
-    } catch (e) {
-      return Colors.grey.shade300;
-    }
   }
 
   String _formatDate(DateTime? date, dynamic t) {

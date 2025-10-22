@@ -25,6 +25,7 @@ class MockPresentationRepositoryImpl implements PresentationRepository {
         isParsed: true,
         metaData: {},
         deletedAt: DateTime(0),
+        viewport: {'width': 1000, 'height': 562.5},
       ),
       Presentation(
         id: '2',
@@ -38,6 +39,7 @@ class MockPresentationRepositoryImpl implements PresentationRepository {
         isParsed: true,
         metaData: {},
         deletedAt: DateTime(0),
+        viewport: {'width': 1000, 'height': 562.5},
       ),
       Presentation(
         id: '3',
@@ -52,6 +54,7 @@ class MockPresentationRepositoryImpl implements PresentationRepository {
         isParsed: true,
         metaData: {},
         deletedAt: DateTime(0),
+        viewport: {'width': 1000, 'height': 562.5},
       ),
     ]);
   }

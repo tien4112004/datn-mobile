@@ -121,7 +121,7 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
                 // Send slide data after page loads
                 _sendSlideData();
               },
-              onLoadError: (controller, url, code, message) {
+              onReceivedError: (controller, request, error) {
                 setState(() {
                   _isLoading = false;
                   _hasError = true;

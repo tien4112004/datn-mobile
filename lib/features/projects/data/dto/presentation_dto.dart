@@ -40,9 +40,9 @@ extension PresentationMapper on PresentationDto {
     updatedAt: updatedAt,
     isParsed: isParsed,
     slides: slides.map((e) => e.toEntity()).toList(),
-    metaData: {},
-    deletedAt: DateTime.now(),
-    viewport: {'width': 1000, 'height': 562.5},
+    metaData: metaData,
+    deletedAt: DateTime.fromMillisecondsSinceEpoch(0),
+    viewport: viewport,
   );
 }
 

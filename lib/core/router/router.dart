@@ -20,6 +20,10 @@ class AppRouter extends RootStackRouter {
     ),
     AutoRoute(page: ResourceListRoute.page, path: '/resources/:resourceType'),
     AutoRoute(page: PresentationRoute.page, path: '/presentation'),
+    AutoRoute(
+      page: PresentationDetailRoute.page,
+      path: '/presentation/:presentationId',
+    ),
     AutoRoute(page: SignInRoute.page, path: '/sign-in'),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
     AutoRoute(

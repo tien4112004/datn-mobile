@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_thumbnail.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/presentation_thumbnail.dart';
 
 class PresentationListItem extends ConsumerWidget {
   final dynamic presentation;
@@ -16,16 +18,21 @@ class PresentationListItem extends ConsumerWidget {
 
     return InkWell(
       onTap: () {
-        // TODO: Navigate to presentation detail
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              t.projects.opening(
-                title: presentation.title ?? t.projects.untitled,
+        if (presentation.id != null) {
+          context.router.push(
+            PresentationDetailRoute(presentationId: presentation.id!),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                t.projects.opening(
+                  title: presentation.title ?? t.projects.untitled,
+                ),
               ),
             ),
-          ),
-        );
+          );
+        }
       },
       borderRadius: Themes.boxRadius,
       child: Container(

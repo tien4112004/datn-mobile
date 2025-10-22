@@ -118,4 +118,15 @@ class MockPresentationRepositoryImpl implements PresentationRepository {
       );
     }).toList();
   }
+
+  @override
+  Future<Presentation> fetchPresentationById(String id) {
+    // Simulate network delay
+    return Future.delayed(const Duration(milliseconds: 800), () {
+      final presentation = _presentations.firstWhere(
+        (presentation) => presentation.id == id,
+      );
+      return presentation;
+    });
+  }
 }

@@ -61,4 +61,33 @@ class SlideElement {
   Map<String, Object> getExtraFields() {
     return extraFields;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.value,
+      'id': id,
+      'left': left,
+      'top': top,
+      'width': width,
+      'height': height,
+      if (viewBox.isNotEmpty) 'viewBox': viewBox,
+      if (path.isNotEmpty) 'path': path,
+      if (fill.isNotEmpty) 'fill': fill,
+      'fixedRatio': fixedRatio,
+      'opacity': opacity,
+      'rotate': rotate,
+      'flipV': flipV,
+      if (lineHeight != 0) 'lineHeight': lineHeight,
+      if (content.isNotEmpty) 'content': content,
+      if (defaultFontName.isNotEmpty) 'defaultFontName': defaultFontName,
+      if (defaultColor.isNotEmpty) 'defaultColor': defaultColor,
+      if (start.isNotEmpty) 'start': start,
+      if (end.isNotEmpty) 'end': end,
+      if (points.isNotEmpty) 'points': points,
+      if (color.isNotEmpty) 'color': color,
+      if (style.isNotEmpty) 'style': style,
+      if (wordSpace != 0) 'wordSpace': wordSpace,
+      ...extraFields,
+    };
+  }
 }

@@ -20,4 +20,15 @@ class PresentationRepositoryImpl implements PresentationRepository {
     return dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [];
     // Implementation details would go here
   }
+
+  @override
+  Future<Presentation> fetchPresentationById(String id) async {
+    final dtoResponse = await _remoteSource.fetchPresentationById(id);
+
+    if (dtoResponse.data == null) {
+      throw Exception('Presentation not found');
+    }
+
+    return dtoResponse.data!.toEntity();
+  }
 }

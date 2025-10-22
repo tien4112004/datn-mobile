@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// A widget that renders a presentation slide thumbnail using the
 /// datn-fe-presentation.vercel.app/thumbnail endpoint.
@@ -93,7 +94,9 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
           children: [
             InAppWebView(
               initialUrlRequest: URLRequest(
-                url: WebUri('http://172.16.0.240:5174/thumbnail'),
+                url: WebUri(
+                  '${dotenv.env['PRESENTATION_BASEURL'] ?? 'https://datn-fe-presentation.vercel.app'}/thumbnail',
+                ),
               ),
               initialSettings: InAppWebViewSettings(
                 transparentBackground: true,
@@ -163,9 +166,6 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
     if (_webViewController == null) return;
 
     try {
-      // Convert slide to JSON
-      final slideJson = _slideToJson(widget.slide);
-
       // Send data via postMessage to Vue component
       await _webViewController!.evaluateJavascript(
         source:
@@ -173,7 +173,7 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
         window.postMessage({
           type: 'setSlideData',
           data: {
-            slideData: ${jsonEncode(slideJson)},
+            slideData: ${jsonEncode(widget.slide.toJson())},
             slideIndex: 0
           }
         }, '*');
@@ -201,49 +201,6 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
         _hasError = true;
       });
     }
-  }
-
-  /// Converts a Slide entity to JSON format expected by the Vue component
-  Map<String, dynamic> _slideToJson(Slide slide) {
-    return {
-      'id': slide.id,
-      'elements': slide.elements.map((element) {
-        return {
-          'type': element.type.toString().split('.').last,
-          'id': element.id,
-          'left': element.left,
-          'top': element.top,
-          'width': element.width,
-          'height': element.height,
-          if (element.viewBox.isNotEmpty) 'viewBox': element.viewBox,
-          if (element.path.isNotEmpty) 'path': element.path,
-          if (element.fill.isNotEmpty) 'fill': element.fill,
-          'fixedRatio': element.fixedRatio,
-          'opacity': element.opacity,
-          'rotate': element.rotate,
-          'flipV': element.flipV,
-          if (element.lineHeight != 0) 'lineHeight': element.lineHeight,
-          if (element.content.isNotEmpty) 'content': element.content,
-          if (element.defaultFontName.isNotEmpty)
-            'defaultFontName': element.defaultFontName,
-          if (element.defaultColor.isNotEmpty)
-            'defaultColor': element.defaultColor,
-          if (element.start.isNotEmpty) 'start': element.start,
-          if (element.end.isNotEmpty) 'end': element.end,
-          if (element.points.isNotEmpty) 'points': element.points,
-          if (element.color.isNotEmpty) 'color': element.color,
-          if (element.style.isNotEmpty) 'style': element.style,
-          if (element.wordSpace != 0) 'wordSpace': element.wordSpace,
-          ...element.extraFields,
-        };
-      }).toList(),
-      'background': {
-        'type': slide.background.type,
-        'color': slide.background.color,
-        ...slide.background.extraFields,
-      },
-      ...slide.extraFields,
-    };
   }
 
   /// Parses a color string (hex format) to a Flutter Color

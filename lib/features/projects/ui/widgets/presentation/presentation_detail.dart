@@ -4,6 +4,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// datn-fe-presentation web app.
@@ -35,6 +36,18 @@ class _PresentationDetailState extends State<PresentationDetail> {
 
   @override
   Widget build(BuildContext context) {
+    if (InAppWebViewPlatform.instance == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Presentation Detail')),
+        body: const Center(
+          child: Text(
+            'WebView is not supported on this platform.',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
     return widget.presentationAsync.when(
       data: (presentation) => _buildContent(presentation),
       loading: _buildLoading,
@@ -130,7 +143,8 @@ class _PresentationDetailState extends State<PresentationDetail> {
 
   Widget _buildWebView(Presentation presentation) {
     // Load with presentation ID in the URL
-    final url = 'http://172.16.0.240:5174/mobile';
+    final url =
+        '${dotenv.env['PRESENTATION_BASEURL'] ?? 'https://datn-fe-presentation.vercel.app'}/mobile';
 
     return InAppWebView(
       initialUrlRequest: URLRequest(url: WebUri(url)),

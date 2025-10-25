@@ -53,6 +53,9 @@
       "agreeToTerms": "I agree to the ",
       "termsAndConditions": "Terms & Conditions",
       "signUpButton": "Sign Up",
+      "haveAccount": "Already have an account? ",
+      "signIn": "Sign In",
+      "googleSignInButton": "Sign in with Google",
       "validation": {
         "enterName": "Please enter your name",
         "nameMinLength": "Name must be at least 2 characters",
@@ -69,6 +72,8 @@
       }
     },
     "signIn": {
+      "welcome": "Welcome Back",
+      "subtitle": "Sign in to continue",
       "email": "Email",
       "emailHint": "Enter your email",
       "password": "Password",
@@ -76,6 +81,9 @@
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot Password?",
       "signInButton": "Sign In",
+      "noAccount": "Don't have an account? ",
+      "signUp": "Sign Up",
+      "googleSignInButton": "Sign in with Google",
       "validation": {
         "enterEmail": "Please enter your email",
         "invalidEmail": "Please enter a valid email",

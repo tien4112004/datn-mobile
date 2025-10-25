@@ -33,67 +33,62 @@ class _SignUpPageState extends State<SignUpPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Consumer(
-      builder: (context, ref, child) {
-        final t = ref.watch(translationsPod);
-        return Scaffold(
-          body: SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Logo or App Name
-                      Icon(
-                        LucideIcons.bookOpen,
-                        size: 64,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        t.auth.signUp.title,
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        t.auth.signUp.subtitle,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurface.withAlpha(153),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 32),
-
-                      const SignUpForm(),
-                      const SizedBox(height: 24),
-
-                      // Divider
-                      const SignPageDivider(),
-                      const SizedBox(height: 24),
-
-                      // Google Sign In Button
-                      GoogleSignInButton(onPressed: _handleGoogleSignUp),
-                      const SizedBox(height: 24),
-
-                      SwitchPageSection(
-                        promptText: t.auth.signUp.haveAccount,
-                        actionText: t.auth.signUp.signIn,
-                        onTap: _navigateToSignIn,
-                      ),
-                    ],
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo or App Name
+                  Icon(
+                    LucideIcons.bookOpen,
+                    size: 64,
+                    color: colorScheme.primary,
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Create Account',
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Sign up to get started',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+
+                  const SignUpForm(),
+                  const SizedBox(height: 24),
+
+                  // Divider
+                  const SignPageDivider(),
+                  const SizedBox(height: 24),
+
+                  // Google Sign In Button
+                  GoogleSignInButton(onPressed: _handleGoogleSignUp),
+                  const SizedBox(height: 24),
+
+                  SwitchPageSection(
+                    promptText: 'Already have an account? ',
+                    actionText: 'Sign In',
+                    onTap: _navigateToSignIn,
+                  ),
+                ],
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

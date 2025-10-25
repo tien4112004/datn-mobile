@@ -28,6 +28,9 @@
       "agreeToTerms": "Tôi đồng ý với ",
       "termsAndConditions": "Điều khoản và Điều kiện",
       "signUpButton": "Đăng ký",
+      "haveAccount": "Đã có tài khoản? ",
+      "signIn": "Đăng nhập",
+      "googleSignInButton": "Đăng nhập bằng Google",
       "validation": {
         "enterName": "Vui lòng nhập tên của bạn",
         "nameMinLength": "Tên phải có ít nhất 2 ký tự",
@@ -44,6 +47,8 @@
       }
     },
     "signIn": {
+      "welcome": "Chào mừng trở lại",
+      "subtitle": "Đăng nhập để tiếp tục",
       "email": "Email",
       "emailHint": "Nhập email của bạn",
       "password": "Mật khẩu",
@@ -51,6 +56,9 @@
       "rememberMe": "Ghi nhớ đăng nhập",
       "forgotPassword": "Quên mật khẩu?",
       "signInButton": "Đăng nhập",
+      "noAccount": "Chưa có tài khoản? ",
+      "signUp": "Đăng ký",
+      "googleSignInButton": "Đăng nhập bằng Google",
       "validation": {
         "enterEmail": "Vui lòng nhập email của bạn",
         "invalidEmail": "Vui lòng nhập email hợp lệ",

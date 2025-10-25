@@ -33,10 +33,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,12 +26,12 @@ class PresentationListItem extends ConsumerWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: Themes.boxRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300, width: 1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: Themes.boxRadius,
         ),
         child: Row(
           children: [

@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class SettingOption extends StatelessWidget {
@@ -24,7 +25,7 @@ class SettingOption extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: Themes.boxRadius,
         ),
         child: Icon(
           icon ?? Icons.settings,

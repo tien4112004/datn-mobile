@@ -1,3 +1,5 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -42,6 +44,11 @@ class SettingContentView extends ConsumerWidget {
             SettingSection(
               title: t.accountSetting,
               options: [
+                // TODO: Delete this later
+                SettingOption(
+                  title: "Go to sign in",
+                  onPressed: () => {context.router.push(const SignInRoute())},
+                ),
                 SettingOption(
                   title: t.personalInformation,
                   onPressed: () => _navigateWithFallback(

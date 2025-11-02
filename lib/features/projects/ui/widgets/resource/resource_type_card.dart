@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/resource_type.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -16,12 +17,12 @@ class ResourceTypeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: Themes.boxRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300, width: 1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: Themes.boxRadius,
         ),
         child: Row(
           children: [
@@ -29,7 +30,7 @@ class ResourceTypeCard extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: resourceType.color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: Themes.boxRadius,
               ),
               child: Icon(
                 resourceType.icon,

@@ -1,0 +1,110 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/features/auth/widgets/divider.dart';
+import 'package:auth_buttons/auth_buttons.dart';
+import 'package:datn_mobile/features/auth/widgets/sign_up_form.dart';
+import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+@RoutePage()
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  void _handleGoogleSignUp() {
+    // TODO: Implement Google Sign In logic
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Google Sign In button pressed')),
+    );
+  }
+
+  void _navigateToSignIn() {
+    context.router.maybePop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Consumer(
+      builder: (context, ref, child) {
+        final t = ref.watch(translationsPod);
+        return Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Logo or App Name
+                      Icon(
+                        LucideIcons.bookOpen,
+                        size: 64,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        t.auth.signUp.title,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        t.auth.signUp.subtitle,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onSurface.withAlpha(153),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+
+                      const SignUpForm(),
+                      const SizedBox(height: 24),
+
+                      // Divider
+                      const SignPageDivider(),
+                      const SizedBox(height: 24),
+
+                      // Google Sign In Button
+                      GoogleAuthButton(
+                        onPressed: _handleGoogleSignUp,
+                        style: const AuthButtonStyle(
+                          iconSize: 20.0,
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        text: t.auth.signUp.googleSignInButton,
+                      ),
+                      const SizedBox(height: 24),
+
+                      SwitchPageSection(
+                        promptText: t.auth.signUp.haveAccount,
+                        actionText: t.auth.signUp.signIn,
+                        onTap: _navigateToSignIn,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
@@ -30,10 +31,10 @@ class AbstractDocumentCard extends ConsumerWidget {
     final dateFormat = DateFormat.yMMMd(t.$meta.locale.languageCode);
 
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      shape: const RoundedRectangleBorder(borderRadius: Themes.boxRadius),
       elevation: 4,
       child: InkWell(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: Themes.boxRadius,
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(16.0),

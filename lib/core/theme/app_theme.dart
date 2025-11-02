@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 ///This class defines light theme and dark theme
 ///Here we used flex color scheme
 class Themes {
+  static const double boxRadiusValue = 12.0;
+  static const BorderRadius boxRadius = BorderRadius.all(
+    Radius.circular(boxRadiusValue),
+  );
+
   static ThemeData get theme => FlexThemeData.light(
     scheme: FlexScheme.brandBlue,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
@@ -16,7 +21,8 @@ class Themes {
     subThemesData: const FlexSubThemesData(
       blendOnLevel: 20,
       blendOnColors: false,
-      inputDecoratorRadius: 8,
+      inputDecoratorRadius: boxRadiusValue,
+      cardRadius: boxRadiusValue,
     ),
     keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
     pageTransitionsTheme: const PageTransitionsTheme(
@@ -41,7 +47,8 @@ class Themes {
     tabBarStyle: FlexTabBarStyle.forBackground,
     subThemesData: const FlexSubThemesData(
       blendOnLevel: 30,
-      inputDecoratorRadius: 8,
+      inputDecoratorRadius: boxRadiusValue,
+      cardRadius: boxRadiusValue,
     ),
     keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
     pageTransitionsTheme: const PageTransitionsTheme(

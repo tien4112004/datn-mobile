@@ -31,6 +31,7 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
   Widget build(BuildContext context) {
     final approuter = ref.watch(autorouterProvider);
     final currentTheme = ref.watch(themeControllerProvider);
+    final translations = ref.watch(translationsPod);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       //TODO: change app name
@@ -42,9 +43,13 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
         placeholder: (context) => const SizedBox.shrink(),
         navigatorObservers: () => [RouterObserver()],
       ),
-      locale: ref.watch(translationsPod).$meta.locale.flutterLocale,
+      locale: translations.$meta.locale.flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,
-      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       builder: (context, child) {
         if (mounted) {
           ///Used for responsive design

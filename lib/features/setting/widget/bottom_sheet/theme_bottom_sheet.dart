@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/theme/theme_controller.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:loading_overlay/loading_overlay.dart';
 
 void showThemeBottomSheet(BuildContext context, WidgetRef ref) {
   final t = ref.read(translationsPod);

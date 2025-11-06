@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/controllers/controller_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_list_item.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -47,7 +48,7 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.resourceType)),
+      appBar: AppBar(title: Text(t.projects.title)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: _buildContent(context, t),
@@ -70,7 +71,10 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
             const SizedBox(height: 16),
             Text(
               t.projects.coming_soon(type: widget.resourceType),
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
+              style: TextStyle(
+                fontSize: Themes.fontSize.s18,
+                color: Colors.grey.shade600,
+              ),
             ),
           ],
         ),
@@ -94,8 +98,8 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
             builder: (BuildContext context, SearchController controller) {
               return SearchBar(
                 controller: controller,
-                padding: const WidgetStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
+                padding: WidgetStatePropertyAll<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: Themes.padding.p12),
                 ),
                 onTap: () {
                   controller.openView();
@@ -122,12 +126,12 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                   if (controller.text.isEmpty) {
                     return [
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(Themes.padding.p16),
                         child: Text(
                           t.projects.search_presentations,
                           style: TextStyle(
                             color: Colors.grey.shade600,
-                            fontSize: 14,
+                            fontSize: Themes.fontSize.s14,
                           ),
                         ),
                       ),
@@ -143,7 +147,7 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                   if (filteredPresentations.isEmpty) {
                     return [
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(Themes.padding.p16),
                         child: Column(
                           children: [
                             Icon(
@@ -226,9 +230,9 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                         icon: const Icon(LucideIcons.x, size: 16),
                         label: const Text('Active'),
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Themes.padding.p12,
+                            vertical: Themes.padding.p8,
                           ),
                         ),
                       ),
@@ -264,9 +268,9 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                     style: const TextStyle(fontSize: 14),
                   ),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Themes.padding.p12,
+                      vertical: Themes.padding.p8,
                     ),
                   ),
                 ),
@@ -296,7 +300,7 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                           Text(
                             t.projects.no_presentations,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: Themes.fontSize.s18,
                               color: Colors.grey.shade600,
                             ),
                             textAlign: TextAlign.center,

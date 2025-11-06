@@ -101,15 +101,20 @@
   "todayAt": "Today at {time}",
   "dueDate": "Due Date: {date}",
   "projects": {
-    "title": "Presentations",
+    "title": "Projects",
     "search_hint": "Search projects...",
-    "search_presentations": "Search presentations...",
     "recently_works": "Your recently works",
     "created_at": "Created at: $date",
+    "edited": "Edited: $date days ago",
     "untitled": "Untitled",
     "type": "Type: $type",
-    "refresh_error": "Failed to refresh presentations",
-    "load_error": "Failed to load presentations",
+    "refresh_error": "Failed to refresh projects",
+    "load_error": "Failed to load projects",
+    "presentation": {
+      "title": "Presentation",
+      "search_presentations": "Search presentations...",
+      "all_presentations": "All Presentations"
+    },
     "resource_types": {
       "image": "Image",
       "presentation": "Presentation",

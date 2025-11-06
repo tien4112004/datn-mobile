@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:ffi';
+
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
@@ -25,56 +28,80 @@ class AbstractDocumentCard extends ConsumerWidget {
   final VoidCallback? onTap;
   final ResourceType resourceType;
 
+  int _getDateDiffFromNow(DateTime date) {
+    log('Date: $date');
+    final now = DateTime.now();
+    return now.difference(date).inDays;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
-    final dateFormat = DateFormat.yMMMd(t.$meta.locale.languageCode);
+    final dateFormat = _getDateDiffFromNow(createdAt ?? DateTime.now());
 
     return Card(
       shape: const RoundedRectangleBorder(borderRadius: Themes.boxRadius),
-      elevation: 4,
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
       child: InkWell(
         borderRadius: Themes.boxRadius,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              SizedBox(
-                child: thumbnail == null
-                    ? DefaultThumbnail(resourceIcon: resourceType.lucideIcon)
-                    : const Thumbnail(),
-              ),
-              const SizedBox(height: 16),
-              Column(
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+          padding: const EdgeInsets.all(0.0),
+          child: SizedBox(
+            width: 112,
+            child: Column(
+              children: [
+                Container(
+                  height: 82,
+                  decoration: BoxDecoration(
+                    borderRadius: Themes.boxRadius,
+                    color: Colors.grey.shade100,
                   ),
-                  if (description != null) ...[
-                    const SizedBox(height: 8),
+                  child: thumbnail == null
+                      ? DefaultThumbnail(resourceIcon: resourceType.lucideIcon)
+                      : const Thumbnail(),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      description!,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
-                  if (createdAt != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      t.projects.created_at(
-                        date: dateFormat.format(createdAt!),
+                      title,
+                      style: TextStyle(
+                        fontSize: Themes.fontSize.s16,
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    if (description != null) ...[
+                      Text(
+                        description!,
+                        style: TextStyle(
+                          fontSize: Themes.fontSize.s12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                    if (createdAt != null) ...[
+                      Text(
+                        t.projects.edited(date: dateFormat),
+                        style: TextStyle(
+                          fontSize: Themes.fontSize.s12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                    Text(
+                      t.projects.type(type: resourceType.getValue()),
+                      style: TextStyle(
+                        fontSize: Themes.fontSize.s12,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
-                  Text(t.projects.type(type: resourceType.getValue())),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

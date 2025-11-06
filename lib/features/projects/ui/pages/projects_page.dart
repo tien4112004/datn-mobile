@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +18,15 @@ class ProjectsPage extends ConsumerWidget {
     final t = ref.watch(translationsPod);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.projects.title)),
+      appBar: AppBar(
+        title: Text(
+          t.projects.title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: Themes.fontSize.s28,
+          ),
+        ),
+      ),
       body: const _ProjectsView(),
       floatingActionButton: SizedBox(
         width: 96,
@@ -33,7 +44,7 @@ class ProjectsPage extends ConsumerWidget {
           highlightElevation: 0,
           child: ClipOval(
             child: Image.asset(
-              'assets/floating_button_icon.png',
+              AppUrls.floatingButtonImg,
               width: 96,
               height: 96,
               fit: BoxFit.cover,
@@ -56,6 +67,10 @@ class _ProjectsView extends ConsumerStatefulWidget {
 class _ProjectsViewState extends ConsumerState<_ProjectsView> {
   void _onResourceTypeSelected(String resourceType) {
     context.router.push(ResourceListRoute(resourceType: resourceType));
+  }
+
+  void _onProjectSelected(String projectId) {
+    // context.router.push(ProjectDetailRoute(projectId: projectId));
   }
 
   @override
@@ -98,8 +113,23 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
                 },
           ),
           const SizedBox(height: 16),
+          ProjectsRow(
+            onProjectSelected: _onProjectSelected,
+            title: t.projects.recently_works,
+          ),
+          Text(
+            t.projects.type_of_resources,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: Themes.fontSize.s24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
           Expanded(
-            child: ProjectsRow(onResourceTypeSelected: _onResourceTypeSelected),
+            child: ResourceTypesList(
+              onResourceTypeSelected: _onResourceTypeSelected,
+            ),
           ),
         ],
       ),

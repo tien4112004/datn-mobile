@@ -1,5 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:app_links/app_links.dart';
+import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +32,35 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> with GlobalHelper {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      _handleAuthCallback(uri);
+    });
+  }
+
+  void _handleAuthCallback(Uri uri) {
+    log('Handling auth callback: $uri');
+    if (uri.host == 'auth-callback') {
+      ref.read(authServiceProvider).handleGoogleSignInCallback(uri);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final approuter = ref.watch(autorouterProvider);

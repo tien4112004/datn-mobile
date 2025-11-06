@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
+import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_in_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
@@ -19,7 +21,6 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   void _handleGoogleSignIn() {
-    // TODO: Implement Google Sign In logic
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Google Sign In button pressed')),
     );
@@ -83,17 +84,31 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(height: 24),
 
                       // Google Sign In Button (kept separate to match SignUp layout)
-                      GoogleAuthButton(
-                        onPressed: _handleGoogleSignIn,
-                        style: const AuthButtonStyle(
-                          iconSize: 20.0,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        text: t.auth.signIn.googleSignInButton,
+                      Consumer(
+                        builder:
+                            (
+                              BuildContext context,
+                              WidgetRef ref,
+                              Widget? child,
+                            ) {
+                              final authService = ref.watch(
+                                authServiceProvider,
+                              );
+                              return GoogleAuthButton(
+                                onPressed: () async {
+                                  await authService.signInWithGoogle();
+                                },
+                                style: const AuthButtonStyle(
+                                  iconSize: 20.0,
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  textStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                text: t.auth.signIn.googleSignInButton,
+                              );
+                            },
                       ),
                       const SizedBox(height: 24),
 

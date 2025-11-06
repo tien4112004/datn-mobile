@@ -47,6 +47,9 @@ dependencies:
   device_info_plus: ^12.1.0
   intl_phone_number_input: ^0.7.5
   auth_buttons: ^3.0.3
+  url_launcher: ^6.3.2
+  app_links: ^6.4.1
+  flutter_web_auth_2: ^4.1.0
 
 dev_dependencies:
   flutter_test:

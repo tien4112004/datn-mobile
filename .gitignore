@@ -171,3 +171,5 @@ firebase-debug.log
 .local/
 
 # Platform specific gitignores are handled by respective platform folders    
+
+service-account.json

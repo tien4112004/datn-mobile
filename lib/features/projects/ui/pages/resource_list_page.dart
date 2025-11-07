@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/controllers/controller_provider.dart';
+import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
+import 'package:datn_mobile/features/projects/ui/pages/presentation_search_page.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
@@ -53,7 +53,13 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
     }
 
     return Scaffold(
-      appBar: AppAppBar(title: t.projects.title),
+      appBar: AppAppBar(
+        title: t.projects.title,
+        leading: IconButton(
+          icon: const Icon(LucideIcons.chevronLeft),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: _buildContent(context, t),
@@ -86,190 +92,106 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
       );
     }
 
-    final presentationsAsync = ref.watch(presentationsControllerProvider);
-
-    return presentationsAsync.easyWhen(
-      data: (presentations) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Search bar
-          CustomSearchBar(
-            hintText: t.projects.presentations.search_presentations,
-            onTap: () {
-              // Handle tap if needed
-            },
-            onChanged: (_) {
-              // Trigger suggestions builder on change
-            },
-            suggestionsBuilder:
-                (BuildContext context, SearchController controller) {
-                  if (controller.text.isEmpty) {
-                    return [
-                      Padding(
-                        padding: EdgeInsets.all(Themes.padding.p16),
-                        child: Text(
-                          t.projects.presentations.search_presentations,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: Themes.fontSize.s14,
-                          ),
-                        ),
-                      ),
-                    ];
-                  }
-
-                  final query = controller.text.toLowerCase();
-                  final filteredPresentations = presentations.where((p) {
-                    final title = p.title?.toLowerCase() ?? '';
-                    return title.contains(query);
-                  }).toList();
-
-                  if (filteredPresentations.isEmpty) {
-                    return [
-                      Padding(
-                        padding: EdgeInsets.all(Themes.padding.p16),
-                        child: Column(
-                          children: [
-                            Icon(
-                              LucideIcons.searchX,
-                              size: 48,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'No results found for "${controller.text}"',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Search bar - opens dedicated search page
+        CustomSearchBar(
+          hintText: t.projects.presentations.search_presentations,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const PresentationSearchPage(),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        // Filter and Sort bar
+        FilterAndSortBar(
+          subjects: ['Math', 'Science', 'English', 'History', 'PE'],
+          grades: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
+          selectedSort: _sortOption,
+          sortOptions: _sortOptions,
+          onSubjectChanged: (subject) {
+            ref.read(filterProvider.notifier).setSubject(subject);
+          },
+          onGradeChanged: (grade) {
+            ref.read(filterProvider.notifier).setGrade(grade);
+          },
+          onSortChanged: (sort) {
+            setState(() {
+              _sortOption = sort;
+            });
+          },
+          onClearFilters: () {
+            ref.read(filterProvider.notifier).clearFilters();
+          },
+        ),
+        const SizedBox(height: 16),
+        // Presentations list
+        ref
+            .watch(presentationsControllerProvider)
+            .easyWhen(
+              data: (presentationListState) => Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await ref
+                        .read(presentationsControllerProvider.notifier)
+                        .refresh();
+                  },
+                  child: presentationListState.value.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                LucideIcons.presentation,
+                                size: 64,
+                                color: Colors.grey.shade400,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ];
-                  }
-
-                  return filteredPresentations.map((presentation) {
-                    return ListTile(
-                      leading: const Icon(LucideIcons.presentation),
-                      title: Text(presentation.title ?? t.projects.untitled),
-                      subtitle: Text(
-                        presentation.createdAt != null
-                            ? t.projects.created_at(
-                                date: DateFormatHelper.formatRelativeDate(
-                                  presentation.createdAt!,
-                                  ref: ref,
+                              const SizedBox(height: 16),
+                              Text(
+                                t.projects.no_presentations,
+                                style: TextStyle(
+                                  fontSize: Themes.fontSize.s18,
+                                  color: Colors.grey.shade600,
                                 ),
-                              )
-                            : t.projects.unknown_date,
-                      ),
-                      onTap: () {
-                        controller.closeView(presentation.title);
-                        // TODO: Navigate to presentation detail
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              t.projects.opening(
-                                title:
-                                    presentation.title ?? t.projects.untitled,
+                                textAlign: TextAlign.center,
                               ),
-                            ),
+                            ],
                           ),
-                        );
-                      },
-                    );
-                  }).toList();
-                },
-          ),
-          const SizedBox(height: 16),
-          // Filter and Sort bar
-          FilterAndSortBar(
-            subjects: ['Math', 'Science', 'English', 'History', 'PE'],
-            grades: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
-            selectedSort: _sortOption,
-            sortOptions: _sortOptions,
-            onSubjectChanged: (subject) {
-              ref.read(filterProvider.notifier).setSubject(subject);
-            },
-            onGradeChanged: (grade) {
-              ref.read(filterProvider.notifier).setGrade(grade);
-            },
-            onSortChanged: (sort) {
-              setState(() {
-                _sortOption = sort;
-              });
-            },
-            onClearFilters: () {
-              ref.read(filterProvider.notifier).clearFilters();
-            },
-          ),
-          const SizedBox(height: 16),
-          // Presentations list
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await ref
-                    .read(presentationsControllerProvider.notifier)
-                    .refresh();
-              },
-              child: presentations.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            LucideIcons.presentation,
-                            size: 64,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            t.projects.no_presentations,
-                            style: TextStyle(
-                              fontSize: Themes.fontSize.s18,
-                              color: Colors.grey.shade600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.separated(
-                      itemCount: presentations.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 0),
-                      itemBuilder: (context, index) {
-                        final presentation = presentations[index];
-                        return PresentationTile(
-                          presentation: presentation,
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  t.projects.opening(
-                                    title:
-                                        presentation.title ??
-                                        t.projects.untitled,
+                        )
+                      : ListView.separated(
+                          itemCount: presentationListState.value.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 0),
+                          itemBuilder: (context, index) {
+                            final presentation =
+                                presentationListState.value[index];
+                            return PresentationTile(
+                              presentation: presentation,
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      t.projects.opening(
+                                        title: presentation.title,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
+                              onMoreOptions: () {
+                                // TODO: Show options menu
+                              },
                             );
                           },
-                          onMoreOptions: () {
-                            // TODO: Show options menu
-                          },
-                        );
-                      },
-                    ),
+                        ),
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
+      ],
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return DateFormatHelper.formatRelativeDate(date, ref: ref);
   }
 }

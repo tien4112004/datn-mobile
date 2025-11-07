@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';

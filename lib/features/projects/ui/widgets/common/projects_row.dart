@@ -1,5 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/controllers/controller_provider.dart';
+import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_card.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +29,11 @@ class ProjectsRow extends ConsumerWidget {
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 180, maxHeight: 220),
           child: presentationsAsync.easyWhen(
-            data: (presentations) => SingleChildScrollView(
+            data: (presentationListState) => SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(vertical: Themes.padding.p16),
               child: Row(
-                children: presentations
+                children: presentationListState.value
                     .map(
                       (presentation) => Padding(
                         padding: EdgeInsets.only(right: Themes.padding.p12),

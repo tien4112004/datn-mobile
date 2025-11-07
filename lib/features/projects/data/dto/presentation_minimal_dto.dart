@@ -6,15 +6,15 @@ part 'presentation_minimal_dto.g.dart';
 
 @JsonSerializable()
 class PresentationMinimalDto {
-  String? id;
-  String? title;
+  String id;
+  String title;
   DateTime? createdAt;
   DateTime? updatedAt;
   SlideDto? thumbnail;
 
   PresentationMinimalDto({
-    this.id,
-    this.title,
+    required this.id,
+    required this.title,
     this.createdAt,
     this.updatedAt,
     this.thumbnail,

@@ -66,11 +66,11 @@ class CustomSearchBar extends StatelessWidget {
           ),
           onTap: onTap,
           onChanged: onChanged,
-          leading: const Icon(LucideIcons.search),
+          leading: const Icon(LucideIcons.search, size: 24),
           trailing: controller.text.isNotEmpty
               ? [
                   IconButton(
-                    icon: const Icon(LucideIcons.x),
+                    icon: const Icon(LucideIcons.x, size: 24),
                     onPressed: () {
                       controller.clear();
                       onClearTap?.call();

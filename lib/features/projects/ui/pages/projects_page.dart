@@ -6,7 +6,6 @@ import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dar
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
-import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,7 +44,6 @@ class ProjectsPage extends ConsumerWidget {
           ),
         ),
       ),
-      // bottomNavigationBar: const CustomBottomAppBar(),
     );
   }
 }
@@ -75,22 +73,6 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomSearchBar(
-            hintText: 'Search...',
-            suggestionsBuilder:
-                (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (int index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        // TODO: Implement search functionality
-                      },
-                    );
-                  });
-                },
-          ),
-          const SizedBox(height: 16),
           ProjectsRow(
             onProjectSelected: _onProjectSelected,
             title: t.projects.recently_works,

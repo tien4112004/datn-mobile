@@ -1,14 +1,13 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class AbstractDocumentCard extends ConsumerWidget {
   const AbstractDocumentCard({
@@ -28,16 +27,9 @@ class AbstractDocumentCard extends ConsumerWidget {
   final VoidCallback? onTap;
   final ResourceType resourceType;
 
-  int _getDateDiffFromNow(DateTime date) {
-    log('Date: $date');
-    final now = DateTime.now();
-    return now.difference(date).inDays;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
-    final dateFormat = _getDateDiffFromNow(createdAt ?? DateTime.now());
 
     return Card(
       shape: const RoundedRectangleBorder(borderRadius: Themes.boxRadius),
@@ -48,12 +40,15 @@ class AbstractDocumentCard extends ConsumerWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(0.0),
-          child: SizedBox(
-            width: 112,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 100, maxWidth: 120),
             child: Column(
               children: [
                 Container(
-                  height: 82,
+                  constraints: const BoxConstraints(
+                    minHeight: 82,
+                    maxHeight: 112,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: Themes.boxRadius,
                     color: Colors.grey.shade100,
@@ -65,6 +60,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title
                     Text(
                       title,
                       style: TextStyle(
@@ -73,6 +69,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    SizedBox(height: Themes.padding.p4),
                     if (description != null) ...[
                       Text(
                         description!,
@@ -84,7 +81,12 @@ class AbstractDocumentCard extends ConsumerWidget {
                     ],
                     if (createdAt != null) ...[
                       Text(
-                        t.projects.edited(date: dateFormat),
+                        t.projects.edited(
+                          date: DateFormatHelper.formatRelativeDate(
+                            createdAt!,
+                            ref: ref,
+                          ),
+                        ),
                         style: TextStyle(
                           fontSize: Themes.fontSize.s12,
                           color: Colors.grey,

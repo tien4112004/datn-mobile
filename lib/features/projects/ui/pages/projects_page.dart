@@ -5,9 +5,10 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/widget/app_app_bar.dart';
+import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class ProjectsPage extends ConsumerWidget {
@@ -18,15 +19,7 @@ class ProjectsPage extends ConsumerWidget {
     final t = ref.watch(translationsPod);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          t.projects.title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: Themes.fontSize.s28,
-          ),
-        ),
-      ),
+      appBar: AppAppBar(title: t.projects.title),
       body: const _ProjectsView(),
       floatingActionButton: SizedBox(
         width: 96,
@@ -82,23 +75,8 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchAnchor(
-            builder: (BuildContext context, SearchController controller) {
-              return SearchBar(
-                controller: controller,
-                padding: const WidgetStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
-                  controller.openView();
-                },
-                onChanged: (_) {
-                  controller.openView();
-                },
-                leading: const Icon(LucideIcons.search),
-                hintText: t.projects.search_hint,
-              );
-            },
+          CustomSearchBar(
+            hintText: 'Search...',
             suggestionsBuilder:
                 (BuildContext context, SearchController controller) {
                   return List<ListTile>.generate(5, (int index) {
@@ -127,8 +105,10 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: ResourceTypesList(
-              onResourceTypeSelected: _onResourceTypeSelected,
+            child: SingleChildScrollView(
+              child: ResourceTypesList(
+                onResourceTypeSelected: _onResourceTypeSelected,
+              ),
             ),
           ),
         ],

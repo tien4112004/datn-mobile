@@ -1,3 +1,4 @@
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_type_card.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,12 @@ class ResourceTypesList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: resourceTypes.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) {
+        return Container(
+          height: 1,
+          color: Themes.theme.primaryColor.withAlpha(20),
+        );
+      },
       itemBuilder: (context, index) {
         final resourceType = resourceTypes[index];
         return ResourceTypeCard(

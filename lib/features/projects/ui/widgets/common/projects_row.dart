@@ -15,42 +15,37 @@ class ProjectsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final presentationsAsync = ref.watch(presentationsControllerProvider);
 
-    return presentationsAsync.easyWhen(
-      data: (presentations) => RefreshIndicator(
-        triggerMode: RefreshIndicatorTriggerMode.onEdge,
-        onRefresh: () async {
-          await ref.read(presentationsControllerProvider.notifier).refresh();
-        },
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (title != null)
-                Text(
-                  title!,
-                  style: TextStyle(
-                    fontSize: Themes.fontSize.s24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.all(Themes.padding.p16),
-                child: Row(
-                  children: presentations
-                      .map(
-                        (presentation) => Padding(
-                          padding: EdgeInsets.only(right: Themes.padding.p12),
-                          child: PresentationCard(presentation: presentation),
-                        ),
-                      )
-                      .toList(),
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (title != null)
+          Text(
+            title!,
+            style: TextStyle(
+              fontSize: Themes.fontSize.s24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 180, maxHeight: 220),
+          child: presentationsAsync.easyWhen(
+            data: (presentations) => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(vertical: Themes.padding.p16),
+              child: Row(
+                children: presentations
+                    .map(
+                      (presentation) => Padding(
+                        padding: EdgeInsets.only(right: Themes.padding.p12),
+                        child: PresentationCard(presentation: presentation),
+                      ),
+                    )
+                    .toList(),
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -105,12 +105,12 @@
     "search_hint": "Search projects...",
     "recently_works": "Your recently works",
     "created_at": "Created at: $date",
-    "edited": "Edited: $date days ago",
+    "edited": "Edited: $date",
     "untitled": "Untitled",
     "type": "Type: $type",
     "refresh_error": "Failed to refresh projects",
     "load_error": "Failed to load projects",
-    "presentation": {
+    "presentations": {
       "title": "Presentation",
       "search_presentations": "Search presentations...",
       "all_presentations": "All Presentations"

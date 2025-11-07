@@ -26,7 +26,6 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
   DateTime _selectedDate = DateTime.now();
-  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
 
   String? _termsErrorText;
 
@@ -259,9 +258,7 @@ class _SignUpFormState extends State<SignUpForm> {
               // Phone Number Field
               InternationalPhoneNumberInput(
                 onInputChanged: (PhoneNumber number) {
-                  setState(() {
-                    _phoneNumber = number;
-                  });
+                  setState(() {});
                 },
                 selectorConfig: const SelectorConfig(
                   selectorType: PhoneInputSelectorType.DROPDOWN,

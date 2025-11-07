@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/setting/view/setting_content_view.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/widget/app_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,19 +11,15 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const SettingAppBarTitle()),
-      body: const SettingContentView(),
+    return Consumer(
+      builder: (context, ref, child) {
+        return Scaffold(
+          appBar: AppAppBar(
+            title: ref.watch(translationsPod).settingAppBarTitle,
+          ),
+          body: const SettingContentView(),
+        );
+      },
     );
-  }
-}
-
-class SettingAppBarTitle extends ConsumerWidget {
-  const SettingAppBarTitle({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final t = ref.watch(translationsPod);
-    return Text(t.settingAppBarTitle);
   }
 }

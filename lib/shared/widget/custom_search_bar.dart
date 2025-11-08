@@ -10,6 +10,12 @@ class CustomSearchBar extends StatelessWidget {
   /// The hint text to display when the search field is empty
   final String hintText;
 
+  /// Whether the search field is enabled
+  final bool enabled;
+
+  /// Whether the search field should autofocus when displayed
+  final bool autoFocus;
+
   /// Callback to build suggestion widgets based on user input
   ///
   /// Parameters:
@@ -39,13 +45,17 @@ class CustomSearchBar extends StatelessWidget {
     this.onClearTap,
     this.onChanged,
     this.onTap,
+    required this.enabled,
+    required this.autoFocus,
   });
 
   @override
   Widget build(BuildContext context) {
     return SearchAnchor(
+      enabled: enabled,
       builder: (BuildContext context, SearchController controller) {
         return SearchBar(
+          autoFocus: autoFocus,
           constraints: BoxConstraints(
             minWidth: MediaQuery.sizeOf(context).width,
           ),

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
 import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
@@ -74,6 +75,8 @@ class _GenericResourceSearchPageState<T>
             const SizedBox(height: 8),
             // Search input field using CustomSearchBar
             CustomSearchBar(
+              enabled: true,
+              autoFocus: true,
               hintText: 'Search ${widget.title.toLowerCase()}',
               onChanged: (query) {
                 setState(() {

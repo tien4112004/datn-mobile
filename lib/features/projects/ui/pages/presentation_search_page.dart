@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-import 'package:datn_mobile/features/projects/ui/pages/resource_search_page.dart';
+import 'package:datn_mobile/features/projects/ui/pages/generic_search_page.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';

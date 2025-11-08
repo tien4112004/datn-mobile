@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
-import 'package:datn_mobile/features/projects/ui/pages/presentation_search_page.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -92,23 +92,30 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
       );
     }
 
+    final presentationControllerProvider = ref.watch(
+      presentationsControllerProvider,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Search bar - opens dedicated search page
-        CustomSearchBar(
-          hintText: t.projects.presentations.search_presentations,
+        InkWell(
+          child: CustomSearchBar(
+            enabled: false,
+            autoFocus: false,
+            hintText: t.projects.presentations.search_presentations,
+            onTap: () {},
+          ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const PresentationSearchPage(),
-              ),
-            );
+            context.router.push(const PresentationSearchRoute());
           },
         ),
         const SizedBox(height: 16),
         // Filter and Sort bar
         FilterAndSortBar(
+          // This filter and sort options are just placeholders
+          // TODO: should be dynamic based on actual data
           subjects: ['Math', 'Science', 'English', 'History', 'PE'],
           grades: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
           selectedSort: _sortOption,
@@ -130,67 +137,62 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
         const SizedBox(height: 16),
         // Presentations list
-        ref
-            .watch(presentationsControllerProvider)
-            .easyWhen(
-              data: (presentationListState) => Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await ref
-                        .read(presentationsControllerProvider.notifier)
-                        .refresh();
-                  },
-                  child: presentationListState.value.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                LucideIcons.presentation,
-                                size: 64,
-                                color: Colors.grey.shade400,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                t.projects.no_presentations,
-                                style: TextStyle(
-                                  fontSize: Themes.fontSize.s18,
-                                  color: Colors.grey.shade600,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+        presentationControllerProvider.easyWhen(
+          data: (presentationListState) => Expanded(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await ref
+                    .read(presentationsControllerProvider.notifier)
+                    .refresh();
+              },
+              child: presentationListState.value.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            LucideIcons.presentation,
+                            size: 64,
+                            color: Colors.grey.shade400,
                           ),
-                        )
-                      : ListView.separated(
-                          itemCount: presentationListState.value.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 0),
-                          itemBuilder: (context, index) {
-                            final presentation =
-                                presentationListState.value[index];
-                            return PresentationTile(
-                              presentation: presentation,
-                              onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      t.projects.opening(
-                                        title: presentation.title,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              onMoreOptions: () {
-                                // TODO: Show options menu
-                              },
+                          const SizedBox(height: 16),
+                          Text(
+                            t.projects.no_presentations,
+                            style: TextStyle(
+                              fontSize: Themes.fontSize.s18,
+                              color: Colors.grey.shade600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.separated(
+                      itemCount: presentationListState.value.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 0),
+                      itemBuilder: (context, index) {
+                        final presentation = presentationListState.value[index];
+                        return PresentationTile(
+                          presentation: presentation,
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  t.projects.opening(title: presentation.title),
+                                ),
+                              ),
                             );
                           },
-                        ),
-                ),
-              ),
+                          onMoreOptions: () {
+                            // TODO: Show options menu
+                          },
+                        );
+                      },
+                    ),
             ),
+          ),
+        ),
       ],
     );
   }

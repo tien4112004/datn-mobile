@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
-import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_in_form.dart';
@@ -20,12 +19,6 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  void _handleGoogleSignIn() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Google Sign In button pressed')),
-    );
-  }
-
   void _navigateToSignUp() {
     context.router.push(const SignUpRoute());
   }

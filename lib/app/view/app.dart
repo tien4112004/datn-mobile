@@ -66,9 +66,9 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
     final approuter = ref.watch(autorouterProvider);
     final currentTheme = ref.watch(themeControllerProvider);
     final translations = ref.watch(translationsPod);
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      //TODO: change app name
       title: 'AI Primary',
       theme: Themes.theme,
       darkTheme: Themes.darkTheme,
@@ -86,15 +86,11 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
       ],
       builder: (context, child) {
         if (mounted) {
-          ///Used for responsive design
-          ///Here you can define breakpoint and how the responsive should work
           child = ResponsiveBreakPointWrapper(
             firstFrameWidget: Container(color: Colors.white),
             child: child!,
           );
 
-          /// Add support for maximum text scale according to changes in
-          /// accessibilty in sytem settings
           final mediaquery = MediaQuery.of(context);
           child = MediaQuery(
             data: mediaquery.copyWith(
@@ -105,8 +101,6 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
             child: child,
           );
 
-          /// Added annotate region by default to switch according to theme which
-          /// customize the system ui veray style
           child = AnnotatedRegion<SystemUiOverlayStyle>(
             value: currentTheme == ThemeMode.dark
                 ? SystemUiOverlayStyle.light.copyWith(
@@ -139,7 +133,6 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
           child = const SizedBox.shrink();
         }
 
-        ///Add toast support for flash
         return Toast(
           navigatorKey: navigatorKey,
           child: child,

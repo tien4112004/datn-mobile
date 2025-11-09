@@ -122,15 +122,6 @@ class _LoaderChildState extends State<LoaderChild>
               bottom: 44,
               child: CircularProgressIndicator(color: Colors.amber),
             ),
-            const Positioned(
-              bottom: 16,
-              child: Material(
-                child: Text(
-                  "Welcome to Riverpod Simple Architecture App",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
           ],
         ),
       ),

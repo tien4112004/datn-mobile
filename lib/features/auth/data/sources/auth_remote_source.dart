@@ -1,10 +1,10 @@
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
+import 'package:datn_mobile/features/auth/data/dto/token_response_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import 'package:datn_mobile/features/auth/data/dto/request/token_exchange_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/response/token_response_dto.dart';
 
 part 'auth_remote_source.g.dart';
 

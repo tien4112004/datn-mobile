@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:datn_mobile/const/app_urls.dart';
+import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/token_exchange_request.dart';
@@ -28,7 +29,10 @@ class AuthServiceImpl implements AuthService {
       throw response;
     }
 
-    await secureStorage.write(key: 'access_token', value: response.accessToken);
+    await secureStorage.write(
+      key: R.ACCESS_TOKEN_KEY,
+      value: response.accessToken,
+    );
     await secureStorage.write(
       key: 'refresh_token',
       value: response.refreshToken,
@@ -71,7 +75,10 @@ class AuthServiceImpl implements AuthService {
       throw response;
     }
 
-    await secureStorage.write(key: 'access_token', value: response.accessToken);
+    await secureStorage.write(
+      key: R.ACCESS_TOKEN_KEY,
+      value: response.accessToken,
+    );
     await secureStorage.write(
       key: 'refresh_token',
       value: response.refreshToken,

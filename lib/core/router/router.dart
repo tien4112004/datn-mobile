@@ -1,14 +1,21 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/route_guard.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 
 /// This class used for defined routes and paths and other properties
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
+  final SecureStorage secureStorage;
+
+  AppRouter({required this.secureStorage}) : super();
+
   @override
   late final List<AutoRoute> routes = [
     AutoRoute(
       page: MainWrapperRoute.page,
       initial: true,
+      guards: [RouteGuard(secureStorage)],
       path: '/',
       children: [
         AutoRoute(page: HomeRoute.page),

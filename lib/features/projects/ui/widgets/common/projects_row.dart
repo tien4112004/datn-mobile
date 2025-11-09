@@ -27,7 +27,7 @@ class ProjectsRow extends ConsumerWidget {
             ),
           ),
         ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 180, maxHeight: 220),
+          constraints: const BoxConstraints(minHeight: 160, maxHeight: 220),
           child: presentationsAsync.easyWhen(
             data: (presentationListState) => SingleChildScrollView(
               scrollDirection: Axis.horizontal,

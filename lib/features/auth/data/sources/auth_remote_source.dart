@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
 import 'package:datn_mobile/features/auth/data/dto/token_response_dto.dart';
+import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
@@ -16,10 +17,12 @@ abstract class AuthRemoteSource {
   Future<String> getGoogleSignInUrl(@Query("redirect_uri") String redirectUri);
 
   @POST("/auth/exchange")
-  Future<TokenResponse> handleGoogleSignInCallback(
+  Future<ServerResponseDto<TokenResponse>> handleGoogleSignInCallback(
     @Body() TokenExchangeRequest body,
   );
 
   @POST("/auth/signin")
-  Future<TokenResponse> signIn(@Body() CredentialSigninRequest body);
+  Future<ServerResponseDto<TokenResponse>> signIn(
+    @Body() CredentialSigninRequest body,
+  );
 }

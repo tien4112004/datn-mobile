@@ -1,3 +1,5 @@
+import 'package:datn_mobile/core/router/router_pod.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/state/auth_state.dart';
@@ -8,12 +10,10 @@ class SigninController extends AsyncNotifier<AuthState> {
 
   late final AuthService _authService;
 
-  SigninController() {
-    _authService = ref.read(authServiceProvider);
-  }
-
   @override
   Future<AuthState> build() async {
+    // Initialize the auth service
+    _authService = ref.watch(authServiceProvider);
     // Initial state
     return AuthState();
   }
@@ -28,6 +28,11 @@ class SigninController extends AsyncNotifier<AuthState> {
       );
       // On success
       state = AsyncValue.data(AuthState(isAuthenticated: true));
+
+      // Navigate to home after successful sign-in and token storage
+      // Get the router from ref
+      final router = ref.read(autorouterProvider);
+      await router.replace(const HomeRoute());
     } catch (e) {
       // On error
       state = AsyncValue.error(
@@ -42,6 +47,10 @@ class SigninController extends AsyncNotifier<AuthState> {
     try {
       await _authService.signInWithGoogle();
       state = AsyncValue.data(AuthState(isAuthenticated: true));
+
+      // Navigate to home after successful Google sign-in
+      final router = ref.read(autorouterProvider);
+      await router.replace(const HomeRoute());
     } catch (e) {
       state = AsyncValue.error(
         AuthState(errorMessage: e.toString()),

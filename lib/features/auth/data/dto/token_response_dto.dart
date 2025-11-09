@@ -4,9 +4,13 @@ part 'token_response_dto.g.dart';
 
 @JsonSerializable()
 class TokenResponse {
+  @JsonKey(name: 'access_token')
   final String accessToken;
+  @JsonKey(name: 'refresh_token')
   final String refreshToken;
+  @JsonKey(name: 'token_type')
   final String tokenType;
+  @JsonKey(name: 'expires_in')
   final int expiresIn;
 
   TokenResponse({

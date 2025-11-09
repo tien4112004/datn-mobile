@@ -4,10 +4,10 @@ part 'credential_signin_request.g.dart';
 
 @JsonSerializable()
 class CredentialSigninRequest {
-  final String username;
+  final String email;
   final String password;
 
-  CredentialSigninRequest({required this.username, required this.password});
+  CredentialSigninRequest({required this.email, required this.password});
 
   factory CredentialSigninRequest.fromJson(Map<String, dynamic> json) =>
       _$CredentialSigninRequestFromJson(json);

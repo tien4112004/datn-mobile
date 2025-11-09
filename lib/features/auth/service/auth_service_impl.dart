@@ -5,6 +5,7 @@ import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/token_exchange_request.dart';
+import 'package:datn_mobile/features/auth/data/dto/token_response_dto.dart';
 import 'package:datn_mobile/features/auth/data/sources/auth_remote_source.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
@@ -22,20 +23,38 @@ class AuthServiceImpl implements AuthService {
     required String password,
   }) async {
     final response = await authRemoteSource.signIn(
-      CredentialSigninRequest(username: email, password: password),
+      CredentialSigninRequest(email: email, password: password),
     );
 
     if (response is APIException) {
       throw response;
     }
+    log('Sign-in response data: $response');
+
+    if (response.data == null) {
+      throw APIException(
+        code: 500,
+        errorMessage: 'Invalid response from server: missing token data',
+      );
+    }
+
+    log('Sign-in response data: ${response.data}');
+
+    final tokenResponse = response.data as TokenResponse;
+
+    try {
+      await secureStorage.write(
+        key: R.ACCESS_TOKEN_KEY,
+        value: tokenResponse.accessToken,
+      );
+    } catch (e) {
+      log('Error storing access token: $e');
+      rethrow;
+    }
 
     await secureStorage.write(
-      key: R.ACCESS_TOKEN_KEY,
-      value: response.accessToken,
-    );
-    await secureStorage.write(
       key: 'refresh_token',
-      value: response.refreshToken,
+      value: tokenResponse.refreshToken,
     );
   }
 
@@ -75,13 +94,15 @@ class AuthServiceImpl implements AuthService {
       throw response;
     }
 
+    final tokenResponse = response.data as TokenResponse;
+
     await secureStorage.write(
       key: R.ACCESS_TOKEN_KEY,
-      value: response.accessToken,
+      value: tokenResponse.accessToken,
     );
     await secureStorage.write(
       key: 'refresh_token',
-      value: response.refreshToken,
+      value: tokenResponse.refreshToken,
     );
   }
 

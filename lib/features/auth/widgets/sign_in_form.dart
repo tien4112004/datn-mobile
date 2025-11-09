@@ -1,5 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/state/sign_in/signin_controller_pod.dart';
+import 'package:datn_mobile/features/auth/state/sign_in/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -47,15 +47,14 @@ class AuthServiceImpl implements AuthService {
         key: R.ACCESS_TOKEN_KEY,
         value: tokenResponse.accessToken,
       );
+      await secureStorage.write(
+        key: R.REFRESH_TOKEN_KEY,
+        value: tokenResponse.refreshToken,
+      );
     } catch (e) {
       log('Error storing access token: $e');
       rethrow;
     }
-
-    await secureStorage.write(
-      key: 'refresh_token',
-      value: tokenResponse.refreshToken,
-    );
   }
 
   @override
@@ -101,15 +100,17 @@ class AuthServiceImpl implements AuthService {
       value: tokenResponse.accessToken,
     );
     await secureStorage.write(
-      key: 'refresh_token',
+      key: R.REFRESH_TOKEN_KEY,
       value: tokenResponse.refreshToken,
     );
   }
 
   @override
   Future<void> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
+    secureStorage.delete(key: R.ACCESS_TOKEN_KEY);
+    secureStorage.delete(key: R.REFRESH_TOKEN_KEY);
+
+    return authRemoteSource.logout();
   }
 
   @override

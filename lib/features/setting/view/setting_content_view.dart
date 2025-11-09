@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -124,12 +125,18 @@ class SettingContentView extends ConsumerWidget {
               child: SizedBox(
                 width: double.infinity,
                 height: 48.0,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    t.settings.logOut,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        ref.read(authServiceProvider).signOut();
+                      },
+                      child: Text(
+                        t.settings.logOut,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

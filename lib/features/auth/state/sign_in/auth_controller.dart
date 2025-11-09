@@ -5,7 +5,7 @@ import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/state/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SigninController extends AsyncNotifier<AuthState> {
+class AuthController extends AsyncNotifier<AuthState> {
   AuthState get currentState => state.value!;
 
   late final AuthService _authService;
@@ -51,6 +51,23 @@ class SigninController extends AsyncNotifier<AuthState> {
       // Navigate to home after successful Google sign-in
       final router = ref.read(autorouterProvider);
       await router.replace(const HomeRoute());
+    } catch (e) {
+      state = AsyncValue.error(
+        AuthState(errorMessage: e.toString()),
+        StackTrace.current,
+      );
+    }
+  }
+
+  Future<void> signOut() async {
+    state = const AsyncValue.loading();
+    try {
+      await _authService.signOut();
+      state = AsyncValue.data(AuthState(isAuthenticated: false));
+
+      // Navigate to sign-in after logout
+      final router = ref.read(autorouterProvider);
+      await router.replace(const SignInRoute());
     } catch (e) {
       state = AsyncValue.error(
         AuthState(errorMessage: e.toString()),

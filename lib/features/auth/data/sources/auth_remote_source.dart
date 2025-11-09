@@ -25,4 +25,7 @@ abstract class AuthRemoteSource {
   Future<ServerResponseDto<TokenResponse>> signIn(
     @Body() CredentialSigninRequest body,
   );
+
+  @POST("/auth/logout")
+  Future<ServerResponseDto<void>> logout();
 }

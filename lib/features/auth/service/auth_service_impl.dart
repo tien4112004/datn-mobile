@@ -1,34 +1,47 @@
 import 'dart:developer';
 
-import 'package:datn_mobile/features/auth/data/dto/token_exchange_request.dart';
+import 'package:datn_mobile/const/app_urls.dart';
+import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
+import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
+import 'package:datn_mobile/features/auth/data/dto/request/token_exchange_request.dart';
 import 'package:datn_mobile/features/auth/data/sources/auth_remote_source.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/helper/url_launcher_util.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AuthServiceImpl implements AuthService {
   final AuthRemoteSource authRemoteSource;
+  final SecureStorage secureStorage;
 
-  AuthServiceImpl(this.authRemoteSource);
+  AuthServiceImpl(this.authRemoteSource, this.secureStorage);
 
   @override
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
-  }) {
-    // TODO: implement signInWithEmailAndPassword
-    throw UnimplementedError();
+  }) async {
+    final response = await authRemoteSource.signIn(
+      CredentialSigninRequest(username: email, password: password),
+    );
+
+    if (response is APIException) {
+      throw response;
+    }
+
+    await secureStorage.write(key: 'access_token', value: response.accessToken);
+    await secureStorage.write(
+      key: 'refresh_token',
+      value: response.refreshToken,
+    );
   }
 
   @override
   Future<void> signInWithGoogle() async {
     final String uriWithPrefix = await authRemoteSource.getGoogleSignInUrl(
-      'datnmobile://auth-callback',
+      AppUrls.googleRedirectUri,
     );
 
     final uri = uriWithPrefix.split("redirect:")[1];
-    log('Launching Google Sign-In URL: $uri');
-
     UrlLauncherUtil.launchExternalUrl(uri);
   }
 
@@ -38,21 +51,31 @@ class AuthServiceImpl implements AuthService {
     final state = uri.queryParameters['state'];
 
     if (code == null || state == null) {
-      log('Invalid callback URI: missing code or state');
-      return;
+      throw APIException(
+        code: 400,
+        errorMessage: 'Invalid callback URI: missing code or state',
+      );
     }
 
     log('Received auth code: $code and state: $state');
 
-    await authRemoteSource.handleGoogleSignInCallback(
+    final response = await authRemoteSource.handleGoogleSignInCallback(
       TokenExchangeRequest(
         code: code,
-        redirectUri: 'datnmobile://auth-callback',
+        redirectUri: AppUrls.googleRedirectUri,
         state: state,
       ),
     );
 
-    log('Successfully handled Google Sign-In callback');
+    if (response is APIException) {
+      throw response;
+    }
+
+    await secureStorage.write(key: 'access_token', value: response.accessToken);
+    await secureStorage.write(
+      key: 'refresh_token',
+      value: response.refreshToken,
+    );
   }
 
   @override

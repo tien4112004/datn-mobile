@@ -4,8 +4,9 @@ import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
+import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/token_exchange_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/token_response_dto.dart';
+import 'package:datn_mobile/features/auth/data/dto/response/token_response.dart';
 import 'package:datn_mobile/features/auth/data/sources/auth_remote_source.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
@@ -120,5 +121,10 @@ class AuthServiceImpl implements AuthService {
   }) {
     // TODO: implement signUpWithEmailAndPassword
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> signUp(CredentialSignupRequest request) {
+    return authRemoteSource.signup(request);
   }
 }

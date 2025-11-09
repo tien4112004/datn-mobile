@@ -1,4 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/auth/state/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,14 +8,14 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 
-class SignUpForm extends StatefulWidget {
+class SignUpForm extends ConsumerStatefulWidget {
   const SignUpForm({super.key});
 
   @override
-  State<SignUpForm> createState() => _SignUpFormState();
+  ConsumerState<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _SignUpFormState extends ConsumerState<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -39,7 +40,17 @@ class _SignUpFormState extends State<SignUpForm> {
         return;
       }
 
-      // TODO: Implement sign up logic
+      ref
+          .read(authControllerProvider.notifier)
+          .signUp(
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            email: _emailController.text,
+            password: _passwordController.text,
+            dateOfBirth: _selectedDate,
+            phoneNumber: _phoneNumber.phoneNumber ?? '',
+          );
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Sign Up button pressed')));

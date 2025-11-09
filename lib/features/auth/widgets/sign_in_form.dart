@@ -1,5 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/state/sign_in/auth_controller_pod.dart';
+import 'package:datn_mobile/features/auth/state/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,8 +38,8 @@ class _SignInFormState extends ConsumerState<SignInForm> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final signinControllerPod = ref.watch(signinControllerProvider);
-    final signinController = ref.watch(signinControllerProvider.notifier);
+    final signinControllerPod = ref.watch(authControllerProvider);
+    final signinController = ref.watch(authControllerProvider.notifier);
 
     return Consumer(
       builder: (context, ref, child) {

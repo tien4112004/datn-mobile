@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_up_form.dart';
@@ -25,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _navigateToSignIn() {
-    context.router.maybePop();
+    context.router.popUntil((route) => route.settings.name == SignInRoute.name);
   }
 
   @override
@@ -37,6 +38,15 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
         return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            foregroundColor: colorScheme.onSurface,
+            leading: IconButton(
+              icon: const Icon(LucideIcons.chevronsLeft),
+              onPressed: () => context.router.maybePop(),
+            ),
+          ),
           body: SafeArea(
             child: Center(
               child: SingleChildScrollView(

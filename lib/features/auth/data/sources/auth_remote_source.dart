@@ -1,5 +1,7 @@
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/token_response_dto.dart';
+import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
+import 'package:datn_mobile/features/auth/data/dto/response/token_response.dart';
+import 'package:datn_mobile/features/auth/data/dto/response/user_profile_response.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
@@ -24,6 +26,11 @@ abstract class AuthRemoteSource {
   @POST("/auth/signin")
   Future<ServerResponseDto<TokenResponse>> signIn(
     @Body() CredentialSigninRequest body,
+  );
+
+  @POST("/auth/signup")
+  Future<ServerResponseDto<UserProfileResponse>> signup(
+    @Body() CredentialSignupRequest body,
   );
 
   @POST("/auth/logout")

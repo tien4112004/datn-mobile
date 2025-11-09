@@ -1,5 +1,6 @@
 import 'package:datn_mobile/core/router/router_pod.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/state/auth_state.dart';
@@ -33,6 +34,46 @@ class AuthController extends AsyncNotifier<AuthState> {
       // Get the router from ref
       final router = ref.read(autorouterProvider);
       await router.replace(const HomeRoute());
+    } catch (e) {
+      // On error
+      state = AsyncValue.error(
+        AuthState(errorMessage: e.toString()),
+        StackTrace.current,
+      );
+    }
+  }
+
+  Future<void> signUp({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+    required DateTime dateOfBirth,
+    required String phoneNumber,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      // Simulate sign-up logic
+      await _authService.signUp(
+        CredentialSignupRequest(
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          phoneNumber: phoneNumber,
+          dateOfBirth: DateTime(
+            dateOfBirth.year,
+            dateOfBirth.month,
+            dateOfBirth.day,
+          ),
+        ),
+      );
+      // On success
+      state = AsyncValue.data(AuthState(isAuthenticated: true));
+
+      // Navigate to home after successful sign-up and token storage
+      final router = ref.read(autorouterProvider);
+      router.popUntil((route) => route.settings.name == SignInRoute.name);
     } catch (e) {
       // On error
       state = AsyncValue.error(

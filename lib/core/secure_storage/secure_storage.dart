@@ -20,4 +20,11 @@ class SecureStorage {
   Future<void> delete({required String key}) async {
     await storage.delete(key: key);
   }
+
+  String? readSync({required String key}) {
+    // Note: FlutterSecureStorage does not support synchronous read.
+    // This is just a placeholder to match the original code structure.
+    log('Synchronous read is not supported. Use read() instead.');
+    return null;
+  }
 }

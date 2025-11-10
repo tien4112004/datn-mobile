@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/auth/service/service_provider.dart';
+import 'package:datn_mobile/features/auth/state/auth_controller_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -129,7 +129,7 @@ class SettingContentView extends ConsumerWidget {
                   builder: (context, ref, child) {
                     return ElevatedButton(
                       onPressed: () {
-                        ref.read(authServiceProvider).signOut();
+                        ref.read(authControllerProvider.notifier).signOut();
                       },
                       child: Text(
                         t.settings.logOut,

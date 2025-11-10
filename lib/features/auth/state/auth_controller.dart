@@ -104,16 +104,18 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = const AsyncValue.loading();
     try {
       await _authService.signOut();
-      state = AsyncValue.data(AuthState(isAuthenticated: false));
-
-      // Navigate to sign-in after logout
-      final router = ref.read(autorouterProvider);
-      await router.replace(const SignInRoute());
     } catch (e) {
       state = AsyncValue.error(
         AuthState(errorMessage: e.toString()),
         StackTrace.current,
       );
+    } finally {
+      // Ensure state is reset to unauthenticated
+      state = AsyncValue.data(AuthState(isAuthenticated: false));
+
+      // Navigate to sign-in after logout
+      final router = ref.read(autorouterProvider);
+      await router.replace(const SignInRoute());
     }
   }
 }

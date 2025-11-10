@@ -61,15 +61,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return t.auth.signIn.validation.enterEmail;
-                  }
-                  if (!value.contains('@')) {
-                    return t.auth.signIn.validation.invalidEmail;
-                  }
-                  return null;
-                },
+                validator: (value) => _validateEmail(value),
               ),
               const SizedBox(height: 16),
 
@@ -96,15 +88,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return t.auth.signIn.validation.enterPassword;
-                  }
-                  if (value.length < 6) {
-                    return t.auth.signIn.validation.passwordMinLength;
-                  }
-                  return null;
-                },
+                validator: (value) => _validatePassword(value),
               ),
               const SizedBox(height: 12),
 
@@ -155,10 +139,13 @@ class _SignInFormState extends ConsumerState<SignInForm> {
               // Sign In Button
               FilledButton(
                 onPressed: () => {
-                  signinController.signIn(
-                    _emailController.text,
-                    _passwordController.text,
-                  ),
+                  if (_formKey.currentState!.validate())
+                    {
+                      signinController.signIn(
+                        _emailController.text,
+                        _passwordController.text,
+                      ),
+                    },
                 },
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -187,5 +174,27 @@ class _SignInFormState extends ConsumerState<SignInForm> {
         );
       },
     );
+  }
+
+  String? _validateEmail(String? value) {
+    final t = ref.read(translationsPod);
+    if (value == null || value.isEmpty) {
+      return t.auth.signIn.validation.enterEmail;
+    }
+    if (!value.contains('@')) {
+      return t.auth.signIn.validation.invalidEmail;
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    final t = ref.read(translationsPod);
+    if (value == null || value.isEmpty) {
+      return t.auth.signIn.validation.enterPassword;
+    }
+    if (value.length < 6) {
+      return t.auth.signIn.validation.passwordMinLength;
+    }
+    return null;
   }
 }

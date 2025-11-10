@@ -50,10 +50,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
             dateOfBirth: _selectedDate,
             phoneNumber: _phoneNumber.phoneNumber ?? '',
           );
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Sign Up button pressed')));
     }
   }
 
@@ -90,6 +86,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
+        final authController = ref.watch(authControllerProvider);
 
         return Form(
           key: _formKey,
@@ -100,6 +97,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      enabled: !authController.isLoading,
                       controller: _firstNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -121,6 +119,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: TextFormField(
+                      enabled: !authController.isLoading,
                       controller: _lastNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -145,6 +144,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Email Field
               TextFormField(
+                enabled: !authController.isLoading,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -169,6 +169,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Password Field
               TextFormField(
+                enabled: !authController.isLoading,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
@@ -203,6 +204,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Confirm Password Field
               TextFormField(
+                enabled: !authController.isLoading,
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
@@ -239,6 +241,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               const SizedBox(height: 16),
 
               TextFormField(
+                enabled: !authController.isLoading,
                 readOnly: true, // Prevents manual keyboard input
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
@@ -369,20 +372,28 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Sign Up Button
               FilledButton(
-                onPressed: _handleSignUp,
+                onPressed: authController.isLoading ? null : _handleSignUp,
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: const RoundedRectangleBorder(
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                child: Text(
-                  t.auth.signUp.signUpButton,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: authController.isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        constraints: BoxConstraints(
+                          minWidth: 24.0,
+                          minHeight: 24.0,
+                        ),
+                      )
+                    : Text(
+                        t.auth.signUp.signUpButton,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ],
           ),

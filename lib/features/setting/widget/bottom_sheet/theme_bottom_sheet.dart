@@ -8,7 +8,7 @@ void showThemeBottomSheet(BuildContext context, WidgetRef ref) {
   final t = ref.read(translationsPod);
   final currentTheme = ref.read(themeControllerProvider);
 
-  final showBottomSheet = showOptionBottomSheet<ThemeMode>(
+  showOptionBottomSheet<ThemeMode>(
     context: context,
     title: t.settings.themeBottomSheet.title,
     options: ThemeMode.values,

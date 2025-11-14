@@ -102,15 +102,20 @@
   "todayAt": "Hôm nay lúc {time}",
   "dueDate": "Hạn nộp: {date}",
   "projects": {
-    "title": "Bài thuyết trình",
+    "title": "Dự án",
     "search_hint": "Tìm kiếm dự án...",
-    "search_presentations": "Tìm kiếm bài thuyết trình...",
     "recently_works": "Các công việc gần đây của bạn",
     "created_at": "Tạo lúc: $date",
+    "edited": "Đã chỉnh sửa: $date",
     "untitled": "Chưa đặt tên",
     "type": "Loại: $type",
-    "refresh_error": "Không thể làm mới bài thuyết trình",
-    "load_error": "Không thể tải bài thuyết trình",
+    "refresh_error": "Không thể làm mới dự án",
+    "load_error": "Không thể tải dự án",
+    "presentations": {
+      "title": "Bài thuyết trình",
+      "search_presentations": "Tìm kiếm bài thuyết trình...",
+      "all_presentations": "Tất cả bài thuyết trình"
+    },
     "resource_types": {
       "image": "Hình ảnh",
       "presentation": "Bài thuyết trình",

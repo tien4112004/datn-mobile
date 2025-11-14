@@ -1,10 +1,15 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+part 'font_size.dart';
+part 'padding_value.dart';
+
 ///This class defines light theme and dark theme
 ///Here we used flex color scheme
 class Themes {
   static const double boxRadiusValue = 12.0;
+  static const FontSize fontSize = FontSize();
+  static const PaddingValue padding = PaddingValue();
   static const BorderRadius boxRadius = BorderRadius.all(
     Radius.circular(boxRadiusValue),
   );

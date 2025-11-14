@@ -35,7 +35,6 @@ class _SignInPageState extends State<SignInPage> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {

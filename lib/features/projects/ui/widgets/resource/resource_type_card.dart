@@ -20,10 +20,6 @@ class ResourceTypeCard extends StatelessWidget {
       borderRadius: Themes.boxRadius,
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300, width: 1),
-          borderRadius: Themes.boxRadius,
-        ),
         child: Row(
           children: [
             Container(
@@ -35,7 +31,7 @@ class ResourceTypeCard extends StatelessWidget {
               child: Icon(
                 resourceType.icon,
                 color: resourceType.color,
-                size: 32,
+                size: 24,
               ),
             ),
             const SizedBox(width: 16),

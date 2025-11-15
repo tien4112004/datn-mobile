@@ -20,7 +20,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   void _navigateToSignUp() {
-    context.router.push(const SignUpRoute());
+    context.router.replace(const SignUpRoute());
   }
 
   @override
@@ -29,11 +29,6 @@ class _SignInPageState extends State<SignInPage> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: colorScheme.onSurface,
-      ),
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {

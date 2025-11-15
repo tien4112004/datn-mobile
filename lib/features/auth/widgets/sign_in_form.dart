@@ -1,5 +1,8 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/state/auth_controller_pod.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/shared/helper/global_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +15,7 @@ class SignInForm extends ConsumerStatefulWidget {
   ConsumerState<SignInForm> createState() => _SignInFormState();
 }
 
-class _SignInFormState extends ConsumerState<SignInForm> {
+class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -38,8 +41,19 @@ class _SignInFormState extends ConsumerState<SignInForm> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final signinControllerPod = ref.watch(authControllerProvider);
-    final signinController = ref.watch(authControllerProvider.notifier);
+    final authControllerState = ref.watch(authControllerProvider);
+    final authController = ref.watch(authControllerProvider.notifier);
+
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        showErrorSnack(
+          child: Text(
+            next.error.toString(),
+            style: const TextStyle(color: Colors.white),
+          ),
+        );
+      }
+    });
 
     return Consumer(
       builder: (context, ref, child) {
@@ -50,7 +64,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
             children: [
               // Email Field
               TextFormField(
-                enabled: !signinControllerPod.isLoading,
+                enabled: !authControllerState.isLoading,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -67,7 +81,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
 
               // Password Field
               TextFormField(
-                enabled: !signinControllerPod.isLoading,
+                enabled: !authControllerState.isLoading,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
@@ -100,7 +114,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                     children: [
                       Checkbox(
                         value: _rememberMe,
-                        onChanged: signinControllerPod.isLoading
+                        onChanged: authControllerState.isLoading
                             ? null
                             : (value) {
                                 setState(() {
@@ -111,7 +125,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                       Text(
                         t.auth.signIn.rememberMe,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: signinControllerPod.isLoading
+                          color: authControllerState.isLoading
                               ? colorScheme.primary.withAlpha(50)
                               : colorScheme.primary,
                         ),
@@ -119,13 +133,13 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                     ],
                   ),
                   TextButton(
-                    onPressed: signinControllerPod.isLoading
+                    onPressed: authControllerState.isLoading
                         ? null
                         : _handleForgotPassword,
                     child: Text(
                       t.auth.signIn.forgotPassword,
                       style: TextStyle(
-                        color: signinControllerPod.isLoading
+                        color: authControllerState.isLoading
                             ? colorScheme.primary.withAlpha(50)
                             : colorScheme.primary,
                         fontWeight: FontWeight.w600,
@@ -141,10 +155,15 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                 onPressed: () => {
                   if (_formKey.currentState!.validate())
                     {
-                      signinController.signIn(
-                        _emailController.text,
-                        _passwordController.text,
-                      ),
+                      if (authController.currentState.isLoading)
+                        null
+                      else if (authController.currentState.isAuthenticated)
+                        context.router.replace(const HomeRoute())
+                      else
+                        authController.signIn(
+                          _emailController.text,
+                          _passwordController.text,
+                        ),
                     },
                 },
                 style: FilledButton.styleFrom(
@@ -153,7 +172,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                child: signinControllerPod.isLoading
+                child: authControllerState.isLoading
                     ? const CircularProgressIndicator(
                         color: Colors.white,
                         constraints: BoxConstraints(

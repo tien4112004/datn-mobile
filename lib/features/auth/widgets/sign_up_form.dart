@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/state/auth_controller_pod.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -86,7 +89,8 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
-        final authController = ref.watch(authControllerProvider);
+        final authControllerPod = ref.watch(authControllerProvider);
+        final authController = ref.watch(authControllerProvider.notifier);
 
         return Form(
           key: _formKey,
@@ -97,7 +101,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      enabled: !authController.isLoading,
+                      enabled: !authControllerPod.isLoading,
                       controller: _firstNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -119,7 +123,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: TextFormField(
-                      enabled: !authController.isLoading,
+                      enabled: !authControllerPod.isLoading,
                       controller: _lastNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -144,7 +148,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Email Field
               TextFormField(
-                enabled: !authController.isLoading,
+                enabled: !authControllerPod.isLoading,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -169,7 +173,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Password Field
               TextFormField(
-                enabled: !authController.isLoading,
+                enabled: !authControllerPod.isLoading,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
@@ -204,7 +208,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Confirm Password Field
               TextFormField(
-                enabled: !authController.isLoading,
+                enabled: !authControllerPod.isLoading,
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
@@ -241,7 +245,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               const SizedBox(height: 16),
 
               TextFormField(
-                enabled: !authController.isLoading,
+                enabled: !authControllerPod.isLoading,
                 readOnly: true, // Prevents manual keyboard input
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
@@ -371,29 +375,38 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
               const SizedBox(height: 24),
 
               // Sign Up Button
-              FilledButton(
-                onPressed: authController.isLoading ? null : _handleSignUp,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: Themes.boxRadius,
+              authControllerPod.easyWhen(
+                data: (state) => FilledButton(
+                  onPressed: () => {
+                    if (authController.currentState.isLoading)
+                      {null}
+                    else if (authController.currentState.isAuthenticated)
+                      {context.router.push(const SignInRoute())}
+                    else
+                      {_handleSignUp()},
+                  },
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: Themes.boxRadius,
+                    ),
                   ),
+                  child: authControllerPod.isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          constraints: BoxConstraints(
+                            minWidth: 24.0,
+                            minHeight: 24.0,
+                          ),
+                        )
+                      : Text(
+                          t.auth.signUp.signUpButton,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
-                child: authController.isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        constraints: BoxConstraints(
-                          minWidth: 24.0,
-                          minHeight: 24.0,
-                        ),
-                      )
-                    : Text(
-                        t.auth.signUp.signUpButton,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
               ),
             ],
           ),

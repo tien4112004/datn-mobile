@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// datn-fe-presentation web app.
@@ -48,10 +49,11 @@ class _PresentationDetailState extends State<PresentationDetail> {
       );
     }
 
-    return widget.presentationAsync.when(
-      data: (presentation) => _buildContent(presentation),
-      loading: _buildLoading,
-      error: (error, _) => _buildError(error),
+    return widget.presentationAsync.easyWhen(
+      data: _buildContent,
+      loadingWidget: _buildLoading,
+      errorWidget: (error, stackTrace) => _buildError(error),
+      onRetry: widget.onRetry,
     );
   }
 

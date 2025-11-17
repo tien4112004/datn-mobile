@@ -11,6 +11,7 @@ import 'package:datn_mobile/features/auth/data/sources/auth_remote_source.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/helper/url_launcher_util.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthServiceImpl implements AuthService {
   final AuthRemoteSource authRemoteSource;
@@ -65,6 +66,11 @@ class AuthServiceImpl implements AuthService {
     );
 
     final uri = uriWithPrefix.split("redirect:")[1];
+
+    if (kDebugMode) {
+      log('Launching Google Sign-In URL: $uri');
+    }
+
     UrlLauncherUtil.launchExternalUrl(uri);
   }
 

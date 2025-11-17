@@ -15,8 +15,8 @@ part 'auth_remote_source.g.dart';
 abstract class AuthRemoteSource {
   factory AuthRemoteSource(Dio dio, {String baseUrl}) = _AuthRemoteSource;
 
-  @GET("/auth/google/signin")
-  Future<String> getGoogleSignInUrl(@Query("redirect_uri") String redirectUri);
+  @GET("/auth/google/authorize")
+  Future<String> getGoogleSignInUrl(@Query("redirectUri") String redirectUri);
 
   @POST("/auth/exchange")
   Future<ServerResponseDto<TokenResponse>> handleGoogleSignInCallback(

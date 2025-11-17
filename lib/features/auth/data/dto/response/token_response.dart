@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'token_response_dto.g.dart';
+part 'token_response.g.dart';
 
 @JsonSerializable()
 class TokenResponse {

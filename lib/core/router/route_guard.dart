@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
@@ -12,8 +10,6 @@ class RouteGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    log('RouteGuard: Checking authentication status');
-
     final isAuthenticated =
         await secureStorage.read(key: R.ACCESS_TOKEN_KEY) != null;
 

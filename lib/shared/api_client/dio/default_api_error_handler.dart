@@ -35,7 +35,7 @@ Future<void> defaultAPIErrorHandler(
         handler.resolve(
           Response(
             data: {
-              'detail': 'server error: status code ${err.response!.statusCode}',
+              'detail': err.response!.data['message'] ?? 'resource not found',
             },
             requestOptions: RequestOptions(path: err.requestOptions.path),
           ),
@@ -44,7 +44,9 @@ Future<void> defaultAPIErrorHandler(
         handler.resolve(
           err.response ??
               Response(
-                data: {'detail': 'response error'},
+                data: {
+                  'detail': err.response!.data['message'] ?? 'unknown error',
+                },
                 requestOptions: err.requestOptions,
               ),
         );

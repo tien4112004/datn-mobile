@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:datn_mobile/core/router/router_pod.dart';
+
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
@@ -30,9 +34,19 @@ class AuthController extends AsyncNotifier<AuthState> {
       // On success
       state = AsyncValue.data(AuthState(isAuthenticated: true));
     } catch (e) {
+      log('Error during sign-in: $e');
       // On error
+      if (e is APIException) {
+        log('APIException caught: ${e.errorMessage}');
+        state = AsyncValue.error(
+          AuthState(errorMessage: e.errorMessage),
+          StackTrace.current,
+        );
+        return;
+      }
+
       state = AsyncValue.error(
-        AuthState(errorMessage: e.toString()),
+        AuthState(errorMessage: 'An unexpected error occurred during sign-in.'),
         StackTrace.current,
       );
     }

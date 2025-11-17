@@ -1,6 +1,8 @@
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'server_reponse_dto.g.dart';
+part 'server_response_ext.dart';
 
 @JsonSerializable(genericArgumentFactories: true, includeIfNull: false)
 class ServerResponseDto<T> {
@@ -14,7 +16,7 @@ class ServerResponseDto<T> {
   final String? timestamp;
 
   final T? data;
-  final String? message;
+  final String? detail;
   final String? errorCode;
   final PaginationDto? pagination;
 
@@ -23,7 +25,7 @@ class ServerResponseDto<T> {
     this.code = 200,
     this.timestamp,
     this.data,
-    this.message,
+    this.detail,
     this.errorCode,
     this.pagination,
   });
@@ -53,7 +55,7 @@ class ServerResponseDto<T> {
       code: code ?? this.code,
       timestamp: timestamp ?? this.timestamp,
       data: data ?? this.data,
-      message: message ?? this.message,
+      detail: message ?? detail,
       errorCode: errorCode ?? this.errorCode,
       pagination: pagination ?? this.pagination,
     );

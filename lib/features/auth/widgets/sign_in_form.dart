@@ -2,8 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -41,22 +43,20 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final authControllerState = ref.watch(authControllerProvider);
-    final authController = ref.watch(authControllerProvider.notifier);
+    final authController = ref.watch(authControllerProvider);
+    final authControllerNotifier = ref.watch(authControllerProvider.notifier);
 
     ref.listen(authControllerProvider, (previous, next) {
       if (next is AsyncError) {
+        final authState = next.error as AuthState;
         showErrorSnack(
-          child: Text(
-            next.error.toString(),
-            style: const TextStyle(color: Colors.white),
-          ),
+          child: Text(authState.errorMessage ?? 'An unknown error occurred'),
         );
       }
     });
 
-    return Consumer(
-      builder: (context, ref, child) {
+    return authController.easyWhen(
+      data: (authState) {
         return Form(
           key: _formKey,
           child: Column(
@@ -64,7 +64,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
             children: [
               // Email Field
               TextFormField(
-                enabled: !authControllerState.isLoading,
+                enabled: !authState.isLoading,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -81,7 +81,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
 
               // Password Field
               TextFormField(
-                enabled: !authControllerState.isLoading,
+                enabled: !authState.isLoading,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
@@ -114,7 +114,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                     children: [
                       Checkbox(
                         value: _rememberMe,
-                        onChanged: authControllerState.isLoading
+                        onChanged: authState.isLoading
                             ? null
                             : (value) {
                                 setState(() {
@@ -125,7 +125,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                       Text(
                         t.auth.signIn.rememberMe,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: authControllerState.isLoading
+                          color: authState.isLoading
                               ? colorScheme.primary.withAlpha(50)
                               : colorScheme.primary,
                         ),
@@ -133,13 +133,13 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                     ],
                   ),
                   TextButton(
-                    onPressed: authControllerState.isLoading
+                    onPressed: authState.isLoading
                         ? null
                         : _handleForgotPassword,
                     child: Text(
                       t.auth.signIn.forgotPassword,
                       style: TextStyle(
-                        color: authControllerState.isLoading
+                        color: authState.isLoading
                             ? colorScheme.primary.withAlpha(50)
                             : colorScheme.primary,
                         fontWeight: FontWeight.w600,
@@ -155,12 +155,12 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                 onPressed: () => {
                   if (_formKey.currentState!.validate())
                     {
-                      if (authController.currentState.isLoading)
+                      if (authState.isLoading)
                         null
-                      else if (authController.currentState.isAuthenticated)
+                      else if (authState.isAuthenticated)
                         context.router.replace(const HomeRoute())
                       else
-                        authController.signIn(
+                        authControllerNotifier.signIn(
                           _emailController.text,
                           _passwordController.text,
                         ),
@@ -172,7 +172,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                child: authControllerState.isLoading
+                child: authState.isLoading
                     ? const CircularProgressIndicator(
                         color: Colors.white,
                         constraints: BoxConstraints(
@@ -192,6 +192,8 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
           ),
         );
       },
+      skipError: true,
+      skipLoadingOnReload: true,
     );
   }
 
@@ -200,7 +202,11 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     if (value == null || value.isEmpty) {
       return t.auth.signIn.validation.enterEmail;
     }
-    if (!value.contains('@')) {
+    if (!value.startsWith(
+      RegExp(
+        r'/^[a-z0-9]+(?!.*(?:\+{2,}|\-{2,}|\.{2,}))(?:[\.+\-]{0,1}[a-z0-9])*@gmail\.com$/gm',
+      ),
+    )) {
       return t.auth.signIn.validation.invalidEmail;
     }
     return null;

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:dio/dio.dart';
-import 'package:datn_mobile/shared/api_client/dio/default_api_error_handler.dart';
 
 // coverage:ignore-file
 ///This one is author interceptor which includes default api
@@ -12,11 +11,6 @@ class AuthorAPIInterceptor extends Interceptor {
 
   final SecureStorage secureStorage;
   final Dio dio;
-
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    defaultAPIErrorHandler(err, handler, dio);
-  }
 
   @override
   Future<void> onRequest(

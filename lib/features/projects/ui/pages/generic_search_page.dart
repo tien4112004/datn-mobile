@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
 import 'package:datn_mobile/shared/widget/custom_search_bar.dart';

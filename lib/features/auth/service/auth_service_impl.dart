@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/const/resource.dart';
+import 'package:datn_mobile/core/config/config.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
@@ -12,13 +14,19 @@ import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.da
 import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/exception/unexpected_exception.dart';
 import 'package:datn_mobile/shared/helper/url_launcher_util.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthServiceImpl implements AuthService {
+  // With other routes, we can use the Retrofit generated Dio instance
+  // This dio is using for authorize route, which support automaticlly
+  // follow redirect.
+  final Dio dio;
+
   final AuthRemoteSource authRemoteSource;
   final SecureStorage secureStorage;
 
-  AuthServiceImpl(this.authRemoteSource, this.secureStorage);
+  AuthServiceImpl(this.authRemoteSource, this.secureStorage, this.dio);
   @override
   Future<void> signInWithEmailAndPassword({
     required String email,
@@ -64,18 +72,43 @@ class AuthServiceImpl implements AuthService {
 
   @override
   Future<void> signInWithGoogle() async {
-    final response = await authRemoteSource.getGoogleSignInUrl(
-      AppUrls.googleRedirectUri,
+    final httpResponse = await dio.get(
+      '${Config.baseUrl}/auth/google/authorize',
+      queryParameters: {'clientType': 'mobile'},
+      options: Options(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status != null && status >= 200 && status < 400;
+        },
+      ),
     );
 
-    final uri = response.split("redirect:")[1];
+    if (httpResponse.statusCode != 302) {
+      throw APIException(
+        code: httpResponse.statusCode,
+        errorMessage:
+            'Failed to get Google Sign-In URL, unexpected status code',
+        errorCode: 'GOOGLE_SIGNIN_URL_ERROR',
+      );
+    }
 
-    // if (kDebugMode) {
-    log('Received Google Sign-In URL: $response');
-    log('Launching Google Sign-In URL: $uri');
-    // }
+    final location = httpResponse.headers.value(HttpHeaders.locationHeader);
 
-    UrlLauncherUtil.launchExternalUrl(uri);
+    if (location == null) {
+      throw APIException(
+        code: 500,
+        errorMessage:
+            'Failed to get Google Sign-In URL, missing Location header',
+        errorCode: 'GOOGLE_SIGNIN_URL_MISSING',
+      );
+    }
+
+    if (kDebugMode) {
+      log('Received Google Sign-In URL: $location');
+      log('Launching Google Sign-In URL: $location');
+    }
+
+    UrlLauncherUtil.launchExternalUrl(location);
   }
 
   @override

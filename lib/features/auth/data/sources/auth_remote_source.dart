@@ -15,8 +15,13 @@ part 'auth_remote_source.g.dart';
 abstract class AuthRemoteSource {
   factory AuthRemoteSource(Dio dio, {String baseUrl}) = _AuthRemoteSource;
 
-  @GET("/auth/google/authorize")
-  Future<String> getGoogleSignInUrl(@Query("redirectUri") String redirectUri);
+  // !! DEPRECATED
+  // This endpoint is no longer in use since we need to use Dio directly
+  // in order to follow redirects automatically.
+  // @GET("/auth/google/authorize")
+  // Future<HttpResponse> getGoogleSignInUrl(
+  //   @Query("clientType") String redirectUri,
+  // );
 
   @POST("/auth/exchange")
   Future<ServerResponseDto<TokenResponse>> handleGoogleSignInCallback(

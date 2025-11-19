@@ -15,7 +15,7 @@ import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 ///This provider dioClient with interceptors(TimeResponseInterceptor,FormDataInterceptor,TalkerDioLogger,DefaultAPIInterceptor)
 ///with fixing bad certificate.
-final dioProvider = Provider.autoDispose<Dio>((ref) {
+final dioPod = Provider.autoDispose<Dio>((ref) {
   final dio = Dio();
   final SecureStorage secureStorage = ref.read(secureStoragePod);
 

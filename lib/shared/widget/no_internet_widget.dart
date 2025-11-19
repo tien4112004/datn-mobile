@@ -62,7 +62,7 @@ class _DefaultNoInternetState extends ConsumerState<DefaultNoInternetWidget> {
       case InternetStatus.connected:
         //  talker.debug('Data Reconnected.');
         if (lastResult == InternetStatus.disconnected) {
-          ref.invalidate(dioProvider);
+          ref.invalidate(dioPod);
         } else {
           //talker.debug('First time');
         }

@@ -12,7 +12,7 @@ void main() {
   group("dio Client Provider", () {
     test('expect dio.baseUrl should be "http://localhost:8080/api"', () {
       final container = ProviderContainer.test();
-      final dio = container.read(dioProvider);
+      final dio = container.read(dioPod);
       expect(
         dio,
         isA<DioForNative>()

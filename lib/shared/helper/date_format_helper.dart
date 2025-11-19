@@ -1,5 +1,6 @@
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 /// Helper class for formatting dates with relative time display
 ///
@@ -27,22 +28,20 @@ class DateFormatHelper {
     } else if (difference.inDays < 7) {
       return t.projects.days_ago(count: difference.inDays);
     } else {
-      return '${date.day}/${date.month}/${date.year}';
+      return DateFormat('dd/MM/yyyy').format(date);
     }
   }
 
   /// Format a date to a simple date string (dd/mm/yyyy)
   static String formatSimpleDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 
   /// Format a date to a full date-time string
   ///
   /// Example: "07/11/2025 14:30"
   static String formatFullDateTime(DateTime date) {
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-    return '${date.day}/${date.month}/${date.year} $hour:$minute';
+    return DateFormat('dd/MM/yyyy HH:mm').format(date);
   }
 
   /// Get the relative time difference between two dates

@@ -1,7 +1,6 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -31,8 +30,6 @@ class AbstractResourceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = ref.watch(translationsPod);
-
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
@@ -82,7 +79,6 @@ class AbstractResourceTile extends ConsumerWidget {
                   Text(
                     DateFormat(
                       'yyyy-MM-dd',
-                      t.$meta.locale.languageCode,
                     ).format(updatedAt ?? DateTime.now()),
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),

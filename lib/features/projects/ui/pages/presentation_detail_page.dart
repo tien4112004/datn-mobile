@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/projects/controllers/controller_provider.dart';
+import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +20,9 @@ class PresentationDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final presentationAsync = ref.watch(presentationByIdProvider(presentationId));
+    final presentationAsync = ref.watch(
+      presentationByIdProvider(presentationId),
+    );
 
     return PresentationDetail(
       presentationAsync: presentationAsync,

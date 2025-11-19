@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
@@ -26,8 +27,6 @@ class PresentationThumbnail extends StatefulWidget {
     required this.slide,
     this.width = 200,
     this.height = 150,
-    this.backgroundColor = Colors.white,
-    this.borderRadius = 8.0,
     this.showLoadingIndicator = true,
   });
 
@@ -39,12 +38,6 @@ class PresentationThumbnail extends StatefulWidget {
 
   /// Height of the thumbnail widget
   final double height;
-
-  /// Background color shown while loading
-  final Color backgroundColor;
-
-  /// Border radius for the thumbnail
-  final double borderRadius;
 
   /// Whether to show a loading indicator while the thumbnail loads
   final bool showLoadingIndicator;
@@ -63,7 +56,7 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
     // Fallback UI if InAppWebView is not available
     if (InAppWebViewPlatform.instance == null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(widget.borderRadius),
+        borderRadius: Themes.boxRadius,
         child: Container(
           width: widget.width,
           height: widget.height,
@@ -71,7 +64,6 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
             color: widget.slide.background.color.isNotEmpty
                 ? _parseColor(widget.slide.background.color)
                 : Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(widget.borderRadius),
           ),
           child: Center(
             child: Icon(
@@ -85,11 +77,11 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(widget.borderRadius),
+      borderRadius: Themes.boxRadius,
       child: Container(
         width: widget.width,
         height: widget.height,
-        color: widget.backgroundColor,
+        color: Colors.transparent,
         child: Stack(
           children: [
             InAppWebView(
@@ -121,6 +113,9 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
                 );
               },
               onLoadStop: (controller, url) async {
+                setState(() {
+                  _isLoading = false;
+                });
                 // Send slide data after page loads
                 _sendSlideData();
               },
@@ -139,14 +134,14 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
             // Loading indicator
             if (_isLoading && widget.showLoadingIndicator)
               Container(
-                color: widget.backgroundColor,
+                color: Colors.transparent,
                 child: const Center(child: CircularProgressIndicator()),
               ),
 
             // Error state
             if (_hasError)
               Container(
-                color: widget.backgroundColor,
+                color: Colors.transparent,
                 child: const Center(
                   child: Icon(
                     Icons.error_outline,
@@ -191,13 +186,11 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
       );
 
       setState(() {
-        _isLoading = false;
         _hasError = false;
       });
     } catch (e) {
       debugPrint('Error sending slide data: $e');
       setState(() {
-        _isLoading = false;
         _hasError = true;
       });
     }

@@ -17,6 +17,11 @@ abstract class ProjectsRemoteSource {
   @GET("/presentations")
   Future<ServerResponseDto<List<PresentationMinimalDto>>> fetchPresentations();
 
+  @GET("/presentations/{id}")
+  Future<ServerResponseDto<PresentationDto>> fetchPresentationById(
+    @Path("id") String id,
+  );
+
   @POST("/presentations")
   Future<PresentationDto> createPresentation(
     @Body() PresentationDto presentation,

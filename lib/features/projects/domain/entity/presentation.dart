@@ -9,6 +9,7 @@ class Presentation {
   bool isParsed;
   Object metaData;
   DateTime deletedAt;
+  Map<String, double> viewport;
 
   Presentation({
     required this.id,
@@ -19,5 +20,17 @@ class Presentation {
     required this.isParsed,
     required this.metaData,
     required this.deletedAt,
+    required this.viewport,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'slides': slides.map((slide) => slide.toJson()).toList(),
+      'viewport': viewport,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
 }

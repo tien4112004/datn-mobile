@@ -16,4 +16,13 @@ class Slide {
   Map<String, Object> getExtraFields() {
     return extraFields;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'elements': elements.map((element) => element.toJson()).toList(),
+      'background': background.toJson(),
+      ...extraFields,
+    };
+  }
 }

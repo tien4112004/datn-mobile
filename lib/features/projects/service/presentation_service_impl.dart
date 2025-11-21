@@ -10,6 +10,11 @@ class PresentationServiceImpl implements PresentationService {
   }
 
   @override
+  Future<Presentation> fetchPresentationById(String id) {
+    return _repo.fetchPresentationById(id);
+  }
+
+  @override
   Future<void> addPresentation(Presentation presentation) {
     // Additional validations or logics
     return _repo.addPresentation(presentation);

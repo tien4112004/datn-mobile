@@ -3,5 +3,6 @@ import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal
 
 abstract interface class PresentationService {
   Future<List<PresentationMinimal>> fetchPresentations();
+  Future<Presentation> fetchPresentationById(String id);
   Future<void> addPresentation(Presentation presentation);
 }

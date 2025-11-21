@@ -176,11 +176,9 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                         return PresentationTile(
                           presentation: presentation,
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  t.projects.opening(title: presentation.title),
-                                ),
+                            context.router.push(
+                              PresentationDetailRoute(
+                                presentationId: presentation.id,
                               ),
                             );
                           },

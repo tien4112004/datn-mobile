@@ -12,6 +12,13 @@ final presentationsControllerProvider =
       () => PresentationsController(),
     );
 
+final presentationByIdProvider = FutureProvider.family<Presentation, String>((
+  ref,
+  id,
+) async {
+  return ref.read(presentationServiceProvider).fetchPresentationById(id);
+});
+
 final createPresentationControllerProvider =
     AsyncNotifierProvider<CreatePresentationController, void>(
       () => CreatePresentationController(),

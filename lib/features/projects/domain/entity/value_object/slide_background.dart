@@ -12,4 +12,8 @@ class SlideBackground {
   Map<String, Object> getExtraFields() {
     return extraFields;
   }
+
+  Map<String, dynamic> toJson() {
+    return {'type': type, 'color': color, ...extraFields};
+  }
 }

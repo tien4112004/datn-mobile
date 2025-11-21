@@ -3,5 +3,5 @@
 class AppUrls {
   AppUrls._();
   static const String floatingButtonImg = 'assets/floating_button_icon.png';
-  static final String googleRedirectUri = 'datnmobile://auth-callback';
+  static final String googleRedirectUri = 'aiprimary://auth-callback';
 }

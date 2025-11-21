@@ -1,8 +1,5 @@
 import 'dart:developer';
 
-import 'package:datn_mobile/core/router/router_pod.dart';
-
-import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
@@ -19,7 +16,10 @@ class AuthController extends AsyncNotifier<AuthState> {
   Future<AuthState> build() async {
     // Initialize the auth service
     _authService = ref.watch(authServiceProvider);
+
     // Initial state
+    state = AsyncValue.data(AuthState(isAuthenticated: false));
+
     return AuthState();
   }
 
@@ -58,12 +58,12 @@ class AuthController extends AsyncNotifier<AuthState> {
     required String email,
     required String password,
     required DateTime dateOfBirth,
-    required String phoneNumber,
+    String? phoneNumber,
   }) async {
     state = const AsyncValue.loading();
     try {
       // Simulate sign-up logic
-      _authService.signUp(
+      await _authService.signUp(
         CredentialSignupRequest(
           firstName: firstName,
           lastName: lastName,
@@ -88,15 +88,24 @@ class AuthController extends AsyncNotifier<AuthState> {
     }
   }
 
-  // TODO: handle sign in with Google
   Future<void> signInWithGoogle() async {
     state = const AsyncValue.loading();
     try {
       await _authService.signInWithGoogle();
       state = AsyncValue.data(AuthState(isAuthenticated: true));
     } catch (e) {
+      log('Error during google sign-in: $e');
+      if (e is APIException) {
+        state = AsyncValue.error(
+          AuthState(errorMessage: e.errorMessage),
+          StackTrace.current,
+        );
+        return;
+      }
       state = AsyncValue.error(
-        AuthState(errorMessage: e.toString()),
+        AuthState(
+          errorMessage: 'An unexpected error occurred during google sign-in.',
+        ),
         StackTrace.current,
       );
     }
@@ -106,18 +115,12 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = const AsyncValue.loading();
     try {
       await _authService.signOut();
+      state = AsyncValue.data(AuthState(isAuthenticated: false));
     } catch (e) {
       state = AsyncValue.error(
         AuthState(errorMessage: e.toString()),
         StackTrace.current,
       );
-    } finally {
-      // Ensure state is reset to unauthenticated
-      state = AsyncValue.data(AuthState(isAuthenticated: false));
-
-      // Navigate to sign-in after logout
-      final router = ref.read(autorouterProvider);
-      await router.replace(const SignInRoute());
     }
   }
 }

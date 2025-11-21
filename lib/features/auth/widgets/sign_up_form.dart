@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
+import 'package:datn_mobile/shared/helper/global_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class SignUpForm extends ConsumerStatefulWidget {
   ConsumerState<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends ConsumerState<SignUpForm> {
+class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -51,7 +53,9 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
             email: _emailController.text,
             password: _passwordController.text,
             dateOfBirth: _selectedDate,
-            phoneNumber: _phoneNumber.phoneNumber ?? '',
+            phoneNumber: _phoneNumber.phoneNumber?.isNotEmpty == true
+                ? _phoneNumber.phoneNumber
+                : null,
           );
     }
   }
@@ -90,7 +94,27 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
         final authControllerPod = ref.watch(authControllerProvider);
-        final authController = ref.watch(authControllerProvider.notifier);
+
+        ref.listen(authControllerProvider, (previous, next) {
+          if (next.isLoading) {
+            if (previous?.isLoading != true) {
+              showLoadingOverlay(context);
+            }
+          } else {
+            if (previous?.isLoading == true) {
+              hideOverlay();
+            }
+          }
+
+          if (next is AsyncError) {
+            final authState = next.error as AuthState;
+            showErrorSnack(
+              child: Text(
+                authState.errorMessage ?? 'An unknown error occurred',
+              ),
+            );
+          }
+        });
 
         return Form(
           key: _formKey,
@@ -163,7 +187,12 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   if (value == null || value.isEmpty) {
                     return t.auth.signUp.validation.enterEmail;
                   }
-                  if (!value.contains('@')) {
+                  // Simple email validation: contains @ and no invalid special characters
+                  // Allowing alphanumeric, dots, underscores, and hyphens
+                  final emailRegex = RegExp(
+                    r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                  );
+                  if (!emailRegex.hasMatch(value)) {
                     return t.auth.signUp.validation.invalidEmail;
                   }
                   return null;
@@ -258,13 +287,31 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   border: const OutlineInputBorder(
                     borderRadius: Themes.boxRadius,
                   ),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _selectedDate = DateTime.now();
+                      });
+                    },
+                  ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return t.auth.signUp.validation.selectDateOfBirth;
+                  // Date of Birth is optional
+                  final now = DateTime.now();
+                  final age = now.year - _selectedDate.year;
+                  final isBeforeBirthday =
+                      now.month < _selectedDate.month ||
+                      (now.month == _selectedDate.month &&
+                          now.day < _selectedDate.day);
+
+                  final actualAge = isBeforeBirthday ? age - 1 : age;
+
+                  if (actualAge < 13) {
+                    return "You must be at least 13 years old";
                   }
 
-                  if (_selectedDate.isAfter(DateTime.now())) {
+                  if (_selectedDate.isAfter(now)) {
                     return t.auth.signUp.validation.dateOfBirthFuture;
                   }
 
@@ -304,8 +351,9 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                   ),
                 ),
                 validator: (value) {
+                  // Phone number is optional
                   if (value == null || value.isEmpty) {
-                    return t.auth.signUp.validation.phoneNumberRequired;
+                    return null;
                   }
                   return null;
                 },
@@ -376,12 +424,12 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Sign Up Button
               authControllerPod.easyWhen(
-                data: (state) => FilledButton(
+                data: (authState) => FilledButton(
                   onPressed: () => {
-                    if (authController.currentState.isLoading)
+                    if (authState.isLoading)
                       {null}
-                    else if (authController.currentState.isAuthenticated)
-                      {context.router.push(const SignInRoute())}
+                    else if (authState.isAuthenticated)
+                      {context.router.replace(const SignInRoute())}
                     else
                       {_handleSignUp()},
                   },
@@ -391,7 +439,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                       borderRadius: Themes.boxRadius,
                     ),
                   ),
-                  child: authControllerPod.isLoading
+                  child: authState.isLoading
                       ? const CircularProgressIndicator(
                           color: Colors.white,
                           constraints: BoxConstraints(
@@ -407,6 +455,8 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                           ),
                         ),
                 ),
+                skipError: true,
+                skipLoadingOnReload: true,
               ),
             ],
           ),

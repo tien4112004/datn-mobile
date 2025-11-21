@@ -2,12 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_in_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +33,6 @@ class _SignInPageState extends State<SignInPage> {
         child: Consumer(
           builder: (context, ref, child) {
             final t = ref.watch(translationsPod);
-            final authControllerPod = ref.watch(authControllerProvider);
 
             return SingleChildScrollView(
               child: Column(
@@ -88,28 +85,24 @@ class _SignInPageState extends State<SignInPage> {
                                 WidgetRef ref,
                                 Widget? child,
                               ) {
-                                final authService = ref.watch(
-                                  authServiceProvider,
+                                final authControllerNotifier = ref.read(
+                                  authControllerProvider.notifier,
                                 );
-                                return authControllerPod.easyWhen(
-                                  data: (authState) {
-                                    return GoogleAuthButton(
-                                      onPressed: () async {
-                                        await authService.signInWithGoogle();
-                                      },
-                                      style: const AuthButtonStyle(
-                                        iconSize: 20.0,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        textStyle: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      text: t.auth.signIn.googleSignInButton,
-                                    );
+
+                                return GoogleAuthButton(
+                                  onPressed: () async {
+                                    await authControllerNotifier
+                                        .signInWithGoogle();
                                   },
+                                  style: const AuthButtonStyle(
+                                    iconSize: 20.0,
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    textStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  text: t.auth.signIn.googleSignInButton,
                                 );
                               },
                         ),

@@ -5,7 +5,6 @@ import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -43,10 +42,26 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final authController = ref.watch(authControllerProvider);
     final authControllerNotifier = ref.watch(authControllerProvider.notifier);
 
     ref.listen(authControllerProvider, (previous, next) {
+      if (next.isLoading) {
+        if (previous?.isLoading != true) {
+          showLoadingOverlay(context);
+        }
+      } else {
+        if (previous?.isLoading == true) {
+          hideOverlay();
+        }
+      }
+
+      if (next is AsyncData) {
+        final authState = next.value;
+        if (authState?.isAuthenticated == true) {
+          context.router.replace(const HomeRoute());
+        }
+      }
+
       if (next is AsyncError) {
         final authState = next.error as AuthState;
         showErrorSnack(
@@ -55,145 +70,124 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
       }
     });
 
-    return authController.easyWhen(
-      data: (authState) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Email Field
+          TextFormField(
+            enabled: !authControllerNotifier.currentState.isLoading,
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              labelText: t.auth.signIn.email,
+              hintText: t.auth.signIn.emailHint,
+              prefixIcon: const Icon(LucideIcons.mail),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
+            ),
+            validator: (value) => _validateEmail(value),
+          ),
+          const SizedBox(height: 16),
+
+          // Password Field
+          TextFormField(
+            enabled: !authControllerNotifier.currentState.isLoading,
+            controller: _passwordController,
+            obscureText: _obscurePassword,
+            decoration: InputDecoration(
+              labelText: t.auth.signIn.password,
+              hintText: t.auth.signIn.passwordHint,
+              prefixIcon: const Icon(LucideIcons.lock),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword ? LucideIcons.eyeOff : LucideIcons.eye,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+              ),
+              border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
+            ),
+            validator: (value) => _validatePassword(value),
+          ),
+          const SizedBox(height: 12),
+
+          // Remember Me & Forgot Password
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Email Field
-              TextFormField(
-                enabled: !authState.isLoading,
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: t.auth.signIn.email,
-                  hintText: t.auth.signIn.emailHint,
-                  prefixIcon: const Icon(LucideIcons.mail),
-                  border: const OutlineInputBorder(
-                    borderRadius: Themes.boxRadius,
-                  ),
-                ),
-                validator: (value) => _validateEmail(value),
-              ),
-              const SizedBox(height: 16),
-
-              // Password Field
-              TextFormField(
-                enabled: !authState.isLoading,
-                controller: _passwordController,
-                obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: t.auth.signIn.password,
-                  hintText: t.auth.signIn.passwordHint,
-                  prefixIcon: const Icon(LucideIcons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword ? LucideIcons.eyeOff : LucideIcons.eye,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                  border: const OutlineInputBorder(
-                    borderRadius: Themes.boxRadius,
-                  ),
-                ),
-                validator: (value) => _validatePassword(value),
-              ),
-              const SizedBox(height: 12),
-
-              // Remember Me & Forgot Password
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _rememberMe,
-                        onChanged: authState.isLoading
-                            ? null
-                            : (value) {
-                                setState(() {
-                                  _rememberMe = value ?? false;
-                                });
-                              },
-                      ),
-                      Text(
-                        t.auth.signIn.rememberMe,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: authState.isLoading
-                              ? colorScheme.primary.withAlpha(50)
-                              : colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: authState.isLoading
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: authControllerNotifier.currentState.isLoading
                         ? null
-                        : _handleForgotPassword,
-                    child: Text(
-                      t.auth.signIn.forgotPassword,
-                      style: TextStyle(
-                        color: authState.isLoading
-                            ? colorScheme.primary.withAlpha(50)
-                            : colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                        : (value) {
+                            setState(() {
+                              _rememberMe = value ?? false;
+                            });
+                          },
+                  ),
+                  Text(
+                    t.auth.signIn.rememberMe,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: authControllerNotifier.currentState.isLoading
+                          ? colorScheme.primary.withAlpha(50)
+                          : colorScheme.primary,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-
-              // Sign In Button
-              FilledButton(
-                onPressed: () => {
-                  if (_formKey.currentState!.validate())
-                    {
-                      if (authState.isLoading)
-                        null
-                      else if (authState.isAuthenticated)
-                        context.router.replace(const HomeRoute())
-                      else
-                        authControllerNotifier.signIn(
-                          _emailController.text,
-                          _passwordController.text,
-                        ),
-                    },
-                },
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: Themes.boxRadius,
+              TextButton(
+                onPressed: authControllerNotifier.currentState.isLoading
+                    ? null
+                    : _handleForgotPassword,
+                child: Text(
+                  t.auth.signIn.forgotPassword,
+                  style: TextStyle(
+                    color: authControllerNotifier.currentState.isLoading
+                        ? colorScheme.primary.withAlpha(50)
+                        : colorScheme.primary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                child: authState.isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                        constraints: BoxConstraints(
-                          minWidth: 24.0,
-                          minHeight: 24.0,
-                        ),
-                      )
-                    : Text(
-                        t.auth.signIn.signInButton,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
               ),
             ],
           ),
-        );
-      },
-      skipError: true,
-      skipLoadingOnReload: true,
+          const SizedBox(height: 24),
+
+          // Sign In Button
+          FilledButton(
+            onPressed: () => {
+              if (_formKey.currentState!.validate())
+                {
+                  if (authControllerNotifier.currentState.isLoading)
+                    null
+                  else if (authControllerNotifier.currentState.isAuthenticated)
+                    context.router.replace(const HomeRoute())
+                  else
+                    authControllerNotifier.signIn(
+                      _emailController.text,
+                      _passwordController.text,
+                    ),
+                },
+            },
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: const RoundedRectangleBorder(
+                borderRadius: Themes.boxRadius,
+              ),
+            ),
+            child: Text(
+              t.auth.signIn.signInButton,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -202,11 +196,9 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     if (value == null || value.isEmpty) {
       return t.auth.signIn.validation.enterEmail;
     }
-    if (!value.startsWith(
-      RegExp(
-        r'/^[a-z0-9]+(?!.*(?:\+{2,}|\-{2,}|\.{2,}))(?:[\.+\-]{0,1}[a-z0-9])*@gmail\.com$/gm',
-      ),
-    )) {
+    if (!RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(value)) {
       return t.auth.signIn.validation.invalidEmail;
     }
     return null;

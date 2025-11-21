@@ -33,6 +33,17 @@ class SettingContentView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
 
+    ref.listen(authControllerProvider, (previous, next) {
+      if (next is AsyncData) {
+        final authState = next.value;
+        if (authState?.isAuthenticated != true) {
+          // If user is not authenticated, navigate to sign-in page
+          final router = ref.read(autorouterProvider);
+          router.replace(const SignInRoute());
+        }
+      }
+    });
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),

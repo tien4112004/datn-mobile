@@ -8,11 +8,6 @@ abstract class AuthService {
 
   Future<void> signUp(CredentialSignupRequest request);
 
-  Future<void> signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-  });
-
   Future<void> signInWithGoogle();
 
   Future<void> handleGoogleSignInCallback(Uri uri);

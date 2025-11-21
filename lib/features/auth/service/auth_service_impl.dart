@@ -208,15 +208,6 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
-  Future<void> signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) {
-    // TODO: implement signUpWithEmailAndPassword
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> signUp(CredentialSignupRequest request) async {
     try {
       final response = await authRemoteSource.signup(request);

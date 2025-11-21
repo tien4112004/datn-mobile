@@ -5,11 +5,12 @@ import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
   AuthState get currentState => state.value!;
-
   late final AuthService _authService;
 
   @override
@@ -18,9 +19,10 @@ class AuthController extends AsyncNotifier<AuthState> {
     _authService = ref.watch(authServiceProvider);
 
     // Initial state
-    state = AsyncValue.data(AuthState(isAuthenticated: false));
+    final initialState = AuthState(isAuthenticated: false);
+    state = AsyncValue.data(initialState);
 
-    return AuthState();
+    return initialState;
   }
 
   Future<void> signIn(String email, String password) async {
@@ -34,10 +36,10 @@ class AuthController extends AsyncNotifier<AuthState> {
       // On success
       state = AsyncValue.data(AuthState(isAuthenticated: true));
     } catch (e) {
-      log('Error during sign-in: $e');
+      debugPrint('Error during sign-in: $e');
       // On error
       if (e is APIException) {
-        log('APIException caught: ${e.errorMessage}');
+        debugPrint('APIException caught: ${e.errorMessage}');
         state = AsyncValue.error(
           AuthState(errorMessage: e.errorMessage),
           StackTrace.current,
@@ -46,7 +48,9 @@ class AuthController extends AsyncNotifier<AuthState> {
       }
 
       state = AsyncValue.error(
-        AuthState(errorMessage: 'An unexpected error occurred during sign-in.'),
+        AuthState(
+          errorMessage: ref.read(translationsPod).auth.signIn.signInError,
+        ),
         StackTrace.current,
       );
     }
@@ -82,7 +86,9 @@ class AuthController extends AsyncNotifier<AuthState> {
     } catch (e) {
       // On error
       state = AsyncValue.error(
-        AuthState(errorMessage: e.toString()),
+        AuthState(
+          errorMessage: ref.read(translationsPod).auth.signUp.signUpError,
+        ),
         StackTrace.current,
       );
     }
@@ -104,7 +110,7 @@ class AuthController extends AsyncNotifier<AuthState> {
       }
       state = AsyncValue.error(
         AuthState(
-          errorMessage: 'An unexpected error occurred during google sign-in.',
+          errorMessage: ref.read(translationsPod).auth.signIn.googleSignInError,
         ),
         StackTrace.current,
       );

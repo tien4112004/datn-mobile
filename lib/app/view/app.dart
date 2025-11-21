@@ -54,10 +54,17 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
     });
   }
 
-  void _handleAuthCallback(Uri uri) {
-    log('Handling auth callback: $uri');
+  Future<void> _handleAuthCallback(Uri uri) async {
+    debugPrint('Handling auth callback: $uri');
     if (uri.host == 'auth-callback') {
-      ref.read(authServiceProvider).handleGoogleSignInCallback(uri);
+      try {
+        await ref.read(authServiceProvider).handleGoogleSignInCallback(uri);
+      } on Exception catch (e, stack) {
+        log('Error handling auth callback: $e', stackTrace: stack);
+        showErrorSnack(
+          child: const Text('Error during authentication callback.'),
+        );
+      }
     }
   }
 

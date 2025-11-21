@@ -1,3 +1,4 @@
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:dio/dio.dart';
 
 // coverage:ignore-file
@@ -31,26 +32,44 @@ Future<void> defaultAPIErrorHandler(
         ),
       );
     case DioExceptionType.badResponse:
-      if (err.response!.statusCode == 404) {
-        handler.resolve(
-          Response(
-            data: {
-              'detail': err.response!.data['message'] ?? 'resource not found',
-            },
-            requestOptions: RequestOptions(path: err.requestOptions.path),
-          ),
-        );
-      } else {
-        handler.resolve(
-          err.response ??
-              Response(
-                data: {
-                  'detail': err.response!.data['message'] ?? 'unknown error',
-                },
-                requestOptions: err.requestOptions,
-              ),
-        );
+      final statusCode = err.response?.statusCode;
+      final data = err.response?.data;
+      String detail = 'unknown error';
+
+      if (data is Map<String, dynamic>) {
+        final errorCode = data['errorCode'];
+        final message = data['message'];
+
+        if (errorCode != null && errorCode is String) {
+          try {
+            final translated = t['errors.$errorCode'];
+            if (translated is String) {
+              detail = translated;
+            } else {
+              detail = message ?? errorCode;
+            }
+          } catch (_) {
+            detail = message ?? errorCode;
+          }
+        } else {
+          detail = message ?? 'unknown error';
+        }
       }
+
+      if (statusCode == 404) {
+        detail = data is Map
+            ? (data['message'] ?? 'resource not found')
+            : 'resource not found';
+      }
+
+      handler.resolve(
+        Response(
+          data: {if (data is Map<String, dynamic>) ...data, 'detail': detail},
+          requestOptions: err.requestOptions,
+          statusCode: statusCode,
+          statusMessage: err.response?.statusMessage,
+        ),
+      );
     case DioExceptionType.cancel:
       handler.resolve(
         Response(

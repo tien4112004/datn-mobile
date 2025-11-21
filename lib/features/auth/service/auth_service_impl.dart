@@ -19,7 +19,7 @@ import 'package:flutter/foundation.dart';
 
 class AuthServiceImpl implements AuthService {
   // With other routes, we can use the Retrofit generated Dio instance
-  // This dio is using for authorize route, which support automaticlly
+  // This dio is using for authorize route, which support automatically
   // follow redirect.
   final Dio dio;
 

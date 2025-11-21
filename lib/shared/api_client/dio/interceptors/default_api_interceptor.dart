@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:datn_mobile/shared/api_client/dio/default_api_error_handler.dart';
 import 'package:flutter/foundation.dart';
@@ -13,23 +12,9 @@ class DefaultAPIInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Add platform-specific headers to identify mobile app
-    options.headers.addAll({
-      'User-Agent': 'DatnMobile/1.0.0 (${Platform.operatingSystem})',
-      'X-App-Platform': Platform.isAndroid
-          ? 'android'
-          : Platform.isIOS
-          ? 'ios'
-          : Platform.operatingSystem,
-      'X-App-Version': '1.0.0',
-      'X-Requested-With': 'com.example.datn_mobile', // Your package name
-    });
-
     // Log headers in debug mode
-    if (kDebugMode) {
-      print('Request Headers: ${options.headers}');
-      print('Request URL: ${options.uri}');
-    }
+    debugPrint('Request Headers: ${options.headers}');
+    debugPrint('Request URL: ${options.uri}');
 
     handler.next(options);
   }

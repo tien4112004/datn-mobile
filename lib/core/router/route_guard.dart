@@ -9,7 +9,10 @@ class RouteGuard extends AutoRouteGuard {
   RouteGuard(this.secureStorage);
 
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) async {
+  Future<void> onNavigation(
+    NavigationResolver resolver,
+    StackRouter router,
+  ) async {
     final isAuthenticated =
         await secureStorage.read(key: R.ACCESS_TOKEN_KEY) != null;
 

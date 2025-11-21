@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_up_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +19,11 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  void _handleGoogleSignUp() {
+  void _handleGoogleSignUp(Translations t) {
     // TODO: Implement Google Sign In logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Google Sign In button pressed')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.auth.signIn.googleSignInPressed)));
   }
 
   void _navigateToSignIn() {
@@ -80,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                       // Google Sign In Button
                       GoogleAuthButton(
-                        onPressed: _handleGoogleSignUp,
+                        onPressed: () => _handleGoogleSignUp(t),
                         style: const AuthButtonStyle(
                           iconSize: 20.0,
                           padding: EdgeInsets.symmetric(vertical: 16),

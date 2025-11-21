@@ -32,9 +32,13 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
 
   void _handleForgotPassword() {
     // TODO: Implement forgot password logic
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Forgot Password pressed')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          ref.read(translationsPod).auth.signIn.forgotPasswordPressed,
+        ),
+      ),
+    );
   }
 
   @override
@@ -65,7 +69,7 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
       if (next is AsyncError) {
         final authState = next.error as AuthState;
         showErrorSnack(
-          child: Text(authState.errorMessage ?? 'An unknown error occurred'),
+          child: Text(authState.errorMessage ?? t.errors.unknown_error),
         );
       }
     });

@@ -297,7 +297,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
                   ),
                 ),
                 validator: (value) {
-                  // Date of Birth is optional
                   final now = DateTime.now();
                   final age = now.year - _selectedDate.year;
                   final isBeforeBirthday =
@@ -427,11 +426,11 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
                 data: (authState) => FilledButton(
                   onPressed: () => {
                     if (authState.isLoading)
-                      {null}
+                      null
                     else if (authState.isAuthenticated)
-                      {context.router.replace(const SignInRoute())}
+                      context.router.replace(const SignInRoute())
                     else
-                      {_handleSignUp()},
+                      _handleSignUp(),
                   },
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

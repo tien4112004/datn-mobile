@@ -1,11 +1,7 @@
-import 'dart:developer';
-
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
@@ -64,37 +60,17 @@ class AuthController extends AsyncNotifier<AuthState> {
 
   Future<void> signInWithGoogle() async {
     state = const AsyncValue.loading();
-    try {
+    state = await AsyncValue.guard(() async {
       await _authService.signInWithGoogle();
-      state = AsyncValue.data(AuthState(isAuthenticated: true));
-    } catch (e) {
-      log('Error during google sign-in: $e');
-      if (e is APIException) {
-        state = AsyncValue.error(
-          AuthState(errorMessage: e.errorMessage),
-          StackTrace.current,
-        );
-        return;
-      }
-      state = AsyncValue.error(
-        AuthState(
-          errorMessage: ref.read(translationsPod).auth.signIn.googleSignInError,
-        ),
-        StackTrace.current,
-      );
-    }
+      return AuthState(isAuthenticated: true);
+    });
   }
 
   Future<void> signOut() async {
     state = const AsyncValue.loading();
-    try {
+    state = await AsyncValue.guard(() async {
       await _authService.signOut();
-      state = AsyncValue.data(AuthState(isAuthenticated: false));
-    } catch (e) {
-      state = AsyncValue.error(
-        AuthState(errorMessage: e.toString()),
-        StackTrace.current,
-      );
-    }
+      return AuthState(isAuthenticated: false);
+    });
   }
 }

@@ -35,7 +35,7 @@ final dioPod = Provider.autoDispose<Dio>((ref) {
   }
 
   dio.interceptors.addAll([
-    DefaultAPIInterceptor(dio: dio),
+    DefaultAPIInterceptor(dio: dio, ref: ref),
     AuthorAPIInterceptor(dio: dio, secureStorage: secureStorage),
     // RetryInterceptor(
     //   dio: dio,

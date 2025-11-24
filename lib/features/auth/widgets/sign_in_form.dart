@@ -1,12 +1,7 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 // ignore: unused_import
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
-import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +14,7 @@ class SignInForm extends ConsumerStatefulWidget {
   ConsumerState<SignInForm> createState() => _SignInFormState();
 }
 
-class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
+class _SignInFormState extends ConsumerState<SignInForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -51,27 +46,6 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     final t = ref.watch(translationsPod);
     final authControllerNotifier = ref.watch(authControllerPod.notifier);
     final authController = ref.watch(authControllerPod);
-
-    ref.listen(authControllerPod, (previous, next) {
-      next.when(
-        data: (state) {
-          ref.watch(loadingOverlayPod.notifier).state = false;
-          if (state.isAuthenticated) {
-            // Navigate to the verification page
-            context.router.replace(const HomeRoute());
-          }
-        },
-        loading: () {
-          debugPrint('Auth Loading...');
-          ref.watch(loadingOverlayPod.notifier).state = true;
-        },
-        error: (error, stackTrace) {
-          ref.watch(loadingOverlayPod.notifier).state = false;
-          final exception = next.error as APIException;
-          showErrorSnack(child: Text(exception.errorMessage));
-        },
-      );
-    });
 
     return Form(
       key: _formKey,

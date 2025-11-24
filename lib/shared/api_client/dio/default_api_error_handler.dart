@@ -7,8 +7,9 @@ import 'package:dio/dio.dart';
 Future<void> defaultAPIErrorHandler(
   DioException err,
   ErrorInterceptorHandler handler,
-  Dio dio,
-) async {
+  Dio dio, {
+  required Translations translations,
+}) async {
   switch (err.type) {
     case DioExceptionType.connectionTimeout:
       handler.resolve(
@@ -42,7 +43,7 @@ Future<void> defaultAPIErrorHandler(
 
         if (errorCode != null && errorCode is String) {
           try {
-            final translated = t['errors.$errorCode'];
+            final translated = translations['errors.$errorCode'];
             if (translated is String) {
               detail = translated;
             } else {
@@ -56,15 +57,9 @@ Future<void> defaultAPIErrorHandler(
         }
       }
 
-      if (statusCode == 404) {
-        detail = data is Map
-            ? (data['message'] ?? 'resource not found')
-            : 'resource not found';
-      }
-
       handler.resolve(
         Response(
-          data: {if (data is Map<String, dynamic>) ...data, 'detail': detail},
+          data: {if (data is Map<String, dynamic>) ...data, 'message': detail},
           requestOptions: err.requestOptions,
           statusCode: statusCode,
           statusMessage: err.response?.statusMessage,

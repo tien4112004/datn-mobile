@@ -1,10 +1,5 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
-import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +15,7 @@ class SignUpForm extends ConsumerStatefulWidget {
   ConsumerState<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
+class _SignUpFormState extends ConsumerState<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -93,26 +88,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
-
-        ref.listen(authControllerPod, (previous, next) {
-          next.when(
-            data: (state) {
-              ref.watch(loadingOverlayPod.notifier).state = false;
-              if (state.isSignedUp) {
-                // Navigate to the verification page
-                context.router.replace(const SignInRoute());
-              }
-            },
-            loading: () {
-              ref.watch(loadingOverlayPod.notifier).state = true;
-            },
-            error: (error, stackTrace) {
-              ref.watch(loadingOverlayPod.notifier).state = false;
-              final exception = next.error as APIException;
-              showErrorSnack(child: Text(exception.errorMessage));
-            },
-          );
-        });
 
         return Form(
           key: _formKey,

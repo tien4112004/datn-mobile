@@ -57,6 +57,7 @@ class AuthServiceImpl implements AuthService {
       }
     } catch (e) {
       if (e is APIException) {
+        debugPrint('Sign-in error: ${e.errorMessage}');
         rethrow;
       }
       // Wrap unexpected errors

@@ -5,6 +5,9 @@ import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_in_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
+import 'package:datn_mobile/shared/exception/base_exception.dart';
+import 'package:datn_mobile/shared/helper/global_helper.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -18,7 +21,7 @@ class SignInPage extends StatefulWidget {
   State<SignInPage> createState() => _SignInPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignInPageState extends State<SignInPage> with GlobalHelper {
   void _navigateToSignUp() {
     context.router.replace(const SignUpRoute());
   }
@@ -33,6 +36,27 @@ class _SignInPageState extends State<SignInPage> {
         child: Consumer(
           builder: (context, ref, child) {
             final t = ref.watch(translationsPod);
+
+            ref.listen(authControllerPod, (previous, next) {
+              next.when(
+                data: (state) {
+                  ref.watch(loadingOverlayPod.notifier).state = false;
+                  if (state.isAuthenticated) {
+                    // Navigate to the verification page
+                    context.router.replace(const HomeRoute());
+                  }
+                },
+                loading: () {
+                  debugPrint('Auth Loading...');
+                  ref.watch(loadingOverlayPod.notifier).state = true;
+                },
+                error: (error, stackTrace) {
+                  ref.watch(loadingOverlayPod.notifier).state = false;
+                  final exception = next.error as APIException;
+                  showErrorSnack(child: Text(exception.errorMessage));
+                },
+              );
+            });
 
             return SingleChildScrollView(
               child: Column(

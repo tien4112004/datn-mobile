@@ -33,7 +33,7 @@ class SettingContentView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
 
-    ref.listen(authControllerProvider, (previous, next) {
+    ref.listen(authControllerPod, (previous, next) {
       if (next is AsyncData) {
         final authState = next.value;
         if (authState?.isAuthenticated != true) {
@@ -140,7 +140,7 @@ class SettingContentView extends ConsumerWidget {
                   builder: (context, ref, child) {
                     return ElevatedButton(
                       onPressed: () {
-                        ref.read(authControllerProvider.notifier).signOut();
+                        ref.read(authControllerPod.notifier).signOut();
                       },
                       child: Text(
                         t.settings.logOut,

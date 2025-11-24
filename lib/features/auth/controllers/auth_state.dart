@@ -1,11 +1,11 @@
 class AuthState {
-  final bool isLoading;
   final bool isAuthenticated;
+  final bool isSignedUp;
   final String? errorMessage;
 
   AuthState({
-    this.isLoading = false,
     this.isAuthenticated = false,
+    this.isSignedUp = false,
     this.errorMessage,
   });
 }

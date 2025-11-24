@@ -5,7 +5,7 @@ import 'package:datn_mobile/features/auth/service/auth_service_impl.dart';
 import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final authServiceProvider = Provider<AuthService>((ref) {
+final authServicePod = Provider<AuthService>((ref) {
   return AuthServiceImpl(
     ref.watch(authRemoteSourcePod),
     ref.watch(secureStoragePod),

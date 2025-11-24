@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +46,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
       }
 
       ref
-          .read(authControllerProvider.notifier)
+          .read(authControllerPod.notifier)
           .signUp(
             firstName: _firstNameController.text,
             lastName: _lastNameController.text,
@@ -93,27 +93,25 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
-        final authControllerPod = ref.watch(authControllerProvider);
 
-        ref.listen(authControllerProvider, (previous, next) {
-          if (next.isLoading) {
-            if (previous?.isLoading != true) {
-              showLoadingOverlay(context);
-            }
-          } else {
-            if (previous?.isLoading == true) {
-              hideOverlay();
-            }
-          }
-
-          if (next is AsyncError) {
-            final authState = next.error as AuthState;
-            showErrorSnack(
-              child: Text(
-                authState.errorMessage ?? 'An unknown error occurred',
-              ),
-            );
-          }
+        ref.listen(authControllerPod, (previous, next) {
+          next.when(
+            data: (state) {
+              ref.watch(loadingOverlayPod.notifier).state = false;
+              if (state.isSignedUp) {
+                // Navigate to the verification page
+                context.router.replace(const SignInRoute());
+              }
+            },
+            loading: () {
+              ref.watch(loadingOverlayPod.notifier).state = true;
+            },
+            error: (error, stackTrace) {
+              ref.watch(loadingOverlayPod.notifier).state = false;
+              final exception = next.error as APIException;
+              showErrorSnack(child: Text(exception.errorMessage));
+            },
+          );
         });
 
         return Form(
@@ -125,7 +123,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      enabled: !authControllerPod.isLoading,
                       controller: _firstNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -147,7 +144,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
                   const SizedBox(width: 16),
                   Expanded(
                     child: TextFormField(
-                      enabled: !authControllerPod.isLoading,
                       controller: _lastNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
@@ -172,7 +168,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
 
               // Email Field
               TextFormField(
-                enabled: !authControllerPod.isLoading,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -202,7 +197,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
 
               // Password Field
               TextFormField(
-                enabled: !authControllerPod.isLoading,
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
@@ -237,7 +231,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
 
               // Confirm Password Field
               TextFormField(
-                enabled: !authControllerPod.isLoading,
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
@@ -274,7 +267,6 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
               const SizedBox(height: 16),
 
               TextFormField(
-                enabled: !authControllerPod.isLoading,
                 readOnly: true, // Prevents manual keyboard input
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
@@ -422,40 +414,21 @@ class _SignUpFormState extends ConsumerState<SignUpForm> with GlobalHelper {
               const SizedBox(height: 24),
 
               // Sign Up Button
-              authControllerPod.easyWhen(
-                data: (authState) => FilledButton(
-                  onPressed: () => {
-                    if (authState.isLoading)
-                      null
-                    else if (authState.isAuthenticated)
-                      context.router.replace(const SignInRoute())
-                    else
-                      _handleSignUp(),
-                  },
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: Themes.boxRadius,
-                    ),
+              FilledButton(
+                onPressed: () => _handleSignUp(),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: Themes.boxRadius,
                   ),
-                  child: authState.isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          constraints: BoxConstraints(
-                            minWidth: 24.0,
-                            minHeight: 24.0,
-                          ),
-                        )
-                      : Text(
-                          t.auth.signUp.signUpButton,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                 ),
-                skipError: true,
-                skipLoadingOnReload: true,
+                child: Text(
+                  t.auth.signUp.signUpButton,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),

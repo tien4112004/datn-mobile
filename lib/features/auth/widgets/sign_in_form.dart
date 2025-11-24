@@ -2,8 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+// ignore: unused_import
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,32 +49,28 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final authControllerNotifier = ref.watch(authControllerProvider.notifier);
+    final authControllerNotifier = ref.watch(authControllerPod.notifier);
+    final authController = ref.watch(authControllerPod);
 
-    ref.listen(authControllerProvider, (previous, next) {
-      if (next.isLoading) {
-        if (previous?.isLoading != true) {
-          showLoadingOverlay(context);
-        }
-      } else {
-        if (previous?.isLoading == true) {
-          hideOverlay();
-        }
-      }
-
-      if (next is AsyncData) {
-        final authState = next.value;
-        if (authState?.isAuthenticated == true) {
-          context.router.replace(const HomeRoute());
-        }
-      }
-
-      if (next is AsyncError) {
-        final authState = next.error as AuthState;
-        showErrorSnack(
-          child: Text(authState.errorMessage ?? t.errors.unknown_error),
-        );
-      }
+    ref.listen(authControllerPod, (previous, next) {
+      next.when(
+        data: (state) {
+          ref.watch(loadingOverlayPod.notifier).state = false;
+          if (state.isAuthenticated) {
+            // Navigate to the verification page
+            context.router.replace(const HomeRoute());
+          }
+        },
+        loading: () {
+          debugPrint('Auth Loading...');
+          ref.watch(loadingOverlayPod.notifier).state = true;
+        },
+        error: (error, stackTrace) {
+          ref.watch(loadingOverlayPod.notifier).state = false;
+          final exception = next.error as APIException;
+          showErrorSnack(child: Text(exception.errorMessage));
+        },
+      );
     });
 
     return Form(
@@ -81,7 +80,6 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
         children: [
           // Email Field
           TextFormField(
-            enabled: !authControllerNotifier.currentState.isLoading,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
@@ -96,7 +94,6 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
 
           // Password Field
           TextFormField(
-            enabled: !authControllerNotifier.currentState.isLoading,
             controller: _passwordController,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
@@ -127,18 +124,16 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                 children: [
                   Checkbox(
                     value: _rememberMe,
-                    onChanged: authControllerNotifier.currentState.isLoading
-                        ? null
-                        : (value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value ?? false;
+                      });
+                    },
                   ),
                   Text(
                     t.auth.signIn.rememberMe,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: authControllerNotifier.currentState.isLoading
+                      color: authController.isLoading
                           ? colorScheme.primary.withAlpha(50)
                           : colorScheme.primary,
                     ),
@@ -146,13 +141,11 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
                 ],
               ),
               TextButton(
-                onPressed: authControllerNotifier.currentState.isLoading
-                    ? null
-                    : _handleForgotPassword,
+                onPressed: _handleForgotPassword,
                 child: Text(
                   t.auth.signIn.forgotPassword,
                   style: TextStyle(
-                    color: authControllerNotifier.currentState.isLoading
+                    color: authController.isLoading
                         ? colorScheme.primary.withAlpha(50)
                         : colorScheme.primary,
                     fontWeight: FontWeight.w600,
@@ -167,17 +160,10 @@ class _SignInFormState extends ConsumerState<SignInForm> with GlobalHelper {
           FilledButton(
             onPressed: () => {
               if (_formKey.currentState!.validate())
-                {
-                  if (authControllerNotifier.currentState.isLoading)
-                    null
-                  else if (authControllerNotifier.currentState.isAuthenticated)
-                    context.router.replace(const HomeRoute())
-                  else
-                    authControllerNotifier.signIn(
-                      _emailController.text,
-                      _passwordController.text,
-                    ),
-                },
+                authControllerNotifier.signIn(
+                  _emailController.text,
+                  _passwordController.text,
+                ),
             },
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),

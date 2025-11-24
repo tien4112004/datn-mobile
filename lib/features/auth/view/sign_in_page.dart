@@ -86,7 +86,7 @@ class _SignInPageState extends State<SignInPage> {
                                 Widget? child,
                               ) {
                                 final authControllerNotifier = ref.read(
-                                  authControllerProvider.notifier,
+                                  authControllerPod.notifier,
                                 );
 
                                 return GoogleAuthButton(

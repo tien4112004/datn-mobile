@@ -6,17 +6,15 @@ import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
-  AuthState get currentState => state.value!;
   late final AuthService _authService;
 
   @override
   Future<AuthState> build() async {
     // Initialize the auth service
-    _authService = ref.watch(authServiceProvider);
+    _authService = ref.watch(authServicePod);
 
     // Initial state
     final initialState = AuthState(isAuthenticated: false);
@@ -27,33 +25,13 @@ class AuthController extends AsyncNotifier<AuthState> {
 
   Future<void> signIn(String email, String password) async {
     state = const AsyncValue.loading();
-    try {
-      // Simulate sign-in logic
+    state = await AsyncValue.guard(() async {
       await _authService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // On success
-      state = AsyncValue.data(AuthState(isAuthenticated: true));
-    } catch (e) {
-      debugPrint('Error during sign-in: $e');
-      // On error
-      if (e is APIException) {
-        debugPrint('APIException caught: ${e.errorMessage}');
-        state = AsyncValue.error(
-          AuthState(errorMessage: e.errorMessage),
-          StackTrace.current,
-        );
-        return;
-      }
-
-      state = AsyncValue.error(
-        AuthState(
-          errorMessage: ref.read(translationsPod).auth.signIn.signInError,
-        ),
-        StackTrace.current,
-      );
-    }
+      return AuthState(isAuthenticated: true);
+    });
   }
 
   Future<void> signUp({
@@ -65,8 +43,7 @@ class AuthController extends AsyncNotifier<AuthState> {
     String? phoneNumber,
   }) async {
     state = const AsyncValue.loading();
-    try {
-      // Simulate sign-up logic
+    state = await AsyncValue.guard(() async {
       await _authService.signUp(
         CredentialSignupRequest(
           firstName: firstName,
@@ -81,17 +58,8 @@ class AuthController extends AsyncNotifier<AuthState> {
           ),
         ),
       );
-      // On success
-      state = AsyncValue.data(AuthState(isAuthenticated: true));
-    } catch (e) {
-      // On error
-      state = AsyncValue.error(
-        AuthState(
-          errorMessage: ref.read(translationsPod).auth.signUp.signUpError,
-        ),
-        StackTrace.current,
-      );
-    }
+      return AuthState(isSignedUp: true);
+    });
   }
 
   Future<void> signInWithGoogle() async {

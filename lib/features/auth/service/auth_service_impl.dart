@@ -159,25 +159,22 @@ class AuthServiceImpl implements AuthService {
   @override
   Future<void> signOut() async {
     try {
-      // Delete local tokens first
-      await secureStorage.delete(key: R.ACCESS_TOKEN_KEY);
-      await secureStorage.delete(key: R.REFRESH_TOKEN_KEY);
-
       // Call remote logout
-      final response = await authRemoteSource.logout();
+      final response = await dio.post('${Config.baseUrl}/auth/logout');
 
-      // Validate response
-      if (!response.success) {
+      if (response.statusCode != HttpStatus.noContent) {
         throw APIException(
-          code: response.code,
-          errorCode: response.errorCode,
-          errorMessage: response.detail ?? 'Logout failed',
+          code: response.statusCode ?? 500,
+          errorMessage: 'Failed to logout from server, unexpected status code',
+          errorCode: 'LOGOUT_ERROR',
         );
       }
 
-      if (kDebugMode) {
-        log('Sign-out successful');
-      }
+      debugPrint('Sign-out successful');
+
+      // Delete local tokens only if remote logout is successful
+      await secureStorage.delete(key: R.ACCESS_TOKEN_KEY);
+      await secureStorage.delete(key: R.REFRESH_TOKEN_KEY);
     } catch (e) {
       if (e is APIException) {
         rethrow;

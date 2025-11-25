@@ -32,19 +32,34 @@ class ServerResponseDto<T> {
 
   /// Factory constructor for JSON deserialization
   factory ServerResponseDto.fromJson(
-    Map<String, dynamic> json,
+    Map<String, dynamic>? json,
     T Function(Object? json) fromJsonT,
-  ) => ServerResponseDto<T>(
-    success: json['success'] as bool? ?? true,
-    code: (json['code'] as num?)?.toInt() ?? 200,
-    timestamp: json['timestamp'] as String?,
-    data: _$nullableGenericFromJson(json['data'], fromJsonT),
-    detail: json['message'] as String?,
-    errorCode: json['errorCode'] as String?,
-    pagination: json['pagination'] == null
-        ? null
-        : PaginationDto.fromJson(json['pagination'] as Map<String, dynamic>),
-  );
+  ) {
+    // Assume that Server response with 204 no content
+    if (json == null) {
+      return ServerResponseDto<T>(
+        success: true,
+        code: 204,
+        timestamp: null,
+        data: null,
+        detail: 'No Content',
+        errorCode: null,
+        pagination: null,
+      );
+    }
+
+    return ServerResponseDto<T>(
+      success: json['success'] as bool? ?? true,
+      code: (json['code'] as num?)?.toInt() ?? 200,
+      timestamp: json['timestamp'] as String?,
+      data: _$nullableGenericFromJson(json['data'], fromJsonT),
+      detail: json['message'] as String?,
+      errorCode: json['errorCode'] as String?,
+      pagination: json['pagination'] == null
+          ? null
+          : PaginationDto.fromJson(json['pagination'] as Map<String, dynamic>),
+    );
+  }
 
   /// Method for JSON serialization
   Map<String, dynamic> toJson(Object? Function(T value) toJsonT) =>

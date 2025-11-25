@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 // coverage:ignore-file
 ///This one is author interceptor which includes default api
@@ -19,16 +18,26 @@ class AuthorAPIInterceptor extends Interceptor {
   ) async {
     try {
       final accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
+      debugPrint('Access token: $accessToken');
+
+      final refreshToken = await secureStorage.read(key: R.REFRESH_TOKEN_KEY);
+      debugPrint('Refresh token: $refreshToken');
+
+      String cookies =
+          '${R.ACCESS_TOKEN_KEY}=${accessToken ?? ''}; ${R.REFRESH_TOKEN_KEY}=${refreshToken ?? ''}';
 
       if (accessToken != null && accessToken.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $accessToken';
-        log('AccessToken in AuthorAPIInterceptor: $accessToken');
+        options.headers['Cookie'] = cookies;
       } else {
-        log('No access token found in secure storage');
+        debugPrint('No access token found in secure storage');
       }
     } catch (e) {
-      log('Error reading access token: $e');
+      debugPrint('Error reading access token: $e');
     }
+
+    debugPrint('Request Options: ${options.method} ${options.path}');
+    debugPrint('Request Headers: ${options.headers}');
 
     handler.next(options);
   }

@@ -29,6 +29,9 @@ abstract class AuthRemoteSource {
     @Body() CredentialSignupRequest body,
   );
 
+  @Deprecated(
+    "This endpoint is deprecated, because Retrofit cannot handle 204 No Content",
+  )
   @POST("/auth/logout")
   Future<ServerResponseDto<void>> logout();
 }

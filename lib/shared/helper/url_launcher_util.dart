@@ -4,7 +4,7 @@ class UrlLauncherUtil {
   static Future<void> launchExternalUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     } else {
       throw Exception('Could not launch $url');
     }

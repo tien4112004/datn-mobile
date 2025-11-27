@@ -1,4 +1,4 @@
-.PHONY: help init clean get build-runner slang slang-clean analyze format test run-dev run-prod build-apk build-ios hooks
+.PHONY: help init clean get build-runner slang slang-clean analyze format test run-dev run-prod build-apk build-ios hooks add
 
 # Default target
 help:
@@ -77,3 +77,11 @@ build-ios:
 hooks:
 	@dart pub global activate flutter_pre_commit
 	@flutter_pre_commit install
+
+
+add:
+ifdef pub
+	@flutter pub add $(pub)
+else
+	@echo "Usage: make add pub=<package>"
+endif

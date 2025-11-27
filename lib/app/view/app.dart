@@ -1,5 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:app_links/app_links.dart';
+import 'package:datn_mobile/features/auth/service/service_provider.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,90 +33,132 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> with GlobalHelper {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _initDeepLinks() async {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      _handleAuthCallback(uri);
+    });
+  }
+
+  Future<void> _handleAuthCallback(Uri uri) async {
+    debugPrint('Handling auth callback: $uri');
+    if (uri.host == 'auth-callback') {
+      try {
+        await ref.read(authServicePod).handleGoogleSignInCallback(uri);
+      } on Exception catch (e, stack) {
+        log('Error handling auth callback: $e', stackTrace: stack);
+        showErrorSnack(
+          child: const Text('Error during authentication callback.'),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final approuter = ref.watch(autorouterProvider);
     final currentTheme = ref.watch(themeControllerProvider);
     final translations = ref.watch(translationsPod);
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      //TODO: change app name
-      title: 'AI Primary',
-      theme: Themes.theme,
-      darkTheme: Themes.darkTheme,
-      themeMode: currentTheme,
-      routerConfig: approuter.config(
-        placeholder: (context) => const SizedBox.shrink(),
-        navigatorObservers: () => [RouterObserver()],
-      ),
-      locale: translations.$meta.locale.flutterLocale,
-      supportedLocales: AppLocaleUtils.supportedLocales,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      builder: (context, child) {
-        if (mounted) {
-          ///Used for responsive design
-          ///Here you can define breakpoint and how the responsive should work
-          child = ResponsiveBreakPointWrapper(
-            firstFrameWidget: Container(color: Colors.white),
-            child: child!,
-          );
+    final isLoading = ref.watch(loadingOverlayPod);
+    debugPrint('Loading overlay state: $isLoading');
 
-          /// Add support for maximum text scale according to changes in
-          /// accessibilty in sytem settings
-          final mediaquery = MediaQuery.of(context);
-          child = MediaQuery(
-            data: mediaquery.copyWith(
-              textScaler: TextScaler.linear(
-                mediaquery.textScaleFactor.clamp(0, 1),
-              ),
-            ),
-            child: child,
-          );
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'AI Primary',
+          theme: Themes.theme,
+          darkTheme: Themes.darkTheme,
+          themeMode: currentTheme,
+          routerConfig: approuter.config(
+            placeholder: (context) => const SizedBox.shrink(),
+            navigatorObservers: () => [RouterObserver()],
+          ),
+          locale: translations.$meta.locale.flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          builder: (context, child) {
+            if (mounted) {
+              child = ResponsiveBreakPointWrapper(
+                firstFrameWidget: Container(color: Colors.white),
+                child: child!,
+              );
 
-          /// Added annotate region by default to switch according to theme which
-          /// customize the system ui veray style
-          child = AnnotatedRegion<SystemUiOverlayStyle>(
-            value: currentTheme == ThemeMode.dark
-                ? SystemUiOverlayStyle.light.copyWith(
-                    statusBarColor: Colors.white.withOpacity(0.4),
-                    systemNavigationBarColor: Colors.black,
-                    systemNavigationBarDividerColor: Colors.black,
-                    systemNavigationBarIconBrightness: Brightness.dark,
-                  )
-                : currentTheme == ThemeMode.light
-                ? SystemUiOverlayStyle.dark.copyWith(
-                    statusBarColor: Colors.white.withOpacity(0.4),
-                    systemNavigationBarColor: Colors.grey,
-                    systemNavigationBarDividerColor: Colors.grey,
-                    systemNavigationBarIconBrightness: Brightness.light,
-                  )
-                : SystemUiOverlayStyle.dark.copyWith(
-                    statusBarColor: Colors.white.withOpacity(0.4),
-                    systemNavigationBarColor: Colors.grey,
-                    systemNavigationBarDividerColor: Colors.grey,
-                    systemNavigationBarIconBrightness: Brightness.light,
+              final mediaquery = MediaQuery.of(context);
+              child = MediaQuery(
+                data: mediaquery.copyWith(
+                  textScaler: TextScaler.linear(
+                    mediaquery.textScaleFactor.clamp(0, 1),
                   ),
-            child: GestureDetector(
-              child: child,
-              onTap: () {
-                hideKeyboard();
-              },
-            ),
-          );
-        } else {
-          child = const SizedBox.shrink();
-        }
+                ),
+                child: child,
+              );
 
-        ///Add toast support for flash
-        return Toast(
-          navigatorKey: navigatorKey,
-          child: child,
-        ).monitorConnection();
-      },
+              child = AnnotatedRegion<SystemUiOverlayStyle>(
+                value: currentTheme == ThemeMode.dark
+                    ? SystemUiOverlayStyle.light.copyWith(
+                        statusBarColor: Colors.white.withOpacity(0.4),
+                        systemNavigationBarColor: Colors.black,
+                        systemNavigationBarDividerColor: Colors.black,
+                        systemNavigationBarIconBrightness: Brightness.dark,
+                      )
+                    : currentTheme == ThemeMode.light
+                    ? SystemUiOverlayStyle.dark.copyWith(
+                        statusBarColor: Colors.white.withOpacity(0.4),
+                        systemNavigationBarColor: Colors.grey,
+                        systemNavigationBarDividerColor: Colors.grey,
+                        systemNavigationBarIconBrightness: Brightness.light,
+                      )
+                    : SystemUiOverlayStyle.dark.copyWith(
+                        statusBarColor: Colors.white.withOpacity(0.4),
+                        systemNavigationBarColor: Colors.grey,
+                        systemNavigationBarDividerColor: Colors.grey,
+                        systemNavigationBarIconBrightness: Brightness.light,
+                      ),
+                child: GestureDetector(
+                  child: child,
+                  onTap: () {
+                    hideKeyboard();
+                  },
+                ),
+              );
+            } else {
+              child = const SizedBox.shrink();
+            }
+
+            return Toast(
+              navigatorKey: navigatorKey,
+              child: child,
+            ).monitorConnection();
+          },
+        ),
+
+        if (isLoading)
+          Container(
+            color: Colors.black26,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+      ],
     );
   }
 }

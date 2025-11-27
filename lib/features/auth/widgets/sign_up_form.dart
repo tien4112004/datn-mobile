@@ -1,4 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,14 +8,14 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 
-class SignUpForm extends StatefulWidget {
+class SignUpForm extends ConsumerStatefulWidget {
   const SignUpForm({super.key});
 
   @override
-  State<SignUpForm> createState() => _SignUpFormState();
+  ConsumerState<SignUpForm> createState() => _SignUpFormState();
 }
 
-class _SignUpFormState extends State<SignUpForm> {
+class _SignUpFormState extends ConsumerState<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -26,6 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
   DateTime _selectedDate = DateTime.now();
+  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
 
   String? _termsErrorText;
 
@@ -38,10 +40,18 @@ class _SignUpFormState extends State<SignUpForm> {
         return;
       }
 
-      // TODO: Implement sign up logic
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Sign Up button pressed')));
+      ref
+          .read(authControllerPod.notifier)
+          .signUp(
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            email: _emailController.text,
+            password: _passwordController.text,
+            dateOfBirth: _selectedDate,
+            phoneNumber: _phoneNumber.phoneNumber?.isNotEmpty == true
+                ? _phoneNumber.phoneNumber
+                : null,
+          );
     }
   }
 
@@ -147,7 +157,12 @@ class _SignUpFormState extends State<SignUpForm> {
                   if (value == null || value.isEmpty) {
                     return t.auth.signUp.validation.enterEmail;
                   }
-                  if (!value.contains('@')) {
+                  // Simple email validation: contains @ and no invalid special characters
+                  // Allowing alphanumeric, dots, underscores, and hyphens
+                  final emailRegex = RegExp(
+                    r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                  );
+                  if (!emailRegex.hasMatch(value)) {
                     return t.auth.signUp.validation.invalidEmail;
                   }
                   return null;
@@ -239,13 +254,30 @@ class _SignUpFormState extends State<SignUpForm> {
                   border: const OutlineInputBorder(
                     borderRadius: Themes.boxRadius,
                   ),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _selectedDate = DateTime.now();
+                      });
+                    },
+                  ),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return t.auth.signUp.validation.selectDateOfBirth;
+                  final now = DateTime.now();
+                  final age = now.year - _selectedDate.year;
+                  final isBeforeBirthday =
+                      now.month < _selectedDate.month ||
+                      (now.month == _selectedDate.month &&
+                          now.day < _selectedDate.day);
+
+                  final actualAge = isBeforeBirthday ? age - 1 : age;
+
+                  if (actualAge < 13) {
+                    return "You must be at least 13 years old";
                   }
 
-                  if (_selectedDate.isAfter(DateTime.now())) {
+                  if (_selectedDate.isAfter(now)) {
                     return t.auth.signUp.validation.dateOfBirthFuture;
                   }
 
@@ -258,7 +290,9 @@ class _SignUpFormState extends State<SignUpForm> {
               // Phone Number Field
               InternationalPhoneNumberInput(
                 onInputChanged: (PhoneNumber number) {
-                  setState(() {});
+                  setState(() {
+                    _phoneNumber = number;
+                  });
                 },
                 selectorConfig: const SelectorConfig(
                   selectorType: PhoneInputSelectorType.DROPDOWN,
@@ -283,8 +317,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                 ),
                 validator: (value) {
+                  // Phone number is optional
                   if (value == null || value.isEmpty) {
-                    return t.auth.signUp.validation.phoneNumberRequired;
+                    return null;
                   }
                   return null;
                 },
@@ -355,7 +390,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
               // Sign Up Button
               FilledButton(
-                onPressed: _handleSignUp,
+                onPressed: () => _handleSignUp(),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: const RoundedRectangleBorder(

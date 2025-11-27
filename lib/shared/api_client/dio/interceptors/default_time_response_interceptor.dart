@@ -32,7 +32,7 @@ class TimeResponseInterceptor extends Interceptor {
       stopwatch.elapsed,
       tersity: DurationTersity.millisecond,
     );
-    talker.log('\x1B[34mError Response time 😇 : $duration\x1B[0m');
+    talker.log('\x1B[34mError Response time: $duration\x1B[0m');
 
     super.onError(err, handler);
   }

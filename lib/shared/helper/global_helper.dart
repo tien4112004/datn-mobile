@@ -73,6 +73,16 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
     );
   }
 
+  void showLoadingOverlay(BuildContext context) {
+    showCustomOverlay(
+      context: context,
+      builder: (context) => const ColoredBox(
+        color: Colors.black54,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
   set updateProgress(double value) {
     _animationController?.value = value;
   }

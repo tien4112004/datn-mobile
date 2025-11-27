@@ -1,6 +1,8 @@
+import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'server_reponse_dto.g.dart';
+part 'server_response_ext.dart';
 
 @JsonSerializable(genericArgumentFactories: true, includeIfNull: false)
 class ServerResponseDto<T> {
@@ -14,7 +16,7 @@ class ServerResponseDto<T> {
   final String? timestamp;
 
   final T? data;
-  final String? message;
+  final String? detail;
   final String? errorCode;
   final PaginationDto? pagination;
 
@@ -23,16 +25,41 @@ class ServerResponseDto<T> {
     this.code = 200,
     this.timestamp,
     this.data,
-    this.message,
+    this.detail,
     this.errorCode,
     this.pagination,
   });
 
   /// Factory constructor for JSON deserialization
   factory ServerResponseDto.fromJson(
-    Map<String, dynamic> json,
+    Map<String, dynamic>? json,
     T Function(Object? json) fromJsonT,
-  ) => _$ServerResponseDtoFromJson(json, fromJsonT);
+  ) {
+    // Assume that Server response with 204 no content
+    if (json == null) {
+      return ServerResponseDto<T>(
+        success: true,
+        code: 204,
+        timestamp: null,
+        data: null,
+        detail: 'No Content',
+        errorCode: null,
+        pagination: null,
+      );
+    }
+
+    return ServerResponseDto<T>(
+      success: json['success'] as bool? ?? true,
+      code: (json['code'] as num?)?.toInt() ?? 200,
+      timestamp: json['timestamp'] as String?,
+      data: _$nullableGenericFromJson(json['data'], fromJsonT),
+      detail: json['message'] as String?,
+      errorCode: json['errorCode'] as String?,
+      pagination: json['pagination'] == null
+          ? null
+          : PaginationDto.fromJson(json['pagination'] as Map<String, dynamic>),
+    );
+  }
 
   /// Method for JSON serialization
   Map<String, dynamic> toJson(Object? Function(T value) toJsonT) =>
@@ -53,7 +80,7 @@ class ServerResponseDto<T> {
       code: code ?? this.code,
       timestamp: timestamp ?? this.timestamp,
       data: data ?? this.data,
-      message: message ?? this.message,
+      detail: message ?? detail,
       errorCode: errorCode ?? this.errorCode,
       pagination: pagination ?? this.pagination,
     );

@@ -3,5 +3,5 @@ import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final projectsRemoteSourceProvider = Provider<ProjectsRemoteSource>((ref) {
-  return ProjectsRemoteSource(ref.read(dioProvider));
+  return ProjectsRemoteSource(ref.read(dioPod));
 });

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -31,6 +32,17 @@ class SettingContentView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
+
+    ref.listen(authControllerPod, (previous, next) {
+      if (next is AsyncData) {
+        final authState = next.value;
+        if (authState?.isAuthenticated != true) {
+          // If user is not authenticated, navigate to sign-in page
+          final router = ref.read(autorouterProvider);
+          router.replace(const SignInRoute());
+        }
+      }
+    });
 
     return SingleChildScrollView(
       child: Padding(
@@ -124,12 +136,18 @@ class SettingContentView extends ConsumerWidget {
               child: SizedBox(
                 width: double.infinity,
                 height: 48.0,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    t.settings.logOut,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        ref.read(authControllerPod.notifier).signOut();
+                      },
+                      child: Text(
+                        t.settings.logOut,
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

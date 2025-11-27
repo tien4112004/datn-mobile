@@ -1,3 +1,4 @@
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:dio/dio.dart';
 
 // coverage:ignore-file
@@ -6,8 +7,9 @@ import 'package:dio/dio.dart';
 Future<void> defaultAPIErrorHandler(
   DioException err,
   ErrorInterceptorHandler handler,
-  Dio dio,
-) async {
+  Dio dio, {
+  required Translations translations,
+}) async {
   switch (err.type) {
     case DioExceptionType.connectionTimeout:
       handler.resolve(
@@ -31,24 +33,38 @@ Future<void> defaultAPIErrorHandler(
         ),
       );
     case DioExceptionType.badResponse:
-      if (err.response!.statusCode == 404) {
-        handler.resolve(
-          Response(
-            data: {
-              'detail': 'server error: status code ${err.response!.statusCode}',
-            },
-            requestOptions: RequestOptions(path: err.requestOptions.path),
-          ),
-        );
-      } else {
-        handler.resolve(
-          err.response ??
-              Response(
-                data: {'detail': 'response error'},
-                requestOptions: err.requestOptions,
-              ),
-        );
+      final statusCode = err.response?.statusCode;
+      final data = err.response?.data;
+      String detail = 'unknown error';
+
+      if (data is Map<String, dynamic>) {
+        final errorCode = data['errorCode'];
+        final message = data['message'];
+
+        if (errorCode != null && errorCode is String) {
+          try {
+            final translated = translations['errors.$errorCode'];
+            if (translated is String) {
+              detail = translated;
+            } else {
+              detail = message ?? errorCode;
+            }
+          } catch (_) {
+            detail = message ?? errorCode;
+          }
+        } else {
+          detail = message ?? 'unknown error';
+        }
       }
+
+      handler.resolve(
+        Response(
+          data: {if (data is Map<String, dynamic>) ...data, 'message': detail},
+          requestOptions: err.requestOptions,
+          statusCode: statusCode,
+          statusMessage: err.response?.statusMessage,
+        ),
+      );
     case DioExceptionType.cancel:
       handler.resolve(
         Response(

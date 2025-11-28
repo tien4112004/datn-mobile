@@ -16,7 +16,13 @@ class DefaultAPIInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // Log headers in debug mode
-    debugPrint('Request Headers: ${options.headers}');
+    debugPrint(
+      'Request Headers: ${options.headers['Cookie'] == null ? 'No Cookie Header' : 'Has Cookie Header'}',
+    );
+    debugPrint(
+      'Request Headers: ${options.headers['Authorization'] == null ? 'No Authorization Header' : 'Has Authorization Header'}',
+    );
+
     debugPrint('Request URL: ${options.uri}');
 
     handler.next(options);

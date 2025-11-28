@@ -2,35 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 enum ResourceType {
-  image(value: "image", lucideIcon: LucideIcons.image, translationKey: "image"),
+  document(label: "document", icon: LucideIcons.fileText, color: Colors.blue),
+  image(label: "image", icon: LucideIcons.image, color: Colors.green),
   presentation(
-    value: 'presentation',
-    lucideIcon: LucideIcons.presentation,
-    translationKey: "presentation",
+    label: 'presentation',
+    icon: LucideIcons.presentation,
+    color: Colors.orange,
   ),
+
   mindmap(
-    value: 'mindmap',
-    lucideIcon: LucideIcons.brainCircuit,
-    translationKey: "mindmap",
+    label: 'mindmap',
+    icon: LucideIcons.brainCircuit,
+    color: Colors.purple,
   );
 
-  final String value;
-  final IconData lucideIcon;
-  final String translationKey;
+  final String label;
+  final IconData icon;
+  final Color color;
 
   const ResourceType({
-    required this.value,
-    required this.lucideIcon,
-    required this.translationKey,
+    required this.label,
+    required this.icon,
+    required this.color,
   });
 
   String getValue() {
-    return value;
+    return label;
   }
 
   @override
   String toString() {
-    return value;
+    return label;
   }
 
   static ResourceType fromValue(String value) {

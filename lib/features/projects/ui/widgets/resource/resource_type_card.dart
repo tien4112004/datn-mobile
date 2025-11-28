@@ -1,5 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/domain/entity/resource_type.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

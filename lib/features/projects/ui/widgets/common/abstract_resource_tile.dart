@@ -42,7 +42,7 @@ class AbstractResourceTile extends ConsumerWidget {
             thumbnail == null
                 ? Center(
                     child: Icon(
-                      resourceType.lucideIcon,
+                      resourceType.icon,
                       color: Colors.white.withValues(alpha: 0.7),
                       size: 32,
                     ),

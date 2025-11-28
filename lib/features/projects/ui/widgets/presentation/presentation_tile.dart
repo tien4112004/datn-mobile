@@ -19,6 +19,9 @@ class PresentationTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint(
+      'PresentationTile: Building with presentation=${presentation.id}, Presentation thumbnail=${presentation.thumbnail != null}',
+    );
     return AbstractResourceTile(
       title: presentation.title,
       updatedAt: presentation.updatedAt,
@@ -27,7 +30,7 @@ class PresentationTile extends ConsumerWidget {
       onMoreOptions: onMoreOptions,
       thumbnail: presentation.thumbnail,
       thumbnailWidget: PresentationThumbnail(
-        slide: presentation.thumbnail!,
+        slide: presentation.thumbnail,
         width: 100,
         height: 100 * 9 / 16,
         showLoadingIndicator: true,

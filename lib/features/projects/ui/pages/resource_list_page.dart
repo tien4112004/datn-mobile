@@ -1,16 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
 import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -68,8 +71,9 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
   }
 
   Widget _buildContent(BuildContext context, dynamic t) {
-    // Only show presentations list for "Presentations" resource type
-    if (widget.resourceType != 'Presentations') {
+    final controllerProvider = _resourceListAsyncValue;
+
+    if (controllerProvider == null) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -91,10 +95,6 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
       );
     }
-
-    final presentationControllerProvider = ref.watch(
-      presentationsControllerProvider,
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,21 +137,21 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
         const SizedBox(height: 16),
         // Presentations list
-        presentationControllerProvider.easyWhen(
-          data: (presentationListState) => Expanded(
+        controllerProvider.easyWhen(
+          data: (listState) => Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
                 await ref
                     .read(presentationsControllerProvider.notifier)
                     .refresh();
               },
-              child: presentationListState.value.isEmpty
+              child: listState.value.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            LucideIcons.presentation,
+                            ResourceType.presentation.icon,
                             size: 64,
                             color: Colors.grey.shade400,
                           ),
@@ -168,19 +168,27 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                       ),
                     )
                   : ListView.separated(
-                      itemCount: presentationListState.value.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 0),
+                      itemCount: listState.value.length,
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: Themes.padding.p8,
+                        child: const Divider(
+                          height: 1,
+                          color: Color.fromRGBO(189, 189, 189, 1),
+                        ),
+                      ),
                       itemBuilder: (context, index) {
-                        final presentation = presentationListState.value[index];
+                        var presentation = listState.value[index];
+
                         return PresentationTile(
                           presentation: presentation,
                           onTap: () {
+                            ref.watch(loadingOverlayPod.notifier).state = true;
                             context.router.push(
                               PresentationDetailRoute(
                                 presentationId: presentation.id,
                               ),
                             );
+                            ref.watch(loadingOverlayPod.notifier).state = false;
                           },
                           onMoreOptions: () {
                             // TODO: Show options menu
@@ -193,5 +201,15 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
       ],
     );
+  }
+
+  AsyncValue<dynamic>? get _resourceListAsyncValue {
+    final resource = ResourceType.fromValue(widget.resourceType.toLowerCase());
+    switch (resource) {
+      case ResourceType.presentation:
+        return ref.watch(presentationsControllerProvider);
+      default:
+        return null;
+    }
   }
 }

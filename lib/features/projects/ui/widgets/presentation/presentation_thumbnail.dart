@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
@@ -24,14 +25,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class PresentationThumbnail extends StatefulWidget {
   const PresentationThumbnail({
     super.key,
-    required this.slide,
+    this.slide,
     this.width = 200,
     this.height = 150,
     this.showLoadingIndicator = true,
   });
 
   /// The slide to render as a thumbnail
-  final Slide slide;
+  final Slide? slide;
 
   /// Width of the thumbnail widget
   final double width;
@@ -53,22 +54,51 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+      'PresentationThumbnail: Building with slide=${widget.slide == null}, width=${widget.width}, height=${widget.height}',
+    );
+
     // Fallback UI if InAppWebView is not available
-    if (InAppWebViewPlatform.instance == null) {
+    if (InAppWebViewPlatform.instance == null && widget.slide != null) {
+      debugPrint(
+        'PresentationThumbnail: InAppWebView not available, showing fallback UI.',
+      );
       return ClipRRect(
         borderRadius: Themes.boxRadius,
         child: Container(
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            color: widget.slide.background.color.isNotEmpty
-                ? _parseColor(widget.slide.background.color)
+            color: widget.slide!.background.color.isNotEmpty == true
+                ? _parseColor(widget.slide!.background.color)
                 : Colors.grey.shade300,
           ),
           child: Center(
             child: Icon(
               LucideIcons.presentation,
               color: Colors.white.withValues(alpha: 0.7),
+              size: widget.width * 0.4,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (widget.slide == null) {
+      debugPrint(
+        'PresentationThumbnail: No slide data provided, showing placeholder.',
+      );
+      final width = widget.width;
+      final height = widget.height;
+      return ClipRRect(
+        borderRadius: Themes.boxRadius,
+        child: Container(
+          constraints: BoxConstraints(minHeight: height, minWidth: width),
+          color: ResourceType.presentation.color.withValues(alpha: 0.7),
+          child: Center(
+            child: Icon(
+              ResourceType.presentation.icon,
+              color: Colors.grey.shade400,
               size: widget.width * 0.4,
             ),
           ),
@@ -168,7 +198,7 @@ class _PresentationThumbnailState extends State<PresentationThumbnail> {
         window.postMessage({
           type: 'setSlideData',
           data: {
-            slideData: ${jsonEncode(widget.slide.toJson())},
+            slideData: ${jsonEncode(widget.slide!.toJson())},
             slideIndex: 0
           }
         }, '*');

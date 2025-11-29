@@ -26,4 +26,13 @@ abstract class ProjectsRemoteSource {
   Future<PresentationDto> createPresentation(
     @Body() PresentationDto presentation,
   );
+
+  // /presentations?page=1&pageSize=20&sort=desc
+  @GET("/presentations?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  Future<ServerResponseDto<List<PresentationMinimalDto>>>
+  fetchPresentationMinimalsPaged({
+    @Path("pageKey") int pageKey = 1,
+    @Path("pageSize") int pageSize = 10,
+    @Path("sort") String sort = "desc",
+  });
 }

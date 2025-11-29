@@ -1,19 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
+import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
 import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loading_overlay/loading_overlay.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -71,6 +72,7 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
   }
 
   Widget _buildContent(BuildContext context, dynamic t) {
+    final pagedPresentations = ref.watch(pagingControllerPod);
     final controllerProvider = _resourceListAsyncValue;
 
     if (controllerProvider == null) {
@@ -167,34 +169,50 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
                         ],
                       ),
                     )
-                  : ListView.separated(
-                      itemCount: listState.value.length,
-                      separatorBuilder: (context, index) => SizedBox(
-                        height: Themes.padding.p8,
-                        child: const Divider(
-                          height: 1,
-                          color: Color.fromRGBO(189, 189, 189, 1),
-                        ),
-                      ),
-                      itemBuilder: (context, index) {
-                        var presentation = listState.value[index];
-
-                        return PresentationTile(
-                          presentation: presentation,
-                          onTap: () {
-                            ref.watch(loadingOverlayPod.notifier).state = true;
-                            context.router.push(
-                              PresentationDetailRoute(
-                                presentationId: presentation.id,
+                  : PagingListener(
+                      controller: pagedPresentations,
+                      builder: (context, state, fetchNextPage) =>
+                          PagedListView.separated(
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: Themes.padding.p8,
+                              child: const Divider(
+                                height: 1,
+                                color: Color.fromRGBO(189, 189, 189, 1),
                               ),
-                            );
-                            ref.watch(loadingOverlayPod.notifier).state = false;
-                          },
-                          onMoreOptions: () {
-                            // TODO: Show options menu
-                          },
-                        );
-                      },
+                            ),
+                            builderDelegate: PagedChildBuilderDelegate(
+                              noMoreItemsIndicatorBuilder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: Text(
+                                    'No more presentations',
+                                    style: TextStyle(
+                                      fontSize: Themes.fontSize.s14,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              itemBuilder: (context, item, index) {
+                                var presentation = item as PresentationMinimal;
+                                return PresentationTile(
+                                  presentation: presentation,
+                                  onTap: () {
+                                    context.router.push(
+                                      PresentationDetailRoute(
+                                        presentationId: presentation.id,
+                                      ),
+                                    );
+                                  },
+                                  onMoreOptions: () {
+                                    // TODO: Show options menu
+                                  },
+                                );
+                              },
+                            ),
+                            state: state,
+                            fetchNextPage: fetchNextPage,
+                          ),
                     ),
             ),
           ),

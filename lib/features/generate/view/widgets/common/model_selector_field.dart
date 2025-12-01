@@ -1,0 +1,85 @@
+import 'package:datn_mobile/features/generate/controllers/models_controller_pod.dart';
+import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
+import 'package:datn_mobile/features/generate/view/widgets/common/presentation_dropdown_field.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+/// Model selector field using flex_dropdown
+/// Fetches available models based on model type and displays them in a dropdown
+class ModelSelectorField extends ConsumerWidget {
+  final ModelType modelType;
+  final AIModel? selectedModel;
+  final ValueChanged<AIModel> onModelChanged;
+  final String label;
+
+  const ModelSelectorField({
+    super.key,
+    required this.modelType,
+    required this.selectedModel,
+    required this.onModelChanged,
+    this.label = 'AI Model',
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final modelsAsync = ref.watch(modelsControllerPod(modelType));
+
+    return modelsAsync.when(
+      data: (models) {
+        if (models.isEmpty) {
+          return SizedBox(
+            height: 70,
+            child: Center(
+              child: Text(
+                'No models available',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          );
+        }
+
+        final currentModel = selectedModel ?? models.first;
+        final modelOptions = models.map((m) => m.displayName).toList();
+
+        return PresentationDropdownField(
+          label: label,
+          items: modelOptions,
+          currentValue: currentModel.displayName,
+          displayText: currentModel.displayName,
+          icon: LucideIcons.zap,
+          onChanged: (displayName) {
+            final model = models.firstWhere(
+              (m) => m.displayName == displayName,
+            );
+            onModelChanged(model);
+          },
+        );
+      },
+      loading: () => SizedBox(
+        height: 70,
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
+      ),
+      error: (error, stackTrace) => SizedBox(
+        height: 70,
+        child: Center(
+          child: Text(
+            'Failed to load models',
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ),
+    );
+  }
+}

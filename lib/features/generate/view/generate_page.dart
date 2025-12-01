@@ -2,11 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/generate/controllers/generation_controller_pod.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_config.dart';
 import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
-import 'package:datn_mobile/features/generate/widgets/common/description_input_section.dart';
-import 'package:datn_mobile/features/generate/widgets/common/generation_button.dart';
-import 'package:datn_mobile/features/generate/widgets/common/model_selector.dart';
-import 'package:datn_mobile/features/generate/widgets/presentation/presentation_options_section.dart';
-import 'package:datn_mobile/features/generate/widgets/presentation/presentation_prompts.dart';
+import 'package:datn_mobile/features/generate/view/widgets/common/description_input_section.dart';
+import 'package:datn_mobile/features/generate/view/widgets/common/generation_button.dart';
+import 'package:datn_mobile/features/generate/view/widgets/presentation/presentation_options_section.dart';
+import 'package:datn_mobile/features/generate/view/widgets/presentation/presentation_prompts.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/widget/header_bar.dart';
 import 'package:flutter/material.dart';
@@ -107,24 +106,6 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Model Selector
-                    const Text(
-                      'AI Model',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ModelSelector(
-                      modelType: ModelType.text,
-                      selectedModel: _selectedModel,
-                      onModelChanged: (model) {
-                        setState(() => _selectedModel = model);
-                      },
-                    ),
-                    const SizedBox(height: 20),
-
                     // Resource-specific options
                     if (widget.resourceType == ResourceType.presentation) ...[
                       PresentationOptionsSection(
@@ -138,6 +119,10 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
                           setState(() => _theme = value);
                         },
                         avoidController: _avoidCtl,
+                        selectedModel: _selectedModel,
+                        onModelChanged: (model) {
+                          setState(() => _selectedModel = model);
+                        },
                         onInfoTap: () {
                           // TODO: Show options help dialog
                         },

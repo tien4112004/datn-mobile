@@ -31,4 +31,22 @@ class PresentationRepositoryImpl implements PresentationRepository {
 
     return dtoResponse.data!.toEntity();
   }
+
+  @override
+  Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
+    int pageKey, {
+    int pageSize = 10,
+    String sort = "desc",
+  }) {
+    return _remoteSource
+        .fetchPresentationMinimalsPaged(
+          pageKey: pageKey,
+          pageSize: pageSize,
+          sort: sort,
+        )
+        .then(
+          (dtoResponse) =>
+              dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [],
+        );
+  }
 }

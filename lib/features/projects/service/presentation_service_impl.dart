@@ -19,4 +19,17 @@ class PresentationServiceImpl implements PresentationService {
     // Additional validations or logics
     return _repo.addPresentation(presentation);
   }
+
+  @override
+  Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
+    int pageKey, {
+    int pageSize = 10,
+    String sort = "desc",
+  }) {
+    return _repo.fetchPresentationMinimalsPaged(
+      pageKey,
+      pageSize: pageSize,
+      sort: sort,
+    );
+  }
 }

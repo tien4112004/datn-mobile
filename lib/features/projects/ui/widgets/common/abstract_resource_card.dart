@@ -56,7 +56,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                     color: Colors.grey.shade100,
                   ),
                   child: thumbnail == null
-                      ? DefaultThumbnail(resourceIcon: resourceType.lucideIcon)
+                      ? DefaultThumbnail(resourceIcon: resourceType.icon)
                       : const Thumbnail(),
                 ),
                 Column(

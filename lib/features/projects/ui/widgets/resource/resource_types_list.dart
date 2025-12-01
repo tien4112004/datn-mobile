@@ -1,5 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/domain/entity/resource_type.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_type_card.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,7 @@ class ResourceTypesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resourceTypes = ResourceType.allTypes;
+    final resourceTypes = ResourceType.values;
 
     return ListView.separated(
       shrinkWrap: true,

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -25,7 +26,9 @@ class ProjectsPage extends ConsumerWidget {
         height: 96,
         child: FloatingActionButton(
           onPressed: () {
-            context.router.push(const PresentationRoute());
+            context.router.push(
+              GenerateRoute(resourceType: ResourceType.presentation),
+            );
           },
           backgroundColor: Colors.transparent,
           elevation: 0,

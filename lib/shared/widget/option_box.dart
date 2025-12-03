@@ -72,6 +72,7 @@ class _OptionBoxState extends State<OptionBox>
     return Box(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [

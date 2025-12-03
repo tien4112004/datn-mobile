@@ -8,15 +8,17 @@ part 'outline_generate_request.g.dart';
 @JsonSerializable()
 class OutlineGenerateRequest {
   final String topic; // User's description/prompt
-  final int slideCount; // Number of slides (1-50)
+  final int slideCount; // Number of slides (1-35)
   final String model; // AI model name (e.g., "gpt-4", "claude-3")
   final String language; // Language code (e.g., "English", "Spanish")
+  final String provider; // AI provider (e.g., "openai", "anthropic")
   @JsonKey(name: 'learning_objective')
   final String? learningObjective; // Optional learning objective
   @JsonKey(name: 'target_age')
   final String targetAge; // "7-10", "6-12", "Primary students"
 
   OutlineGenerateRequest({
+    required this.provider,
     required this.topic,
     required this.slideCount,
     required this.model,
@@ -41,6 +43,7 @@ extension GenerationConfigToPresentationRequest on GenerationConfig {
       language: 'English',
       learningObjective: avoidContent != null ? description : null,
       targetAge: targetAge,
+      provider: '',
     );
   }
 }

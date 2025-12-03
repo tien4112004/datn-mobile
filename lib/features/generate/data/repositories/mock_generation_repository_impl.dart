@@ -41,6 +41,8 @@ class MockGenerationRepositoryImpl implements GenerationRepository {
         return _generateMockImageUrl(config);
       case ResourceType.mindmap:
         return _generateMockMindmapJson(config);
+      default:
+        return 'Unsupported resource type for mock generation.';
     }
   }
 

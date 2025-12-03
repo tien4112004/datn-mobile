@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/controllers/generation_state.dart';
+import 'package:datn_mobile/features/generate/controllers/states/generation_state.dart';
 import 'package:datn_mobile/features/generate/data/repositories/repository_provider.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_config.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_result.dart';

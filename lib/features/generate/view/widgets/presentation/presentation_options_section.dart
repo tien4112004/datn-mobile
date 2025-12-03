@@ -1,6 +1,8 @@
+import 'package:datn_mobile/features/generate/controllers/pods/models_controller_pod.dart';
 import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
 import 'package:datn_mobile/features/generate/view/widgets/common/model_selector_field.dart';
-import 'package:datn_mobile/features/generate/view/widgets/common/presentation_dropdown_field.dart';
+import 'package:datn_mobile/features/generate/view/widgets/common/flex_dropdown_field.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/widget/option_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +17,6 @@ class PresentationOptionsSection extends ConsumerWidget {
   final String theme;
   final ValueChanged<String> onThemeChanged;
   final TextEditingController avoidController;
-  final AIModel? selectedModel;
   final ValueChanged<AIModel> onModelChanged;
   final VoidCallback? onInfoTap;
 
@@ -27,7 +28,6 @@ class PresentationOptionsSection extends ConsumerWidget {
     required this.theme,
     required this.onThemeChanged,
     required this.avoidController,
-    required this.selectedModel,
     required this.onModelChanged,
     this.onInfoTap,
   });
@@ -36,6 +36,7 @@ class PresentationOptionsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final slideOptions = List.generate(5, (index) => '${index + 1} Slides');
     final gradeOptions = List.generate(5, (index) => 'Grade ${index + 1}');
+    final selectedTextModel = ref.watch(textModelStatePod).selectedModel;
 
     return OptionBox(
       title: 'Options',
@@ -44,16 +45,15 @@ class PresentationOptionsSection extends ConsumerWidget {
       collapsedOptions: Column(
         children: [
           ModelSelectorField(
-            modelType: ModelType.text,
-            selectedModel: selectedModel,
+            resourceType: ResourceType.presentation,
+            selectedModel: selectedTextModel,
             onModelChanged: onModelChanged,
           ),
           const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
-                flex: 1,
-                child: PresentationDropdownField(
+                child: FlexDropdownField(
                   label: 'Slides',
                   items: slideOptions,
                   currentValue: '${slidesController.text} Slides',
@@ -69,8 +69,7 @@ class PresentationOptionsSection extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                flex: 1,
-                child: PresentationDropdownField(
+                child: FlexDropdownField(
                   label: 'Grade',
                   items: gradeOptions,
                   currentValue: 'Grade $grade',
@@ -92,19 +91,23 @@ class PresentationOptionsSection extends ConsumerWidget {
   }
 
   List<Widget> _buildAdvancedOptions() {
-    final themesOptions = List.generate(5, (index) => 'Them ${index + 1}');
+    final themesOptions = List.generate(5, (index) => 'Theme ${index + 1}');
 
     return [
-      PresentationDropdownField(
-        label: 'Theme',
-        items: themesOptions,
-        currentValue: 'Theme $theme',
-        displayText: 'Theme $theme',
-        icon: LucideIcons.graduationCap,
-        onChanged: (value) {
-          // Extract number from "Theme 1" format
-          onThemeChanged(value);
-        },
+      Row(
+        children: [
+          FlexDropdownField(
+            label: 'Theme',
+            items: themesOptions,
+            currentValue: 'Theme $theme',
+            displayText: 'Theme $theme',
+            icon: LucideIcons.graduationCap,
+            onChanged: (value) {
+              // Extract number from "Theme 1" format
+              onThemeChanged(value);
+            },
+          ),
+        ],
       ),
       const SizedBox(height: 12),
       TextField(

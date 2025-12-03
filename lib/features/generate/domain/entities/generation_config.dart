@@ -53,6 +53,8 @@ class GenerationConfig {
       case ResourceType.mindmap:
         // Mindmap generation doesn't need additional options
         return true;
+      default:
+        return false;
     }
   }
 
@@ -67,6 +69,18 @@ class GenerationConfig {
       model: model ?? this.model,
       description: description ?? this.description,
       options: options ?? this.options,
+    );
+  }
+
+  factory GenerationConfig.empty({
+    required ResourceType resourceType,
+    required AIModel model,
+  }) {
+    return GenerationConfig(
+      resourceType: resourceType,
+      model: model,
+      description: '',
+      options: {},
     );
   }
 

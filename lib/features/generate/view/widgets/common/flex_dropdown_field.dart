@@ -6,7 +6,7 @@ import 'dropdown_button.dart';
 
 /// Reusable presentation dropdown field using flex_dropdown
 /// Provides consistent styling and behavior for dropdown selections
-class PresentationDropdownField extends StatefulWidget {
+class FlexDropdownField extends StatefulWidget {
   final String label;
   final List<String> items;
   final String currentValue;
@@ -14,7 +14,7 @@ class PresentationDropdownField extends StatefulWidget {
   final IconData? icon;
   final String? displayText;
 
-  const PresentationDropdownField({
+  const FlexDropdownField({
     super.key,
     required this.label,
     required this.items,
@@ -25,11 +25,10 @@ class PresentationDropdownField extends StatefulWidget {
   });
 
   @override
-  State<PresentationDropdownField> createState() =>
-      _PresentationDropdownFieldState();
+  State<FlexDropdownField> createState() => _FlexDropdownFieldState();
 }
 
-class _PresentationDropdownFieldState extends State<PresentationDropdownField> {
+class _FlexDropdownFieldState extends State<FlexDropdownField> {
   late final OverlayPortalController _controller;
 
   @override
@@ -57,13 +56,12 @@ class _PresentationDropdownFieldState extends State<PresentationDropdownField> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   widget.displayText ?? widget.currentValue,
                   style: const TextStyle(fontSize: 14),
                 ),
-                const Spacer(flex: 1),
                 const Icon(LucideIcons.chevronDown, size: 16),
               ],
             ),

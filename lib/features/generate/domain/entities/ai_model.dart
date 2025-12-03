@@ -21,10 +21,12 @@ class AIModel {
   final String name; // e.g., "gpt-4", "claude-3", "dall-e-3"
   final String displayName; // e.g., "GPT-4", "Claude 3"
   final ModelType type; // TEXT or IMAGE
+  final String provider; // e.g., "openai", "anthropic", "stabilityai"
   final bool isDefault;
   final bool isEnabled;
 
   const AIModel({
+    required this.provider,
     required this.id,
     required this.name,
     required this.displayName,
@@ -40,6 +42,7 @@ class AIModel {
     ModelType? type,
     bool? isDefault,
     bool? isEnabled,
+    String? provider,
   }) {
     return AIModel(
       id: id ?? this.id,
@@ -48,6 +51,7 @@ class AIModel {
       type: type ?? this.type,
       isDefault: isDefault ?? this.isDefault,
       isEnabled: isEnabled ?? this.isEnabled,
+      provider: provider ?? this.provider,
     );
   }
 

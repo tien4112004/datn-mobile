@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/generate/controllers/generation_controller_pod.dart';
+import 'package:datn_mobile/features/generate/controllers/pods/generation_controller_pod.dart';
+import 'package:datn_mobile/features/generate/controllers/pods/models_controller_pod.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_config.dart';
 import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
 import 'package:datn_mobile/features/generate/view/widgets/common/description_input_section.dart';
@@ -27,7 +28,6 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
   // Presentation-specific state
   late int _grade;
   late String _theme;
-  late AIModel? _selectedModel;
 
   final TextEditingController _descriptionCtl = TextEditingController();
   final TextEditingController _slidesCtl = TextEditingController(text: '10');
@@ -38,7 +38,6 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
     super.initState();
     _grade = 1;
     _theme = 'Lorems';
-    _selectedModel = null;
   }
 
   @override
@@ -49,8 +48,26 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
     super.dispose();
   }
 
-  void _handleGenerate() {
-    if (_selectedModel == null) {
+  Future<void> _handleGenerate() async {
+    AIModel? selectedModel;
+
+    if (widget.resourceType == ResourceType.presentation) {
+      selectedModel = ref.read(textModelStatePod).selectedModel;
+    } else if (widget.resourceType == ResourceType.image) {
+      selectedModel = ref.read(imageModelStatePod).selectedModel;
+    }
+
+    // Fallback to fetching default model if none selected
+    if (selectedModel == null) {
+      final modelController = ref.read(
+        modelsControllerPod(widget.resourceType.modelTypeValue).notifier,
+      );
+      selectedModel = await modelController.getDefaultModel();
+    }
+
+    if (!mounted) return;
+
+    if (selectedModel == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Please select a model')));
@@ -66,7 +83,7 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
 
     final config = GenerationConfig(
       resourceType: widget.resourceType,
-      model: _selectedModel!,
+      model: selectedModel,
       description: _descriptionCtl.text,
       options: options,
     );
@@ -83,6 +100,7 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
       ResourceType.presentation => 'Presentation',
       ResourceType.image => 'Image',
       ResourceType.mindmap => 'Mindmap',
+      ResourceType.document => 'Document',
     };
 
     return Scaffold(
@@ -104,7 +122,6 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Resource-specific options
                     if (widget.resourceType == ResourceType.presentation) ...[
@@ -119,9 +136,10 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
                           setState(() => _theme = value);
                         },
                         avoidController: _avoidCtl,
-                        selectedModel: _selectedModel,
                         onModelChanged: (model) {
-                          setState(() => _selectedModel = model);
+                          ref
+                              .read(textModelStatePod.notifier)
+                              .selectModel(model);
                         },
                         onInfoTap: () {
                           // TODO: Show options help dialog
@@ -139,7 +157,7 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
                           widget.resourceType == ResourceType.presentation
                           ? PresentationPrompts.suggestions
                           : [],
-                      label: 'Describe your ${widget.resourceType.value}',
+                      label: 'Describe your ${widget.resourceType.label}',
                       hint: 'Enter your description...',
                     ),
 

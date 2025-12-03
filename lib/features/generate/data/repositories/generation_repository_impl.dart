@@ -25,6 +25,8 @@ class GenerationRepositoryImpl implements GenerationRepository {
         return _generateImage(config);
       case ResourceType.mindmap:
         return _generateMindmap(config);
+      case ResourceType.document:
+        throw UnimplementedError('Document generation not supported yet');
     }
   }
 
@@ -37,6 +39,8 @@ class GenerationRepositoryImpl implements GenerationRepository {
         throw UnimplementedError('Image streaming coming in future phase');
       case ResourceType.mindmap:
         throw UnimplementedError('Mindmap streaming coming in future phase');
+      case ResourceType.document:
+        throw UnimplementedError('Document generation not supported yet');
     }
   }
 

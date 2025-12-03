@@ -12,11 +12,15 @@ class ModelResponse {
   final String modelName; // e.g., "gpt-4", "claude-3"
   final String displayName; // e.g., "GPT-4", "Claude 3"
   final String modelType; // "TEXT" or "IMAGE"
+  final String provider; // "openai", "anthropic", etc.
+  @JsonKey(name: 'default')
   final bool isDefault;
+  @JsonKey(name: 'enabled')
   final bool isEnabled;
 
   ModelResponse({
     required this.id,
+    required this.provider,
     required this.modelName,
     required this.displayName,
     required this.modelType,
@@ -35,6 +39,7 @@ extension ModelResponseMapper on ModelResponse {
   AIModel toEntity() {
     return AIModel(
       id: int.parse(id),
+      provider: provider,
       name: modelName,
       displayName: displayName,
       type: ModelType.fromValue(modelType),

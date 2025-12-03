@@ -14,6 +14,7 @@ class PresentationOptionsSection extends ConsumerWidget {
   final TextEditingController slidesController;
   final int grade;
   final ValueChanged<int> onGradeChanged;
+  final ValueChanged<int> onSlideChanged;
   final String theme;
   final ValueChanged<String> onThemeChanged;
   final TextEditingController avoidController;
@@ -25,6 +26,7 @@ class PresentationOptionsSection extends ConsumerWidget {
     required this.slidesController,
     required this.grade,
     required this.onGradeChanged,
+    required this.onSlideChanged,
     required this.theme,
     required this.onThemeChanged,
     required this.avoidController,
@@ -34,7 +36,7 @@ class PresentationOptionsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final slideOptions = List.generate(5, (index) => '${index + 1} Slides');
+    final slideOptions = List.generate(15, (index) => '${index + 1} Slides');
     final gradeOptions = List.generate(5, (index) => 'Grade ${index + 1}');
     final selectedTextModel = ref.watch(textModelStatePod).selectedModel;
 
@@ -63,7 +65,7 @@ class PresentationOptionsSection extends ConsumerWidget {
                     // Extract number from "1 Slides" format
                     final slideCount =
                         int.tryParse(value.split(' ').first) ?? 1;
-                    onGradeChanged(slideCount);
+                    onSlideChanged(slideCount);
                   },
                 ),
               ),

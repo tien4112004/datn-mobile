@@ -74,6 +74,7 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
       return;
     }
 
+    debugPrint('Selected Model: ${selectedModel.displayName}');
     final options = <String, dynamic>{
       'slideCount': int.tryParse(_slidesCtl.text),
       'grade': _grade,
@@ -130,6 +131,9 @@ class _GeneratePageState extends ConsumerState<GeneratePage> {
                         grade: _grade,
                         onGradeChanged: (value) {
                           setState(() => _grade = value);
+                        },
+                        onSlideChanged: (value) {
+                          setState(() => _slidesCtl.text = value.toString());
                         },
                         theme: _theme,
                         onThemeChanged: (value) {

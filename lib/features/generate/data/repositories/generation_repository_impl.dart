@@ -1,20 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
 import 'package:datn_mobile/features/generate/data/dto/request/outline_generate_request.dart';
-import 'package:datn_mobile/features/generate/data/dto/response/outline_generate_response.dart';
-import 'package:datn_mobile/features/generate/data/sources/generation_remote_source.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_config.dart';
 import 'package:datn_mobile/features/generate/domain/entities/generation_result.dart';
 import 'package:datn_mobile/features/generate/domain/repositories/generation_repository.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:dio/dio.dart';
 
 /// Real implementation of GenerationRepository using API calls
 class GenerationRepositoryImpl implements GenerationRepository {
-  final GenerationRemoteSource _remoteSource;
   final Dio _dio; // Used for streaming in Phase 2b
 
-  GenerationRepositoryImpl(this._remoteSource, this._dio);
+  GenerationRepositoryImpl(this._dio);
 
   @override
   Future<GenerationResult> generate(GenerationConfig config) async {
@@ -52,13 +51,32 @@ class GenerationRepositoryImpl implements GenerationRepository {
     try {
       final request = config.toOutlineRequest();
 
-      final response = await _remoteSource.generateOutline(request);
+      // Not using Retrofit here to keep it simple
+      // final response = await _remoteSource.generateOutline(request);
+
+      final response = await _dio.post(
+        '/presentations/outline-generate',
+        data: request.toJson(),
+      );
 
       if (response.data == null) {
         throw Exception('Empty response from API');
       }
 
-      return response.data!.toEntity(resourceType: ResourceType.presentation);
+      // Status: 200
+      // Message:
+      // Data: "### Sharing Our Ideas Online: Digital Marketing Fun!\n\n---\n\n### Table of Contents\n-
+      // What is Digital Marketing?\n- What Do We Share Online?\n- Where Do We Find It?\n- How Do We Share Our Message?
+      //- Who Are We Talking To?\n- Why Do People Share Online?\n- Being Safe and Smart Online\n- Your Turn: Simple Sharing\n\n---\n\n
+      //### What is Digital Marketing?\n- \"Digital\" means using computers or phones.\n
+      //- \"Marketing\" is telling friends about something cool.\n- So, it's telling people online about cool stuff!\n
+      //- It's a plan to share ideas on the internet.\n\n---\n\n### What Do We Share Online?\n...
+
+      return GenerationResult(
+        content: response.data!,
+        generatedAt: DateTime.now(),
+        resourceType: ResourceType.presentation,
+      );
     } catch (e) {
       throw Exception('Failed to generate presentation: $e');
     }

@@ -18,6 +18,7 @@ abstract class GenerationRemoteSource {
   /// This endpoint is STREAMING in Phase 2
   /// For Phase 1, returns complete result
   /// In Phase 2, will need to use Dio directly with ResponseType.stream
+  @Deprecated('Use Dio directly for streaming in Phase 2')
   @POST("/presentations/outline-generate")
   Future<ServerResponseDto<OutlineGenerateResponse>> generateOutline(
     @Body() OutlineGenerateRequest request,

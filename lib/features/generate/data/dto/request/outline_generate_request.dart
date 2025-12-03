@@ -43,7 +43,7 @@ extension GenerationConfigToPresentationRequest on GenerationConfig {
       language: 'English',
       learningObjective: avoidContent != null ? description : null,
       targetAge: targetAge,
-      provider: '',
+      provider: model.provider.toLowerCase(),
     );
   }
 }

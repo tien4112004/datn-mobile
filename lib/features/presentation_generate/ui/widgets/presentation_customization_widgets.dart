@@ -1,6 +1,6 @@
 import 'package:datn_mobile/features/generate/controllers/pods/models_controller_pod.dart';
 import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
-import 'package:datn_mobile/features/presentation_generate/service/outline_parser.dart';
+import 'package:datn_mobile/features/presentation_generate/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/presentation_generate/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -125,7 +125,7 @@ class GenerationOptionsSection extends ConsumerWidget {
 }
 
 /// Displays the outline with slide titles
-class OutlineSummarySection extends StatelessWidget {
+class OutlineSummarySection extends ConsumerWidget {
   final String outline;
   final VoidCallback onEdit;
 
@@ -136,9 +136,10 @@ class OutlineSummarySection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final slideTitles = OutlineParser.extractSlideTitles(outline);
+    final parser = ref.read(outlineParserRepositoryProvider);
+    final slideTitles = parser.extractSlideTitles(outline);
 
     return Container(
       padding: const EdgeInsets.all(16),

@@ -1,15 +1,20 @@
 part of 'controller_provider.dart';
 
 /// Controller for managing outline editing operations.
+///
+/// State is explicitly kept alive to preserve slide edits during navigation.
 class OutlineEditingController extends Notifier<OutlineEditingState> {
   @override
   OutlineEditingState build() {
+    // Keep state alive to prevent loss of edits during navigation
+    ref.keepAlive();
     return const OutlineEditingState();
   }
 
   /// Initialize the outline editing state from markdown outline.
   void initializeFromOutline(String markdownOutline) {
-    final slides = OutlineParser.parseMarkdownToSlides(markdownOutline);
+    final parser = ref.read(outlineParserRepositoryProvider);
+    final slides = parser.parseMarkdownToSlides(markdownOutline);
     state = state.copyWith(slides: slides);
   }
 
@@ -87,13 +92,8 @@ class OutlineEditingController extends Notifier<OutlineEditingState> {
 
   /// Convert the current slides back to markdown outline.
   String getMarkdownOutline() {
-    return OutlineParser.slidesToMarkdown(state.slides);
-  }
-
-  /// Save the edited outline back to the presentation form.
-  void saveOutlines() {
-    // This will be called by the UI to save changes back to the form state
-    // The actual saving logic will be handled by the presentation form controller
+    final parser = ref.read(outlineParserRepositoryProvider);
+    return parser.slidesToMarkdown(state.slides);
   }
 
   /// Reset the editing state.

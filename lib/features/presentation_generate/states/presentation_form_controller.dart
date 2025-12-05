@@ -1,9 +1,14 @@
 part of 'controller_provider.dart';
 
 /// Controller for managing the presentation form state.
+///
+/// State is explicitly kept alive to prevent loss during navigation
+/// between the generation, customization, and editor pages.
 class PresentationFormController extends Notifier<PresentationFormState> {
   @override
   PresentationFormState build() {
+    // Keep state alive during navigation to preserve form data
+    ref.keepAlive();
     return const PresentationFormState();
   }
 

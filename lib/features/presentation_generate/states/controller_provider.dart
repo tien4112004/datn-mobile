@@ -1,8 +1,8 @@
 import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
 import 'package:datn_mobile/features/presentation_generate/data/dto/outline_generate_request_dto.dart';
 import 'package:datn_mobile/features/presentation_generate/data/dto/presentation_generate_request_dto.dart';
+import 'package:datn_mobile/features/presentation_generate/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/presentation_generate/domain/entity/outline_editing_state.dart';
-import 'package:datn_mobile/features/presentation_generate/service/outline_parser.dart';
 import 'package:datn_mobile/features/presentation_generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/presentation_generate/enum/presentation_theme.dart';
 import 'package:datn_mobile/features/presentation_generate/service/service_provider.dart';

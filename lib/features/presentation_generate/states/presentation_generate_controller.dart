@@ -1,6 +1,9 @@
 part of 'controller_provider.dart';
 
 /// Controller for managing presentation generation operations.
+///
+/// Uses request ID tracking to prevent race conditions when listeners
+/// check for state changes in the UI.
 class PresentationGenerateController
     extends AsyncNotifier<PresentationGenerateState> {
   @override
@@ -8,7 +11,13 @@ class PresentationGenerateController
     return PresentationGenerateState.initial();
   }
 
+  /// Generate a unique request ID for tracking requests
+  String _generateRequestId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
+  }
+
   Future<void> generateOutline(OutlineGenerateRequest outlineData) async {
+    final requestId = _generateRequestId();
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
@@ -16,11 +25,12 @@ class PresentationGenerateController
           .read(presentationGenerateServiceProvider)
           .generateOutline(outlineData);
 
-      return PresentationGenerateState.outlineSuccess(response);
+      return PresentationGenerateState.outlineSuccess(response, requestId);
     });
   }
 
   Future<void> generatePresentation(PresentationGenerateRequest request) async {
+    final requestId = _generateRequestId();
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
@@ -28,7 +38,7 @@ class PresentationGenerateController
           .read(presentationGenerateServiceProvider)
           .generatePresentation(request);
 
-      return PresentationGenerateState.presentationSuccess(response);
+      return PresentationGenerateState.presentationSuccess(response, requestId);
     });
   }
 

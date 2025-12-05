@@ -1,9 +1,32 @@
 import 'package:datn_mobile/features/presentation_generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/presentation_generate/states/controller_provider.dart';
+import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:markdown_editor_plus/markdown_editor_plus.dart';
+
+/// Centralized auto-save function with error handling
+/// Saves the current outline state back to the presentation form controller
+Future<void> _autoSaveOutline(WidgetRef ref, BuildContext context) async {
+  try {
+    final editingController = ref.read(
+      outlineEditingControllerProvider.notifier,
+    );
+    final markdownOutline = editingController.getMarkdownOutline();
+    ref
+        .read(presentationFormControllerProvider.notifier)
+        .setOutline(markdownOutline);
+  } catch (e, stackTrace) {
+    debugPrint('Auto-save failed: $e\n$stackTrace');
+    if (context.mounted) {
+      SnackbarUtils.showError(
+        context,
+        'Failed to save changes. Please try again.',
+      );
+    }
+  }
+}
 
 /// Empty state view for when there are no slides to edit
 class EmptyOutlineView extends StatelessWidget {
@@ -96,19 +119,15 @@ class OutlineSlidesList extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               ref
                   .read(outlineEditingControllerProvider.notifier)
                   .removeSlide(slide.order);
               // Auto-save the changes
-              final editingController = ref.read(
-                outlineEditingControllerProvider.notifier,
-              );
-              final markdownOutline = editingController.getMarkdownOutline();
-              ref
-                  .read(presentationFormControllerProvider.notifier)
-                  .setOutline(markdownOutline);
-              Navigator.of(context).pop();
+              await _autoSaveOutline(ref, context);
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
@@ -273,7 +292,7 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
           child: const Text('Cancel'),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             ref
                 .read(outlineEditingControllerProvider.notifier)
                 .updateSlideContent(
@@ -282,14 +301,10 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
                   _contentController.text.trim(),
                 );
             // Auto-save the changes
-            final editingController = ref.read(
-              outlineEditingControllerProvider.notifier,
-            );
-            final markdownOutline = editingController.getMarkdownOutline();
-            ref
-                .read(presentationFormControllerProvider.notifier)
-                .setOutline(markdownOutline);
-            Navigator.of(context).pop();
+            await _autoSaveOutline(ref, context);
+            if (context.mounted) {
+              Navigator.of(context).pop();
+            }
           },
           child: const Text('Save'),
         ),
@@ -318,7 +333,7 @@ class OutlineActionsBar extends ConsumerWidget {
         children: [
           Expanded(
             child: ElevatedButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 // Add slide after the last slide
                 final lastOrder = editingState.slides.isNotEmpty
                     ? editingState.slides.last.order
@@ -327,16 +342,7 @@ class OutlineActionsBar extends ConsumerWidget {
                     .read(outlineEditingControllerProvider.notifier)
                     .addSlide(lastOrder);
                 // Auto-save the changes
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  final editingController = ref.read(
-                    outlineEditingControllerProvider.notifier,
-                  );
-                  final markdownOutline = editingController
-                      .getMarkdownOutline();
-                  ref
-                      .read(presentationFormControllerProvider.notifier)
-                      .setOutline(markdownOutline);
-                });
+                await _autoSaveOutline(ref, context);
               },
               icon: const Icon(LucideIcons.plus),
               label: const Text('Add Slide'),

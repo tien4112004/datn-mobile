@@ -8,6 +8,8 @@ abstract class GenerationRepository {
   /// Returns a GenerationResult with the generated content
   Future<GenerationResult> generate(GenerationConfig config);
 
+  Future<GenerationResult> generateOutline(GenerationConfig config);
+
   /// Stream content generation for real-time updates
   /// Yields chunks of generated content as they arrive from the API
   /// Used for presentation outlines, image generation, etc.

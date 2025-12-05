@@ -36,7 +36,7 @@ class GenerationController extends AsyncNotifier<GenerationState> {
     // Generate content with error handling
     state =
         await AsyncValue.guard(() async {
-          final result = await _repository.generate(config);
+          GenerationResult result = await _repository.generateOutline(config);
           return GenerationState.success(result);
         }).then((asyncValue) {
           return asyncValue.whenOrNull(
@@ -83,6 +83,7 @@ class GenerationController extends AsyncNotifier<GenerationState> {
               content: buffer.toString(),
               generatedAt: DateTime.now(),
               resourceType: config.resourceType,
+              usedPrompt: config.description,
             ),
           ),
         );

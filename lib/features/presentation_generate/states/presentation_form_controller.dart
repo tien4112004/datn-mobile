@@ -56,14 +56,19 @@ class PresentationFormController extends Notifier<PresentationFormState> {
 
   // Create outline data for Step 1
   OutlineGenerateRequest toOutlineData() {
-    final outlineModel = state.outlineModel;
+    final outlineModel = state.outlineModel != null
+        ? ModelInfo(
+            name: state.outlineModel!.name,
+            provider: state.outlineModel!.provider,
+          )
+        : ModelInfo.getDefault();
+
     return OutlineGenerateRequest(
       topic: state.topic,
       slideCount: state.slideCount,
       language: state.language,
-      model: outlineModel != null
-          ? ModelInfo(name: outlineModel.name, provider: outlineModel.provider)
-          : const ModelInfo(name: 'gpt-4o', provider: 'openai'),
+      model: outlineModel.name,
+      provider: outlineModel.provider,
     );
   }
 

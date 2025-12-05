@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/presentation_generate/states/controller_pro
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 /// Available languages for presentation generation
 const List<String> _availableLanguages = ['English', 'Vietnamese'];
@@ -101,7 +102,7 @@ class _PresentationGeneratePageState
             // Save outline to form state
             ref
                 .read(presentationFormControllerProvider.notifier)
-                .setOutline(state.outlineResponse!.outline);
+                .setOutline(state.outlineResponse!);
             // Navigate to customization page
             context.router.push(const PresentationCustomizationRoute());
           }
@@ -1021,40 +1022,43 @@ class _PresentationGeneratePageState
   void _showPickerBottomSheet({required String title, required Widget child}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    showModalBottomSheet(
+    WoltModalSheet.show<void>(
       context: context,
-      backgroundColor: isDark ? Colors.grey[900] : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 12),
-          // Handle
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: isDark ? Colors.grey[700] : Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
+      modalTypeBuilder: (context) => WoltModalType.bottomSheet(),
+      useSafeArea: true,
+      pageListBuilder: (modelBottomSheetContext) {
+        return [
+          SliverWoltModalSheetPage(
+            trailingNavBarWidget: IconButton(
+              onPressed: () => Navigator.pop(modelBottomSheetContext),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              icon: Icon(
+                Icons.close_rounded,
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          // Title
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.grey[900],
+            pageTitle: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.grey[900],
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
+            mainContentSliversBuilder: (context) => [
+              SliverPadding(
+                padding: const EdgeInsets.all(20),
+                sliver: SliverToBoxAdapter(child: child),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          child,
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
-        ],
-      ),
+        ];
+      },
     );
   }
 }

@@ -1,10 +1,7 @@
-import 'package:datn_mobile/features/presentation_generate/data/dto/outline_generate_response_dto.dart';
-import 'package:datn_mobile/features/presentation_generate/data/dto/presentation_generate_response_dto.dart';
-
 /// State class representing the presentation generation form state.
 class PresentationGenerateState {
-  final OutlineGenerateResponse? outlineResponse;
-  final PresentationGenerateResponse? presentationResponse;
+  final String? outlineResponse;
+  final String? presentationResponse;
   final bool isOutlineGenerating;
   final bool isPresentationGenerating;
   final Object? error;
@@ -26,12 +23,11 @@ class PresentationGenerateState {
   factory PresentationGenerateState.presentationLoading() =>
       const PresentationGenerateState(isPresentationGenerating: true);
 
-  factory PresentationGenerateState.outlineSuccess(
-    OutlineGenerateResponse outlineResponse,
-  ) => PresentationGenerateState(outlineResponse: outlineResponse);
+  factory PresentationGenerateState.outlineSuccess(String outlineResponse) =>
+      PresentationGenerateState(outlineResponse: outlineResponse);
 
   factory PresentationGenerateState.presentationSuccess(
-    PresentationGenerateResponse presentationResponse,
+    String presentationResponse,
   ) => PresentationGenerateState(presentationResponse: presentationResponse);
 
   factory PresentationGenerateState.failure(Object error) =>
@@ -43,8 +39,8 @@ class PresentationGenerateState {
   bool get hasError => error != null;
 
   PresentationGenerateState copyWith({
-    OutlineGenerateResponse? outlineResponse,
-    PresentationGenerateResponse? presentationResponse,
+    String? outlineResponse,
+    String? presentationResponse,
     bool? isOutlineGenerating,
     bool? isPresentationGenerating,
     Object? error,

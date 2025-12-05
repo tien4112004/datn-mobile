@@ -111,7 +111,7 @@ class _PresentationCustomizationPageState
             // Update the form state with new outline
             ref
                 .read(presentationFormControllerProvider.notifier)
-                .setOutline(state.outlineResponse!.outline);
+                .setOutline(state.outlineResponse!);
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Outline regenerated successfully!'),

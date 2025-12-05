@@ -53,8 +53,8 @@ class ServerResponseDto<T> {
       code: (json['code'] as num?)?.toInt() ?? 200,
       timestamp: json['timestamp'] as String?,
       data: _$nullableGenericFromJson(json['data'], fromJsonT),
-      detail: json['message'] as String?,
-      errorCode: json['errorCode'] as String?,
+      detail: json['message'],
+      errorCode: json['errorCode'],
       pagination: json['pagination'] == null
           ? null
           : PaginationDto.fromJson(json['pagination'] as Map<String, dynamic>),

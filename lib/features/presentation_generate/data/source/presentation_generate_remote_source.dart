@@ -1,7 +1,5 @@
 import 'package:datn_mobile/features/presentation_generate/data/dto/outline_generate_request_dto.dart';
-import 'package:datn_mobile/features/presentation_generate/data/dto/outline_generate_response_dto.dart';
 import 'package:datn_mobile/features/presentation_generate/data/dto/presentation_generate_request_dto.dart';
-import 'package:datn_mobile/features/presentation_generate/data/dto/presentation_generate_response_dto.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -13,13 +11,13 @@ abstract class PresentationGenerateRemoteSource {
   factory PresentationGenerateRemoteSource(Dio dio, {String baseUrl}) =
       _PresentationGenerateRemoteSource;
 
-  @POST("/api/presentations/outline/generate")
-  Future<ServerResponseDto<OutlineGenerateResponse>> generateOutline(
+  @POST("/presentations/outline-generate/batch")
+  Future<ServerResponseDto<String>> generateOutline(
     @Body() OutlineGenerateRequest request,
   );
 
-  @POST("/presentations/generate")
-  Future<ServerResponseDto<PresentationGenerateResponse>> generatePresentation(
+  @POST("/presentations/generate/batch")
+  Future<ServerResponseDto<String>> generatePresentation(
     @Body() PresentationGenerateRequest request,
   );
 }

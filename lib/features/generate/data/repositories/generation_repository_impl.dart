@@ -19,7 +19,7 @@ class GenerationRepositoryImpl implements GenerationRepository {
   Future<GenerationResult> generate(GenerationConfig config) async {
     switch (config.resourceType) {
       case ResourceType.presentation:
-        return _generatePresentationOutline(config);
+        return generateOutline(config);
       case ResourceType.image:
         return _generateImage(config);
       case ResourceType.mindmap:
@@ -45,9 +45,8 @@ class GenerationRepositoryImpl implements GenerationRepository {
 
   /// Generate presentation outline using API
   /// Uses Retrofit client for non-streaming
-  Future<GenerationResult> _generatePresentationOutline(
-    GenerationConfig config,
-  ) async {
+  @override
+  Future<GenerationResult> generateOutline(GenerationConfig config) async {
     try {
       final request = config.toOutlineRequest();
 
@@ -63,19 +62,11 @@ class GenerationRepositoryImpl implements GenerationRepository {
         throw Exception('Empty response from API');
       }
 
-      // Status: 200
-      // Message:
-      // Data: "### Sharing Our Ideas Online: Digital Marketing Fun!\n\n---\n\n### Table of Contents\n-
-      // What is Digital Marketing?\n- What Do We Share Online?\n- Where Do We Find It?\n- How Do We Share Our Message?
-      //- Who Are We Talking To?\n- Why Do People Share Online?\n- Being Safe and Smart Online\n- Your Turn: Simple Sharing\n\n---\n\n
-      //### What is Digital Marketing?\n- \"Digital\" means using computers or phones.\n
-      //- \"Marketing\" is telling friends about something cool.\n- So, it's telling people online about cool stuff!\n
-      //- It's a plan to share ideas on the internet.\n\n---\n\n### What Do We Share Online?\n...
-
       return GenerationResult(
         content: response.data!,
         generatedAt: DateTime.now(),
         resourceType: ResourceType.presentation,
+        usedPrompt: request.topic,
       );
     } catch (e) {
       throw Exception('Failed to generate presentation: $e');

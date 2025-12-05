@@ -21,7 +21,6 @@ enum ResourceType {
     color: Colors.orange,
     modelType: ModelType.text,
   ),
-
   mindmap(
     label: 'mindmap',
     icon: LucideIcons.brainCircuit,

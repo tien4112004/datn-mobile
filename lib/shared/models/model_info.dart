@@ -30,4 +30,8 @@ class ModelInfo {
 
   @override
   int get hashCode => name.hashCode ^ provider.hashCode;
+
+  static ModelInfo getDefault() {
+    return const ModelInfo(name: 'gpt-4o', provider: 'openai');
+  }
 }

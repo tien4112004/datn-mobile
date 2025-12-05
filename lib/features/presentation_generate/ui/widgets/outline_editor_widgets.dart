@@ -2,6 +2,8 @@ import 'package:datn_mobile/features/presentation_generate/domain/entity/outline
 import 'package:datn_mobile/features/presentation_generate/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 
 /// Empty state view for when there are no slides to edit
 class EmptyOutlineView extends StatelessWidget {
@@ -14,7 +16,7 @@ class EmptyOutlineView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.description_outlined,
+            LucideIcons.fileText,
             size: 64,
             color: Theme.of(
               context,
@@ -173,12 +175,12 @@ class OutlineSlideCard extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onEdit,
-                  icon: const Icon(Icons.edit),
+                  icon: const Icon(LucideIcons.pen),
                   tooltip: 'Edit slide',
                 ),
                 IconButton(
                   onPressed: onDelete,
-                  icon: const Icon(Icons.delete),
+                  icon: const Icon(LucideIcons.trash),
                   tooltip: 'Delete slide',
                   color: Theme.of(context).colorScheme.error,
                 ),
@@ -236,27 +238,34 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Edit Slide ${widget.slide.order}'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: 'Slide Title',
-              hintText: 'Enter slide title...',
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                labelText: 'Slide Title',
+                hintText: 'Enter slide title...',
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _contentController,
-            decoration: const InputDecoration(
-              labelText: 'Slide Content',
-              hintText: 'Enter slide content...',
+            const SizedBox(height: 16),
+            MarkdownAutoPreview(
+              minLines: 5,
+              maxLines: 10,
+              controller: _contentController,
+              decoration: const InputDecoration(
+                labelText: 'Slide Title',
+                hintText: 'Enter slide title...',
+              ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
-            maxLines: 5,
-            minLines: 3,
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -329,7 +338,7 @@ class OutlineActionsBar extends ConsumerWidget {
                       .setOutline(markdownOutline);
                 });
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(LucideIcons.plus),
               label: const Text('Add Slide'),
             ),
           ),

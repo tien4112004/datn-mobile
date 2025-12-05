@@ -25,6 +25,7 @@ extension OutlineGenerateResponseMapper on OutlineGenerateResponse {
       content: outline,
       generatedAt: DateTime.now(),
       resourceType: resourceType,
+      usedPrompt: outline,
     );
   }
 }

@@ -7,28 +7,37 @@ class PresentationGenerateRepositoryImpl
   PresentationGenerateRepositoryImpl(this._remoteSource);
 
   @override
-  Future<OutlineGenerateResponse> generateOutline(
-    OutlineGenerateRequest outlineData,
-  ) async {
+  Future<String> generateOutline(OutlineGenerateRequest outlineData) async {
     final response = await _remoteSource.generateOutline(outlineData);
 
-    if (response.data == null) {
+    if (response.detail == null) {
       throw Exception('Failed to generate outline');
     }
 
-    return response.data!;
+    // The response detail is a JSON string (double encoded), so we need to decode it
+    // to get the actual markdown text.
+    String markdown = response.detail!;
+    try {
+      if (markdown.startsWith('"') && markdown.endsWith('"')) {
+        markdown = jsonDecode(markdown) as String;
+      }
+    } catch (e) {
+      // If decoding fails, assume it is already the raw markdown
+    }
+
+    return markdown;
   }
 
   @override
-  Future<PresentationGenerateResponse> generatePresentation(
+  Future<String> generatePresentation(
     PresentationGenerateRequest request,
   ) async {
     final response = await _remoteSource.generatePresentation(request);
 
-    if (response.data == null) {
+    if (response.detail == null) {
       throw Exception('Failed to generate presentation');
     }
 
-    return response.data!;
+    return response.detail!;
   }
 }

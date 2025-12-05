@@ -6,9 +6,7 @@ class PresentationGenerateServiceImpl implements PresentationGenerateService {
   PresentationGenerateServiceImpl(this._repository);
 
   @override
-  Future<OutlineGenerateResponse> generateOutline(
-    OutlineGenerateRequest outlineData,
-  ) async {
+  Future<String> generateOutline(OutlineGenerateRequest outlineData) async {
     // Add business logic validations here
     if (outlineData.topic.trim().isEmpty) {
       throw ArgumentError('Topic cannot be empty');
@@ -22,7 +20,7 @@ class PresentationGenerateServiceImpl implements PresentationGenerateService {
   }
 
   @override
-  Future<PresentationGenerateResponse> generatePresentation(
+  Future<String> generatePresentation(
     PresentationGenerateRequest request,
   ) async {
     // Add business logic validations here

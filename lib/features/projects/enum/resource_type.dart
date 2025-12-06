@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entities/ai_model.dart';
+import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

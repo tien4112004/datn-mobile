@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -58,5 +59,22 @@ enum ResourceType {
       }
     }
     throw ArgumentError("Invalid ResourceType value: $value");
+  }
+
+  String getLabel(Translations t) {
+    switch (this) {
+      case ResourceType.document:
+        return t.generate.resourceTypes.document;
+      case ResourceType.image:
+        return t.generate.resourceTypes.image;
+      case ResourceType.presentation:
+        return t.generate.resourceTypes.presentation;
+      case ResourceType.mindmap:
+        return t.generate.resourceTypes.mindmap;
+    }
+  }
+
+  static List<String> getLabels(Translations t) {
+    return [for (var type in ResourceType.values) type.getLabel(t)];
   }
 }

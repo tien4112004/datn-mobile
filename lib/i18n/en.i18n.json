@@ -112,6 +112,7 @@
     "title": "Projects",
     "search_hint": "Search projects...",
     "recently_works": "Your recently works",
+    "no_recent_works": "No recent works",
     "created_at": "Created at: $date",
     "edited": "Edited: $date",
     "untitled": "Untitled",
@@ -209,6 +210,12 @@
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",
+      "mindmap": "Mindmap"
+    },
+    "resourceTypes": {
+      "document": "Document",
+      "image": "Image",
+      "presentation": "Presentation",
       "mindmap": "Mindmap"
     },
     "presentationGenerate": {

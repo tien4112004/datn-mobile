@@ -113,6 +113,7 @@
     "title": "Dự án",
     "search_hint": "Tìm kiếm dự án...",
     "recently_works": "Các công việc gần đây của bạn",
+    "no_recent_works": "Không có công việc gần đây",
     "created_at": "Tạo lúc: $date",
     "edited": "Đã chỉnh sửa: $date",
     "untitled": "Chưa đặt tên",
@@ -210,6 +211,12 @@
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
+      "mindmap": "Sơ đồ tư duy"
+    },
+    "resourceTypes": {
+      "document": "Tài liệu",
+      "image": "Hình ảnh",
+      "presentation": "Bài thuyết trình",
       "mindmap": "Sơ đồ tư duy"
     },
     "presentationGenerate": {

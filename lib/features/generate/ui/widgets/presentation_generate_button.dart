@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,6 +20,7 @@ class PresentationGenerateButton extends ConsumerWidget {
         ? formState.isStep1Valid
         : formState.isStep2Valid;
 
+    final t = ref.watch(translationsPod);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: SizedBox(
@@ -45,7 +47,7 @@ class PresentationGenerateButton extends ConsumerWidget {
                     valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
                   ),
                 )
-              : const Text('Generate'),
+              : Text(t.generate.customization.generate),
         ),
       ),
     );

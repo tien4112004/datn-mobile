@@ -2,6 +2,7 @@ import 'package:datn_mobile/features/generate/states/models_controller_pod.dart'
 import 'package:datn_mobile/features/generate/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +19,7 @@ class GenerationOptionsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final formState = ref.watch(presentationFormControllerProvider);
     final textModelsAsync = ref.watch(modelsControllerPod(ModelType.text));
@@ -42,9 +44,12 @@ class GenerationOptionsSection extends ConsumerWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Generation Settings',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                t.generate.customization.generationSettings,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -57,41 +62,43 @@ class GenerationOptionsSection extends ConsumerWidget {
               // Topic
               _OptionItem(
                 icon: Icons.topic_outlined,
-                label: 'Topic',
+                label: t.generate.customization.topic,
                 value: formState.topic.isNotEmpty
                     ? (formState.topic.length > 30
                           ? '${formState.topic.substring(0, 30)}...'
                           : formState.topic)
-                    : 'Not set',
+                    : t.generate.customization.notSet,
               ),
               // Slide Count
               _OptionItem(
                 icon: Icons.format_list_numbered,
-                label: 'Slides',
+                label: t.generate.customization.slides,
                 value: '${formState.slideCount}',
               ),
               // Language
               _OptionItem(
                 icon: Icons.language,
-                label: 'Language',
+                label: t.generate.customization.language,
                 value: formState.language,
               ),
               // Model
               textModelsAsync.when(
                 data: (models) => _OptionItem(
                   icon: Icons.psychology,
-                  label: 'Model',
-                  value: formState.outlineModel?.displayName ?? 'Default',
+                  label: t.generate.customization.model,
+                  value:
+                      formState.outlineModel?.displayName ??
+                      t.generate.customization.notSet,
                 ),
-                loading: () => const _OptionItem(
+                loading: () => _OptionItem(
                   icon: Icons.psychology,
-                  label: 'Model',
-                  value: 'Loading...',
+                  label: t.generate.customization.model,
+                  value: t.generate.customization.loading,
                 ),
-                error: (_, _) => const _OptionItem(
+                error: (_, _) => _OptionItem(
                   icon: Icons.psychology,
-                  label: 'Model',
-                  value: 'Error',
+                  label: t.generate.customization.model,
+                  value: t.generate.customization.error,
                 ),
               ),
             ],
@@ -109,7 +116,11 @@ class GenerationOptionsSection extends ConsumerWidget {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.refresh, size: 18),
-              label: Text(isLoading ? 'Regenerating...' : 'Regenerate Outline'),
+              label: Text(
+                isLoading
+                    ? t.generate.customization.regenerating
+                    : t.generate.customization.regenerateOutline,
+              ),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -137,6 +148,7 @@ class OutlineSummarySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final parser = ref.read(outlineParserRepositoryProvider);
     final slideTitles = parser.extractSlideTitles(outline);
@@ -161,15 +173,18 @@ class OutlineSummarySection extends ConsumerWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Generated Outline',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                t.generate.customization.generatedOutline,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
               TextButton.icon(
                 onPressed: onEdit,
                 icon: const Icon(Icons.edit, size: 16),
-                label: const Text('Edit'),
+                label: Text(t.generate.customization.edit),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
@@ -232,6 +247,7 @@ class ImageModelSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    late final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final formState = ref.watch(presentationFormControllerProvider);
     final formController = ref.read(
@@ -259,9 +275,12 @@ class ImageModelSection extends ConsumerWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Image Generation Model',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                t.generate.customization.imageGenerationModel,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -330,6 +349,7 @@ class AvoidContentSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -351,13 +371,16 @@ class AvoidContentSection extends ConsumerWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Content to Avoid',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                t.generate.customization.contentToAvoid,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(width: 8),
               Text(
-                '(Optional)',
+                t.generate.customization.optional,
                 style: TextStyle(
                   fontSize: 14,
                   color: isDark ? Colors.grey[500] : Colors.grey[500],
@@ -370,7 +393,7 @@ class AvoidContentSection extends ConsumerWidget {
             controller: avoidContentController,
             maxLines: 3,
             decoration: InputDecoration(
-              hintText: 'Enter topics or content you want to avoid...',
+              hintText: t.generate.customization.enterContentToAvoid,
               hintStyle: TextStyle(
                 color: isDark ? Colors.grey[600] : Colors.grey[400],
               ),
@@ -395,7 +418,7 @@ class AvoidContentSection extends ConsumerWidget {
 }
 
 /// Bottom action bar with Edit Outline and Generate buttons
-class PresentationCustomizationActionBar extends StatelessWidget {
+class PresentationCustomizationActionBar extends ConsumerWidget {
   final bool isLoading;
   final VoidCallback onEditOutline;
   final VoidCallback onGenerate;
@@ -408,8 +431,9 @@ class PresentationCustomizationActionBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -432,20 +456,6 @@ class PresentationCustomizationActionBar extends StatelessWidget {
         top: false,
         child: Row(
           children: [
-            // Edit Outline Button
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: isLoading ? null : onEditOutline,
-                icon: const Icon(Icons.edit_outlined),
-                label: const Text('Edit Outline'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
             const SizedBox(width: 12),
             // Generate Button
             Expanded(
@@ -462,7 +472,11 @@ class PresentationCustomizationActionBar extends StatelessWidget {
                         ),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(isLoading ? 'Generating...' : 'Generate'),
+                label: Text(
+                  isLoading
+                      ? t.generate.customization.generating
+                      : t.generate.customization.generate,
+                ),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(

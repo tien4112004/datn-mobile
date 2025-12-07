@@ -205,6 +205,124 @@
     "openSettings": "Mở cài đặt",
     "avatarUpdatedSuccess": "Cập nhật ảnh đại diện thành công!",
     "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
+  },
+  "generate": {
+    "generatorTypes": {
+      "presentation": "Bài thuyết trình",
+      "image": "Hình ảnh",
+      "mindmap": "Sơ đồ tư duy"
+    },
+    "presentationGenerate": {
+      "selectGenerator": "Chọn công cụ tạo",
+      "title": "Tạo bài thuyết trình bằng AI",
+      "subtitle": "Nhập chủ đề và để AI tạo bài thuyết trình chuyên nghiệp cho bạn",
+      "slidesCount": "$count slide",
+      "selectModel": "Chọn mô hình",
+      "noModelsAvailable": "Không có mô hình khả dụng",
+      "failedToLoadModels": "Không thể tải mô hình",
+      "selectSlideCount": "Chọn số lượng slide",
+      "selectLanguage": "Chọn ngôn ngữ",
+      "selectAiModel": "Chọn mô hình AI",
+      "attachFiles": "Đính kèm tệp",
+      "document": "Tài liệu",
+      "documentFormats": "PDF, Word, PowerPoint",
+      "documentPickerComingSoon": "Chức năng chọn tài liệu sắp ra mắt!",
+      "image": "Hình ảnh",
+      "imageFormats": "PNG, JPG, GIF",
+      "imagePickerComingSoon": "Chức năng chọn hình ảnh sắp ra mắt!",
+      "link": "Liên kết",
+      "linkDescription": "URL trang web",
+      "linkInputComingSoon": "Chức năng nhập liên kết sắp ra mắt!",
+      "generatorComingSoon": "Công cụ tạo $type sắp ra mắt!",
+      "enterTopic": "Nhập chủ đề bài thuyết trình...",
+      "tryTheseTopics": "Thử các chủ đề này:",
+      "topicSuggestions": {
+        "machineLearning": "Giới thiệu về Học máy",
+        "climateChange": "Giải pháp Biến đổi Khí hậu",
+        "digitalMarketing": "Chiến lược Marketing Kỹ thuật số",
+        "internetHistory": "Lịch sử Internet"
+      }
+    },
+    "outlineEditor": {
+      "title": "Chỉnh sửa dàn ý",
+      "noOutline": "Không có dàn ý để chỉnh sửa",
+      "noOutlineDescription": "Tạo dàn ý trước để bắt đầu chỉnh sửa",
+      "deleteSlide": "Xóa slide",
+      "deleteSlideConfirmation": "Bạn có chắc chắn muốn xóa \"$title\"?",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "editSlide": "Chỉnh sửa slide",
+      "deleteSlideTooltip": "Xóa slide",
+      "editSlideTitle": "Chỉnh sửa slide $order",
+      "slideTitle": "Tiêu đề slide",
+      "enterSlideTitle": "Nhập tiêu đề slide...",
+      "save": "Lưu",
+      "autoSaveFailed": "Không thể lưu thay đổi. Vui lòng thử lại.",
+      "addSlide": "Thêm slide"
+    },
+    "presentationCustomization": {
+      "title": "Tùy chỉnh bài thuyết trình",
+      "discardChanges": "Bỏ thay đổi?",
+      "discardChangesMessage": "Quay lại sẽ bỏ các thay đổi chưa lưu của dàn ý. Bạn có muốn tiếp tục?",
+      "cancel": "Hủy",
+      "discard": "Bỏ",
+      "helpTitle": "Tùy chỉnh bài thuyết trình",
+      "helpContent": "• Chọn chủ đề cho bài thuyết trình\n• Chọn mô hình tạo hình ảnh\n• Tùy chọn chỉ định nội dung cần tránh\n• Nhấn \"Chỉnh sửa dàn ý\" để sửa đổi slide\n• Nhấn \"Tạo\" để tạo bài thuyết trình",
+      "ok": "OK",
+      "outlineRegeneratedSuccess": "Đã tạo lại dàn ý thành công!",
+      "presentationSubmittedSuccess": "Đã gửi yêu cầu! Bài thuyết trình đang được tạo",
+      "error": "Lỗi: $error"
+    },
+    "generationSettings": {
+      "title": "Cài đặt tạo",
+      "numberOfSlides": "Số lượng slide",
+      "language": "Ngôn ngữ",
+      "aiModel": "Mô hình AI",
+      "noModelsAvailable": "Không có mô hình khả dụng",
+      "failedToLoadModels": "Không thể tải mô hình",
+      "done": "Xong"
+    },
+    "customization": {
+      "generationSettings": "Cài đặt tạo",
+      "topic": "Chủ đề",
+      "notSet": "Chưa đặt",
+      "slides": "Slide",
+      "language": "Ngôn ngữ",
+      "model": "Mô hình",
+      "default": "Mặc định",
+      "loading": "Đang tải...",
+      "error": "Lỗi",
+      "regenerating": "Đang tạo lại...",
+      "regenerateOutline": "Tạo lại dàn ý",
+      "generatedOutline": "Dàn ý đã tạo",
+      "edit": "Sửa",
+      "imageGenerationModel": "Mô hình tạo hình ảnh",
+      "failedToLoadModels": "Không thể tải mô hình",
+      "contentToAvoid": "Nội dung cần tránh",
+      "optional": "(Tùy chọn)",
+      "enterContentToAvoid": "Nhập chủ đề hoặc nội dung bạn muốn tránh...",
+      "editOutline": "Chỉnh sửa dàn ý",
+      "generating": "Đang tạo...",
+      "generate": "Tạo tài liệu"
+    },
+    "contentLength": {
+      "short": "Ngắn",
+      "medium": "Trung bình",
+      "long": "Dài"
+    },
+    "presentationTheme": {
+      "modern": "Hiện đại",
+      "classic": "Cổ điển",
+      "minimal": "Tối giản",
+      "vibrant": "Sống động"
+    },
+    "themeSelection": {
+      "title": "Chủ đề",
+      "viewAll": "Xem tất cả",
+      "failedToLoadThemes": "Không thể tải chủ đề",
+      "selectTheme": "Chọn chủ đề",
+      "failedToLoadThemesError": "Không thể tải chủ đề: $error"
+    }
   }
 }
 

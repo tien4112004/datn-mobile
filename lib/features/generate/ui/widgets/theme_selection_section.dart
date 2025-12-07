@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/states/theme_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_preview_card.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +13,7 @@ class ThemeSelectionSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final formState = ref.watch(presentationFormControllerProvider);
     final themesAsync = ref.watch(slideThemesProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -36,9 +38,12 @@ class ThemeSelectionSection extends ConsumerWidget {
                 size: 20,
               ),
               const SizedBox(width: 8),
-              const Text(
-                'Theme',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              Text(
+                t.generate.themeSelection.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               if (onInfoTap != null) ...[
                 const SizedBox(width: 8),
@@ -55,7 +60,7 @@ class ThemeSelectionSection extends ConsumerWidget {
               TextButton.icon(
                 onPressed: () => _showThemeSelectionModal(context, ref),
                 icon: const Icon(Icons.grid_view, size: 16),
-                label: const Text('View All'),
+                label: Text(t.generate.themeSelection.viewAll),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
@@ -103,7 +108,7 @@ class ThemeSelectionSection extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'Failed to load themes',
+                  t.generate.themeSelection.failedToLoadThemes,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
@@ -127,6 +132,7 @@ class ThemeSelectionSection extends ConsumerWidget {
 class _ThemeSelectionModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final formState = ref.watch(presentationFormControllerProvider);
     final formController = ref.read(
       presentationFormControllerProvider.notifier,
@@ -161,9 +167,9 @@ class _ThemeSelectionModal extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    const Text(
-                      'Select Theme',
-                      style: TextStyle(
+                    Text(
+                      t.generate.themeSelection.selectTheme,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),

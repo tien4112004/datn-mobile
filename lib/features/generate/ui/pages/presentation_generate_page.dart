@@ -8,27 +8,36 @@ import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_set
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_suggestions.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
-
-/// Available languages for presentation generation
-const List<String> _availableLanguages = ['English', 'Vietnamese'];
 
 /// Available slide counts for presentation generation
 const List<int> _availableSlideCounts = [3, 4, 5, 7, 10, 12, 15, 20, 25, 30];
 
 /// Generator types available in the app
 enum GeneratorType {
-  presentation('Presentation', Icons.slideshow_rounded),
-  image('Image', Icons.image_rounded),
-  mindmap('Mindmap', Icons.account_tree_rounded);
+  presentation(Icons.slideshow_rounded),
+  image(Icons.image_rounded),
+  mindmap(Icons.account_tree_rounded);
 
-  final String label;
   final IconData icon;
 
-  const GeneratorType(this.label, this.icon);
+  const GeneratorType(this.icon);
+
+  String getLabel(Translations t) {
+    switch (this) {
+      case GeneratorType.presentation:
+        return t.generate.generatorTypes.presentation;
+      case GeneratorType.image:
+        return t.generate.generatorTypes.image;
+      case GeneratorType.mindmap:
+        return t.generate.generatorTypes.mindmap;
+    }
+  }
 }
 
 @RoutePage()
@@ -45,6 +54,7 @@ class _PresentationGeneratePageState
   final TextEditingController _topicController = TextEditingController();
   final FocusNode _topicFocusNode = FocusNode();
   GeneratorType _selectedGenerator = GeneratorType.presentation;
+  late final t = ref.watch(translationsPod);
 
   @override
   void initState() {
@@ -126,7 +136,12 @@ class _PresentationGeneratePageState
         loading: () {},
         error: (error, stackTrace) {
           if (context.mounted) {
-            SnackbarUtils.showError(context, 'Error: $error');
+            SnackbarUtils.showError(
+              context,
+              t.generate.presentationCustomization.error(
+                error: error.toString(),
+              ),
+            );
           }
         },
       );
@@ -193,7 +208,7 @@ class _PresentationGeneratePageState
           ),
           const SizedBox(width: 8),
           Text(
-            _selectedGenerator.label,
+            _selectedGenerator.getLabel(t),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -234,7 +249,7 @@ class _PresentationGeneratePageState
           const SizedBox(height: 16),
           // Title
           Text(
-            'Select Generator',
+            t.generate.presentationGenerate.selectGenerator,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -267,7 +282,7 @@ class _PresentationGeneratePageState
                 ),
               ),
               title: Text(
-                type.label,
+                type.getLabel(t),
                 style: TextStyle(
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: bottomSheetContext.isDarkMode
@@ -303,7 +318,12 @@ class _PresentationGeneratePageState
       // TODO: Navigate to the appropriate generator page or update UI
       // For now, show a snackbar for non-presentation generators
       if (type != GeneratorType.presentation) {
-        SnackbarUtils.showInfo(context, '${type.label} generator coming soon!');
+        SnackbarUtils.showInfo(
+          context,
+          t.generate.presentationGenerate.generatorComingSoon(
+            type: type.getLabel(t),
+          ),
+        );
       }
     }
   }
@@ -341,7 +361,7 @@ class _PresentationGeneratePageState
           const SizedBox(height: 24),
           // Title
           Text(
-            'AI Presentation Generator',
+            t.generate.presentationGenerate.title,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -351,7 +371,7 @@ class _PresentationGeneratePageState
           const SizedBox(height: 12),
           // Subtitle
           Text(
-            'Enter your topic and let AI create a professional presentation for you',
+            t.generate.presentationGenerate.subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: context.secondaryTextColor),
           ),
@@ -383,7 +403,9 @@ class _PresentationGeneratePageState
         // Slide Count
         OptionChip(
           icon: Icons.format_list_numbered,
-          label: '${formState.slideCount} slides',
+          label: t.generate.presentationGenerate.slidesCount(
+            count: formState.slideCount,
+          ),
           onTap: () => _showSlideCountPicker(formController, formState),
         ),
         // Language
@@ -395,7 +417,9 @@ class _PresentationGeneratePageState
         // Model
         OptionChip(
           icon: Icons.psychology,
-          label: formState.outlineModel?.displayName ?? 'Select Model',
+          label:
+              formState.outlineModel?.displayName ??
+              t.generate.presentationGenerate.selectModel,
           onTap: () => _showModelPicker(formController, formState),
         ),
       ],
@@ -408,13 +432,15 @@ class _PresentationGeneratePageState
 
   void _showSlideCountPicker(dynamic formController, dynamic formState) {
     _showPickerBottomSheet(
-      title: 'Select Slide Count',
+      title: t.generate.presentationGenerate.selectSlideCount,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: _availableSlideCounts.map((count) {
           final isSelected = formState.slideCount == count;
           return ListTile(
-            title: Text('$count slides'),
+            title: Text(
+              t.generate.presentationGenerate.slidesCount(count: count),
+            ),
             trailing: isSelected
                 ? Icon(
                     Icons.check_circle_rounded,
@@ -432,11 +458,14 @@ class _PresentationGeneratePageState
   }
 
   void _showLanguagePicker(dynamic formController, dynamic formState) {
+    /// Available languages for presentation generation
+    List<String> availableLanguages = [t.locale_en, t.locale_vi];
+
     _showPickerBottomSheet(
-      title: 'Select Language',
+      title: t.generate.presentationGenerate.selectLanguage,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: _availableLanguages.map((language) {
+        children: availableLanguages.map((language) {
           final isSelected = formState.language == language;
           return ListTile(
             title: Text(language),
@@ -458,7 +487,7 @@ class _PresentationGeneratePageState
 
   void _showModelPicker(dynamic formController, dynamic formState) {
     _showPickerBottomSheet(
-      title: 'Select AI Model',
+      title: t.generate.presentationGenerate.selectAiModel,
       child: Consumer(
         builder: (context, ref, _) {
           final modelsAsync = ref.watch(modelsControllerPod(ModelType.text));
@@ -468,9 +497,11 @@ class _PresentationGeneratePageState
                   .where((m) => m.isEnabled)
                   .toList();
               if (models.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text('No models available'),
+                return Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    t.generate.presentationGenerate.noModelsAvailable,
+                  ),
                 );
               }
               return Column(
@@ -498,9 +529,9 @@ class _PresentationGeneratePageState
               padding: EdgeInsets.all(20),
               child: Center(child: CircularProgressIndicator()),
             ),
-            error: (_, _) => const Padding(
-              padding: EdgeInsets.all(20),
-              child: Text('Failed to load models'),
+            error: (_, _) => Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(t.generate.presentationGenerate.failedToLoadModels),
             ),
           );
         },
@@ -542,7 +573,7 @@ class _PresentationGeneratePageState
           const SizedBox(height: 16),
           // Title
           Text(
-            'Attach Files',
+            t.generate.presentationGenerate.attachFiles,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -563,13 +594,16 @@ class _PresentationGeneratePageState
               ),
               child: const Icon(Icons.description_outlined, color: Colors.blue),
             ),
-            title: const Text('Document'),
-            subtitle: const Text('PDF, Word, PowerPoint'),
+            title: Text(t.generate.presentationGenerate.document),
+            subtitle: Text(t.generate.presentationGenerate.documentFormats),
             onTap: () {
               Navigator.pop(bottomSheetContext);
               // TODO: Implement document picker
               if (mounted) {
-                SnackbarUtils.showInfo(context, 'Document picker coming soon!');
+                SnackbarUtils.showInfo(
+                  context,
+                  t.generate.presentationGenerate.documentPickerComingSoon,
+                );
               }
             },
           ),
@@ -583,13 +617,16 @@ class _PresentationGeneratePageState
               ),
               child: const Icon(Icons.image_outlined, color: Colors.green),
             ),
-            title: const Text('Image'),
-            subtitle: const Text('PNG, JPG, GIF'),
+            title: Text(t.generate.presentationGenerate.image),
+            subtitle: Text(t.generate.presentationGenerate.imageFormats),
             onTap: () {
               Navigator.pop(bottomSheetContext);
               // TODO: Implement image picker
               if (mounted) {
-                SnackbarUtils.showInfo(context, 'Image picker coming soon!');
+                SnackbarUtils.showInfo(
+                  context,
+                  t.generate.presentationGenerate.imagePickerComingSoon,
+                );
               }
             },
           ),
@@ -603,13 +640,16 @@ class _PresentationGeneratePageState
               ),
               child: const Icon(Icons.link_rounded, color: Colors.orange),
             ),
-            title: const Text('Link'),
-            subtitle: const Text('Website URL'),
+            title: Text(t.generate.presentationGenerate.link),
+            subtitle: Text(t.generate.presentationGenerate.linkDescription),
             onTap: () {
               Navigator.pop(bottomSheetContext);
               // TODO: Implement link input
               if (mounted) {
-                SnackbarUtils.showInfo(context, 'Link input coming soon!');
+                SnackbarUtils.showInfo(
+                  context,
+                  t.generate.presentationGenerate.linkInputComingSoon,
+                );
               }
             },
           ),

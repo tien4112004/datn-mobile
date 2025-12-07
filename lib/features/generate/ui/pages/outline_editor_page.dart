@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/outline_editor_widgets.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +14,8 @@ class OutlineEditorPage extends ConsumerStatefulWidget {
 }
 
 class _OutlineEditorPageState extends ConsumerState<OutlineEditorPage> {
+  late final t = ref.watch(translationsPod);
+
   @override
   Widget build(BuildContext context) {
     final editingState = ref.watch(outlineEditingControllerProvider);
@@ -65,7 +68,7 @@ class _OutlineEditorPageState extends ConsumerState<OutlineEditorPage> {
           // Generator type dropdown
           Expanded(
             child: Text(
-              'Edit Outline',
+              t.generate.outlineEditor.title,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,

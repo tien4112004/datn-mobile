@@ -5,6 +5,7 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +21,7 @@ class PresentationCustomizationPage extends ConsumerStatefulWidget {
 class _PresentationCustomizationPageState
     extends ConsumerState<PresentationCustomizationPage> {
   final TextEditingController _avoidContentController = TextEditingController();
+  late final t = ref.watch(translationsPod);
 
   @override
   void initState() {
@@ -59,18 +61,12 @@ class _PresentationCustomizationPageState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Customize Presentation'),
-        content: const Text(
-          '• Select a theme for your presentation\n'
-          '• Choose an image generation model\n'
-          '• Optionally specify content to avoid\n'
-          '• Tap "Edit Outline" to modify your slides\n'
-          '• Tap "Generate" to create your presentation',
-        ),
+        title: Text(t.generate.presentationCustomization.helpTitle),
+        content: Text(t.generate.presentationCustomization.helpContent),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text(t.generate.presentationCustomization.ok),
           ),
         ],
       ),
@@ -79,6 +75,7 @@ class _PresentationCustomizationPageState
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
     final formState = ref.watch(presentationFormControllerProvider);
@@ -113,10 +110,15 @@ class _PresentationCustomizationPageState
                 .read(presentationFormControllerProvider.notifier)
                 .setOutline(state.outlineResponse!);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Outline regenerated successfully!'),
+              SnackBar(
+                content: Text(
+                  t
+                      .generate
+                      .presentationCustomization
+                      .outlineRegeneratedSuccess,
+                ),
                 backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
+                duration: const Duration(seconds: 2),
               ),
             );
           }
@@ -125,12 +127,15 @@ class _PresentationCustomizationPageState
           if (state.presentationResponse != null &&
               (previousState?.presentationResponse == null)) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text(
-                  'Presentation submitted! Your presentation is being created',
+                  t
+                      .generate
+                      .presentationCustomization
+                      .presentationSubmittedSuccess,
                 ),
                 backgroundColor: Colors.green,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               ),
             );
             // Navigate to home or presentation detail page
@@ -141,7 +146,11 @@ class _PresentationCustomizationPageState
         error: (error, stackTrace) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $error'),
+              content: Text(
+                t.generate.presentationCustomization.error(
+                  error: error.toString(),
+                ),
+              ),
               backgroundColor: Colors.red,
               duration: const Duration(seconds: 5),
             ),
@@ -206,6 +215,7 @@ class _PresentationCustomizationPageState
   }
 
   Widget _buildAppBar(BuildContext context, bool isDark) {
+    final t = ref.watch(translationsPod);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -228,7 +238,7 @@ class _PresentationCustomizationPageState
           // Generator type dropdown
           Expanded(
             child: Text(
-              'Customize Presentation',
+              t.generate.presentationCustomization.title,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -253,21 +263,21 @@ class _PresentationCustomizationPageState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Discard Changes?'),
-        content: const Text(
-          'Going back will discard any unsaved changes to your outline. Do you want to continue?',
+        title: Text(t.generate.presentationCustomization.discardChanges),
+        content: Text(
+          t.generate.presentationCustomization.discardChangesMessage,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(t.generate.presentationCustomization.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close dialog
               context.router.maybePop(); // Navigate back
             },
-            child: const Text('Discard'),
+            child: Text(t.generate.presentationCustomization.discard),
           ),
         ],
       ),

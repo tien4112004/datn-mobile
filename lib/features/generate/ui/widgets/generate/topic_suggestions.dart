@@ -1,33 +1,34 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Displays clickable topic suggestions to help users get started.
 ///
 /// Extracted from PresentationGeneratePage to improve code organization.
-class TopicSuggestions extends StatelessWidget {
+class TopicSuggestions extends ConsumerWidget {
   final Function(String) onSuggestionTap;
-  final List<String> suggestions;
 
-  const TopicSuggestions({
-    super.key,
-    required this.onSuggestionTap,
-    this.suggestions = const [
-      'Introduction to Machine Learning',
-      'Climate Change Solutions',
-      'Digital Marketing Strategies',
-      'History of the Internet',
-    ],
-  });
+  const TopicSuggestions({super.key, required this.onSuggestionTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Replace with dynamic suggestions from backend in the future.
+    final t = ref.watch(translationsPod);
+    final suggestions = [
+      t.generate.presentationGenerate.topicSuggestions.climateChange,
+      t.generate.presentationGenerate.topicSuggestions.digitalMarketing,
+      t.generate.presentationGenerate.topicSuggestions.internetHistory,
+      t.generate.presentationGenerate.topicSuggestions.machineLearning,
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
-            'Try these topics:',
+            t.generate.presentationGenerate.tryTheseTopics,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,

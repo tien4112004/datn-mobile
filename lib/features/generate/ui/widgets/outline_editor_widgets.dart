@@ -1,5 +1,7 @@
 import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,20 +22,18 @@ Future<void> _autoSaveOutline(WidgetRef ref, BuildContext context) async {
   } catch (e, stackTrace) {
     debugPrint('Auto-save failed: $e\n$stackTrace');
     if (context.mounted) {
-      SnackbarUtils.showError(
-        context,
-        'Failed to save changes. Please try again.',
-      );
+      SnackbarUtils.showError(context, t.generate.outlineEditor.autoSaveFailed);
     }
   }
 }
 
 /// Empty state view for when there are no slides to edit
-class EmptyOutlineView extends StatelessWidget {
+class EmptyOutlineView extends ConsumerWidget {
   const EmptyOutlineView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -47,7 +47,7 @@ class EmptyOutlineView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'No outline to edit',
+            t.generate.outlineEditor.noOutline,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: Theme.of(
                 context,
@@ -56,7 +56,7 @@ class EmptyOutlineView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Generate an outline first to start editing',
+            t.generate.outlineEditor.noOutlineDescription,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(
                 context,
@@ -111,12 +111,14 @@ class OutlineSlidesList extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Slide'),
-        content: Text('Are you sure you want to delete "${slide.title}"?'),
+        title: Text(t.generate.outlineEditor.deleteSlide),
+        content: Text(
+          t.generate.outlineEditor.deleteSlideConfirmation(title: slide.title),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(t.generate.outlineEditor.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -132,7 +134,7 @@ class OutlineSlidesList extends ConsumerWidget {
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.generate.outlineEditor.delete),
           ),
         ],
       ),
@@ -195,12 +197,12 @@ class OutlineSlideCard extends StatelessWidget {
                 IconButton(
                   onPressed: onEdit,
                   icon: const Icon(LucideIcons.pen),
-                  tooltip: 'Edit slide',
+                  tooltip: t.generate.outlineEditor.editSlide,
                 ),
                 IconButton(
                   onPressed: onDelete,
-                  icon: const Icon(LucideIcons.trash),
-                  tooltip: 'Delete slide',
+                  icon: const Icon(LucideIcons.trash2),
+                  tooltip: t.generate.outlineEditor.deleteSlideTooltip,
                   color: Theme.of(context).colorScheme.error,
                 ),
               ],
@@ -255,17 +257,20 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     return AlertDialog(
-      title: Text('Edit Slide ${widget.slide.order}'),
+      title: Text(
+        t.generate.outlineEditor.editSlideTitle(order: widget.slide.order),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Slide Title',
-                hintText: 'Enter slide title...',
+              decoration: InputDecoration(
+                labelText: t.generate.outlineEditor.slideTitle,
+                hintText: t.generate.outlineEditor.enterSlideTitle,
               ),
             ),
             const SizedBox(height: 16),
@@ -273,9 +278,9 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
               minLines: 5,
               maxLines: 10,
               controller: _contentController,
-              decoration: const InputDecoration(
-                labelText: 'Slide Title',
-                hintText: 'Enter slide title...',
+              decoration: InputDecoration(
+                labelText: t.generate.outlineEditor.slideTitle,
+                hintText: t.generate.outlineEditor.enterSlideTitle,
               ),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(
@@ -289,7 +294,7 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(t.generate.outlineEditor.cancel),
         ),
         TextButton(
           onPressed: () async {
@@ -306,7 +311,7 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Save'),
+          child: Text(t.generate.outlineEditor.save),
         ),
       ],
     );
@@ -345,7 +350,7 @@ class OutlineActionsBar extends ConsumerWidget {
                 await _autoSaveOutline(ref, context);
               },
               icon: const Icon(LucideIcons.plus),
-              label: const Text('Add Slide'),
+              label: Text(t.generate.outlineEditor.addSlide),
             ),
           ),
         ],

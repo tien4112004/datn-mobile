@@ -116,7 +116,11 @@ class _PresentationGeneratePageState
                 .read(presentationFormControllerProvider.notifier)
                 .setOutline(state.outlineResponse!);
             // Navigate to customization page
-            context.router.push(const PresentationCustomizationRoute());
+            if (context.router.current.name == PresentationGenerateRoute.name) {
+              context.router.push(const PresentationCustomizationRoute());
+            } else {
+              context.router.replace(const PresentationCustomizationRoute());
+            }
           }
         },
         loading: () {},

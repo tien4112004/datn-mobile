@@ -7,8 +7,6 @@ part of 'controller_provider.dart';
 class PresentationFormController extends Notifier<PresentationFormState> {
   @override
   PresentationFormState build() {
-    // Keep state alive during navigation to preserve form data
-    ref.keepAlive();
     return const PresentationFormState();
   }
 

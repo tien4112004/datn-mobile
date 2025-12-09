@@ -13,7 +13,6 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 /// Available slide counts for presentation generation
 const List<int> _availableSlideCounts = [3, 4, 5, 7, 10, 12, 15, 20, 25, 30];
@@ -411,7 +410,7 @@ class _PresentationGeneratePageState
         // Language
         OptionChip(
           icon: Icons.language,
-          label: formState.language,
+          label: formState.language.isEmpty ? t.locale_en : formState.language,
           onTap: () => _showLanguagePicker(formController, formState),
         ),
         // Model
@@ -425,10 +424,6 @@ class _PresentationGeneratePageState
       ],
     );
   }
-
-  // Removed _buildOptionChip - now using OptionChip widget
-  // Removed _buildSuggestions - now using TopicSuggestions widget
-  // Removed _buildBottomInputSection - now using TopicInputBar widget
 
   void _showSlideCountPicker(dynamic formController, dynamic formState) {
     _showPickerBottomSheet(
@@ -663,44 +658,57 @@ class _PresentationGeneratePageState
 
   void _showPickerBottomSheet({required String title, required Widget child}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    WoltModalSheet.show<void>(
+    showModalBottomSheet(
       context: context,
-      modalTypeBuilder: (context) => WoltModalType.bottomSheet(),
-      useSafeArea: true,
-      pageListBuilder: (modelBottomSheetContext) {
-        return [
-          SliverWoltModalSheetPage(
-            trailingNavBarWidget: IconButton(
-              onPressed: () => Navigator.pop(modelBottomSheetContext),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              icon: Icon(
-                Icons.close_rounded,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: context.surfaceColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
             ),
-            pageTitle: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.grey[900],
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                // Handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.dividerColor,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                // Title
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.grey[900],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Content
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: child,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            mainContentSliversBuilder: (context) => [
-              SliverPadding(
-                padding: const EdgeInsets.all(20),
-                sliver: SliverToBoxAdapter(child: child),
-              ),
-            ],
-          ),
-        ];
-      },
+          );
+        },
+      ),
     );
   }
 }

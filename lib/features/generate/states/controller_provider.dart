@@ -25,9 +25,10 @@ final presentationGenerateControllerProvider =
 
 /// Provider for the presentation form controller.
 final presentationFormControllerProvider =
-    NotifierProvider<PresentationFormController, PresentationFormState>(
-      PresentationFormController.new,
-    );
+    NotifierProvider.autoDispose<
+      PresentationFormController,
+      PresentationFormState
+    >(PresentationFormController.new);
 
 /// Provider for the outline editing controller.
 final outlineEditingControllerProvider =

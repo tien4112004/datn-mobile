@@ -6,6 +6,8 @@ import 'package:datn_mobile/features/generate/domain/entity/outline_editing_stat
 import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/generate/enum/presentation_theme.dart';
 import 'package:datn_mobile/features/generate/service/service_provider.dart';
+import 'package:datn_mobile/features/generate/states/mindmap/mindmap_form_state.dart';
+import 'package:datn_mobile/features/generate/states/mindmap/mindmap_generate_state.dart';
 import 'package:datn_mobile/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:datn_mobile/features/generate/states/presentations/presentation_generate_state.dart';
 import 'package:datn_mobile/shared/models/model_info.dart';
@@ -19,7 +21,9 @@ import 'package:flutter_riverpod/legacy.dart';
 
 part 'presentations/presentation_generate_controller.dart';
 part 'presentations/presentation_form_controller.dart';
-part 'presentations/outline_editing_controller.dart';
+part 'outline/outline_editing_controller.dart';
+part 'mindmap/mindmap_form_controller.dart';
+part 'mindmap/mindmap_generate_controller.dart';
 part 'models/models_pod.dart';
 
 /// Provider for the presentation generation controller.
@@ -40,4 +44,16 @@ final presentationFormControllerProvider =
 final outlineEditingControllerProvider =
     NotifierProvider<OutlineEditingController, OutlineEditingState>(
       OutlineEditingController.new,
+    );
+
+/// Provider for the mindmap form controller.
+final mindmapFormControllerProvider =
+    NotifierProvider<MindmapFormController, MindmapFormState>(
+      MindmapFormController.new,
+    );
+
+/// Provider for the mindmap generation controller.
+final mindmapGenerateControllerProvider =
+    AsyncNotifierProvider<MindmapGenerateController, MindmapGenerateState>(
+      MindmapGenerateController.new,
     );

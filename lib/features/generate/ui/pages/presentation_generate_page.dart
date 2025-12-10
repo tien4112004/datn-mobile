@@ -313,15 +313,24 @@ class _PresentationGeneratePageState
       setState(() {
         _selectedGenerator = type;
       });
-      // TODO: Navigate to the appropriate generator page or update UI
-      // For now, show a snackbar for non-presentation generators
-      if (type != GeneratorType.presentation) {
-        SnackbarUtils.showInfo(
-          context,
-          t.generate.presentationGenerate.generatorComingSoon(
-            type: type.getLabel(t),
-          ),
-        );
+      // Navigate to the appropriate generator page
+      switch (type) {
+        case GeneratorType.presentation:
+          // Already on presentation page, do nothing
+          break;
+        case GeneratorType.mindmap:
+          // Navigate to mindmap generate page
+          context.router.replace(const MindmapGenerateRoute());
+          break;
+        case GeneratorType.image:
+          // Image generator coming soon
+          SnackbarUtils.showInfo(
+            context,
+            t.generate.presentationGenerate.generatorComingSoon(
+              type: type.getLabel(t),
+            ),
+          );
+          break;
       }
     }
   }

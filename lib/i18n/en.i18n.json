@@ -328,6 +328,30 @@
       "failedToLoadThemes": "Failed to load themes",
       "selectTheme": "Select Theme",
       "failedToLoadThemesError": "Failed to load themes: $error"
+    },
+    "mindmapGenerate": {
+      "title": "Mindmap",
+      "pageTitle": "AI Mindmap Generator",
+      "subtitle": "Enter your topic and let AI create a structured mindmap for you",
+      "topicHint": "Enter your mindmap topic...",
+      "selectLanguage": "Select Language",
+      "selectModel": "Select AI Model",
+      "selectMaxDepth": "Select Max Depth",
+      "selectMaxBranches": "Select Max Branches",
+      "maxDepth": "Depth: $depth",
+      "maxBranches": "Branches: $branches",
+      "noModelsAvailable": "No models available",
+      "failedToLoadModels": "Failed to load models",
+      "error": "Error: $error"
+    },
+    "mindmapResult": {
+      "title": "Generated Mindmap",
+      "noMindmap": "No mindmap generated",
+      "error": "Error: $error",
+      "branches": "Branches",
+      "generateNew": "Generate New",
+      "save": "Save",
+      "saveComingSoon": "Save feature coming soon!"
     }
   }
 }

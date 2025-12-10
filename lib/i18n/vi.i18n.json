@@ -329,6 +329,30 @@
       "failedToLoadThemes": "Không thể tải chủ đề",
       "selectTheme": "Chọn chủ đề",
       "failedToLoadThemesError": "Không thể tải chủ đề: $error"
+    },
+    "mindmapGenerate": {
+      "title": "Sơ đồ tư duy",
+      "pageTitle": "Tạo sơ đồ tư duy bằng AI",
+      "subtitle": "Nhập chủ đề và để AI tạo sơ đồ tư duy có cấu trúc cho bạn",
+      "topicHint": "Nhập chủ đề sơ đồ tư duy...",
+      "selectLanguage": "Chọn ngôn ngữ",
+      "selectModel": "Chọn mô hình AI",
+      "selectMaxDepth": "Chọn độ sâu tối đa",
+      "selectMaxBranches": "Chọn số nhánh tối đa",
+      "maxDepth": "Độ sâu: $depth",
+      "maxBranches": "Nhánh: $branches",
+      "noModelsAvailable": "Không có mô hình khả dụng",
+      "failedToLoadModels": "Không thể tải mô hình",
+      "error": "Lỗi: $error"
+    },
+    "mindmapResult": {
+      "title": "Sơ đồ tư duy đã tạo",
+      "noMindmap": "Chưa có sơ đồ tư duy",
+      "error": "Lỗi: $error",
+      "branches": "Các nhánh",
+      "generateNew": "Tạo mới",
+      "save": "Lưu",
+      "saveComingSoon": "Tính năng lưu sắp ra mắt!"
     }
   }
 }

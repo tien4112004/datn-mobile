@@ -32,6 +32,8 @@ class AppRouter extends RootStackRouter {
       path: '/presentation/customize',
     ),
     AutoRoute(page: OutlineEditorRoute.page, path: '/outline-editor'),
+    AutoRoute(page: MindmapGenerateRoute.page, path: '/mindmap'),
+    AutoRoute(page: MindmapResultRoute.page, path: '/mindmap/result'),
     AutoRoute(
       page: PresentationDetailRoute.page,
       path: '/presentation/:presentationId',

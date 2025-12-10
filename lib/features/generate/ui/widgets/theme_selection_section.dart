@@ -1,5 +1,5 @@
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/features/generate/states/theme_provider.dart';
+import 'package:datn_mobile/features/generate/states/theme/theme_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_preview_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';

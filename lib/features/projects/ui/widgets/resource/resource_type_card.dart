@@ -1,9 +1,11 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ResourceTypeCard extends StatelessWidget {
+class ResourceTypeCard extends ConsumerWidget {
   final ResourceType resourceType;
   final VoidCallback onTap;
 
@@ -14,7 +16,8 @@ class ResourceTypeCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
@@ -36,7 +39,7 @@ class ResourceTypeCard extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Text(
-              resourceType.label,
+              resourceType.getLabel(t),
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const Spacer(),

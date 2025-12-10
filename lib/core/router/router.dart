@@ -26,7 +26,12 @@ class AppRouter extends RootStackRouter {
       ],
     ),
     AutoRoute(page: ResourceListRoute.page, path: '/resources/:resourceType'),
-    AutoRoute(page: PresentationRoute.page, path: '/presentation'),
+    AutoRoute(page: PresentationGenerateRoute.page, path: '/presentation'),
+    AutoRoute(
+      page: PresentationCustomizationRoute.page,
+      path: '/presentation/customize',
+    ),
+    AutoRoute(page: OutlineEditorRoute.page, path: '/outline-editor'),
     AutoRoute(
       page: PresentationDetailRoute.page,
       path: '/presentation/:presentationId',

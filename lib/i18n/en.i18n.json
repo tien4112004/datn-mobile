@@ -112,6 +112,7 @@
     "title": "Projects",
     "search_hint": "Search projects...",
     "recently_works": "Your recently works",
+    "no_recent_works": "No recent works",
     "created_at": "Created at: $date",
     "edited": "Edited: $date",
     "untitled": "Untitled",
@@ -204,5 +205,129 @@
     "openSettings": "Open Settings",
     "avatarUpdatedSuccess": "Avatar updated successfully!",
     "avatarUpdateFailed": "Failed to update avatar: $error"
+  },
+  "generate": {
+    "generatorTypes": {
+      "presentation": "Presentation",
+      "image": "Image",
+      "mindmap": "Mindmap"
+    },
+    "resourceTypes": {
+      "document": "Document",
+      "image": "Image",
+      "presentation": "Presentation",
+      "mindmap": "Mindmap"
+    },
+    "presentationGenerate": {
+      "selectGenerator": "Select Generator",
+      "title": "AI Presentation Generator",
+      "subtitle": "Enter your topic and let AI create a professional presentation for you",
+      "slidesCount": "$count slides",
+      "selectModel": "Select Model",
+      "noModelsAvailable": "No models available",
+      "failedToLoadModels": "Failed to load models",
+      "selectSlideCount": "Select Slide Count",
+      "selectLanguage": "Select Language",
+      "selectAiModel": "Select AI Model",
+      "attachFiles": "Attach Files",
+      "document": "Document",
+      "documentFormats": "PDF, Word, PowerPoint",
+      "documentPickerComingSoon": "Document picker coming soon!",
+      "image": "Image",
+      "imageFormats": "PNG, JPG, GIF",
+      "imagePickerComingSoon": "Image picker coming soon!",
+      "link": "Link",
+      "linkDescription": "Website URL",
+      "linkInputComingSoon": "Link input coming soon!",
+      "generatorComingSoon": "$type generator coming soon!",
+      "enterTopic": "Enter your presentation topic...",
+      "tryTheseTopics": "Try these topics:",
+      "topicSuggestions": {
+        "machineLearning": "Introduction to Machine Learning",
+        "climateChange": "Climate Change Solutions",
+        "digitalMarketing": "Digital Marketing Strategies",
+        "internetHistory": "History of the Internet"
+      }
+    },
+    "outlineEditor": {
+      "title": "Edit Outline",
+      "noOutline": "No outline to edit",
+      "noOutlineDescription": "Generate an outline first to start editing",
+      "deleteSlide": "Delete Slide",
+      "deleteSlideConfirmation": "Are you sure you want to delete \"$title\"?",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "editSlide": "Edit slide",
+      "deleteSlideTooltip": "Delete slide",
+      "editSlideTitle": "Edit Slide $order",
+      "slideTitle": "Slide Title",
+      "enterSlideTitle": "Enter slide title...",
+      "save": "Save",
+      "autoSaveFailed": "Failed to save changes. Please try again.",
+      "addSlide": "Add Slide"
+    },
+    "presentationCustomization": {
+      "title": "Customize Presentation",
+      "discardChanges": "Discard Changes?",
+      "discardChangesMessage": "Going back will discard any unsaved changes to your outline. Do you want to continue?",
+      "cancel": "Cancel",
+      "discard": "Discard",
+      "helpTitle": "Customize Presentation",
+      "helpContent": "• Select a theme for your presentation\n• Choose an image generation model\n• Optionally specify content to avoid\n• Tap \"Edit Outline\" to modify your slides\n• Tap \"Generate\" to create your presentation",
+      "ok": "OK",
+      "outlineRegeneratedSuccess": "Outline regenerated successfully!",
+      "presentationSubmittedSuccess": "Presentation submitted! Your presentation is being created",
+      "error": "Error: $error"
+    },
+    "generationSettings": {
+      "title": "Generation Settings",
+      "numberOfSlides": "Number of Slides",
+      "language": "Language",
+      "aiModel": "AI Model",
+      "noModelsAvailable": "No models available",
+      "failedToLoadModels": "Failed to load models",
+      "done": "Done"
+    },
+    "customization": {
+      "generationSettings": "Generation Settings",
+      "topic": "Topic",
+      "notSet": "Not set",
+      "slides": "Slides",
+      "language": "Language",
+      "model": "Model",
+      "default": "Default",
+      "loading": "Loading...",
+      "error": "Error",
+      "regenerating": "Regenerating...",
+      "regenerateOutline": "Regenerate Outline",
+      "generatedOutline": "Generated Outline",
+      "edit": "Edit",
+      "imageGenerationModel": "Image Generation Model",
+      "failedToLoadModels": "Failed to load models",
+      "contentToAvoid": "Content to Avoid",
+      "optional": "(Optional)",
+      "enterContentToAvoid": "Enter topics or content you want to avoid...",
+      "editOutline": "Edit Outline",
+      "generating": "Generating...",
+      "generate": "Generate"
+    },
+    "contentLength": {
+      "short": "Short",
+      "medium": "Medium",
+      "long": "Long"
+    },
+    "presentationTheme": {
+      "modern": "Modern",
+      "classic": "Classic",
+      "minimal": "Minimal",
+      "vibrant": "Vibrant"
+    },
+    "themeSelection": {
+      "title": "Theme",
+      "viewAll": "View All",
+      "failedToLoadThemes": "Failed to load themes",
+      "selectTheme": "Select Theme",
+      "failedToLoadThemesError": "Failed to load themes: $error"
+    }
   }
 }

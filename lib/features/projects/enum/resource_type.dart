@@ -1,34 +1,51 @@
+import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 enum ResourceType {
-  document(label: "document", icon: LucideIcons.fileText, color: Colors.blue),
-  image(label: "image", icon: LucideIcons.image, color: Colors.green),
+  document(
+    label: "document",
+    icon: LucideIcons.fileText,
+    color: Colors.blue,
+    modelType: ModelType.text,
+  ),
+  image(
+    label: "image",
+    icon: LucideIcons.image,
+    color: Colors.green,
+    modelType: ModelType.image,
+  ),
   presentation(
     label: 'presentation',
     icon: LucideIcons.presentation,
     color: Colors.orange,
+    modelType: ModelType.text,
   ),
-
   mindmap(
     label: 'mindmap',
     icon: LucideIcons.brainCircuit,
     color: Colors.purple,
+    modelType: ModelType.text,
   );
 
   final String label;
   final IconData icon;
   final Color color;
+  final ModelType modelType;
 
   const ResourceType({
     required this.label,
     required this.icon,
     required this.color,
+    required this.modelType,
   });
 
   String getValue() {
     return label;
   }
+
+  ModelType get modelTypeValue => modelType;
 
   @override
   String toString() {
@@ -42,5 +59,22 @@ enum ResourceType {
       }
     }
     throw ArgumentError("Invalid ResourceType value: $value");
+  }
+
+  String getLabel(Translations t) {
+    switch (this) {
+      case ResourceType.document:
+        return t.generate.resourceTypes.document;
+      case ResourceType.image:
+        return t.generate.resourceTypes.image;
+      case ResourceType.presentation:
+        return t.generate.resourceTypes.presentation;
+      case ResourceType.mindmap:
+        return t.generate.resourceTypes.mindmap;
+    }
+  }
+
+  static List<String> getLabels(Translations t) {
+    return [for (var type in ResourceType.values) type.getLabel(t)];
   }
 }

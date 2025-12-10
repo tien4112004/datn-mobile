@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/shared/widget/box.dart';
 import 'package:datn_mobile/shared/widget/info_dot.dart';
-import 'package:datn_mobile/shared/widget/option_field.dart';
 
 class OptionBox extends StatefulWidget {
   final String title;
-  final List<OptionRow> collapsedOptions;
-  final List<OptionRow>? expandedOptions;
+  final Widget collapsedOptions;
+  final Widget? expandedOptions;
   final bool showInfoDot;
   final VoidCallback? onInfoTap;
   final bool initiallyExpanded;
@@ -73,6 +72,7 @@ class _OptionBoxState extends State<OptionBox>
     return Box(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -103,27 +103,13 @@ class _OptionBoxState extends State<OptionBox>
             ],
           ),
           const SizedBox(height: 12),
-          ...widget.collapsedOptions.map(
-            (row) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: row.build(context),
-            ),
-          ),
+          widget.collapsedOptions,
+          const SizedBox(height: 24),
           if (widget.expandedOptions != null)
             SizeTransition(
               sizeFactor: _expandAnimation,
               axisAlignment: -1.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.expandedOptions!
-                    .map(
-                      (row) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: row.build(context),
-                      ),
-                    )
-                    .toList(),
-              ),
+              child: widget.expandedOptions!,
             ),
         ],
       ),

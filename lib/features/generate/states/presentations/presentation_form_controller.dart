@@ -1,4 +1,4 @@
-part of 'controller_provider.dart';
+part of '../controller_provider.dart';
 
 /// Controller for managing the presentation form state.
 ///

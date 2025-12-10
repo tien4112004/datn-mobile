@@ -1,0 +1,257 @@
+components:
+  schemas:
+  # Mindmap nodes schemas
+    MindmapBaseNode:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the node. Unique within the its mindmap.
+    MindmapTextNode:
+      title: MindmapTextNode
+      allOf:
+        - $ref: "#/components/schemas/MindmapBaseNode"
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: ["mindmapTextNode"]
+            content:
+              type: string
+              description: Text content of the node
+    MindmapRootNode:
+      title: MindmapRootNode
+      allOf:
+        - $ref: "#/components/schemas/MindmapBaseNode"
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: ["mindmapRootNode"]
+            content:
+              type: string
+              description: Text content of the root node
+            MindmappathType:
+              enum: ["smoothstep", "straight", "bezier"]
+              description: Style of the path connecting nodes
+            edgeColor:
+              anyOf:
+                - type: string
+                - type: "null"
+              description: Hex color for the edges connecting nodes
+              example: "#FF5733"
+    MindmapShapeNode:
+      title: MindmapShapeNode
+      allOf:
+        - $ref: "#/components/schemas/MindmapBaseNode"
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: ["mindmapShapeNode"]
+            shape:
+              type: [string, "null"]
+              enum: ["rectangle", "circle", "ellipse"]
+              description: Shape of the node (e.g., rectangle, circle)
+            width:
+              type: [number, "null"]
+              description: Width of the shape node
+            height:
+              type: [number, "null"]
+              description: Height of the shape node
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: ["mindmapImageNode"]
+            imageUrl:
+              type: string
+              format: uri
+              description: URL of the image for the node
+            width:
+              type: number
+              description: Width of the image node
+            height:
+              type: [number, "null"]
+              description: Height of the image node
+            alt:
+              type: [string, "null"]
+              description: Alt text for the image node
+    MindmapImageNode:
+      title: MindmapImageNode
+      allOf:
+        - $ref: "#/components/schemas/MindmapBaseNode"
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: ["mindmapImageNode"]
+            imageUrl:
+              type: string
+              format: uri
+              description: URL of the image for the node
+            width:
+              anyOf:
+                - type: number
+                - type: "null"
+              description: Width of the image node
+            height:
+              anyOf:
+                - type: number
+                - type: "null"
+              description: Height of the image node
+            alt:
+              anyOf:
+                - type: string
+                - type: "null"
+              description: Alt text for the image node
+    MindmapNode:
+      description: Union type representing any node in the mindmap
+      oneOf:
+        - $ref: "#/components/schemas/MindmapTextNode"
+        - $ref: "#/components/schemas/MindmapRootNode"
+        - $ref: "#/components/schemas/MindmapShapeNode"
+        - $ref: "#/components/schemas/MindmapImageNode"
+    Mindmap:
+      type: object
+      description: Mindmap response schema
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the mindmap
+        title:
+          type: string
+          description: Title of the mindmap (or the filename)
+        description:
+          type: [string, "null"]
+          description: Description of the mindmap
+        nodes:
+          type: array
+          description: Array of nodes in the mindmap
+          items:
+            $ref: "#/components/schemas/MindmapNode"
+        edges:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: The unique identifier for the edge
+              type:
+                type: string
+                description: The type of the edge
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the mindmap was created
+          example: "2025-08-30T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the mindmap was last updated
+          example: "2025-08-30T15:45:00Z"
+
+    MindmapGenerateRequest:
+      type: object
+      description: Request body for generating a mindmap
+      required:
+        - topic
+        - model
+        - provider
+        - language
+      properties:
+        topic:
+          type: string
+          description: The main topic or subject for the mindmap generation
+          example: "Machine Learning Fundamentals"
+          minLength: 1
+          maxLength: 500
+        model:
+          type: string
+          description: The AI model to use for generation
+          example: "gpt-4o"
+          enum:
+            - gpt-4o
+            - gpt-4-turbo
+            - gpt-3.5-turbo
+            - claude-3-opus
+            - claude-3-sonnet
+            - claude-3-haiku
+        provider:
+          type: string
+          description: The AI service provider
+          example: "openai"
+          enum:
+            - openai
+            - anthropic
+            - google
+        language:
+          type: string
+          description: The language for the mindmap content (ISO 639-1 code)
+          example: "en"
+          enum:
+            - en
+            - vi
+            - fr
+            - es
+            - de
+            - ja
+            - zh
+        maxDepth:
+          type: integer
+          description: Maximum depth of the mindmap branches (default 3)
+          minimum: 1
+          maximum: 5
+          default: 3
+          example: 3
+        maxBranchesPerNode:
+          type: integer
+          description: Maximum number of branches per node (default 5)
+          minimum: 1
+          maximum: 10
+          default: 5
+          example: 5
+
+    MindmapNodeContent:
+      type: object
+      description: A node in the mindmap hierarchy with recursive children structure
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          description: Text content of the node
+          example: "Central Concept"
+        children:
+          type: array
+          description: Child nodes branching from this node
+          items:
+            $ref: "#/components/schemas/MindmapNodeContent"
+          default: []
+
+    MindmapGenerateResponse:
+      type: object
+      description: Response schema for mindmap generation with hierarchical structure
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          description: The central concept or root content
+          example: "Central Concept"
+        children:
+          type: array
+          description: Array of main branches as child nodes
+          items:
+            $ref: "#/components/schemas/MindmapNodeContent"
+          example:
+            - content: "Main Branch 1"
+              children:
+                - content: "Sub-idea 1.1"
+                  children: []
+                - content: "Sub-idea 1.2"
+                  children: []
+            - content: "Main Branch 2"
+              children: []
+    

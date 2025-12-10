@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/generate/data/repository/repository_provide
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/domain/entity/outline_editing_state.dart';
 import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
+import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/enum/presentation_theme.dart';
 import 'package:datn_mobile/features/generate/service/service_provider.dart';
 import 'package:datn_mobile/features/generate/states/mindmap/mindmap_form_state.dart';
@@ -57,3 +58,9 @@ final mindmapGenerateControllerProvider =
     AsyncNotifierProvider<MindmapGenerateController, MindmapGenerateState>(
       MindmapGenerateController.new,
     );
+
+/// Provider for tracking the active generator type.
+/// Defaults to presentation generator.
+final generatorTypeProvider = StateProvider<GeneratorType>((ref) {
+  return GeneratorType.presentation;
+});

@@ -3,6 +3,10 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/model_picker_sheet.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -130,46 +134,17 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // App Bar
-            _buildAppBar(context),
             // Main Content
             Expanded(child: _buildMainContent(context)),
             // Bottom Input Section
-            _buildBottomInputSection(context),
+            TopicInputBar(
+              topicController: _topicController,
+              topicFocusNode: _topicFocusNode,
+              onAttachFile: () => AttachFileSheet.show(context: context, t: t),
+              onGenerate: _handleGenerate,
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: ThemeDecorations.containerWithBottomBorder(context),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => context.router.maybePop(),
-            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-          ),
-          const SizedBox(width: 12),
-          Icon(
-            Icons.account_tree_rounded,
-            size: 20,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            t.generate.mindmapGenerate.title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: context.isDarkMode ? Colors.white : Colors.grey[900],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -313,86 +288,9 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     );
   }
 
-  Widget _buildBottomInputSection(BuildContext context) {
-    final isGenerating = ref.watch(
-      mindmapGenerateControllerProvider.select((state) => state.isLoading),
-    );
-    final formState = ref.watch(mindmapFormControllerProvider);
-
-    return Container(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
-      ),
-      decoration: ThemeDecorations.containerWithTopBorder(context),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _topicController,
-              focusNode: _topicFocusNode,
-              maxLength: 500,
-              decoration: InputDecoration(
-                hintText: t.generate.mindmapGenerate.topicHint,
-                hintStyle: TextStyle(color: context.secondaryTextColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: context.isDarkMode
-                    ? Colors.grey[800]
-                    : Colors.grey[100],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                counterText: '',
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Generate Button
-          Material(
-            color: formState.isValid
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey,
-            borderRadius: BorderRadius.circular(24),
-            child: InkWell(
-              onTap: formState.isValid && !isGenerating
-                  ? _handleGenerate
-                  : null,
-              borderRadius: BorderRadius.circular(24),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                child: isGenerating
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      )
-                    : const Icon(
-                        Icons.auto_awesome,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showLanguagePicker(dynamic formState) {
-    _showPickerBottomSheet(
+    PickerBottomSheet.show(
+      context: context,
       title: t.generate.mindmapGenerate.selectLanguage,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -419,61 +317,20 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
   }
 
   void _showModelPicker(dynamic formState) {
-    _showPickerBottomSheet(
+    ModelPickerSheet.show(
+      context: context,
       title: t.generate.mindmapGenerate.selectModel,
-      child: Consumer(
-        builder: (context, ref, _) {
-          final modelsAsync = ref.watch(modelsControllerPod(ModelType.text));
-          return modelsAsync.when(
-            data: (state) {
-              final models = state.availableModels
-                  .where((m) => m.isEnabled)
-                  .toList();
-              if (models.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(t.generate.mindmapGenerate.noModelsAvailable),
-                );
-              }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: models.map((model) {
-                  final isSelected =
-                      formState.selectedModel?.displayName == model.displayName;
-                  return ListTile(
-                    title: Text(model.displayName),
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_circle_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                    onTap: () {
-                      ref
-                          .read(mindmapFormControllerProvider.notifier)
-                          .updateModel(model);
-                      Navigator.pop(context);
-                    },
-                  );
-                }).toList(),
-              );
-            },
-            loading: () => const Padding(
-              padding: EdgeInsets.all(20),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (e, s) => Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(t.generate.mindmapGenerate.failedToLoadModels),
-            ),
-          );
-        },
-      ),
+      selectedModelName: formState.selectedModel?.displayName,
+      t: t,
+      onModelSelected: (model) {
+        ref.read(mindmapFormControllerProvider.notifier).updateModel(model);
+      },
     );
   }
 
   void _showMaxDepthPicker(dynamic formState) {
-    _showPickerBottomSheet(
+    PickerBottomSheet.show(
+      context: context,
       title: t.generate.mindmapGenerate.selectMaxDepth,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -500,7 +357,8 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
   }
 
   void _showMaxBranchesPicker(dynamic formState) {
-    _showPickerBottomSheet(
+    PickerBottomSheet.show(
+      context: context,
       title: t.generate.mindmapGenerate.selectMaxBranches,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -531,64 +389,5 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
   void _handleGenerate() {
     _topicFocusNode.unfocus();
     ref.read(mindmapGenerateControllerProvider.notifier).generateMindmap();
-  }
-
-  void _showPickerBottomSheet({required String title, required Widget child}) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.4,
-        minChildSize: 0.2,
-        maxChildSize: 0.8,
-        builder: (context, scrollController) {
-          return Container(
-            decoration: BoxDecoration(
-              color: context.surfaceColor,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 12),
-                // Handle
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: context.dividerColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Title
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.grey[900],
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // Content
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: child,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
   }
 }

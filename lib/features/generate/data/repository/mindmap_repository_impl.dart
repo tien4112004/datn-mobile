@@ -2,7 +2,6 @@ import 'package:datn_mobile/features/generate/data/dto/mindmap_generate_request_
 import 'package:datn_mobile/features/generate/data/source/mindmap_remote_source.dart';
 import 'package:datn_mobile/features/generate/domain/entity/mindmap_node_content.dart';
 import 'package:datn_mobile/features/generate/domain/repository/mindmap_repository.dart';
-import 'package:datn_mobile/features/generate/service/mindmap_parser.dart';
 
 class MindmapRepositoryImpl implements MindmapRepository {
   final MindmapRemoteSource _remoteSource;
@@ -20,6 +19,8 @@ class MindmapRepositoryImpl implements MindmapRepository {
     }
 
     // The response.detail contains a JSON string of the mindmap structure
-    return MindmapParser.parseJsonToMindmap(response.detail!);
+    // TODO: call webview embedded FE mindmap edtior instead of parsing here
+    // return MindmapNodeContent.fromJson(response.detail!);
+    throw UnimplementedError();
   }
 }

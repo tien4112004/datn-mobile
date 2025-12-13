@@ -3,19 +3,16 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/options/presentation_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/model_picker_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_suggestions.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Available slide counts for presentation generation
-const List<int> _availableSlideCounts = [3, 4, 5, 7, 10, 12, 15, 20, 25, 30];
 
 @RoutePage()
 class PresentationGeneratePage extends ConsumerStatefulWidget {
@@ -148,7 +145,9 @@ class _PresentationGeneratePageState
 
   Widget _buildMainContent(BuildContext context) {
     final formState = ref.watch(presentationFormControllerProvider);
-
+    final formController = ref.read(
+      presentationFormControllerProvider.notifier,
+    );
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -195,7 +194,53 @@ class _PresentationGeneratePageState
           ),
           const SizedBox(height: 40),
           // Options Row
-          _buildOptionsRow(context, formState),
+          GeneralPickerOptions.buildOptionsRow(
+            context,
+            formState,
+            formController,
+            [
+              OptionChip(
+                icon: Icons.format_list_numbered,
+                label: t.generate.presentationGenerate.slidesCount(
+                  count: formState.slideCount,
+                ),
+                onTap: () => PresentationPickerOptions.showSlideCountPicker(
+                  formController,
+                  formState,
+                  context,
+                  t,
+                ),
+              ),
+              // Language
+              OptionChip(
+                icon: Icons.language,
+                label: formState.language.isEmpty
+                    ? t.locale_en
+                    : formState.language,
+                onTap: () => GeneralPickerOptions.showLanguagePicker(
+                  context,
+                  formController,
+                  formState,
+                  t,
+                ),
+              ),
+              // Model
+              OptionChip(
+                icon: Icons.psychology,
+                label:
+                    formState.outlineModel?.displayName ??
+                    t.generate.presentationGenerate.selectModel,
+                onTap: () => GeneralPickerOptions.showModelPicker(
+                  context,
+                  selectedModel: formState.outlineModel,
+                  modelType: ModelType.text,
+                  onSelected: formController.updateOutlineModel,
+                  t: t,
+                ),
+              ),
+            ],
+            t,
+          ),
           const SizedBox(height: 20),
           // Quick Suggestions
           TopicSuggestions(
@@ -205,111 +250,6 @@ class _PresentationGeneratePageState
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildOptionsRow(BuildContext context, dynamic formState) {
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
-
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      alignment: WrapAlignment.center,
-      children: [
-        // Slide Count
-        OptionChip(
-          icon: Icons.format_list_numbered,
-          label: t.generate.presentationGenerate.slidesCount(
-            count: formState.slideCount,
-          ),
-          onTap: () => _showSlideCountPicker(formController, formState),
-        ),
-        // Language
-        OptionChip(
-          icon: Icons.language,
-          label: formState.language.isEmpty ? t.locale_en : formState.language,
-          onTap: () => _showLanguagePicker(formController, formState),
-        ),
-        // Model
-        OptionChip(
-          icon: Icons.psychology,
-          label:
-              formState.outlineModel?.displayName ??
-              t.generate.presentationGenerate.selectModel,
-          onTap: () => _showModelPicker(formController, formState),
-        ),
-      ],
-    );
-  }
-
-  void _showSlideCountPicker(dynamic formController, dynamic formState) {
-    PickerBottomSheet.show(
-      context: context,
-      title: t.generate.presentationGenerate.selectSlideCount,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: _availableSlideCounts.map((count) {
-          final isSelected = formState.slideCount == count;
-          return ListTile(
-            title: Text(
-              t.generate.presentationGenerate.slidesCount(count: count),
-            ),
-            trailing: isSelected
-                ? Icon(
-                    Icons.check_circle_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  )
-                : null,
-            onTap: () {
-              formController.updateSlideCount(count);
-              Navigator.pop(context);
-            },
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  void _showLanguagePicker(dynamic formController, dynamic formState) {
-    /// Available languages for presentation generation
-    List<String> availableLanguages = [t.locale_en, t.locale_vi];
-
-    PickerBottomSheet.show(
-      context: context,
-      title: t.generate.presentationGenerate.selectLanguage,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: availableLanguages.map((language) {
-          final isSelected = formState.language == language;
-          return ListTile(
-            title: Text(language),
-            trailing: isSelected
-                ? Icon(
-                    Icons.check_circle_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  )
-                : null,
-            onTap: () {
-              formController.updateLanguage(language);
-              Navigator.pop(context);
-            },
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  void _showModelPicker(dynamic formController, dynamic formState) {
-    ModelPickerSheet.show(
-      context: context,
-      title: t.generate.presentationGenerate.selectAiModel,
-      selectedModelName: formState.outlineModel?.displayName,
-      t: t,
-      onModelSelected: (model) {
-        formController.updateOutlineModel(model);
-      },
     );
   }
 

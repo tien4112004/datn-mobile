@@ -12,6 +12,7 @@ class ModelPickerSheet extends ConsumerWidget {
   final String? selectedModelName;
   final Translations t;
   final Function(AIModel) onModelSelected;
+  final ModelType modelType;
 
   const ModelPickerSheet({
     super.key,
@@ -19,6 +20,7 @@ class ModelPickerSheet extends ConsumerWidget {
     required this.selectedModelName,
     required this.t,
     required this.onModelSelected,
+    required this.modelType,
   });
 
   static void show({
@@ -27,6 +29,7 @@ class ModelPickerSheet extends ConsumerWidget {
     required String? selectedModelName,
     required Translations t,
     required Function(AIModel) onModelSelected,
+    required ModelType modelType,
   }) {
     showModalBottomSheet(
       context: context,
@@ -37,13 +40,14 @@ class ModelPickerSheet extends ConsumerWidget {
         selectedModelName: selectedModelName,
         t: t,
         onModelSelected: onModelSelected,
+        modelType: modelType,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final modelsAsync = ref.watch(modelsControllerPod(ModelType.text));
+    final modelsAsync = ref.watch(modelsControllerPod(modelType));
 
     return DraggableScrollableSheet(
       builder: (context, scrollController) {

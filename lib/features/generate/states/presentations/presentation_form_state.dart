@@ -24,7 +24,7 @@ class PresentationFormState {
   const PresentationFormState({
     this.topic = '',
     this.slideCount = 5,
-    this.language = '',
+    this.language = 'English',
     this.outlineModel,
     this.theme = PresentationTheme.modern,
     this.themeId,

@@ -2,7 +2,6 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -122,18 +121,9 @@ class _GeneratorPickerSheetState extends ConsumerState<GeneratorPickerSheet> {
           ref.read(mindmapGenerateControllerProvider.notifier).reset();
           break;
         case GeneratorType.image:
-          // No state to reset for image generator yet
+          ref.read(imageFormControllerProvider.notifier).reset();
+          ref.read(imageGenerateControllerProvider.notifier).reset();
           break;
-      }
-
-      // Show coming soon message for image generator
-      if (type == GeneratorType.image) {
-        SnackbarUtils.showInfo(
-          context,
-          widget.t.generate.presentationGenerate.generatorComingSoon(
-            type: type.getLabel(widget.t),
-          ),
-        );
       }
     }
   }

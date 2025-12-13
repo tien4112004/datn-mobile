@@ -7,6 +7,8 @@ import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/enum/presentation_theme.dart';
 import 'package:datn_mobile/features/generate/service/service_provider.dart';
+import 'package:datn_mobile/features/generate/states/image/image_form_state.dart';
+import 'package:datn_mobile/features/generate/states/image/image_generate_state.dart';
 import 'package:datn_mobile/features/generate/states/mindmap/mindmap_form_state.dart';
 import 'package:datn_mobile/features/generate/states/mindmap/mindmap_generate_state.dart';
 import 'package:datn_mobile/features/generate/states/presentations/presentation_form_state.dart';
@@ -20,6 +22,8 @@ import 'package:datn_mobile/features/generate/states/models/models_state.dart';
 import 'package:datn_mobile/features/generate/states/models/text_model_state.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+part 'image/image_form_controller.dart';
+part 'image/image_generate_controller.dart';
 part 'presentations/presentation_generate_controller.dart';
 part 'presentations/presentation_form_controller.dart';
 part 'outline/outline_editing_controller.dart';
@@ -57,6 +61,18 @@ final mindmapFormControllerProvider =
 final mindmapGenerateControllerProvider =
     AsyncNotifierProvider<MindmapGenerateController, MindmapGenerateState>(
       MindmapGenerateController.new,
+    );
+
+/// Provider for the image form controller.
+final imageFormControllerProvider =
+    NotifierProvider<ImageFormController, ImageFormState>(
+      ImageFormController.new,
+    );
+
+/// Provider for the image generation controller.
+final imageGenerateControllerProvider =
+    AsyncNotifierProvider<ImageGenerateController, ImageGenerateState>(
+      ImageGenerateController.new,
     );
 
 /// Provider for tracking the active generator type.

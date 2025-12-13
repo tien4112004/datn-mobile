@@ -2,27 +2,25 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO: Abstract this sheet to be reusable for other generator types if needed.
-
-/// Available languages for presentation generation
-const List<String> _availableLanguages = ['English', 'Vietnamese'];
-
-/// Available slide counts for presentation generation
-const List<int> _availableSlideCounts = [3, 4, 5, 7, 10, 12, 15, 20, 25, 30];
-
 /// Bottom sheet for configuring presentation generation settings.
-///
-/// Extracted from PresentationGeneratePage to improve code organization.
-/// Allows users to configure slide count, language, and AI model.
 class GenerationSettingsSheet extends ConsumerWidget {
-  const GenerationSettingsSheet({super.key});
+  final NotifierProvider formControllerProvider;
+  final List<Widget> optionWidgets;
+  final List<String> _availableLanguages = ['English', 'Vietnamese'];
+
+  GenerationSettingsSheet({
+    super.key,
+    required this.formControllerProvider,
+    required this.optionWidgets,
+  });
 
   /// Shows the generation settings bottom sheet.
-  static void show(BuildContext context) {
+  static void show(BuildContext context, List<Widget> optionWidgets) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -30,16 +28,17 @@ class GenerationSettingsSheet extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => const GenerationSettingsSheet(),
+      builder: (context) => GenerationSettingsSheet(
+        formControllerProvider: presentationFormControllerProvider,
+        optionWidgets: optionWidgets,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = ref.watch(presentationFormControllerProvider);
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
+    final formState = ref.watch(formControllerProvider);
+    final formController = ref.read(formControllerProvider.notifier);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -55,8 +54,9 @@ class GenerationSettingsSheet extends ConsumerWidget {
             const SizedBox(height: 20),
             _buildTitle(context),
             const SizedBox(height: 20),
-            _buildSlideCountSetting(formState, formController),
-            const SizedBox(height: 16),
+            ...optionWidgets.expand(
+              (widget) => [widget, const SizedBox(height: 16)],
+            ),
             _buildLanguageSetting(formState, formController),
             const SizedBox(height: 16),
             _buildModelSetting(ref, formState, formController),
@@ -95,30 +95,9 @@ class GenerationSettingsSheet extends ConsumerWidget {
     );
   }
 
-  /// Slide count setting.
-  Widget _buildSlideCountSetting(dynamic formState, dynamic formController) {
-    return _SettingItem(
-      label: 'Number of Slides',
-      child: StatefulBuilder(
-        builder: (context, setSheetState) {
-          return DropdownField<int>(
-            value: formState.slideCount,
-            items: _availableSlideCounts,
-            onChanged: (value) {
-              if (value != null) {
-                formController.updateSlideCount(value);
-                setSheetState(() {});
-              }
-            },
-          );
-        },
-      ),
-    );
-  }
-
   /// Language setting.
   Widget _buildLanguageSetting(dynamic formState, dynamic formController) {
-    return _SettingItem(
+    return SettingItem(
       label: 'Language',
       child: StatefulBuilder(
         builder: (context, setSheetState) {
@@ -143,7 +122,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
     dynamic formState,
     dynamic formController,
   ) {
-    return _SettingItem(
+    return SettingItem(
       label: 'AI Model',
       child: Consumer(
         builder: (context, ref, _) {
@@ -209,33 +188,6 @@ class GenerationSettingsSheet extends ConsumerWidget {
         ),
         child: const Text('Done'),
       ),
-    );
-  }
-}
-
-/// Internal widget for displaying a labeled setting field.
-class _SettingItem extends StatelessWidget {
-  final String label;
-  final Widget child;
-
-  const _SettingItem({required this.label, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: context.secondaryTextColor,
-          ),
-        ),
-        const SizedBox(height: 8),
-        child,
-      ],
     );
   }
 }

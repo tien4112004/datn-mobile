@@ -1,4 +1,3 @@
-import 'package:datn_mobile/features/generate/states/models_controller_pod.dart';
 import 'package:datn_mobile/features/generate/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';

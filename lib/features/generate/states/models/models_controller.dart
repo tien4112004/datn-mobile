@@ -1,7 +1,7 @@
 import 'package:datn_mobile/features/generate/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/generate/domain/repositories/models_repository.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
-import 'package:datn_mobile/features/generate/states/models_state.dart';
+import 'package:datn_mobile/features/generate/states/models/models_state.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

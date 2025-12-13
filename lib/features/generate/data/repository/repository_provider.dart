@@ -1,10 +1,13 @@
+import 'package:datn_mobile/features/generate/data/repository/mindmap_repository_impl.dart';
 import 'package:datn_mobile/features/generate/data/repository/models_repository_impl.dart';
 import 'package:datn_mobile/features/generate/data/repository/outline_parser_repository_impl.dart';
 import 'package:datn_mobile/features/generate/data/repository/presentation_generate_repository_impl.dart';
+import 'package:datn_mobile/features/generate/data/source/mindmap_remote_source_provider.dart';
 import 'package:datn_mobile/features/generate/data/source/presentation_generate_remote_source_provider.dart';
 import 'package:datn_mobile/features/generate/domain/repositories/models_repository.dart';
 import 'package:datn_mobile/features/generate/data/source/models_remote_source_provider.dart';
 import 'package:datn_mobile/features/generate/domain/repositories/outline_parser_repository.dart';
+import 'package:datn_mobile/features/generate/domain/repository/mindmap_repository.dart';
 import 'package:datn_mobile/features/generate/domain/repository/presentation_generate_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,4 +27,9 @@ final outlineParserRepositoryProvider = Provider<OutlineParserRepository>((
   ref,
 ) {
   return const OutlineParserRepositoryImpl();
+});
+
+/// Provider for MindmapRepository
+final mindmapRepositoryProvider = Provider<MindmapRepository>((ref) {
+  return MindmapRepositoryImpl(ref.watch(mindmapRemoteSourceProvider));
 });

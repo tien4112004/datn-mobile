@@ -25,7 +25,7 @@ class ProjectsPage extends ConsumerWidget {
         height: 96,
         child: FloatingActionButton(
           onPressed: () {
-            context.router.push(const PresentationGenerateRoute());
+            context.router.push(const GenerateRoute());
           },
           backgroundColor: Colors.transparent,
           elevation: 0,

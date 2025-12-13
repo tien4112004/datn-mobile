@@ -1,5 +1,4 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,6 +11,8 @@ class TopicInputBar extends ConsumerWidget {
   final FocusNode topicFocusNode;
   final VoidCallback onAttachFile;
   final VoidCallback onGenerate;
+  final NotifierProvider formState;
+  final AsyncNotifierProvider generateState;
 
   const TopicInputBar({
     super.key,
@@ -19,19 +20,20 @@ class TopicInputBar extends ConsumerWidget {
     required this.topicFocusNode,
     required this.onAttachFile,
     required this.onGenerate,
+    required this.formState,
+    required this.generateState,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = ref.watch(presentationFormControllerProvider);
-    final generateState = ref.watch(presentationGenerateControllerProvider);
+    final formState = ref.watch(this.formState);
+    final generateState = ref.watch(this.generateState);
 
-    final isLoading = generateState.maybeWhen(
-      data: (state) => state.isLoading,
-      loading: () => true,
-      orElse: () => false,
-    );
-    final isValid = formState.isStep1Valid;
+    // final isLoading = generateState.maybeWhen(
+    //   data: (state) => state.isLoading,
+    //   loading: () => true,
+    //   orElse: () => false,
+    // );
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -55,7 +57,11 @@ class TopicInputBar extends ConsumerWidget {
             const SizedBox(width: 8),
             _buildTextInput(context),
             const SizedBox(width: 8),
-            _buildGenerateButton(context, isValid, isLoading),
+            _buildGenerateButton(
+              context,
+              formState.isValid,
+              generateState.isLoading,
+            ),
           ],
         ),
       ),

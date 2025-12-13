@@ -64,6 +64,7 @@ class PresentationFormState {
     );
   }
 
+  bool get isValid => topic.trim().isNotEmpty;
   bool get isStep1Valid => topic.trim().isNotEmpty;
   bool get isStep2Valid => outline.isNotEmpty;
 }

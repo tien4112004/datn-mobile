@@ -5,40 +5,19 @@ class MindmapGenerateState {
   /// The generated mindmap content (tree structure)
   final MindmapNodeContent? generatedMindmap;
 
-  /// Current request ID (used to track completion)
-  final String? currentRequestId;
-
-  /// Last processed request ID (used to detect new completions)
-  final String? lastProcessedRequestId;
-
-  const MindmapGenerateState({
-    this.generatedMindmap,
-    this.currentRequestId,
-    this.lastProcessedRequestId,
-  });
+  const MindmapGenerateState({this.generatedMindmap});
 
   factory MindmapGenerateState.initial() => const MindmapGenerateState();
 
-  factory MindmapGenerateState.success(
-    MindmapNodeContent mindmap,
-    String requestId,
-  ) => MindmapGenerateState(
-    generatedMindmap: mindmap,
-    lastProcessedRequestId: requestId,
-  );
+  factory MindmapGenerateState.success(MindmapNodeContent mindmap) =>
+      MindmapGenerateState(generatedMindmap: mindmap);
 
   bool get hasMindmap => generatedMindmap != null;
+  bool get isLoading => generatedMindmap == null;
 
-  MindmapGenerateState copyWith({
-    MindmapNodeContent? generatedMindmap,
-    String? currentRequestId,
-    String? lastProcessedRequestId,
-  }) {
+  MindmapGenerateState copyWith({MindmapNodeContent? generatedMindmap}) {
     return MindmapGenerateState(
       generatedMindmap: generatedMindmap ?? this.generatedMindmap,
-      currentRequestId: currentRequestId ?? this.currentRequestId,
-      lastProcessedRequestId:
-          lastProcessedRequestId ?? this.lastProcessedRequestId,
     );
   }
 }

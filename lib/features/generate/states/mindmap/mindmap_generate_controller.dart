@@ -7,11 +7,6 @@ class MindmapGenerateController extends AsyncNotifier<MindmapGenerateState> {
     return MindmapGenerateState.initial();
   }
 
-  /// Generate a unique request ID for tracking requests
-  String _generateRequestId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
   /// Generate a mindmap based on the current form state
   Future<void> generateMindmap() async {
     final formState = ref.read(mindmapFormControllerProvider);
@@ -20,7 +15,6 @@ class MindmapGenerateController extends AsyncNotifier<MindmapGenerateState> {
       throw ArgumentError('Form is not valid');
     }
 
-    final requestId = _generateRequestId();
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
@@ -34,7 +28,7 @@ class MindmapGenerateController extends AsyncNotifier<MindmapGenerateState> {
             maxBranchesPerNode: formState.maxBranchesPerNode,
           );
 
-      return MindmapGenerateState.success(response, requestId);
+      return MindmapGenerateState.success(response);
     });
   }
 

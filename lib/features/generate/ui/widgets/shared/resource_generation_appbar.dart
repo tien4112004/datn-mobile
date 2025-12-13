@@ -1,6 +1,7 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +12,13 @@ class ResourceGenerationAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onGeneratorTap;
   final Translations t;
+  final List<Widget> optionWidgets;
 
   const ResourceGenerationAppBar({
     super.key,
     required this.onGeneratorTap,
     required this.t,
+    this.optionWidgets = const [],
   });
 
   @override
@@ -44,6 +47,20 @@ class _ResourceGenerationAppBarState extends State<ResourceGenerationAppBar> {
           const SizedBox(width: 12),
           // Generator type dropdown
           Expanded(child: _buildGeneratorDropdown(context)),
+          // Settings button
+          IconButton(
+            onPressed: () {
+              // Show settings sheet
+              GenerationSettingsSheet.show(context, widget.optionWidgets);
+            },
+            icon: Icon(
+              Icons.settings_rounded,
+              size: 24,
+              color: context.isDarkMode ? Colors.white : Colors.grey[900],
+            ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
         ],
       ),
     );

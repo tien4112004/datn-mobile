@@ -256,7 +256,7 @@ class _PresentationGeneratePageState
                       ModelType.text,
                     );
                   },
-                  child: const Text("Advanced Settings"),
+                  child: Text(t.generate.advancedSettings),
                 ),
               ),
             ],

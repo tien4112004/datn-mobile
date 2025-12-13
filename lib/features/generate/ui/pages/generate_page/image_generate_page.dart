@@ -238,7 +238,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                           ModelType.image,
                         );
                       },
-                      child: const Text("Advanced Settings"),
+                      child: Text(t.generate.advancedSettings),
                     ),
                   ),
                 ],

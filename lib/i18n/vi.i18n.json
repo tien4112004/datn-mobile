@@ -281,7 +281,7 @@
       "error": "Lỗi: $error"
     },
     "generationSettings": {
-      "title": "Cài đặt tạo",
+      "title": "Cài đặt",
       "numberOfSlides": "Số lượng slide",
       "language": "Ngôn ngữ",
       "aiModel": "Mô hình AI",
@@ -290,7 +290,7 @@
       "done": "Xong"
     },
     "customization": {
-      "generationSettings": "Cài đặt tạo",
+      "generationSettings": "Cài đặt",
       "topic": "Chủ đề",
       "notSet": "Chưa đặt",
       "slides": "Slide",
@@ -337,8 +337,9 @@
       "topicHint": "Nhập chủ đề sơ đồ tư duy...",
       "selectLanguage": "Chọn ngôn ngữ",
       "selectModel": "Chọn mô hình AI",
-      "selectMaxDepth": "Chọn độ sâu tối đa",
+      "selectMaxDepth": "Chọn cấp độ sâu",
       "selectMaxBranches": "Chọn số nhánh tối đa",
+      "depthLevel": "Cấp độ sâu",
       "maxDepth": "Độ sâu: $depth",
       "maxBranches": "Nhánh: $branches",
       "noModelsAvailable": "Không có mô hình khả dụng",
@@ -353,6 +354,38 @@
       "generateNew": "Tạo mới",
       "save": "Lưu",
       "saveComingSoon": "Tính năng lưu sắp ra mắt!"
+    },
+    "imageGenerate": {
+      "title": "Công cụ tạo hình ảnh",
+      "subtitle": "Mô tả hình ảnh bạn muốn tạo",
+      "enterPrompt": "Nhập mô tả hình ảnh của bạn...",
+      "tryThesePrompts": "Thử các gợi ý này:",
+      "promptSuggestions": {
+        "sunsetMountains": "Bình minh tuyệt đẹp trên những ngọn núi tuyết phủ, phong cách tranh dầu",
+        "modernOffice": "Văn phòng hiện đại tối giản với ánh sáng tự nhiên và cây xanh",
+        "fantasyCharacter": "Chân dung nhân vật thần kỳ với bộ giáp phức tạp và halo ma thuật",
+        "productPhotography": "Chụp sản phẩm chuyên nghiệp của chiếc điện thoại thông minh trên nền trắng sạch"
+      },
+      "error": "Lỗi tạo hình ảnh: $error",
+      "selectAspectRatio": "Chọn tỷ lệ khung hình",
+      "selectArtStyle": "Chọn phong cách nghệ thuật",
+      "selectThemeStyle": "Chọn phong cách chủ đề"
+    },
+    "imageResult": {
+      "title": "Hình ảnh đã tạo",
+      "noImageGenerated": "Chưa có hình ảnh được tạo",
+      "imageDetails": "Chi tiết hình ảnh",
+      "prompt": "Prompt",
+      "model": "Mô hình",
+      "format": "Định dạng",
+      "created": "Tạo lúc",
+      "copyPrompt": "Sao chép",
+      "share": "Chia sẻ",
+      "downloadImage": "Tải xuống hình ảnh",
+      "generateAnother": "Tạo hình ảnh khác",
+      "generatingImage": "Đang tạo hình ảnh...",
+      "errorGeneratingImage": "Lỗi tạo hình ảnh",
+      "failedToLoadImage": "Không thể tải hình ảnh"
     }
   }
 }

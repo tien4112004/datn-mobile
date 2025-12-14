@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +34,14 @@ class ImageWidgetOptions {
   ];
 
   /// Aspect ratio setting.
-  static Widget buildAspectRatioSetting() {
+  static Widget buildAspectRatioSetting(Translations t) {
     return Consumer(
       builder: (context, ref, _) {
         final formState = ref.watch(imageFormControllerProvider);
         final formController = ref.read(imageFormControllerProvider.notifier);
 
         return SettingItem(
-          label: 'Aspect Ratio',
+          label: t.generate.imageGenerate.selectAspectRatio,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
               return DropdownField<String>(
@@ -61,14 +62,14 @@ class ImageWidgetOptions {
   }
 
   /// Art style setting.
-  static Widget buildArtStyleSetting() {
+  static Widget buildArtStyleSetting(Translations t) {
     return Consumer(
       builder: (context, ref, _) {
         final formState = ref.watch(imageFormControllerProvider);
         final formController = ref.read(imageFormControllerProvider.notifier);
 
         return SettingItem(
-          label: 'Art Style',
+          label: t.generate.imageGenerate.selectArtStyle,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
               return DropdownField<String>(
@@ -89,14 +90,14 @@ class ImageWidgetOptions {
   }
 
   /// Theme style setting.
-  static Widget buildThemeStyleSetting() {
+  static Widget buildThemeStyleSetting(Translations t) {
     return Consumer(
       builder: (context, ref, _) {
         final formState = ref.watch(imageFormControllerProvider);
         final formController = ref.read(imageFormControllerProvider.notifier);
 
         return SettingItem(
-          label: 'Theme Style',
+          label: t.generate.imageGenerate.selectThemeStyle,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
               return DropdownField<String>(

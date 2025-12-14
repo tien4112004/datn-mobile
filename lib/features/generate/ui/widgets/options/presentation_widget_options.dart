@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class PresentationWidgetOptions {
   ];
 
   /// Slide count setting.
-  static Widget buildSlideCountSetting() {
+  static Widget buildSlideCountSetting(Translations t) {
     return Consumer(
       builder: (context, ref, _) {
         final formPresentationState = ref.watch(
@@ -33,7 +34,7 @@ class PresentationWidgetOptions {
         );
 
         return SettingItem(
-          label: 'Number of Slides',
+          label: t.generate.presentationGenerate.selectSlideCount,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
               return DropdownField<int>(

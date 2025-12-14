@@ -1,6 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_display_card.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_metadata_card.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick_actions.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,20 +16,12 @@ class ImageResultPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final generateState = ref.watch(imageGenerateControllerProvider);
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Generated Image'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: context.isDarkMode ? cs.surface : Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.router.back(),
-        ),
-      ),
+      appBar: _buildAppBar(context, t),
       backgroundColor: context.isDarkMode
           ? cs.surface
           : const Color(0xFFF9FAFB),
@@ -32,26 +29,7 @@ class ImageResultPage extends ConsumerWidget {
         data: (state) {
           final image = state.generatedImage;
           if (image == null || image.url == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.image_not_supported,
-                    size: 64,
-                    color: context.secondaryTextColor,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No image generated',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: context.secondaryTextColor,
-                    ),
-                  ),
-                ],
-              ),
-            );
+            return _buildNoImageState(context, t);
           }
 
           return SingleChildScrollView(
@@ -59,109 +37,40 @@ class ImageResultPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Generated Image
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: context.isDarkMode ? Colors.grey[800] : Colors.white,
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      image.url!,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 300,
-                          color: context.isDarkMode
-                              ? Colors.grey[800]
-                              : Colors.grey[200],
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 300,
-                          color: context.isDarkMode
-                              ? Colors.grey[800]
-                              : Colors.grey[200],
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.broken_image,
-                                  size: 48,
-                                  color: context.secondaryTextColor,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Failed to load image',
-                                  style: TextStyle(
-                                    color: context.secondaryTextColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                // Generated Image Display (with more space)
+                ImageDisplayCard(imageUrl: image.url),
+                const SizedBox(height: 28),
+
+                // Metadata Card (reorganized: Prompt, Model, Aspect Ratio)
+                ImageMetadataCard(
+                  prompt: image.prompt,
+                  model: image.model,
+                  aspectRatio: image.aspectRatio,
+                  mimeType: image.mimeType,
+                  createdDate: image.created,
                 ),
                 const SizedBox(height: 24),
 
-                // Metadata Section
-                _buildMetadataSection(context, image),
-
-                const SizedBox(height: 24),
-
-                // Action Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () =>
-                            _copyPromptToClipboard(context, image.prompt),
-                        icon: const Icon(Icons.content_copy),
-                        label: const Text('Copy Prompt'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () => _shareImage(context, image.url),
-                        icon: const Icon(Icons.share),
-                        label: const Text('Share'),
-                      ),
-                    ),
-                  ],
+                // Quick Actions (compact icon row)
+                ImageQuickActions(
+                  onCopyPrompt: () =>
+                      _copyPromptToClipboard(context, ref, image.prompt, t),
+                  onShare: () => _shareImage(context, ref, image.url, t),
+                  onDownload: () =>
+                      _downloadImage(context, ref, image.url!, image.prompt, t),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 20),
+
+                // Primary Action Button (full width)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: () =>
-                        _downloadImage(context, ref, image.url!, image.prompt),
-                    icon: const Icon(Icons.download),
-                    label: const Text('Download Image'),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
                     onPressed: () => context.router.back(),
-                    child: const Text('Generate Another'),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text(t.generate.imageResult.generateAnother),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
                   ),
                 ),
               ],
@@ -178,9 +87,9 @@ class ImageResultPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Generating image...',
+                  t.generate.imageResult.generatingImage,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: context.secondaryTextColor,
                   ),
                 ),
@@ -198,7 +107,7 @@ class ImageResultPage extends ConsumerWidget {
                   Icon(Icons.error_outline, size: 64, color: cs.error),
                   const SizedBox(height: 16),
                   Text(
-                    'Error generating image',
+                    t.generate.imageResult.errorGeneratingImage,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -219,7 +128,7 @@ class ImageResultPage extends ConsumerWidget {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => context.router.back(),
-                    child: const Text('Go Back'),
+                    child: Text(t.generate.imageResult.generateAnother),
                   ),
                 ],
               ),
@@ -230,87 +139,70 @@ class ImageResultPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMetadataSection(BuildContext context, dynamic image) {
-    final children = <Widget>[
-      Text(
-        'Image Details',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: context.isDarkMode ? Colors.white : Colors.grey[900],
-        ),
+  PreferredSizeWidget _buildAppBar(BuildContext context, Translations t) {
+    final cs = Theme.of(context).colorScheme;
+    return AppBar(
+      title: Row(
+        children: [
+          Icon(Icons.image_rounded, size: 24, color: cs.primary),
+          const SizedBox(width: 8),
+          Text(t.generate.imageResult.title),
+        ],
       ),
-      const SizedBox(height: 12),
-      _buildMetadataRow(context, 'Prompt', image.prompt ?? 'N/A'),
-      const SizedBox(height: 12),
-      _buildMetadataRow(context, 'Format', image.mimeType ?? 'N/A'),
-    ];
-
-    if (image.created != null) {
-      children.add(const SizedBox(height: 12));
-      children.add(_buildMetadataRow(context, 'Created', image.created));
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.isDarkMode ? Colors.grey[800] : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: context.isDarkMode ? Colors.grey[700]! : Colors.grey[200]!,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
+      centerTitle: false,
+      elevation: 0,
+      backgroundColor: context.isDarkMode ? cs.surface : Colors.white,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new),
+        onPressed: () => context.router.back(),
       ),
     );
   }
 
-  Widget _buildMetadataRow(BuildContext context, String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
+  Widget _buildNoImageState(BuildContext context, Translations t) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.image_not_supported,
+            size: 64,
             color: context.secondaryTextColor,
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            color: context.isDarkMode ? Colors.white : Colors.grey[800],
+          const SizedBox(height: 16),
+          Text(
+            t.generate.imageResult.noImageGenerated,
+            style: TextStyle(fontSize: 16, color: context.secondaryTextColor),
           ),
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  void _copyPromptToClipboard(BuildContext context, String? prompt) {
+  void _copyPromptToClipboard(
+    BuildContext context,
+    WidgetRef ref,
+    String? prompt,
+    Translations t,
+  ) {
     if (prompt == null || prompt.isEmpty) return;
 
-    // This would require implementing clipboard functionality
-    // For now, just show a snackbar
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Prompt copied to clipboard')));
+    ).showSnackBar(SnackBar(content: Text(t.generate.imageResult.copyPrompt)));
   }
 
-  void _shareImage(BuildContext context, String? url) {
+  void _shareImage(
+    BuildContext context,
+    WidgetRef ref,
+    String? url,
+    Translations t,
+  ) {
     if (url == null || url.isEmpty) return;
 
-    // This would require implementing share functionality
-    // For now, just show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Share functionality coming soon')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.generate.imageResult.share)));
   }
 
   void _downloadImage(
@@ -318,19 +210,19 @@ class ImageResultPage extends ConsumerWidget {
     WidgetRef ref,
     String url,
     String? prompt,
+    Translations t,
   ) {
     final downloadService = ref.read(downloadServiceProvider);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Downloading image...')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(t.generate.imageResult.downloadImage)),
+    );
 
     downloadService
         .downloadImageToGallery(url: url, prompt: prompt ?? 'image')
         .listen(
           (progress) {
             // Optional: Handle progress updates
-            // You can update UI with progress here if needed
           },
           onDone: () {
             if (context.mounted) {

@@ -3,6 +3,7 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/image_suggestions.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';
@@ -162,7 +163,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
           const SizedBox(height: 24),
           // Title
           Text(
-            'Generate Image',
+            t.generate.imageGenerate.title,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -172,7 +173,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
           const SizedBox(height: 12),
           // Subtitle
           Text(
-            'Create stunning images from text prompts',
+            t.generate.imageGenerate.subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14, color: context.secondaryTextColor),
           ),
@@ -216,6 +217,16 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                 ],
                 t,
               );
+            },
+          ),
+          const SizedBox(height: 40),
+          // Image Suggestions
+          ImageSuggestions(
+            onSuggestionTap: (suggestion) {
+              _promptController.text = suggestion;
+              ref
+                  .read(imageFormControllerProvider.notifier)
+                  .updatePrompt(suggestion);
             },
           ),
           const SizedBox(height: 32),

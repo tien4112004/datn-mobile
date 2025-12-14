@@ -3,6 +3,8 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +42,8 @@ class GenerationSettingsSheet extends ConsumerWidget {
     final formState = ref.watch(formControllerProvider);
     final formController = ref.read(formControllerProvider.notifier);
 
+    final t = ref.watch(translationsPod);
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -52,16 +56,16 @@ class GenerationSettingsSheet extends ConsumerWidget {
           children: [
             _buildHandle(context),
             const SizedBox(height: 20),
-            _buildTitle(context),
+            _buildTitle(context, t),
             const SizedBox(height: 20),
             ...optionWidgets.expand(
               (widget) => [widget, const SizedBox(height: 16)],
             ),
-            _buildLanguageSetting(formState, formController),
+            _buildLanguageSetting(formState, formController, t),
             const SizedBox(height: 16),
-            _buildModelSetting(ref, formState, formController),
+            _buildModelSetting(ref, formState, formController, t),
             const SizedBox(height: 24),
-            _buildDoneButton(context),
+            _buildDoneButton(context, t),
             const SizedBox(height: 8),
           ],
         ),
@@ -84,9 +88,9 @@ class GenerationSettingsSheet extends ConsumerWidget {
   }
 
   /// Sheet title.
-  Widget _buildTitle(BuildContext context) {
+  Widget _buildTitle(BuildContext context, Translations t) {
     return Text(
-      'Generation Settings',
+      t.generate.generationSettings.title,
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
@@ -96,9 +100,13 @@ class GenerationSettingsSheet extends ConsumerWidget {
   }
 
   /// Language setting.
-  Widget _buildLanguageSetting(dynamic formState, dynamic formController) {
+  Widget _buildLanguageSetting(
+    dynamic formState,
+    dynamic formController,
+    Translations t,
+  ) {
     return SettingItem(
-      label: 'Language',
+      label: t.generate.mindmapGenerate.selectLanguage,
       child: StatefulBuilder(
         builder: (context, setSheetState) {
           return DropdownField<String>(
@@ -121,9 +129,10 @@ class GenerationSettingsSheet extends ConsumerWidget {
     WidgetRef ref,
     dynamic formState,
     dynamic formController,
+    Translations t,
   ) {
     return SettingItem(
-      label: 'AI Model',
+      label: t.generate.mindmapGenerate.selectModel,
       child: Consumer(
         builder: (context, ref, _) {
           final modelsAsync = ref.watch(modelsControllerPod(ModelType.text));
@@ -133,7 +142,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
                   .where((m) => m.isEnabled)
                   .toList();
               if (models.isEmpty) {
-                return const Text('No models available');
+                return Text(t.generate.mindmapGenerate.noModelsAvailable);
               }
               final displayNames = models.map((m) => m.displayName).toList();
               final currentValue =
@@ -167,7 +176,8 @@ class GenerationSettingsSheet extends ConsumerWidget {
                 ),
               ),
             ),
-            error: (_, _) => const Text('Failed to load models'),
+            error: (_, _) =>
+                Text(t.generate.mindmapGenerate.failedToLoadModels),
           );
         },
       ),
@@ -175,7 +185,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
   }
 
   /// Done button to close the sheet.
-  Widget _buildDoneButton(BuildContext context) {
+  Widget _buildDoneButton(BuildContext context, Translations t) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -186,7 +196,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text('Done'),
+        child: Text(t.generate.generationSettings.done),
       ),
     );
   }

@@ -11,7 +11,7 @@ import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/exception/unexpected_exception.dart';
-import 'package:datn_mobile/shared/helper/url_launcher_util.dart';
+import 'package:datn_mobile/shared/service/webview_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -107,7 +107,7 @@ class AuthServiceImpl implements AuthService {
       log('Launching Google Sign-In URL: $location');
     }
 
-    UrlLauncherUtil.launchExternalUrl(location);
+    WebviewService.launchExternalUrl(location);
   }
 
   @override

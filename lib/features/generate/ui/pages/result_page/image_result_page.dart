@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -56,7 +57,7 @@ class ImageResultPage extends ConsumerWidget {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Generated Image
                 Container(
@@ -70,6 +71,23 @@ class ImageResultPage extends ConsumerWidget {
                     child: Image.network(
                       image.url!,
                       fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 300,
+                          color: context.isDarkMode
+                              ? Colors.grey[800]
+                              : Colors.grey[200],
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           height: 300,
@@ -127,6 +145,16 @@ class ImageResultPage extends ConsumerWidget {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () =>
+                        _downloadImage(context, ref, image.url!, image.prompt),
+                    icon: const Icon(Icons.download),
+                    label: const Text('Download Image'),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
@@ -283,5 +311,41 @@ class ImageResultPage extends ConsumerWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Share functionality coming soon')),
     );
+  }
+
+  void _downloadImage(
+    BuildContext context,
+    WidgetRef ref,
+    String url,
+    String? prompt,
+  ) {
+    final downloadService = ref.read(downloadServiceProvider);
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Downloading image...')));
+
+    downloadService
+        .downloadImageToGallery(url: url, prompt: prompt ?? 'image')
+        .listen(
+          (progress) {
+            // Optional: Handle progress updates
+            // You can update UI with progress here if needed
+          },
+          onDone: () {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Image saved to gallery!')),
+              );
+            }
+          },
+          onError: (error) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to save image: $error')),
+              );
+            }
+          },
+        );
   }
 }

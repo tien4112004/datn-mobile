@@ -13,18 +13,20 @@ class ImageRepositoryImpl implements ImageRepository {
     ImageGenerationRequestDto request,
   ) async {
     request = request.copyWith(model: 'gemini-2.5-flash-image-preview');
+    request = request.copyWith(provider: 'google');
     final response = await _remoteSource.generateImage(request);
 
     if (response.data == null) {
       throw Exception('Failed to generate image: No data returned');
     }
 
+    final generatedImage = response.data!.images?.firstOrNull;
+
+    if (generatedImage == null) {
+      throw Exception('Failed to generate image: No images in response');
+    }
+
     // Map response DTO to domain entity
-    return GeneratedImage(
-      url: response.data!.url,
-      mimeType: response.data!.mimeType,
-      prompt: response.data!.prompt,
-      created: response.data!.created,
-    );
+    return GeneratedImage(url: generatedImage.url, prompt: request.prompt);
   }
 }

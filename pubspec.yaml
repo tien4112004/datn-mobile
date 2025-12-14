@@ -54,6 +54,7 @@ dependencies:
   infinite_scroll_pagination: ^5.1.1
   wolt_modal_sheet: ^0.11.0
   markdown_editor_plus: ^0.2.15
+  gal: ^2.3.2
 
 dev_dependencies:
   flutter_test:

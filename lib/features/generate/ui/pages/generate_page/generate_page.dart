@@ -23,16 +23,16 @@ class GeneratePage extends ConsumerWidget {
     final activeGeneratorType = ref.watch(generatorTypeProvider);
     final List<Widget> optionWidgets = switch (activeGeneratorType) {
       GeneratorType.presentation => [
-        PresentationWidgetOptions.buildSlideCountSetting(),
+        PresentationWidgetOptions.buildSlideCountSetting(t),
       ],
       GeneratorType.mindmap => [
-        MindmapWidgetOptions.buildDepthLevelSetting(),
-        MindmapWidgetOptions.buildMaxBranchesSetting(),
+        MindmapWidgetOptions.buildDepthLevelSetting(t),
+        MindmapWidgetOptions.buildMaxBranchesSetting(t),
       ],
       GeneratorType.image => [
-        ImageWidgetOptions.buildAspectRatioSetting(),
-        ImageWidgetOptions.buildArtStyleSetting(),
-        ImageWidgetOptions.buildThemeStyleSetting(),
+        ImageWidgetOptions.buildAspectRatioSetting(t),
+        ImageWidgetOptions.buildArtStyleSetting(t),
+        ImageWidgetOptions.buildThemeStyleSetting(t),
       ],
     };
 

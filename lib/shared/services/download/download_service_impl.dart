@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
@@ -67,9 +68,20 @@ class DownloadServiceImpl implements DownloadService {
 
     try {
       // Check permission
-      final hasPermission = await checkStoragePermission();
-      if (!hasPermission) {
-        throw Exception('Storage permission denied');
+      // On Android 10+ (SDK 29+), we don't need permission to save images to gallery using Gal
+      bool requiresPermission = true;
+      if (Platform.isAndroid) {
+        final sdkInt = await _getAndroidVersion();
+        if (sdkInt >= 29) {
+          requiresPermission = false;
+        }
+      }
+
+      if (requiresPermission) {
+        final hasPermission = await checkStoragePermission();
+        if (!hasPermission) {
+          throw Exception('Storage permission denied');
+        }
       }
 
       // Sanitize prompt and create filename
@@ -187,9 +199,9 @@ class DownloadServiceImpl implements DownloadService {
       PermissionStatus status;
 
       if (Platform.isAndroid) {
-        // For Android 13+ use photo permission
-        final deviceInfo = await _getAndroidVersion();
-        if (deviceInfo >= 13) {
+        // For Android 13+ (SDK 33+) use photo permission
+        final sdkInt = await _getAndroidVersion();
+        if (sdkInt >= 33) {
           status = await Permission.photos.request();
         } else {
           // For older Android use storage permission
@@ -213,22 +225,20 @@ class DownloadServiceImpl implements DownloadService {
       final info = await _getDeviceInfo();
       return info;
     } catch (_) {
-      return 12; // Default to assume older version
+      return 28; // Default to assume older version
     }
   }
 
-  /// Get device info (Android version)
+  /// Get device info (Android SDK version)
   Future<int> _getDeviceInfo() async {
-    // This is a simple implementation
-    // In production, you might want to use device_info_plus package
     try {
       if (Platform.isAndroid) {
-        // Default to Android 12 check
-        return 12;
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        return androidInfo.version.sdkInt;
       }
       return 0;
     } catch (_) {
-      return 12;
+      return 28;
     }
   }
 }

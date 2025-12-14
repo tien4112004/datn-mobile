@@ -1,11 +1,9 @@
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
-
 class PresentationMinimal {
   final String id;
   final String title;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final Slide? thumbnail;
+  final String? thumbnail;
 
   const PresentationMinimal({
     required this.id,
@@ -20,7 +18,7 @@ class PresentationMinimal {
     String? title,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Slide? thumbnail,
+    String? thumbnail,
   }) {
     return PresentationMinimal(
       id: id ?? this.id,

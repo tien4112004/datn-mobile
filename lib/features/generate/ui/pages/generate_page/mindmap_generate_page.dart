@@ -3,10 +3,12 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_picker_options.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
@@ -181,65 +183,81 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
           ),
           const SizedBox(height: 40),
           // Options
-          GeneralPickerOptions.buildOptionsRow(
-            context,
-            formState,
-            formController,
-            [
-              OptionChip(
-                icon: Icons.layers,
-                label: t.generate.mindmapGenerate.maxDepth(
-                  depth: formState.maxDepth,
-                ),
-                onTap: () => MindmapPickerOptions.showMaxDepthPicker(
-                  context,
-                  formState,
-                  formController,
-                  t,
-                ),
-              ),
-              OptionChip(
-                icon: Icons.layers,
-                label: t.generate.mindmapGenerate.maxBranches(
-                  branches: formState.maxBranchesPerNode,
-                ),
-                onTap: () => MindmapPickerOptions.showMaxBranchesPicker(
-                  context,
-                  formState,
-                  formController,
-                  t,
-                ),
-              ),
+          Column(
+            children: [
+              GeneralPickerOptions.buildOptionsRow(
+                context,
+                formState,
+                formController,
+                [
+                  OptionChip(
+                    icon: Icons.layers,
+                    label: t.generate.mindmapGenerate.maxDepth(
+                      depth: formState.maxDepth,
+                    ),
+                    onTap: () => MindmapPickerOptions.showMaxDepthPicker(
+                      context,
+                      formState,
+                      formController,
+                      t,
+                    ),
+                  ),
+                  OptionChip(
+                    icon: Icons.layers,
+                    label: t.generate.mindmapGenerate.maxBranches(
+                      branches: formState.maxBranchesPerNode,
+                    ),
+                    onTap: () => MindmapPickerOptions.showMaxBranchesPicker(
+                      context,
+                      formState,
+                      formController,
+                      t,
+                    ),
+                  ),
 
-              // Language
-              OptionChip(
-                icon: Icons.language,
-                label: formState.language.isEmpty
-                    ? t.locale_en
-                    : formState.language,
-                onTap: () => GeneralPickerOptions.showLanguagePicker(
-                  context,
-                  formController,
-                  formState,
-                  t,
-                ),
+                  // Language
+                  OptionChip(
+                    icon: Icons.language,
+                    label: formState.language.isEmpty
+                        ? t.locale_en
+                        : formState.language,
+                    onTap: () => GeneralPickerOptions.showLanguagePicker(
+                      context,
+                      formController,
+                      formState,
+                      t,
+                    ),
+                  ),
+                  // Model
+                  OptionChip(
+                    icon: Icons.psychology,
+                    label:
+                        formState.selectedModel?.displayName ??
+                        t.generate.mindmapGenerate.selectModel,
+                    onTap: () => GeneralPickerOptions.showModelPicker(
+                      context,
+                      selectedModel: formState.selectedModel,
+                      modelType: ModelType.text,
+                      onSelected: formController.updateModel,
+                      t: t,
+                    ),
+                  ),
+                ],
+                t,
               ),
-              // Model
-              OptionChip(
-                icon: Icons.psychology,
-                label:
-                    formState.selectedModel?.displayName ??
-                    t.generate.mindmapGenerate.selectModel,
-                onTap: () => GeneralPickerOptions.showModelPicker(
-                  context,
-                  selectedModel: formState.selectedModel,
-                  modelType: ModelType.text,
-                  onSelected: formController.updateModel,
-                  t: t,
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    GenerationSettingsSheet.show(
+                      context,
+                      MindmapWidgetOptions().buildAllSettings(t),
+                    );
+                  },
+                  child: const Text("Advanced Settings"),
                 ),
               ),
             ],
-            t,
           ),
         ],
       ),

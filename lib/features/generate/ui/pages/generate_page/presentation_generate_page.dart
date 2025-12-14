@@ -3,8 +3,10 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/presentation_picker_options.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/options/presentation_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
@@ -194,52 +196,68 @@ class _PresentationGeneratePageState
           ),
           const SizedBox(height: 40),
           // Options Row
-          GeneralPickerOptions.buildOptionsRow(
-            context,
-            formState,
-            formController,
-            [
-              OptionChip(
-                icon: Icons.format_list_numbered,
-                label: t.generate.presentationGenerate.slidesCount(
-                  count: formState.slideCount,
-                ),
-                onTap: () => PresentationPickerOptions.showSlideCountPicker(
-                  formController,
-                  formState,
-                  context,
-                  t,
-                ),
+          Column(
+            children: [
+              GeneralPickerOptions.buildOptionsRow(
+                context,
+                formState,
+                formController,
+                [
+                  OptionChip(
+                    icon: Icons.format_list_numbered,
+                    label: t.generate.presentationGenerate.slidesCount(
+                      count: formState.slideCount,
+                    ),
+                    onTap: () => PresentationPickerOptions.showSlideCountPicker(
+                      formController,
+                      formState,
+                      context,
+                      t,
+                    ),
+                  ),
+                  // Language
+                  OptionChip(
+                    icon: Icons.language,
+                    label: formState.language.isEmpty
+                        ? t.locale_en
+                        : formState.language,
+                    onTap: () => GeneralPickerOptions.showLanguagePicker(
+                      context,
+                      formController,
+                      formState,
+                      t,
+                    ),
+                  ),
+                  // Model
+                  OptionChip(
+                    icon: Icons.psychology,
+                    label:
+                        formState.outlineModel?.displayName ??
+                        t.generate.presentationGenerate.selectModel,
+                    onTap: () => GeneralPickerOptions.showModelPicker(
+                      context,
+                      selectedModel: formState.outlineModel,
+                      modelType: ModelType.text,
+                      onSelected: formController.updateOutlineModel,
+                      t: t,
+                    ),
+                  ),
+                ],
+                t,
               ),
-              // Language
-              OptionChip(
-                icon: Icons.language,
-                label: formState.language.isEmpty
-                    ? t.locale_en
-                    : formState.language,
-                onTap: () => GeneralPickerOptions.showLanguagePicker(
-                  context,
-                  formController,
-                  formState,
-                  t,
-                ),
-              ),
-              // Model
-              OptionChip(
-                icon: Icons.psychology,
-                label:
-                    formState.outlineModel?.displayName ??
-                    t.generate.presentationGenerate.selectModel,
-                onTap: () => GeneralPickerOptions.showModelPicker(
-                  context,
-                  selectedModel: formState.outlineModel,
-                  modelType: ModelType.text,
-                  onSelected: formController.updateOutlineModel,
-                  t: t,
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    GenerationSettingsSheet.show(
+                      context,
+                      PresentationWidgetOptions().buildAllSettings(t),
+                    );
+                  },
+                  child: const Text("Advanced Settings"),
                 ),
               ),
             ],
-            t,
           ),
           const SizedBox(height: 20),
           // Quick Suggestions

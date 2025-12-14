@@ -64,4 +64,8 @@ class MindmapWidgetOptions {
       },
     );
   }
+
+  List<Widget> buildAllSettings(Translations t) {
+    return [buildDepthLevelSetting(t), buildMaxBranchesSetting(t)];
+  }
 }

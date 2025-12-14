@@ -53,4 +53,8 @@ class PresentationWidgetOptions {
       },
     );
   }
+
+  List<Widget> buildAllSettings(Translations t) {
+    return [buildSlideCountSetting(t)];
+  }
 }

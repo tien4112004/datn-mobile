@@ -3,11 +3,13 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/image_suggestions.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/image_picker_options.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/options/image_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
@@ -186,36 +188,52 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                 imageFormControllerProvider.notifier,
               );
 
-              return GeneralPickerOptions.buildOptionsRow(
-                context,
-                formState,
-                formController,
-                [
-                  OptionChip(
-                    icon: LucideIcons.ratio,
-                    label: formState.aspectRatio,
-                    onTap: () => ImagePickerOptions.showRatioImage(
-                      context,
-                      ref.read(imageFormControllerProvider.notifier),
-                      formState,
-                      t,
-                    ),
+              return Column(
+                children: [
+                  GeneralPickerOptions.buildOptionsRow(
+                    context,
+                    formState,
+                    formController,
+                    [
+                      OptionChip(
+                        icon: LucideIcons.ratio,
+                        label: formState.aspectRatio,
+                        onTap: () => ImagePickerOptions.showRatioImage(
+                          context,
+                          ref.read(imageFormControllerProvider.notifier),
+                          formState,
+                          t,
+                        ),
+                      ),
+                      OptionChip(
+                        icon: Icons.psychology,
+                        label:
+                            formState.selectedModel?.displayName ??
+                            t.generate.presentationGenerate.selectModel,
+                        onTap: () => GeneralPickerOptions.showModelPicker(
+                          context,
+                          selectedModel: formState.selectedModel,
+                          modelType: ModelType.image,
+                          onSelected: formController.updateModel,
+                          t: t,
+                        ),
+                      ),
+                    ],
+                    t,
                   ),
-                  OptionChip(
-                    icon: Icons.psychology,
-                    label:
-                        formState.selectedModel?.displayName ??
-                        t.generate.presentationGenerate.selectModel,
-                    onTap: () => GeneralPickerOptions.showModelPicker(
-                      context,
-                      selectedModel: formState.selectedModel,
-                      modelType: ModelType.image,
-                      onSelected: formController.updateModel,
-                      t: t,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        GenerationSettingsSheet.show(
+                          context,
+                          ImageWidgetOptions().buildAllSettings(t),
+                        );
+                      },
+                      child: const Text("Advanced Settings"),
                     ),
                   ),
                 ],
-                t,
               );
             },
           ),

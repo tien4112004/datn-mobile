@@ -314,10 +314,6 @@ class ImageWidgetOptions {
   }
 
   List<Widget> buildAllSettings(Translations t) {
-    return [
-      buildAspectRatioSetting(t),
-      buildArtStyleSetting(t),
-      buildThemeStyleSetting(t),
-    ];
+    return [buildAspectRatioSetting(t), buildArtStyleSetting(t)];
   }
 }

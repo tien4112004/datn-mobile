@@ -6,8 +6,8 @@ import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
 import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/app_app_bar.dart';
@@ -88,7 +88,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         ),
         const SizedBox(height: 16),
         // Filter and Sort bar
-        FilterAndSortBar(
+        ResourceSearchAndFilterBar(
           // This filter and sort options are just placeholders
           // TODO: should be dynamic based on actual data
           subjects: ['Math', 'Science', 'English', 'History', 'PE'],
@@ -108,6 +108,10 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
           },
           onClearFilters: () {
             ref.read(filterProvider.notifier).clearFilters();
+          },
+          hintText: t.projects.presentations.search_presentations,
+          onSearchTap: () {
+            context.router.push(const PresentationSearchRoute());
           },
         ),
         const SizedBox(height: 16),

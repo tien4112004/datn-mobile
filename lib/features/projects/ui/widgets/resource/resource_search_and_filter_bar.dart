@@ -69,55 +69,91 @@ class ResourceSearchAndFilterBar extends ConsumerWidget {
                       onPressed: onClearFilters,
                       style: OutlinedButton.styleFrom(
                         backgroundColor: !hasActiveFilters
-                            ? Themes.theme.primaryColor
-                            : Colors.transparent,
-                        side: BorderSide(color: Themes.theme.primaryColor),
+                            ? Colors.blue.shade100
+                            : Colors.grey.shade100,
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(12),
                       ),
                       child: Text(
                         t.projects.common_list.filter_all,
-                        style: TextStyle(
-                          color: !hasActiveFilters
-                              ? Colors.white
-                              : Themes.theme.primaryColor,
+                        style: TextStyle(fontSize: Themes.fontSize.s14),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+
+                    // Subject dropdown
+                    PopupMenuButton<String?>(
+                      initialValue: filterState.subject,
+                      onSelected: onSubjectChanged,
+                      itemBuilder: (BuildContext context) => [
+                        PopupMenuItem<String?>(
+                          value: null,
+                          child: Text(t.projects.common_list.filter_subject),
+                        ),
+                        ...subjects.map(
+                          (subject) => PopupMenuItem<String?>(
+                            value: subject,
+                            child: Text(subject),
+                          ),
+                        ),
+                      ],
+                      child: OutlinedButton.icon(
+                        iconAlignment: IconAlignment.end,
+                        icon: const Icon(LucideIcons.chevronDown, size: 16),
+                        onPressed: null,
+                        label: Text(
+                          filterState.subject ??
+                              t.projects.common_list.filter_subject,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: hasActiveFilters
+                              ? Colors.blue.shade100
+                              : Colors.grey.shade100,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Themes.padding.p12,
+                            vertical: Themes.padding.p8,
+                          ),
+                          side: BorderSide.none,
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Subject dropdown
-                    DropdownButton<String>(
-                      value: filterState.subject,
-                      hint: Text(t.projects.common_list.filter_subject),
-                      items: subjects
-                          .map(
-                            (subject) => DropdownMenuItem(
-                              value: subject,
-                              child: Text(subject),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: onSubjectChanged,
-                      underline: Container(
-                        height: 1,
-                        color: Themes.theme.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
                     // Grade dropdown
-                    DropdownButton<String>(
-                      value: filterState.grade,
-                      hint: Text(t.projects.common_list.filter_grade),
-                      items: grades
-                          .map(
-                            (grade) => DropdownMenuItem(
-                              value: grade,
-                              child: Text(grade),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: onGradeChanged,
-                      underline: Container(
-                        height: 1,
-                        color: Themes.theme.primaryColor,
+                    PopupMenuButton<String?>(
+                      initialValue: filterState.grade,
+                      onSelected: onGradeChanged,
+                      itemBuilder: (BuildContext context) => [
+                        PopupMenuItem<String?>(
+                          value: null,
+                          child: Text(t.projects.common_list.filter_grade),
+                        ),
+                        ...grades.map(
+                          (grade) => PopupMenuItem<String?>(
+                            value: grade,
+                            child: Text(grade),
+                          ),
+                        ),
+                      ],
+                      child: OutlinedButton.icon(
+                        iconAlignment: IconAlignment.end,
+                        icon: const Icon(LucideIcons.chevronDown, size: 16),
+                        onPressed: null,
+                        label: Text(
+                          filterState.grade ??
+                              t.projects.common_list.filter_grade,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: hasActiveFilters
+                              ? Colors.blue.shade100
+                              : Colors.grey.shade100,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Themes.padding.p12,
+                            vertical: Themes.padding.p8,
+                          ),
+                          side: BorderSide.none,
+                        ),
                       ),
                     ),
                   ],
@@ -126,21 +162,33 @@ class ResourceSearchAndFilterBar extends ConsumerWidget {
             ),
             const SizedBox(width: 8),
             // Sort dropdown - right side
-            DropdownButton<String>(
-              value: selectedSort,
-              items: sortOptions
+            PopupMenuButton<String>(
+              initialValue: selectedSort,
+              onSelected: onSortChanged,
+              itemBuilder: (BuildContext context) => sortOptions
                   .map(
-                    (option) =>
-                        DropdownMenuItem(value: option, child: Text(option)),
+                    (option) => PopupMenuItem<String>(
+                      value: option,
+                      child: Text(option),
+                    ),
                   )
                   .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  onSortChanged(value);
-                }
-              },
-              underline: Container(height: 1, color: Themes.theme.primaryColor),
-              icon: const Icon(LucideIcons.arrowUpDown),
+              child: OutlinedButton.icon(
+                onPressed: null,
+                icon: const Icon(LucideIcons.arrowUpDown, size: 16),
+                label: Text(
+                  t.projects.sort,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade100,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Themes.padding.p12,
+                    vertical: Themes.padding.p8,
+                  ),
+                  side: BorderSide.none,
+                ),
+              ),
             ),
           ],
         ),

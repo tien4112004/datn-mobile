@@ -7,10 +7,9 @@ abstract interface class ImageService {
   Future<GeneratedImage> generateImage({
     required String prompt,
     required AIModel model,
-    String? aspectRatio,
-    String? artStyle,
-    String? artDescription,
-    String? themeStyle,
-    String? themeDescription,
+    required String aspectRatio,
+    required String artStyle,
+    required String artDescription,
+    required String themeDescription,
   });
 }

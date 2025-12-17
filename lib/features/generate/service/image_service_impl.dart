@@ -9,11 +9,10 @@ class ImageServiceImpl implements ImageService {
   Future<GeneratedImage> generateImage({
     required String prompt,
     required AIModel model,
-    String? aspectRatio,
-    String? artStyle,
-    String? artDescription,
-    String? themeStyle,
-    String? themeDescription,
+    required String aspectRatio,
+    required String artStyle,
+    required String artDescription,
+    required String themeDescription,
   }) async {
     // Add business logic validations here
     if (prompt.trim().isEmpty) {
@@ -29,7 +28,6 @@ class ImageServiceImpl implements ImageService {
       aspectRatio: aspectRatio,
       artStyle: artStyle,
       artDescription: artDescription,
-      themeStyle: themeStyle,
       themeDescription: themeDescription,
       model: model.name,
       provider: model.provider,

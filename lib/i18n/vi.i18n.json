@@ -368,8 +368,7 @@
       },
       "error": "Lỗi tạo hình ảnh: $error",
       "selectAspectRatio": "Chọn tỷ lệ khung hình",
-      "selectArtStyle": "Chọn phong cách nghệ thuật",
-      "selectThemeStyle": "Chọn phong cách chủ đề"
+      "selectArtStyle": "Chọn phong cách nghệ thuật"
     },
     "imageResult": {
       "title": "Hình ảnh đã tạo",

@@ -1,47 +1,45 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/generate/domain/entity/generated_image.dart';
 import 'package:flutter/material.dart';
 
 /// Displays image metadata in a organized card format
 /// Shows: Prompt, Model (if available), Aspect Ratio (if available)
 class ImageMetadataCard extends StatelessWidget {
-  final String? prompt;
-  final String? model;
-  final String? aspectRatio;
-  final String? mimeType;
-  final String? createdDate;
+  final GeneratedImage generatedImage;
 
-  const ImageMetadataCard({
-    super.key,
-    this.prompt,
-    this.model,
-    this.aspectRatio,
-    this.mimeType,
-    this.createdDate,
-  });
+  const ImageMetadataCard({super.key, required this.generatedImage});
 
   @override
   Widget build(BuildContext context) {
     final metadataFields = <Widget>[];
 
     // Prompt (primary field)
-    if (prompt != null && prompt!.isNotEmpty) {
+    if (generatedImage.prompt.isNotEmpty) {
       metadataFields.add(
-        _buildMetadataField(context, label: 'Prompt', value: prompt!),
+        _buildMetadataField(
+          context,
+          label: 'Prompt',
+          value: generatedImage.prompt,
+        ),
       );
     }
 
     // Model
-    if (model != null && model!.isNotEmpty) {
+    if (generatedImage.model.isNotEmpty) {
       if (metadataFields.isNotEmpty) {
         metadataFields.add(const SizedBox(height: 16));
       }
       metadataFields.add(
-        _buildMetadataField(context, label: 'Model', value: model!),
+        _buildMetadataField(
+          context,
+          label: 'Model',
+          value: generatedImage.model,
+        ),
       );
     }
 
     // Aspect Ratio
-    if (aspectRatio != null && aspectRatio!.isNotEmpty) {
+    if (generatedImage.aspectRatio.isNotEmpty) {
       if (metadataFields.isNotEmpty) {
         metadataFields.add(const SizedBox(height: 16));
       }
@@ -49,15 +47,16 @@ class ImageMetadataCard extends StatelessWidget {
         _buildMetadataField(
           context,
           label: 'Aspect Ratio',
-          value: aspectRatio!,
+          value: generatedImage.aspectRatio,
         ),
       );
     }
 
     // Secondary fields (Format, Created Date)
     final hasSecondary =
-        (mimeType != null && mimeType!.isNotEmpty) ||
-        (createdDate != null && createdDate!.isNotEmpty);
+        (generatedImage.mimeType != null &&
+            generatedImage.mimeType!.isNotEmpty) ||
+        false; // Assuming createdDate is not available in GeneratedImage
 
     if (hasSecondary && metadataFields.isNotEmpty) {
       metadataFields.add(const SizedBox(height: 16));
@@ -71,31 +70,30 @@ class ImageMetadataCard extends StatelessWidget {
     }
 
     // Format/MIME Type
-    if (mimeType != null && mimeType!.isNotEmpty) {
+    if (generatedImage.mimeType != null &&
+        generatedImage.mimeType!.isNotEmpty) {
       metadataFields.add(
         _buildMetadataField(
           context,
           label: 'Format',
-          value: mimeType!,
+          value: generatedImage.mimeType!,
           isSmall: true,
         ),
       );
-      if (createdDate != null && createdDate!.isNotEmpty) {
-        metadataFields.add(const SizedBox(height: 12));
-      }
     }
 
     // Created Date
-    if (createdDate != null && createdDate!.isNotEmpty) {
-      metadataFields.add(
-        _buildMetadataField(
-          context,
-          label: 'Created',
-          value: createdDate!,
-          isSmall: true,
-        ),
-      );
-    }
+    // TODO: In case createdDate is added to GeneratedImage in the future
+    // if (createdDate != null && createdDate!.isNotEmpty) {
+    //   metadataFields.add(
+    //     _buildMetadataField(
+    //       context,
+    //       label: 'Created',
+    //       value: createdDate!,
+    //       isSmall: true,
+    //     ),
+    //   );
+    // }
 
     // If no metadata, show empty state
     if (metadataFields.isEmpty) {

@@ -28,7 +28,7 @@ class ImageResultPage extends ConsumerWidget {
       body: generateState.when(
         data: (state) {
           final image = state.generatedImage;
-          if (image == null || image.url == null) {
+          if (image == null) {
             return _buildNoImageState(context, t);
           }
 
@@ -42,13 +42,7 @@ class ImageResultPage extends ConsumerWidget {
                 const SizedBox(height: 28),
 
                 // Metadata Card (reorganized: Prompt, Model, Aspect Ratio)
-                ImageMetadataCard(
-                  prompt: image.prompt,
-                  model: image.model,
-                  aspectRatio: image.aspectRatio,
-                  mimeType: image.mimeType,
-                  createdDate: image.created,
-                ),
+                ImageMetadataCard(generatedImage: image),
                 const SizedBox(height: 24),
 
                 // Quick Actions (compact icon row)
@@ -57,7 +51,7 @@ class ImageResultPage extends ConsumerWidget {
                       _copyPromptToClipboard(context, ref, image.prompt, t),
                   onShare: () => _shareImage(context, ref, image.url, t),
                   onDownload: () =>
-                      _downloadImage(context, ref, image.url!, image.prompt, t),
+                      _downloadImage(context, ref, image.url, image.prompt, t),
                 ),
                 const SizedBox(height: 20),
 

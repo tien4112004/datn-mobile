@@ -11,6 +11,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_
 import 'package:datn_mobile/features/generate/ui/widgets/options/image_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/image_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -91,16 +92,22 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                 orElse: () => false,
               ) ??
               false;
-          final hasNewImage = !hadImage && state.generatedImage != null;
+          debugPrint('Had image: $hadImage');
 
+          final hasNewImage = !hadImage && state.generatedImage != null;
+          debugPrint('Has new image: $hasNewImage');
+          ref.read(loadingOverlayPod.notifier).state = false;
           if (hasNewImage) {
             // Navigate to result page
             context.router.push(const ImageResultRoute());
           }
         },
-        loading: () {},
+        loading: () {
+          ref.read(loadingOverlayPod.notifier).state = true;
+        },
         error: (error, stackTrace) {
           if (context.mounted) {
+            ref.read(loadingOverlayPod.notifier).state = false;
             SnackbarUtils.showError(
               context,
               'Error generating image: ${error.toString()}',
@@ -254,6 +261,10 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
   }
 
   void _handleGenerate() {
+    if (_promptController.text.trim().isEmpty) {
+      SnackbarUtils.showError(context, 'Please enter a prompt');
+      return;
+    }
     _promptFocusNode.unfocus();
     ref.read(imageGenerateControllerProvider.notifier).generateImage();
   }

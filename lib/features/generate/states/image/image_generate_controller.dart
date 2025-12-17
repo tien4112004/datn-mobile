@@ -26,7 +26,6 @@ class ImageGenerateController extends AsyncNotifier<ImageGenerateState> {
             aspectRatio: formState.aspectRatio,
             artStyle: formState.artStyle,
             artDescription: formState.artDescription,
-            themeStyle: formState.themeStyle,
             themeDescription: formState.themeDescription,
           );
 

@@ -12,8 +12,6 @@ class ImageRepositoryImpl implements ImageRepository {
   Future<GeneratedImage> generateImage(
     ImageGenerationRequestDto request,
   ) async {
-    request = request.copyWith(model: 'gemini-2.5-flash-image-preview');
-    request = request.copyWith(provider: 'google');
     final response = await _remoteSource.generateImage(request);
 
     if (response.data == null) {
@@ -27,6 +25,8 @@ class ImageRepositoryImpl implements ImageRepository {
     }
 
     // Map response DTO to domain entity
-    return GeneratedImage(url: generatedImage.url, prompt: request.prompt);
+    return GeneratedImage.fromRequestDto(
+      request,
+    ).copyWith(url: response.data!.images!.first.url);
   }
 }

@@ -367,8 +367,7 @@
       },
       "error": "Error generating image: $error",
       "selectAspectRatio": "Select Aspect Ratio",
-      "selectArtStyle": "Select Art Style",
-      "selectThemeStyle": "Select Theme Style"
+      "selectArtStyle": "Select Art Style"
     },
     "imageResult": {
       "title": "Generated Image",

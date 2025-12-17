@@ -12,25 +12,21 @@ class ImageFormState {
   final String aspectRatio;
 
   /// The art style for the generated image
-  final String? artStyle;
+  final String artStyle;
 
   /// Additional art description
-  final String? artDescription;
-
-  /// The theme style for the generated image
-  final String? themeStyle;
+  final String artDescription;
 
   /// Additional theme description
-  final String? themeDescription;
+  final String themeDescription;
 
   const ImageFormState({
     this.prompt = '',
     this.selectedModel,
     this.aspectRatio = '1:1',
-    this.artStyle,
-    this.artDescription,
-    this.themeStyle,
-    this.themeDescription,
+    required this.artStyle,
+    required this.artDescription,
+    required this.themeDescription,
   });
 
   ImageFormState copyWith({
@@ -40,7 +36,6 @@ class ImageFormState {
     String? aspectRatio,
     String? artStyle,
     String? artDescription,
-    String? themeStyle,
     String? themeDescription,
   }) {
     return ImageFormState(
@@ -51,7 +46,6 @@ class ImageFormState {
       aspectRatio: aspectRatio ?? this.aspectRatio,
       artStyle: artStyle ?? this.artStyle,
       artDescription: artDescription ?? this.artDescription,
-      themeStyle: themeStyle ?? this.themeStyle,
       themeDescription: themeDescription ?? this.themeDescription,
     );
   }

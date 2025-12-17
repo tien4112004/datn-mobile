@@ -4,7 +4,11 @@ part of '../controller_provider.dart';
 class ImageFormController extends Notifier<ImageFormState> {
   @override
   ImageFormState build() {
-    return const ImageFormState();
+    return ImageFormState(
+      artDescription: '',
+      themeDescription: '',
+      artStyle: ImageWidgetOptions.availableArtStyles.first,
+    );
   }
 
   void updatePrompt(String prompt) {
@@ -27,15 +31,15 @@ class ImageFormController extends Notifier<ImageFormState> {
     state = state.copyWith(artDescription: artDescription);
   }
 
-  void updateThemeStyle(String? themeStyle) {
-    state = state.copyWith(themeStyle: themeStyle);
-  }
-
   void updateThemeDescription(String? themeDescription) {
     state = state.copyWith(themeDescription: themeDescription);
   }
 
   void reset() {
-    state = const ImageFormState();
+    state = ImageFormState(
+      artDescription: '',
+      themeDescription: '',
+      artStyle: ImageWidgetOptions.availableArtStyles.first,
+    );
   }
 }

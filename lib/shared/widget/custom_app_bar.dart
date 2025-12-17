@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// - Leading widget (back button, etc.)
 /// - Trailing actions
 /// - Consistent scrolled under elevation behavior
-class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// The title text to display in the AppBar
   final String title;
 
@@ -42,7 +42,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Defaults to false
   final bool centerTitle;
 
-  const AppAppBar({
+  const CustomAppBar({
     super.key,
     required this.title,
     this.titleTextStyle,
@@ -58,7 +58,22 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title, style: titleTextStyle),
+      toolbarHeight: 96,
+      title: Column(
+        crossAxisAlignment: centerTitle
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style:
+                titleTextStyle ??
+                const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+          // Ready for subtitle or additional widgets if needed in future
+        ],
+      ),
       leading: leading,
       actions: actions,
       automaticallyImplyLeading: automaticallyImplyLeading,
@@ -70,5 +85,5 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(96);
 }

@@ -112,7 +112,7 @@
   "projects": {
     "title": "Dự án",
     "search_hint": "Tìm kiếm dự án...",
-    "recently_works": "Các công việc gần đây của bạn",
+    "recently_works": "Các công việc gần đây",
     "no_recent_works": "Không có công việc gần đây",
     "created_at": "Tạo lúc: $date",
     "edited": "Đã chỉnh sửa: $date",

@@ -3,7 +3,7 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/widget/app_app_bar.dart';
+import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,8 +40,8 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
     }
 
     return Scaffold(
-      appBar: AppAppBar(
-        title: t.projects.images_title,
+      appBar: CustomAppBar(
+        title: t.projects.images.title,
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
           onPressed: () => Navigator.of(context).pop(),

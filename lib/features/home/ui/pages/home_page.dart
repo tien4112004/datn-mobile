@@ -1,6 +1,6 @@
 import 'package:auto_route/annotations.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/shared/widget/app_app_bar.dart';
+import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/home/ui/widgets/today_works_section.dart';
@@ -55,7 +55,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
 
-        return AppAppBar(
+        return CustomAppBar(
           title: t.homeGreeting,
           actions: [
             Container(

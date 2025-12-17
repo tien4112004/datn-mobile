@@ -25,9 +25,15 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: PlaceholderRouteAnnounce.page, path: 'announces'),
       ],
     ),
-    AutoRoute(page: ResourceListRoute.page, path: '/resources/:resourceType'),
-    AutoRoute(page: PresentationGenerateRoute.page, path: '/presentation'),
+
+    // Resource Routes
+    AutoRoute(page: PresentationListRoute.page, path: '/presentations'),
+    AutoRoute(page: MindmapListRoute.page, path: '/mindmaps'),
+    AutoRoute(page: ImageListRoute.page, path: '/images'),
+
+    // Generate Routes
     AutoRoute(page: GenerateRoute.page, path: '/generate'),
+    AutoRoute(page: PresentationGenerateRoute.page, path: '/presentation'),
     AutoRoute(
       page: PresentationCustomizationRoute.page,
       path: '/presentation/customize',
@@ -37,6 +43,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: MindmapResultRoute.page, path: '/mindmap/result'),
     AutoRoute(page: ImageGenerateRoute.page, path: '/image'),
     AutoRoute(page: ImageResultRoute.page, path: '/image/result'),
+
+    // Detail & Auth Routes
     AutoRoute(
       page: PresentationDetailRoute.page,
       path: '/presentation/:presentationId',
@@ -47,5 +55,7 @@ class AppRouter extends RootStackRouter {
       page: PresentationSearchRoute.page,
       path: '/search/presentations',
     ),
+    AutoRoute(page: MindmapSearchRoute.page, path: '/search/mindmaps'),
+    AutoRoute(page: ImageSearchRoute.page, path: '/search/images'),
   ];
 }

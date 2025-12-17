@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -56,8 +57,17 @@ class _ProjectsView extends ConsumerStatefulWidget {
 }
 
 class _ProjectsViewState extends ConsumerState<_ProjectsView> {
-  void _onResourceTypeSelected(String resourceType) {
-    context.router.push(ResourceListRoute(resourceType: resourceType));
+  void _onResourceTypeSelected(ResourceType resourceType) {
+    switch (resourceType) {
+      case ResourceType.presentation:
+        context.router.push(const PresentationListRoute());
+      case ResourceType.mindmap:
+        context.router.push(const MindmapListRoute());
+      case ResourceType.image:
+        context.router.push(const ImageListRoute());
+      default:
+        break;
+    }
   }
 
   void _onProjectSelected(String projectId) {

@@ -18,19 +18,15 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
-class ResourceListPage extends ConsumerStatefulWidget {
-  final String resourceType;
-
-  const ResourceListPage({
-    super.key,
-    @PathParam('resourceType') required this.resourceType,
-  });
+class PresentationListPage extends ConsumerStatefulWidget {
+  const PresentationListPage({super.key});
 
   @override
-  ConsumerState<ResourceListPage> createState() => _ResourceListPageState();
+  ConsumerState<PresentationListPage> createState() =>
+      _PresentationListPageState();
 }
 
-class _ResourceListPageState extends ConsumerState<ResourceListPage> {
+class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   late String _sortOption;
   late List<String> _sortOptions;
 
@@ -46,14 +42,14 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
     final t = ref.watch(translationsPod);
 
     _sortOptions = [
-      t.projects.sort_date_modified,
-      t.projects.sort_date_created,
-      t.projects.sort_name_asc,
-      t.projects.sort_name_desc,
+      t.projects.common_list.sort_date_modified,
+      t.projects.common_list.sort_date_created,
+      t.projects.common_list.sort_name_asc,
+      t.projects.common_list.sort_name_desc,
     ];
 
     if (_sortOption.isEmpty || !_sortOptions.contains(_sortOption)) {
-      _sortOption = t.projects.sort_date_modified;
+      _sortOption = t.projects.common_list.sort_date_modified;
     }
 
     return Scaffold(
@@ -73,30 +69,7 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
 
   Widget _buildContent(BuildContext context, dynamic t) {
     final pagedPresentations = ref.watch(pagingControllerPod);
-    final controllerProvider = _resourceListAsyncValue;
-
-    if (controllerProvider == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              LucideIcons.construction,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              t.projects.coming_soon(type: widget.resourceType),
-              style: TextStyle(
-                fontSize: Themes.fontSize.s18,
-                color: Colors.grey.shade600,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    final controllerProvider = ref.watch(presentationsControllerProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,15 +192,5 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
       ],
     );
-  }
-
-  AsyncValue<dynamic>? get _resourceListAsyncValue {
-    final resource = ResourceType.fromValue(widget.resourceType.toLowerCase());
-    switch (resource) {
-      case ResourceType.presentation:
-        return ref.watch(presentationsControllerProvider);
-      default:
-        return null;
-    }
   }
 }

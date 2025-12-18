@@ -11,7 +11,6 @@ import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_searc
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
-import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -74,19 +73,6 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Search bar - opens dedicated search page
-        InkWell(
-          child: CustomSearchBar(
-            enabled: false,
-            autoFocus: false,
-            hintText: t.projects.presentations.search_presentations,
-            onTap: () {},
-          ),
-          onTap: () {
-            context.router.push(const PresentationSearchRoute());
-          },
-        ),
-        const SizedBox(height: 16),
         // Filter and Sort bar
         ResourceSearchAndFilterBar(
           // This filter and sort options are just placeholders

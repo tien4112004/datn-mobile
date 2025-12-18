@@ -14,15 +14,21 @@ class GenerationSettingsSheet extends ConsumerWidget {
   final NotifierProvider formControllerProvider;
   final List<Widget> optionWidgets;
   final List<String> _availableLanguages = ['English', 'Vietnamese'];
+  final ModelType modelType;
 
   GenerationSettingsSheet({
     super.key,
     required this.formControllerProvider,
     required this.optionWidgets,
+    required this.modelType,
   });
 
   /// Shows the generation settings bottom sheet.
-  static void show(BuildContext context, List<Widget> optionWidgets) {
+  static void show(
+    BuildContext context,
+    List<Widget> optionWidgets,
+    ModelType modelType,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -33,6 +39,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
       builder: (context) => GenerationSettingsSheet(
         formControllerProvider: presentationFormControllerProvider,
         optionWidgets: optionWidgets,
+        modelType: modelType,
       ),
     );
   }
@@ -63,7 +70,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
             ),
             _buildLanguageSetting(formState, formController, t),
             const SizedBox(height: 16),
-            _buildModelSetting(ref, formState, formController, t),
+            _buildModelSetting(ref, formState, formController, modelType, t),
             const SizedBox(height: 24),
             _buildDoneButton(context, t),
             const SizedBox(height: 8),
@@ -129,13 +136,14 @@ class GenerationSettingsSheet extends ConsumerWidget {
     WidgetRef ref,
     dynamic formState,
     dynamic formController,
+    ModelType modelType,
     Translations t,
   ) {
     return SettingItem(
       label: t.generate.mindmapGenerate.selectModel,
       child: Consumer(
         builder: (context, ref, _) {
-          final modelsAsync = ref.watch(modelsControllerPod(ModelType.text));
+          final modelsAsync = ref.watch(modelsControllerPod(modelType));
           return modelsAsync.when(
             data: (state) {
               final models = state.availableModels

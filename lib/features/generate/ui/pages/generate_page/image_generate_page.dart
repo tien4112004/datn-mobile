@@ -53,7 +53,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
         modelsControllerPod(ModelType.image).future,
       );
       final defaultModel = modelsState.availableModels
-          .where((m) => m.isDefault && m.isEnabled)
+          .where((m) => m.type == ModelType.image && m.isDefault && m.isEnabled)
           .firstOrNull;
       if (defaultModel != null && mounted) {
         ref
@@ -235,6 +235,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                         GenerationSettingsSheet.show(
                           context,
                           ImageWidgetOptions().buildAllSettings(t),
+                          ModelType.image,
                         );
                       },
                       child: const Text("Advanced Settings"),

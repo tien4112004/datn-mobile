@@ -252,6 +252,7 @@ class _PresentationGeneratePageState
                     GenerationSettingsSheet.show(
                       context,
                       PresentationWidgetOptions().buildAllSettings(t),
+                      ModelType.text,
                     );
                   },
                   child: const Text("Advanced Settings"),

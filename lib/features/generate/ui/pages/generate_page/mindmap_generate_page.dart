@@ -252,6 +252,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                     GenerationSettingsSheet.show(
                       context,
                       MindmapWidgetOptions().buildAllSettings(t),
+                      ModelType.text,
                     );
                   },
                   child: const Text("Advanced Settings"),

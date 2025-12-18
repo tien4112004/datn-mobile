@@ -1,13 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Custom InAppBrowser for handling session-based WebView navigation
 class SessionBrowser extends InAppBrowser {
-  final String sessionToken;
   final VoidCallback? onPageFinished;
 
-  SessionBrowser({required this.sessionToken, this.onPageFinished});
+  SessionBrowser({this.onPageFinished});
 
   @override
   Future onBrowserCreated() async {
@@ -71,37 +72,46 @@ class WebviewService {
   /// Note: The sessionToken like this: access_token=; refresh_token=
   Future<void> launchWithSession(
     String url,
-    String sessionToken, {
+    String accessToken,
+    String refreshToken, {
     VoidCallback? onPageFinished,
   }) async {
     try {
       final uri = WebUri(url);
 
-      // 1. SET THE COOKIE (Works on Android & iOS)
-      // This injects the cookie directly into the WebView storage before the page loads.
-      await CookieManager.instance().setCookie(
-        url: uri,
-        name: "sessionId",
-        value: sessionToken,
-        isHttpOnly: true,
-        isSecure: true,
-        domain: Uri.parse(url).host,
-      );
+      // Set access token cookie
+      if (accessToken.isNotEmpty) {
+        await CookieManager.instance().setCookie(
+          url: uri,
+          name: "access_token",
+          value: accessToken,
+          isHttpOnly: true,
+          isSecure: true,
+          domain: Uri.parse(url).host,
+        );
+      }
 
-      // 2. CLOSE PREVIOUS BROWSER INSTANCE if exists
+      // Set refresh token cookie
+      if (refreshToken.isNotEmpty) {
+        await CookieManager.instance().setCookie(
+          url: uri,
+          name: "refresh_token",
+          value: refreshToken,
+          isHttpOnly: true,
+          isSecure: true,
+          domain: Uri.parse(url).host,
+        );
+      }
+
       await _currentBrowser?.close();
 
-      // 3. CREATE AND OPEN NEW BROWSER WITH SESSION
-      _currentBrowser = SessionBrowser(
-        sessionToken: sessionToken,
-        onPageFinished: onPageFinished,
-      );
+      _currentBrowser = SessionBrowser(onPageFinished: onPageFinished);
 
       await _currentBrowser!.openUrlRequest(
         urlRequest: URLRequest(
           url: uri,
           // Add Authorization header for additional security layer
-          headers: {'Authorization': 'Bearer $sessionToken'},
+          headers: {'Authorization': 'Bearer $accessToken'},
         ),
         settings: InAppBrowserClassSettings(
           browserSettings: InAppBrowserSettings(
@@ -120,10 +130,11 @@ class WebviewService {
             // Database storage for caching
             databaseEnabled: true,
             // Mixed content mode for Android
-            mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+            mixedContentMode: MixedContentMode.MIXED_CONTENT_NEVER_ALLOW,
             // User agent customization (optional)
-            userAgent:
-                'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+            userAgent: Platform.isIOS
+                ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
+                : 'Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36',
             // Load with overview mode
             loadWithOverviewMode: true,
             // Use wide viewport
@@ -144,6 +155,17 @@ class WebviewService {
   Future<void> closeBrowser() async {
     await _currentBrowser?.close();
     _currentBrowser = null;
+  }
+
+  /// Dispose service and cleanup all resources
+  Future<void> dispose() async {
+    await closeBrowser();
+    await CookieManager.instance().deleteAllCookies();
+  }
+
+  /// Clear session data
+  Future<void> clearSession() async {
+    await CookieManager.instance().deleteAllCookies();
   }
 
   /// Gets the current browser instance (for advanced use cases)

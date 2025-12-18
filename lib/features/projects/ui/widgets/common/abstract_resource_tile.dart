@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +45,20 @@ class AbstractResourceTile extends ConsumerWidget {
                 height: 56,
                 color: resourceType.color.withValues(alpha: 0.3),
                 child: Center(
-                  child: Icon(
-                    resourceType.icon,
-                    color: Colors.white.withValues(alpha: 0.7),
-                    size: 32,
-                  ),
+                  child: thumbnail == null
+                      ? Icon(
+                          resourceType.icon,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          size: 32,
+                        )
+                      : Image.memory(
+                          base64Decode(thumbnail!),
+                          fit: BoxFit.contain,
+                          width: 100,
+                          height: 56,
+                          cacheWidth: 100,
+                          cacheHeight: 56,
+                        ),
                 ),
               ),
             ),

@@ -40,4 +40,16 @@ class ArtStyleDto {
       _$ArtStyleDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArtStyleDtoToJson(this);
+
+  factory ArtStyleDto.empty() => const ArtStyleDto(
+    id: '',
+    name: 'None',
+    labelKey: 'none',
+    visual: null,
+    modifiers: null,
+    isEnabled: true,
+    createdAt: null,
+    updatedAt: null,
+    data: null,
+  );
 }

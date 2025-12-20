@@ -13,6 +13,7 @@ import 'package:datn_mobile/features/generate/states/mindmap/mindmap_form_state.
 import 'package:datn_mobile/features/generate/states/mindmap/mindmap_generate_state.dart';
 import 'package:datn_mobile/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:datn_mobile/features/generate/states/presentations/presentation_generate_state.dart';
+import 'package:datn_mobile/features/generate/states/theme/theme_provider.dart';
 import 'package:datn_mobile/shared/models/model_info.dart';
 import 'package:datn_mobile/shared/models/slide_viewport.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

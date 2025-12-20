@@ -22,6 +22,9 @@ class PresentationGenerateRequest {
   /// Additional metadata for the presentation (theme and viewport)
   final Map<String, dynamic>? presentation;
 
+  /// Other configuration options
+  final Map<String, dynamic>? others;
+
   const PresentationGenerateRequest({
     required this.model,
     required this.provider,
@@ -29,6 +32,7 @@ class PresentationGenerateRequest {
     required this.slideCount,
     required this.outline,
     this.presentation,
+    this.others,
   });
 
   factory PresentationGenerateRequest.fromJson(Map<String, dynamic> json) =>

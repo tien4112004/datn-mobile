@@ -15,6 +15,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class PresentationGeneratePage extends ConsumerStatefulWidget {
@@ -204,7 +205,7 @@ class _PresentationGeneratePageState
                 formController,
                 [
                   OptionChip(
-                    icon: Icons.format_list_numbered,
+                    icon: LucideIcons.listOrdered,
                     label: t.generate.presentationGenerate.slidesCount(
                       count: formState.slideCount,
                     ),
@@ -217,7 +218,7 @@ class _PresentationGeneratePageState
                   ),
                   // Language
                   OptionChip(
-                    icon: Icons.language,
+                    icon: LucideIcons.languages,
                     label: formState.language.isEmpty
                         ? t.locale_en
                         : formState.language,
@@ -230,7 +231,7 @@ class _PresentationGeneratePageState
                   ),
                   // Model
                   OptionChip(
-                    icon: Icons.psychology,
+                    icon: LucideIcons.bot,
                     label:
                         formState.outlineModel?.displayName ??
                         t.generate.presentationGenerate.selectModel,

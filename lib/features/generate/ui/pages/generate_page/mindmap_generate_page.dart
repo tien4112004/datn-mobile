@@ -14,6 +14,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class MindmapGeneratePage extends ConsumerStatefulWidget {
@@ -191,7 +192,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                 formController,
                 [
                   OptionChip(
-                    icon: Icons.layers,
+                    icon: LucideIcons.layers,
                     label: t.generate.mindmapGenerate.maxDepth(
                       depth: formState.maxDepth,
                     ),
@@ -203,7 +204,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                     ),
                   ),
                   OptionChip(
-                    icon: Icons.layers,
+                    icon: LucideIcons.layers,
                     label: t.generate.mindmapGenerate.maxBranches(
                       branches: formState.maxBranchesPerNode,
                     ),
@@ -217,7 +218,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
 
                   // Language
                   OptionChip(
-                    icon: Icons.language,
+                    icon: LucideIcons.languages,
                     label: formState.language.isEmpty
                         ? t.locale_en
                         : formState.language,
@@ -230,7 +231,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                   ),
                   // Model
                   OptionChip(
-                    icon: Icons.psychology,
+                    icon: LucideIcons.bot,
                     label:
                         formState.selectedModel?.displayName ??
                         t.generate.mindmapGenerate.selectModel,

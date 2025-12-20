@@ -4,10 +4,11 @@ part of '../controller_provider.dart';
 class ImageFormController extends Notifier<ImageFormState> {
   @override
   ImageFormState build() {
-    return ImageFormState(
+    // Initialize with empty art style; UI will set it to first available from API
+    return const ImageFormState(
       artDescription: '',
       themeDescription: '',
-      artStyle: ImageWidgetOptions.availableArtStyles.first,
+      artStyle: '',
     );
   }
 
@@ -36,10 +37,11 @@ class ImageFormController extends Notifier<ImageFormState> {
   }
 
   void reset() {
-    state = ImageFormState(
+    // Reset with empty art style; UI will set it to first available from API
+    state = const ImageFormState(
       artDescription: '',
       themeDescription: '',
-      artStyle: ImageWidgetOptions.availableArtStyles.first,
+      artStyle: '',
     );
   }
 }

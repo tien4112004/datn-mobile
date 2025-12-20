@@ -213,7 +213,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                         ),
                       ),
                       OptionChip(
-                        icon: Icons.psychology,
+                        icon: LucideIcons.bot,
                         label:
                             formState.selectedModel?.displayName ??
                             t.generate.presentationGenerate.selectModel,

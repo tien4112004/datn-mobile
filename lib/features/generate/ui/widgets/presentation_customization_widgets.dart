@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Displays generation settings like topic, slide count, language, and model
 class GenerationOptionsSection extends ConsumerWidget {
@@ -38,7 +39,7 @@ class GenerationOptionsSection extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                Icons.settings_outlined,
+                LucideIcons.settings,
                 color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
@@ -60,7 +61,7 @@ class GenerationOptionsSection extends ConsumerWidget {
             children: [
               // Topic
               _OptionItem(
-                icon: Icons.topic_outlined,
+                icon: LucideIcons.typeOutline,
                 label: t.generate.customization.topic,
                 value: formState.topic.isNotEmpty
                     ? (formState.topic.length > 30
@@ -70,32 +71,32 @@ class GenerationOptionsSection extends ConsumerWidget {
               ),
               // Slide Count
               _OptionItem(
-                icon: Icons.format_list_numbered,
+                icon: LucideIcons.listOrdered,
                 label: t.generate.customization.slides,
                 value: '${formState.slideCount}',
               ),
               // Language
               _OptionItem(
-                icon: Icons.language,
+                icon: LucideIcons.languages,
                 label: t.generate.customization.language,
                 value: formState.language,
               ),
               // Model
               textModelsAsync.when(
                 data: (models) => _OptionItem(
-                  icon: Icons.psychology,
+                  icon: LucideIcons.bot,
                   label: t.generate.customization.model,
                   value:
                       formState.outlineModel?.displayName ??
                       t.generate.customization.notSet,
                 ),
                 loading: () => _OptionItem(
-                  icon: Icons.psychology,
+                  icon: LucideIcons.bot,
                   label: t.generate.customization.model,
                   value: t.generate.customization.loading,
                 ),
                 error: (_, _) => _OptionItem(
-                  icon: Icons.psychology,
+                  icon: LucideIcons.bot,
                   label: t.generate.customization.model,
                   value: t.generate.customization.error,
                 ),

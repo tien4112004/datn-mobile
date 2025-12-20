@@ -2,6 +2,7 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Quick action buttons for image operations (Copy, Share, Download)
 /// Displays as a compact horizontal row of icon buttons
@@ -33,7 +34,7 @@ class ImageQuickActions extends ConsumerWidget {
           // Copy Prompt Action
           _buildQuickActionButton(
             context,
-            icon: Icons.content_copy_outlined,
+            icon: LucideIcons.copy,
             label: t.generate.imageResult.copyPrompt,
             onPressed: onCopyPrompt,
           ),
@@ -41,7 +42,7 @@ class ImageQuickActions extends ConsumerWidget {
           // Share Action
           _buildQuickActionButton(
             context,
-            icon: Icons.share_outlined,
+            icon: LucideIcons.share,
             label: t.generate.imageResult.share,
             onPressed: onShare,
           ),
@@ -49,7 +50,7 @@ class ImageQuickActions extends ConsumerWidget {
           // Download Action
           _buildQuickActionButton(
             context,
-            icon: Icons.download_outlined,
+            icon: LucideIcons.download,
             label: t.generate.imageResult.downloadImage,
             onPressed: onDownload,
           ),

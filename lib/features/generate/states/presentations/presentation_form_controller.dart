@@ -76,11 +76,39 @@ class PresentationFormController extends Notifier<PresentationFormState> {
   }
 
   // Create presentation request for Step 2
-  PresentationGenerateRequest toPresentationRequest() {
+  PresentationGenerateRequest toPresentationRequest(WidgetRef ref) {
     final outlineModel = state.outlineModel;
+    final imageModel = state.imageModel;
+
+    // Get the full theme object from the provider
+    final themesAsync = ref.read(slideThemesProvider);
+    Map<String, dynamic>? themeObject;
+
+    themesAsync.whenData((themes) {
+      if (state.themeId != null) {
+        final selectedTheme = themes.firstWhere(
+          (t) => t.id == state.themeId,
+          orElse: () => themes.first,
+        );
+        themeObject = selectedTheme.toJson();
+      } else {
+        themeObject = themes.first.toJson();
+      }
+    });
+
     final presentationData = {
-      'theme': state.themeId ?? state.theme.value,
+      'theme': themeObject ?? {'id': state.themeId ?? 'modern'},
       'viewport': SlideViewport.standard.toJson(),
+    };
+
+    final othersData = {
+      'contentLength': state.avoidContent.isNotEmpty ? state.avoidContent : '',
+      'imageModel': imageModel != null
+          ? {'name': imageModel.name, 'provider': imageModel.provider}
+          : {
+              'name': 'google/gemini-2.5-flash-image-preview',
+              'provider': 'openRouter',
+            },
     };
 
     return PresentationGenerateRequest(
@@ -90,6 +118,7 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       slideCount: state.slideCount,
       outline: state.outline,
       presentation: presentationData,
+      others: othersData,
     );
   }
 }

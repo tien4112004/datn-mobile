@@ -43,24 +43,22 @@ class _GeneratorPickerSheetState extends ConsumerState<GeneratorPickerSheet> {
               height: 40,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1)
+                    ? type.resourceType.color.withValues(alpha: 0.1)
                     : context.secondarySurfaceColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                type.icon,
+                type.resourceType.icon,
                 color: isSelected
-                    ? Theme.of(context).colorScheme.primary
+                    ? type.resourceType.color
                     : context.secondaryTextColor,
               ),
             ),
             title: Text(
               type.getLabel(widget.t),
               style: TextStyle(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: context.isDarkMode ? Colors.white : Colors.grey[900],
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: Themes.theme.textTheme.bodyLarge?.color,
               ),
             ),
             trailing: isSelected

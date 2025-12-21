@@ -1,16 +1,15 @@
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Generator types available in the app
 enum GeneratorType {
-  presentation(LucideIcons.presentation),
-  image(LucideIcons.image),
-  mindmap(LucideIcons.brainCircuit);
+  presentation(ResourceType.presentation),
+  image(ResourceType.image),
+  mindmap(ResourceType.mindmap);
 
-  final IconData icon;
+  final ResourceType resourceType;
 
-  const GeneratorType(this.icon);
+  const GeneratorType(this.resourceType);
 
   String getLabel(Translations t) {
     switch (this) {

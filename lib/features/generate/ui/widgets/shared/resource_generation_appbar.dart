@@ -60,7 +60,7 @@ class _ResourceGenerationAppBarState extends State<ResourceGenerationAppBar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                selectedGenerator.icon,
+                selectedGenerator.resourceType.icon,
                 size: 20,
                 color: Theme.of(context).colorScheme.primary,
               ),

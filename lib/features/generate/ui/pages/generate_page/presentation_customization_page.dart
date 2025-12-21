@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,6 +91,7 @@ class _PresentationCustomizationPageState
     ref.listen(presentationGenerateControllerProvider, (previous, next) {
       next.when(
         data: (state) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           final wasLoading =
               previous?.maybeWhen(loading: () => true, orElse: () => false) ??
               false;
@@ -142,8 +144,11 @@ class _PresentationCustomizationPageState
             context.router.popUntilRoot();
           }
         },
-        loading: () {},
+        loading: () {
+          ref.read(loadingOverlayPod.notifier).state = true;
+        },
         error: (error, stackTrace) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(

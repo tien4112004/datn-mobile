@@ -111,18 +111,38 @@
   "projects": {
     "title": "Projects",
     "search_hint": "Search projects...",
-    "recently_works": "Your recently works",
-    "no_recent_works": "No recent works",
+    "recently_works": "Recent projects",
+    "no_recent_works": "No recent projects",
     "created_at": "Created at: $date",
     "edited": "Edited: $date",
     "untitled": "Untitled",
     "type": "Type: $type",
     "refresh_error": "Failed to refresh projects",
     "load_error": "Failed to load projects",
+    "common_list": {
+      "filter_all": "All",
+      "filter_subject": "Subject",
+      "filter_grade": "Grade",
+      "sort_date_modified": "Date Modified",
+      "sort_date_created": "Date Created",
+      "sort_name_asc": "Name (A-Z)",
+      "sort_name_desc": "Name (Z-A)",
+      "no_results_message": "No results found"
+    },
     "presentations": {
       "title": "Presentation",
       "search_presentations": "Search presentations...",
       "all_presentations": "All Presentations"
+    },
+    "mindmaps": {
+      "title": "Mindmap",
+      "search_mindmaps": "Search mindmaps...",
+      "all_mindmaps": "All Mindmaps"
+    },
+    "images": {
+      "title": "Image",
+      "search_images": "Search images...",
+      "all_images": "All Images"
     },
     "resource_types": {
       "image": "Image",
@@ -139,6 +159,8 @@
     "sort_name_asc": "Name (A-Z)",
     "sort_name_desc": "Name (Z-A)",
     "no_presentations": "No presentations yet",
+    "no_mindmaps": "No mindmaps yet",
+    "no_images": "No images yet",
     "back_to_resources": "Back to Resources",
     "coming_soon": "$type coming soon",
     "opening": "Opening $title",
@@ -207,6 +229,8 @@
     "avatarUpdateFailed": "Failed to update avatar: $error"
   },
   "generate": {
+    "enterTopicHint": "What is on your mind?",
+    "advancedSettings": "Advanced Settings",
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",
@@ -358,6 +382,7 @@
       "title": "Image Generator",
       "subtitle": "Describe the image you want to generate",
       "enterPrompt": "Enter your image description...",
+      "enterPromptValidation": "Please enter a prompt",
       "tryThesePrompts": "Try these prompts:",
       "promptSuggestions": {
         "sunsetMountains": "A majestic sunset over snow-capped mountains, oil painting style",
@@ -383,7 +408,9 @@
       "generateAnother": "Generate Another",
       "generatingImage": "Generating image...",
       "errorGeneratingImage": "Error generating image",
-      "failedToLoadImage": "Failed to load image"
+      "failedToLoadImage": "Failed to load image",
+      "imageSavedToGallery": "Image saved to gallery!",
+      "failedToSaveImage": "Failed to save image: $error"
     }
   }
 }

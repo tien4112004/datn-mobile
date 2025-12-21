@@ -139,6 +139,7 @@ class _PresentationGeneratePageState
               formState: presentationFormControllerProvider,
               onAttachFile: () => AttachFileSheet.show(context: context, t: t),
               onGenerate: _handleGenerate,
+              hintText: t.generate.enterTopicHint,
             ),
           ],
         ),
@@ -256,7 +257,7 @@ class _PresentationGeneratePageState
                       ModelType.text,
                     );
                   },
-                  child: const Text("Advanced Settings"),
+                  child: Text(t.generate.advancedSettings),
                 ),
               ),
             ],

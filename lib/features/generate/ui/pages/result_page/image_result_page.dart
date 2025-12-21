@@ -221,14 +221,20 @@ class ImageResultPage extends ConsumerWidget {
           onDone: () {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Image saved to gallery!')),
+                SnackBar(
+                  content: Text(t.generate.imageResult.imageSavedToGallery),
+                ),
               );
             }
           },
           onError: (error) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to save image: $error')),
+                SnackBar(
+                  content: Text(
+                    '${t.generate.imageResult.failedToSaveImage} $error',
+                  ),
+                ),
               );
             }
           },

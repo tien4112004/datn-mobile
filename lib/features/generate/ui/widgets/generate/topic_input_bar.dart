@@ -13,6 +13,7 @@ class TopicInputBar extends ConsumerWidget {
   final VoidCallback onGenerate;
   final NotifierProvider formState;
   final AsyncNotifierProvider generateState;
+  final String hintText;
 
   const TopicInputBar({
     super.key,
@@ -22,6 +23,7 @@ class TopicInputBar extends ConsumerWidget {
     required this.onGenerate,
     required this.formState,
     required this.generateState,
+    required this.hintText,
   });
 
   @override
@@ -106,7 +108,7 @@ class TopicInputBar extends ConsumerWidget {
           maxLines: null,
           textInputAction: TextInputAction.newline,
           decoration: InputDecoration(
-            hintText: 'Enter your presentation topic...',
+            hintText: hintText,
             hintStyle: TextStyle(
               color: context.isDarkMode ? Colors.grey[500] : Colors.grey[400],
             ),

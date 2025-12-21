@@ -112,7 +112,7 @@
   "projects": {
     "title": "Dự án",
     "search_hint": "Tìm kiếm dự án...",
-    "recently_works": "Các công việc gần đây của bạn",
+    "recently_works": "Các công việc gần đây",
     "no_recent_works": "Không có công việc gần đây",
     "created_at": "Tạo lúc: $date",
     "edited": "Đã chỉnh sửa: $date",
@@ -120,10 +120,30 @@
     "type": "Loại: $type",
     "refresh_error": "Không thể làm mới dự án",
     "load_error": "Không thể tải dự án",
+    "common_list": {
+      "filter_all": "Tất cả",
+      "filter_subject": "Môn học",
+      "filter_grade": "Khối lớp",
+      "sort_date_modified": "Ngày sửa đổi",
+      "sort_date_created": "Ngày tạo",
+      "sort_name_asc": "Tên (A-Z)",
+      "sort_name_desc": "Tên (Z-A)",
+      "no_results_message": "Không tìm thấy kết quả"
+    },
     "presentations": {
       "title": "Bài thuyết trình",
       "search_presentations": "Tìm kiếm bài thuyết trình...",
       "all_presentations": "Tất cả bài thuyết trình"
+    },
+    "mindmaps": {
+      "title": "Sơ đồ tư duy",
+      "search_mindmaps": "Tìm kiếm sơ đồ tư duy...",
+      "all_mindmaps": "Tất cả sơ đồ tư duy"
+    },
+    "images": {
+      "title": "Hình ảnh",
+      "search_images": "Tìm kiếm hình ảnh...",
+      "all_images": "Tất cả hình ảnh"
     },
     "resource_types": {
       "image": "Hình ảnh",
@@ -132,6 +152,8 @@
     },
     "type_of_resources": "Loại tài nguyên",
     "your_presentations": "Bài thuyết trình của bạn",
+    "mindmaps_title": "Sơ đồ tư duy",
+    "images_title": "Hình ảnh",
     "filter": "Lọc",
     "filter_coming_soon": "Tính năng lọc sắp ra mắt",
     "sort": "Sắp xếp",
@@ -140,6 +162,8 @@
     "sort_name_asc": "Tên (A-Z)",
     "sort_name_desc": "Tên (Z-A)",
     "no_presentations": "Chưa có bài thuyết trình nào",
+    "no_mindmaps": "Chưa có sơ đồ tư duy nào",
+    "no_images": "Chưa có hình ảnh nào",
     "back_to_resources": "Quay lại Tài nguyên",
     "coming_soon": "$type sắp ra mắt",
     "opening": "Đang mở $title",
@@ -208,6 +232,8 @@
     "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
   },
   "generate": {
+    "enterTopicHint": "Bạn đang nghĩ gì?",
+    "advancedSettings": "Cài đặt nâng cao",
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
@@ -359,6 +385,7 @@
       "title": "Công cụ tạo hình ảnh",
       "subtitle": "Mô tả hình ảnh bạn muốn tạo",
       "enterPrompt": "Nhập mô tả hình ảnh của bạn...",
+      "enterPromptValidation": "Vui lòng nhập lời nhắc",
       "tryThesePrompts": "Thử các gợi ý này:",
       "promptSuggestions": {
         "sunsetMountains": "Bình minh tuyệt đẹp trên những ngọn núi tuyết phủ, phong cách tranh dầu",
@@ -368,7 +395,8 @@
       },
       "error": "Lỗi tạo hình ảnh: $error",
       "selectAspectRatio": "Chọn tỷ lệ khung hình",
-      "selectArtStyle": "Chọn phong cách nghệ thuật"
+      "selectArtStyle": "Chọn phong cách nghệ thuật",
+      "advancedSettings": "Cài đặt nâng cao"
     },
     "imageResult": {
       "title": "Hình ảnh đã tạo",
@@ -384,7 +412,9 @@
       "generateAnother": "Tạo hình ảnh khác",
       "generatingImage": "Đang tạo hình ảnh...",
       "errorGeneratingImage": "Lỗi tạo hình ảnh",
-      "failedToLoadImage": "Không thể tải hình ảnh"
+      "failedToLoadImage": "Không thể tải hình ảnh",
+      "imageSavedToGallery": "Hình ảnh đã được lưu vào thư viện!",
+      "failedToSaveImage": "Không thể lưu hình ảnh: $error"
     }
   }
 }

@@ -127,6 +127,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
               formState: mindmapFormControllerProvider,
               onAttachFile: () => AttachFileSheet.show(context: context, t: t),
               onGenerate: _handleGenerate,
+              hintText: t.generate.enterTopicHint,
             ),
           ],
         ),
@@ -256,7 +257,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                       ModelType.text,
                     );
                   },
-                  child: const Text("Advanced Settings"),
+                  child: Text(t.generate.advancedSettings),
                 ),
               ),
             ],

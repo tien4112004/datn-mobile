@@ -6,31 +6,26 @@ import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_and_sort_bar.dart';
 import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/app_app_bar.dart';
-import 'package:datn_mobile/shared/widget/custom_search_bar.dart';
+import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
-class ResourceListPage extends ConsumerStatefulWidget {
-  final String resourceType;
-
-  const ResourceListPage({
-    super.key,
-    @PathParam('resourceType') required this.resourceType,
-  });
+class PresentationListPage extends ConsumerStatefulWidget {
+  const PresentationListPage({super.key});
 
   @override
-  ConsumerState<ResourceListPage> createState() => _ResourceListPageState();
+  ConsumerState<PresentationListPage> createState() =>
+      _PresentationListPageState();
 }
 
-class _ResourceListPageState extends ConsumerState<ResourceListPage> {
+class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   late String _sortOption;
   late List<String> _sortOptions;
 
@@ -46,18 +41,18 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
     final t = ref.watch(translationsPod);
 
     _sortOptions = [
-      t.projects.sort_date_modified,
-      t.projects.sort_date_created,
-      t.projects.sort_name_asc,
-      t.projects.sort_name_desc,
+      t.projects.common_list.sort_date_modified,
+      t.projects.common_list.sort_date_created,
+      t.projects.common_list.sort_name_asc,
+      t.projects.common_list.sort_name_desc,
     ];
 
     if (_sortOption.isEmpty || !_sortOptions.contains(_sortOption)) {
-      _sortOption = t.projects.sort_date_modified;
+      _sortOption = t.projects.common_list.sort_date_modified;
     }
 
     return Scaffold(
-      appBar: AppAppBar(
+      appBar: CustomAppBar(
         title: t.projects.title,
         leading: IconButton(
           icon: const Icon(LucideIcons.chevronLeft),
@@ -73,49 +68,13 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
 
   Widget _buildContent(BuildContext context, dynamic t) {
     final pagedPresentations = ref.watch(pagingControllerPod);
-    final controllerProvider = _resourceListAsyncValue;
-
-    if (controllerProvider == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              LucideIcons.construction,
-              size: 64,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              t.projects.coming_soon(type: widget.resourceType),
-              style: TextStyle(
-                fontSize: Themes.fontSize.s18,
-                color: Colors.grey.shade600,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    final controllerProvider = ref.watch(presentationsControllerProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Search bar - opens dedicated search page
-        InkWell(
-          child: CustomSearchBar(
-            enabled: false,
-            autoFocus: false,
-            hintText: t.projects.presentations.search_presentations,
-            onTap: () {},
-          ),
-          onTap: () {
-            context.router.push(const PresentationSearchRoute());
-          },
-        ),
-        const SizedBox(height: 16),
         // Filter and Sort bar
-        FilterAndSortBar(
+        ResourceSearchAndFilterBar(
           // This filter and sort options are just placeholders
           // TODO: should be dynamic based on actual data
           subjects: ['Math', 'Science', 'English', 'History', 'PE'],
@@ -135,6 +94,10 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
           },
           onClearFilters: () {
             ref.read(filterProvider.notifier).clearFilters();
+          },
+          hintText: t.projects.presentations.search_presentations,
+          onSearchTap: () {
+            context.router.push(const PresentationSearchRoute());
           },
         ),
         const SizedBox(height: 16),
@@ -219,15 +182,5 @@ class _ResourceListPageState extends ConsumerState<ResourceListPage> {
         ),
       ],
     );
-  }
-
-  AsyncValue<dynamic>? get _resourceListAsyncValue {
-    final resource = ResourceType.fromValue(widget.resourceType.toLowerCase());
-    switch (resource) {
-      case ResourceType.presentation:
-        return ref.watch(presentationsControllerProvider);
-      default:
-        return null;
-    }
   }
 }

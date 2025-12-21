@@ -1,4 +1,4 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +20,10 @@ class AttachFileSheet extends StatelessWidget {
   });
 
   static void show({required BuildContext context, required Translations t}) {
-    showModalBottomSheet(
+    PickerBottomSheet.show(
       context: context,
-      backgroundColor: context.surfaceColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (bottomSheetContext) => AttachFileSheet(
+      title: t.generate.presentationGenerate.attachFiles,
+      child: AttachFileSheet(
         t: t,
         onDocumentTap: () {
           SnackbarUtils.showInfo(
@@ -55,27 +52,6 @@ class AttachFileSheet extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 12),
-        // Handle
-        Container(
-          width: 40,
-          height: 4,
-          decoration: BoxDecoration(
-            color: context.dividerColor,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        const SizedBox(height: 16),
-        // Title
-        Text(
-          t.generate.presentationGenerate.attachFiles,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: context.isDarkMode ? Colors.white : Colors.grey[900],
-          ),
-        ),
-        const SizedBox(height: 8),
         // Options
         ListTile(
           leading: Container(
@@ -128,7 +104,6 @@ class AttachFileSheet extends StatelessWidget {
             onLinkTap();
           },
         ),
-        SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
       ],
     );
   }

@@ -170,9 +170,27 @@
     "yesterday": "Yesterday",
     "days_ago": "$count days ago"
   },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Try Again",
+    "retryLater": "Try Again Later",
+    "somethingWentWrong": "Something Went Wrong!",
+    "pleaseWait": "Please Wait..."
+  },
   "errors": {
     "network_error": "Network error occurred. Please try again.",
     "unknown_error": "An unknown error occurred. Please try again.",
+    "dio": {
+      "connectionTimeout": "Connection timed out. Please check your internet connection.",
+      "sendTimeout": "Unable to connect to the server. Please try again later.",
+      "receiveTimeout": "Server response timed out. Please check your internet connection.",
+      "badCertificate": "Security certificate error. Please update your device or contact support.",
+      "badResponse": "Server error occurred. Please try again later.",
+      "cancel": "Request cancelled.",
+      "connectionError": "Unable to connect to server. Please try again later.",
+      "unknown": "Network error. Please check your internet connection."
+    },
     "UNCATEGORIZED_ERROR": "An unexpected error occurred",
     "MODEL_NOT_FOUND": "Model not found",
     "MODEL_NOT_ENABLED": "Model is not enabled for this operation",

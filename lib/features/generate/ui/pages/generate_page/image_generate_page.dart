@@ -237,6 +237,8 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                           context,
                           ImageWidgetOptions().buildAllSettings(t),
                           ModelType.image,
+                          t.generate.generationSettings.title,
+                          t.generate.generationSettings.done,
                         );
                       },
                       child: Text(t.generate.advancedSettings),

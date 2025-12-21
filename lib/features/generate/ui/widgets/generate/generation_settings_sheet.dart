@@ -1,7 +1,7 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -28,19 +28,22 @@ class GenerationSettingsSheet extends ConsumerWidget {
     BuildContext context,
     List<Widget> optionWidgets,
     ModelType modelType,
+    String title,
+    String buttonText,
   ) {
-    showModalBottomSheet(
+    PickerBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: context.surfaceColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => GenerationSettingsSheet(
+      title: title,
+      child: GenerationSettingsSheet(
         formControllerProvider: presentationFormControllerProvider,
         optionWidgets: optionWidgets,
         modelType: modelType,
       ),
+      saveButton: GenerationSettingsSheet(
+        formControllerProvider: presentationFormControllerProvider,
+        optionWidgets: optionWidgets,
+        modelType: modelType,
+      )._buildDoneButton(context, buttonText),
     );
   }
 
@@ -55,53 +58,18 @@ class GenerationSettingsSheet extends ConsumerWidget {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHandle(context),
-            const SizedBox(height: 20),
-            _buildTitle(context, t),
-            const SizedBox(height: 20),
-            ...optionWidgets.expand(
-              (widget) => [widget, const SizedBox(height: 16)],
-            ),
-            _buildLanguageSetting(formState, formController, t),
-            const SizedBox(height: 16),
-            _buildModelSetting(ref, formState, formController, modelType, t),
-            const SizedBox(height: 24),
-            _buildDoneButton(context, t),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Drag handle at the top of the sheet.
-  Widget _buildHandle(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 40,
-        height: 4,
-        decoration: BoxDecoration(
-          color: context.isDarkMode ? Colors.grey[700] : Colors.grey[300],
-          borderRadius: BorderRadius.circular(2),
-        ),
-      ),
-    );
-  }
-
-  /// Sheet title.
-  Widget _buildTitle(BuildContext context, Translations t) {
-    return Text(
-      t.generate.generationSettings.title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: context.isDarkMode ? Colors.white : Colors.grey[900],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...optionWidgets.expand(
+            (widget) => [widget, const SizedBox(height: 16)],
+          ),
+          _buildLanguageSetting(formState, formController, t),
+          const SizedBox(height: 16),
+          _buildModelSetting(ref, formState, formController, modelType, t),
+          const SizedBox(height: 24),
+        ],
       ),
     );
   }
@@ -193,7 +161,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
   }
 
   /// Done button to close the sheet.
-  Widget _buildDoneButton(BuildContext context, Translations t) {
+  Widget _buildDoneButton(BuildContext context, String buttonText) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -204,7 +172,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Text(t.generate.generationSettings.done),
+        child: Text(buttonText),
       ),
     );
   }

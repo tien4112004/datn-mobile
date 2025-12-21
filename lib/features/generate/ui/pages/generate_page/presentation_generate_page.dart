@@ -255,6 +255,8 @@ class _PresentationGeneratePageState
                       context,
                       PresentationWidgetOptions().buildAllSettings(t),
                       ModelType.text,
+                      t.generate.generationSettings.title,
+                      t.generate.generationSettings.done,
                     );
                   },
                   child: Text(t.generate.advancedSettings),

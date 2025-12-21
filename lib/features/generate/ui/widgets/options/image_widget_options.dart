@@ -63,10 +63,8 @@ class ImageWidgetOptions {
             onTap: () {
               PickerBottomSheet.show(
                 title: t.generate.imageGenerate.selectArtStyle,
-                subTitle: Text(
-                  'Choose the visual style for your presentation images',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
+                subTitle:
+                    'Choose the visual style for your presentation images',
                 context: context,
                 child: Container(
                   padding: const EdgeInsets.all(24),
@@ -307,10 +305,6 @@ class ImageWidgetOptions {
         );
       },
     );
-  }
-
-  List<Widget> buildAllSettings(Translations t) {
-    return [buildAspectRatioSetting(t), buildArtStyleSetting(t)];
   }
 
   List<Widget> buildAllSettings(Translations t) {

@@ -30,57 +30,53 @@ class GeneratedImage {
   /// The aspect ratio of the generated image
   final String aspectRatio;
 
-  const GeneratedImage({this.url, this.mimeType, this.prompt, this.created});
+  const GeneratedImage({
+    required this.url,
+    this.mimeType,
+    required this.prompt,
+    required this.model,
+    required this.aspectRatio,
+    required this.artStyle,
+    required this.artDescription,
+    required this.themeDescription,
+  });
 
   GeneratedImage copyWith({
     String? url,
     String? mimeType,
     String? prompt,
-    String? created,
+    String? model,
+    String? aspectRatio,
+    String? artStyle,
+    String? artDescription,
+    String? themeDescription,
   }) {
     return GeneratedImage(
       url: url ?? this.url,
       mimeType: mimeType ?? this.mimeType,
       prompt: prompt ?? this.prompt,
-      created: created ?? this.created,
+      model: model ?? this.model,
+      aspectRatio: aspectRatio ?? this.aspectRatio,
+      artStyle: artStyle ?? this.artStyle,
+      artDescription: artDescription ?? this.artDescription,
+      themeDescription: themeDescription ?? this.themeDescription,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'url': url,
-    'mimeType': mimeType,
-    'prompt': prompt,
-    'created': created,
-  };
+  Map<String, dynamic> toJson() => _$GeneratedImageToJson(this);
 
   factory GeneratedImage.fromJson(Map<String, dynamic> json) =>
       _$GeneratedImageFromJson(json);
 
   factory GeneratedImage.fromRequestDto(ImageGenerationRequestDto request) {
     return GeneratedImage(
-      url: json['url'] as String?,
-      mimeType: json['mimeType'] as String?,
-      prompt: json['prompt'] as String?,
-      created: json['created'] as String?,
+      url: '',
+      prompt: request.prompt,
+      model: request.model,
+      aspectRatio: request.aspectRatio,
+      artStyle: request.artStyle,
+      artDescription: request.artDescription,
+      themeDescription: request.themeDescription,
     );
   }
-
-  @override
-  String toString() {
-    return 'GeneratedImage(url: $url, mimeType: $mimeType, prompt: $prompt, created: $created)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is GeneratedImage &&
-        other.url == url &&
-        other.mimeType == mimeType &&
-        other.prompt == prompt &&
-        other.created == created;
-  }
-
-  @override
-  int get hashCode =>
-      url.hashCode ^ mimeType.hashCode ^ prompt.hashCode ^ created.hashCode;
 }

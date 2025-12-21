@@ -37,9 +37,8 @@ class FilterList extends StatelessWidget {
             onPressed: onClearFilters,
             style: OutlinedButton.styleFrom(
               backgroundColor: !hasActiveFilters
-                  ? Colors.blue.shade100
+                  ? Colors.blue.shade200
                   : Colors.grey.shade100,
-              shape: const CircleBorder(),
               padding: const EdgeInsets.all(12),
             ),
             child: Text(

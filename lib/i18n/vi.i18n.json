@@ -150,7 +150,13 @@
     "images": {
       "title": "Hình ảnh",
       "search_images": "Tìm kiếm hình ảnh...",
-      "all_images": "Tất cả hình ảnh"
+      "all_images": "Tất cả hình ảnh",
+      "create_new": "Hình ảnh mới",
+      "pick_from_gallery": "Chọn từ thư viện",
+      "description": "Mô tả",
+      "created": "Tạo lúc",
+      "updated": "Cập nhật lúc",
+      "underConstruction": "Trang chi tiết hình ảnh đang được phát triển"
     },
     "resource_types": {
       "image": "Hình ảnh",

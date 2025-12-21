@@ -142,7 +142,13 @@
     "images": {
       "title": "Image",
       "search_images": "Search images...",
-      "all_images": "All Images"
+      "all_images": "All Images",
+      "create_new": "New Image",
+      "pick_from_gallery": "Pick from Gallery",
+      "description": "Description",
+      "created": "Created",
+      "updated": "Updated",
+      "underConstruction": "Image Detail Page is under construction"
     },
     "resource_types": {
       "image": "Image",

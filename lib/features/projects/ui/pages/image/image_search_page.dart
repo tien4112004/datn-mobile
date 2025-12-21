@@ -31,7 +31,9 @@ class ImageSearchPage extends ConsumerWidget {
               decoration: InputDecoration(
                 hintText: t.projects.images.search_images,
                 prefixIcon: const Icon(LucideIcons.search),
-                border: OutlineInputBorder(borderRadius: Themes.boxRadius),
+                border: const OutlineInputBorder(
+                  borderRadius: Themes.boxRadius,
+                ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,

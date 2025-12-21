@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 // import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 // import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 // import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -17,6 +18,8 @@ class ImageDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,7 +27,7 @@ class ImageDetailPage extends ConsumerWidget {
           Icon(LucideIcons.construction, size: 64, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
-            'Image Detail Page is under construction',
+            t.projects.images.underConstruction,
             style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
           ),
         ],

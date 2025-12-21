@@ -100,7 +100,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                 ? Text(mindmap.description!)
                                 : null,
                             onTap: () {
-                              context.router.push(MindmapSearchRoute());
+                              context.router.push(const MindmapSearchRoute());
                             },
                           );
                         },

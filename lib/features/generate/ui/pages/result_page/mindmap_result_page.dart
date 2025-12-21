@@ -7,6 +7,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class MindmapResultPage extends ConsumerWidget {
@@ -66,7 +67,7 @@ class MindmapResultPage extends ConsumerWidget {
         children: [
           IconButton(
             onPressed: () => context.router.maybePop(),
-            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+            icon: const Icon(LucideIcons.arrowLeft, size: 20),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -117,7 +118,11 @@ class MindmapResultPage extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                const Icon(Icons.hub, color: Colors.white, size: 32),
+                const Icon(
+                  LucideIcons.brainCircuit,
+                  color: Colors.white,
+                  size: 32,
+                ),
                 const SizedBox(height: 12),
                 Text(
                   root.content,
@@ -207,7 +212,7 @@ class MindmapResultPage extends ConsumerWidget {
                 ),
                 if (node.children.isNotEmpty)
                   Icon(
-                    Icons.subdirectory_arrow_right,
+                    LucideIcons.arrowRight,
                     size: 16,
                     color: context.secondaryTextColor,
                   ),
@@ -256,7 +261,7 @@ class MindmapResultPage extends ConsumerWidget {
                 ref.read(mindmapFormControllerProvider.notifier).reset();
                 context.router.maybePop();
               },
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(LucideIcons.rotateCw),
               label: Text(t.generate.mindmapResult.generateNew),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -277,7 +282,7 @@ class MindmapResultPage extends ConsumerWidget {
                   t.generate.mindmapResult.saveComingSoon,
                 );
               },
-              icon: const Icon(Icons.save_outlined),
+              icon: const Icon(LucideIcons.download),
               label: Text(t.generate.mindmapResult.save),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),

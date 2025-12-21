@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/theme/theme_controller.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 void showThemeBottomSheet(BuildContext context, WidgetRef ref) {
   final t = ref.read(translationsPod);
@@ -27,9 +28,9 @@ void showThemeBottomSheet(BuildContext context, WidgetRef ref) {
     },
     getOptionIcon: (themeMode) {
       return switch (themeMode) {
-        ThemeMode.light => Icons.light_mode,
-        ThemeMode.dark => Icons.dark_mode,
-        ThemeMode.system => Icons.brightness_auto,
+        ThemeMode.light => LucideIcons.sun,
+        ThemeMode.dark => LucideIcons.moon,
+        ThemeMode.system => LucideIcons.monitor,
       };
     },
     getOptionDescription: (themeMode) {

@@ -6,6 +6,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class ImageListPage extends ConsumerStatefulWidget {
@@ -43,7 +44,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
       appBar: CustomAppBar(
         title: t.projects.images.title,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(LucideIcons.chevronLeft),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),

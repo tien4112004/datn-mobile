@@ -9,6 +9,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class ImageResultPage extends ConsumerWidget {
@@ -60,7 +61,7 @@ class ImageResultPage extends ConsumerWidget {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () => context.router.back(),
-                    icon: const Icon(Icons.refresh_rounded),
+                    icon: const Icon(LucideIcons.rotateCw),
                     label: Text(t.generate.imageResult.generateAnother),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -98,7 +99,7 @@ class ImageResultPage extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 64, color: cs.error),
+                  Icon(LucideIcons.badgeAlert, size: 64, color: cs.error),
                   const SizedBox(height: 16),
                   Text(
                     t.generate.imageResult.errorGeneratingImage,
@@ -138,7 +139,7 @@ class ImageResultPage extends ConsumerWidget {
     return AppBar(
       title: Row(
         children: [
-          Icon(Icons.image_rounded, size: 24, color: cs.primary),
+          Icon(LucideIcons.images, size: 24, color: cs.primary),
           const SizedBox(width: 8),
           Text(t.generate.imageResult.title),
         ],
@@ -147,7 +148,7 @@ class ImageResultPage extends ConsumerWidget {
       elevation: 0,
       backgroundColor: context.isDarkMode ? cs.surface : Colors.white,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new),
+        icon: const Icon(LucideIcons.arrowLeft),
         onPressed: () => context.router.back(),
       ),
     );
@@ -159,7 +160,7 @@ class ImageResultPage extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            Icons.image_not_supported,
+            LucideIcons.imageOff,
             size: 64,
             color: context.secondaryTextColor,
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This widget can be used to change the local in a popup
 class AppLocalePopUp extends ConsumerWidget {
@@ -17,9 +18,8 @@ class AppLocalePopUp extends ConsumerWidget {
       initialValue: AppLocaleUtils.parse(curentlocale.languageCode),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [Text(localeName), const Icon(Icons.arrow_drop_down)],
+        children: [Text(localeName), const Icon(LucideIcons.chevronDown)],
       ),
-      //  icon: const Icon(Icons.translate),
       // Callback that sets the selected popup menu item.
       onSelected: (locale) async {
         final update = switch (locale) {
@@ -56,7 +56,7 @@ class SelectedLocaleItem extends ConsumerWidget {
     final localeName = t["locale_${locale.languageCode}"].toString();
     return Row(
       children: [
-        const Icon(Icons.check, color: Colors.green),
+        const Icon(LucideIcons.check, color: Colors.green),
         Text(localeName),
       ],
     );

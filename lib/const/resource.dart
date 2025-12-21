@@ -4,7 +4,6 @@
 class R {
   const R._();
 
-  /// ![preview](file://C:\Users\shree\Documents\GitHub\datn_mobile\assets\anim\nointernet.riv)
   static const String ASSETS_ANIM_NOINTERNET_RIV = 'assets/anim/nointernet.riv';
 
   static const String ACCESS_TOKEN_KEY = 'access_token';

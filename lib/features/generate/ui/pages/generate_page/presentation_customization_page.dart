@@ -7,6 +7,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class PresentationCustomizationPage extends ConsumerStatefulWidget {
@@ -229,7 +230,7 @@ class _PresentationCustomizationPageState
         children: [
           IconButton(
             onPressed: () => _handleBack(),
-            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+            icon: const Icon(LucideIcons.arrowLeft, size: 20),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -248,7 +249,7 @@ class _PresentationCustomizationPageState
           IconButton(
             onPressed: () => _showHelpDialog(context),
             icon: Icon(
-              Icons.question_mark_outlined,
+              LucideIcons.badgeQuestionMark,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
             ),
           ),

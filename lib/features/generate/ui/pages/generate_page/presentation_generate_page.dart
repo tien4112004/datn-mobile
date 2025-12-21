@@ -174,7 +174,7 @@ class _PresentationGeneratePageState
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
-              Icons.auto_awesome,
+              LucideIcons.wandSparkles,
               size: 40,
               color: Colors.white,
             ),

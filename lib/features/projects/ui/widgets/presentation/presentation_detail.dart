@@ -110,7 +110,11 @@ class _PresentationDetailState extends State<PresentationDetail> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const Icon(
+                    LucideIcons.circleAlert,
+                    size: 64,
+                    color: Colors.red,
+                  ),
                   const SizedBox(height: 16),
                   const Text(
                     'Failed to load presentation',
@@ -129,7 +133,7 @@ class _PresentationDetailState extends State<PresentationDetail> {
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       onPressed: widget.onRetry,
-                      icon: const Icon(Icons.refresh),
+                      icon: const Icon(LucideIcons.rotateCw),
                       label: const Text('Retry'),
                     ),
                   ],

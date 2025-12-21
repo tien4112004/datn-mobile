@@ -10,6 +10,7 @@ import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ImageWidgetOptions {
   static List<String> get availableAspectRatios => [
@@ -134,7 +135,7 @@ class ImageWidgetOptions {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Icon(
-                                Icons.palette,
+                                LucideIcons.palette,
                                 color: Colors.grey,
                                 size: 14,
                               ),
@@ -146,7 +147,7 @@ class ImageWidgetOptions {
                             ),
                           ],
                         ),
-                        Icon(Icons.chevron_right, color: Colors.grey[400]),
+                        Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                       ],
                     ),
                   );
@@ -169,7 +170,7 @@ class ImageWidgetOptions {
                           'No art styles available',
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
-                        Icon(Icons.chevron_right, color: Colors.grey[400]),
+                        Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                       ],
                     ),
                   );
@@ -211,7 +212,7 @@ class ImageWidgetOptions {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: const Icon(
-                                        Icons.palette,
+                                        LucideIcons.palette,
                                         color: Colors.white,
                                         size: 14,
                                       ),
@@ -227,7 +228,7 @@ class ImageWidgetOptions {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Icon(
-                                Icons.palette,
+                                LucideIcons.palette,
                                 color: Colors.white,
                                 size: 14,
                               ),
@@ -239,7 +240,7 @@ class ImageWidgetOptions {
                           ),
                         ],
                       ),
-                      Icon(Icons.chevron_right, color: Colors.grey[400]),
+                      Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                     ],
                   ),
                 );
@@ -270,7 +271,7 @@ class ImageWidgetOptions {
                         ),
                       ],
                     ),
-                    Icon(Icons.chevron_right, color: Colors.grey),
+                    Icon(LucideIcons.chevronRight, color: Colors.grey),
                   ],
                 ),
               ),
@@ -288,7 +289,11 @@ class ImageWidgetOptions {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.error, color: Colors.red[600], size: 20),
+                        Icon(
+                          LucideIcons.badgeAlert,
+                          color: Colors.red[600],
+                          size: 20,
+                        ),
                         const SizedBox(width: 12),
                         const Text(
                           'Error loading styles',
@@ -296,7 +301,7 @@ class ImageWidgetOptions {
                         ),
                       ],
                     ),
-                    Icon(Icons.chevron_right, color: Colors.grey[400]),
+                    Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                   ],
                 ),
               ),

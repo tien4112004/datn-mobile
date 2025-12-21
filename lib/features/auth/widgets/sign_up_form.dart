@@ -250,12 +250,12 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                 ),
                 decoration: InputDecoration(
                   labelText: t.auth.signUp.dateOfBirth,
-                  prefixIcon: const Icon(Icons.calendar_today),
+                  prefixIcon: const Icon(LucideIcons.calendar),
                   border: const OutlineInputBorder(
                     borderRadius: Themes.boxRadius,
                   ),
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(LucideIcons.brushCleaning),
                     onPressed: () {
                       setState(() {
                         _selectedDate = DateTime.now();

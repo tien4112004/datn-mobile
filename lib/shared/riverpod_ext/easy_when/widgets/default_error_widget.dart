@@ -5,6 +5,7 @@ import 'package:datn_mobile/shared/riverpod_ext/easy_when/widgets/debounced_retr
 import 'package:datn_mobile/shared/riverpod_ext/easy_when/widgets/dio_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class DefaultErrorWidget extends ConsumerWidget {
   final Object error;
@@ -85,7 +86,11 @@ class DefaultErrorWidget extends ConsumerWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Icon(Icons.error_outline, color: iconColor, size: 48),
+                  child: Icon(
+                    LucideIcons.circleAlert,
+                    color: iconColor,
+                    size: 48,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

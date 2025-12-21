@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/const/app_urls.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
@@ -9,6 +8,7 @@ import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class ProjectsPage extends ConsumerWidget {
@@ -21,9 +21,17 @@ class ProjectsPage extends ConsumerWidget {
     return Scaffold(
       appBar: CustomAppBar(title: t.projects.title),
       body: const _ProjectsView(),
-      floatingActionButton: SizedBox(
-        width: 96,
-        height: 96,
+      floatingActionButton: Container(
+        width: 64,
+        height: 64,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade400, Colors.pink.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: FloatingActionButton(
           onPressed: () {
             context.router.push(const GenerateRoute());
@@ -31,17 +39,11 @@ class ProjectsPage extends ConsumerWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           shape: const CircleBorder(),
-          splashColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
           highlightElevation: 0,
-          child: ClipOval(
-            child: Image.asset(
-              AppUrls.floatingButtonImg,
-              width: 96,
-              height: 96,
-              fit: BoxFit.cover,
-            ),
+          child: const Icon(
+            LucideIcons.sparkles,
+            color: Colors.white,
+            size: 32,
           ),
         ),
       ),

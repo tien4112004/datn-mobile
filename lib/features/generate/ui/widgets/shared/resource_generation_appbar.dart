@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// App bar widget for presentation generation page
 /// Displays generator type selector and settings button
@@ -37,7 +38,7 @@ class _ResourceGenerationAppBarState extends State<ResourceGenerationAppBar> {
         children: [
           IconButton(
             onPressed: () => Navigator.of(context).maybePop(),
-            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+            icon: const Icon(LucideIcons.arrowLeft, size: 20),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),

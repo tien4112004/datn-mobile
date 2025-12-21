@@ -115,7 +115,7 @@ class GenerationOptionsSection extends ConsumerWidget {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.refresh, size: 18),
+                  : const Icon(LucideIcons.refreshCcw, size: 18),
               label: Text(
                 isLoading
                     ? t.generate.customization.regenerating
@@ -183,7 +183,7 @@ class OutlineSummarySection extends ConsumerWidget {
               const Spacer(),
               TextButton.icon(
                 onPressed: onEdit,
-                icon: const Icon(Icons.edit, size: 16),
+                icon: const Icon(LucideIcons.pen, size: 16),
                 label: Text(t.generate.customization.edit),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -471,7 +471,7 @@ class PresentationCustomizationActionBar extends ConsumerWidget {
                           color: Colors.white,
                         ),
                       )
-                    : const Icon(Icons.auto_awesome),
+                    : const Icon(LucideIcons.sparkle),
                 label: Text(
                   isLoading
                       ? t.generate.customization.generating

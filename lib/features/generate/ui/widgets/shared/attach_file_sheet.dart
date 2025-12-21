@@ -2,6 +2,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sh
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Bottom sheet for attaching files to resource generation
 /// Displays options for document, image, and link attachments
@@ -61,7 +62,7 @@ class AttachFileSheet extends StatelessWidget {
               color: Colors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.description_outlined, color: Colors.blue),
+            child: const Icon(LucideIcons.notepadText, color: Colors.blue),
           ),
           title: Text(t.generate.presentationGenerate.document),
           subtitle: Text(t.generate.presentationGenerate.documentFormats),
@@ -78,7 +79,7 @@ class AttachFileSheet extends StatelessWidget {
               color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.image_outlined, color: Colors.green),
+            child: const Icon(LucideIcons.image, color: Colors.green),
           ),
           title: Text(t.generate.presentationGenerate.image),
           subtitle: Text(t.generate.presentationGenerate.imageFormats),
@@ -95,7 +96,7 @@ class AttachFileSheet extends StatelessWidget {
               color: Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.link_rounded, color: Colors.orange),
+            child: const Icon(LucideIcons.link, color: Colors.orange),
           ),
           title: Text(t.generate.presentationGenerate.link),
           subtitle: Text(t.generate.presentationGenerate.linkDescription),

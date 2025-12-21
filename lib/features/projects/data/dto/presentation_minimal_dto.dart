@@ -1,4 +1,3 @@
-import 'package:datn_mobile/features/projects/data/dto/slide_dto.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,7 +9,7 @@ class PresentationMinimalDto {
   String title;
   DateTime? createdAt;
   DateTime? updatedAt;
-  SlideDto? thumbnail;
+  String? thumbnail;
 
   PresentationMinimalDto({
     required this.id,
@@ -33,7 +32,7 @@ extension PresentationMinimalMapper on PresentationMinimalDto {
       title: title,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      thumbnail: thumbnail?.toEntity(),
+      thumbnail: thumbnail,
     );
   }
 }
@@ -45,7 +44,7 @@ extension PresentationMinimalDtoMapper on PresentationMinimal {
       title: title,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      thumbnail: thumbnail?.toDto(),
+      thumbnail: thumbnail,
     );
   }
 }

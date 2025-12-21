@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,17 +17,15 @@ class AbstractResourceTile extends ConsumerWidget {
     this.onTap,
     this.onMoreOptions,
     required this.resourceType,
-    this.thumbnailWidget = const SizedBox.shrink(),
   });
 
   final String title;
   final String? description;
-  final Slide? thumbnail;
+  final String? thumbnail;
   final DateTime? updatedAt;
   final VoidCallback? onTap;
   final VoidCallback? onMoreOptions;
   final ResourceType resourceType;
-  final Widget thumbnailWidget;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,15 +38,30 @@ class AbstractResourceTile extends ConsumerWidget {
         child: Row(
           children: [
             // Thumbnail
-            thumbnail == null
-                ? Center(
-                    child: Icon(
-                      resourceType.icon,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      size: 32,
-                    ),
-                  )
-                : thumbnailWidget,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 100,
+                height: 56,
+                color: resourceType.color.withValues(alpha: 0.3),
+                child: Center(
+                  child: thumbnail == null
+                      ? Icon(
+                          resourceType.icon,
+                          color: Colors.white.withValues(alpha: 0.7),
+                          size: 32,
+                        )
+                      : Image.memory(
+                          base64Decode(thumbnail!),
+                          fit: BoxFit.contain,
+                          width: 100,
+                          height: 56,
+                          cacheWidth: 100,
+                          cacheHeight: 56,
+                        ),
+                ),
+              ),
+            ),
             const SizedBox(width: 16),
             // Title and metadata
             Expanded(

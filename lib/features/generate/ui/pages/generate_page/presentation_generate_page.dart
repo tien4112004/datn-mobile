@@ -139,6 +139,7 @@ class _PresentationGeneratePageState
               formState: presentationFormControllerProvider,
               onAttachFile: () => AttachFileSheet.show(context: context, t: t),
               onGenerate: _handleGenerate,
+              hintText: t.generate.enterTopicHint,
             ),
           ],
         ),

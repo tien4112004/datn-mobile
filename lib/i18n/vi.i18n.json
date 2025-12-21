@@ -232,6 +232,8 @@
     "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
   },
   "generate": {
+    "enterTopicHint": "Bạn đang nghĩ gì?",
+    "advancedSettings": "Cài đặt nâng cao",
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
@@ -383,6 +385,7 @@
       "title": "Công cụ tạo hình ảnh",
       "subtitle": "Mô tả hình ảnh bạn muốn tạo",
       "enterPrompt": "Nhập mô tả hình ảnh của bạn...",
+      "enterPromptValidation": "Vui lòng nhập lời nhắc",
       "tryThesePrompts": "Thử các gợi ý này:",
       "promptSuggestions": {
         "sunsetMountains": "Bình minh tuyệt đẹp trên những ngọn núi tuyết phủ, phong cách tranh dầu",
@@ -392,7 +395,8 @@
       },
       "error": "Lỗi tạo hình ảnh: $error",
       "selectAspectRatio": "Chọn tỷ lệ khung hình",
-      "selectArtStyle": "Chọn phong cách nghệ thuật"
+      "selectArtStyle": "Chọn phong cách nghệ thuật",
+      "advancedSettings": "Cài đặt nâng cao"
     },
     "imageResult": {
       "title": "Hình ảnh đã tạo",
@@ -408,7 +412,9 @@
       "generateAnother": "Tạo hình ảnh khác",
       "generatingImage": "Đang tạo hình ảnh...",
       "errorGeneratingImage": "Lỗi tạo hình ảnh",
-      "failedToLoadImage": "Không thể tải hình ảnh"
+      "failedToLoadImage": "Không thể tải hình ảnh",
+      "imageSavedToGallery": "Hình ảnh đã được lưu vào thư viện!",
+      "failedToSaveImage": "Không thể lưu hình ảnh: $error"
     }
   }
 }

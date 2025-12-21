@@ -110,7 +110,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
             ref.read(loadingOverlayPod.notifier).state = false;
             SnackbarUtils.showError(
               context,
-              'Error generating image: ${error.toString()}',
+              '${t.generate.imageGenerate.error}: ${error.toString()}',
             );
           }
         },
@@ -134,6 +134,7 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
               formState: imageFormControllerProvider,
               onAttachFile: () => AttachFileSheet.show(context: context, t: t),
               onGenerate: _handleGenerate,
+              hintText: t.generate.enterTopicHint,
             ),
           ],
         ),
@@ -263,7 +264,10 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
 
   void _handleGenerate() {
     if (_promptController.text.trim().isEmpty) {
-      SnackbarUtils.showError(context, 'Please enter a prompt');
+      SnackbarUtils.showError(
+        context,
+        t.generate.imageGenerate.enterPromptValidation,
+      );
       return;
     }
     _promptFocusNode.unfocus();

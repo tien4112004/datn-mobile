@@ -229,6 +229,8 @@
     "avatarUpdateFailed": "Failed to update avatar: $error"
   },
   "generate": {
+    "enterTopicHint": "What is on your mind?",
+    "advancedSettings": "Advanced Settings",
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",
@@ -380,6 +382,7 @@
       "title": "Image Generator",
       "subtitle": "Describe the image you want to generate",
       "enterPrompt": "Enter your image description...",
+      "enterPromptValidation": "Please enter a prompt",
       "tryThesePrompts": "Try these prompts:",
       "promptSuggestions": {
         "sunsetMountains": "A majestic sunset over snow-capped mountains, oil painting style",
@@ -405,7 +408,9 @@
       "generateAnother": "Generate Another",
       "generatingImage": "Generating image...",
       "errorGeneratingImage": "Error generating image",
-      "failedToLoadImage": "Failed to load image"
+      "failedToLoadImage": "Failed to load image",
+      "imageSavedToGallery": "Image saved to gallery!",
+      "failedToSaveImage": "Failed to save image: $error"
     }
   }
 }

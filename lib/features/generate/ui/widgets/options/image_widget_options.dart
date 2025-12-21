@@ -7,6 +7,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/art_style_picke
 import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,7 +71,7 @@ class ImageWidgetOptions {
                 child: Container(
                   padding: const EdgeInsets.all(24),
                   child: SingleChildScrollView(
-                    child: artStylesAsync.when(
+                    child: artStylesAsync.easyWhen(
                       data: (artStyles) {
                         // Include 'None' option
                         final stylesWithNone = [
@@ -88,13 +89,13 @@ class ImageWidgetOptions {
                           ),
                         );
                       },
-                      loading: () => const Center(
+                      loadingWidget: () => const Center(
                         child: Padding(
                           padding: EdgeInsets.all(32.0),
                           child: CircularProgressIndicator(strokeWidth: 2.0),
                         ),
                       ),
-                      error: (error, stack) => Center(
+                      errorWidget: (error, stack) => Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
@@ -109,7 +110,7 @@ class ImageWidgetOptions {
                 ),
               );
             },
-            child: artStylesAsync.when(
+            child: artStylesAsync.easyWhen(
               data: (artStyles) {
                 // Handle 'None' selection
                 if (selectedStyle.isEmpty) {
@@ -245,37 +246,7 @@ class ImageWidgetOptions {
                   ),
                 );
               },
-              loading: () => Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'Loading...',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                    Icon(LucideIcons.chevronRight, color: Colors.grey),
-                  ],
-                ),
-              ),
-              error: (error, stack) => Container(
+              errorWidget: (error, stack) => Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 12,

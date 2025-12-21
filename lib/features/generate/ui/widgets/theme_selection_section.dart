@@ -2,6 +2,7 @@ import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/states/theme/theme_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_preview_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -70,7 +71,7 @@ class ThemeSelectionSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           // Display selected theme
-          themesAsync.when(
+          themesAsync.easyWhen(
             data: (themes) {
               final selectedTheme = themes.firstWhere(
                 (t) => formState.themeId == t.id,
@@ -99,13 +100,13 @@ class ThemeSelectionSection extends ConsumerWidget {
                 ),
               );
             },
-            loading: () => const Center(
+            loadingWidget: () => const Center(
               child: Padding(
                 padding: EdgeInsets.all(24),
                 child: CircularProgressIndicator(),
               ),
             ),
-            error: (error, stackTrace) => Center(
+            errorWidget: (error, stackTrace) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
@@ -186,7 +187,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
               const Divider(height: 1),
               // Theme grid
               Expanded(
-                child: themesAsync.when(
+                child: themesAsync.easyWhen(
                   data: (themes) {
                     return GridView.builder(
                       controller: scrollController,
@@ -260,16 +261,6 @@ class _ThemeSelectionModal extends ConsumerWidget {
                       },
                     );
                   },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stackTrace) => Center(
-                    child: Text(
-                      'Failed to load themes: $error',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

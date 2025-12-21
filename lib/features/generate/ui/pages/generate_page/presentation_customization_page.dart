@@ -80,11 +80,8 @@ class _PresentationCustomizationPageState
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
     final formState = ref.watch(presentationFormControllerProvider);
-    final generateState = ref.watch(presentationGenerateControllerProvider);
-
-    final isLoading = generateState.maybeWhen(
-      loading: () => true,
-      orElse: () => false,
+    final generateStateAsync = ref.watch(
+      presentationGenerateControllerProvider,
     );
 
     // Listen for generation completion (both outline regeneration and presentation)
@@ -178,7 +175,7 @@ class _PresentationCustomizationPageState
                   children: [
                     // Generation Options Section (from Step 1)
                     GenerationOptionsSection(
-                      isLoading: isLoading,
+                      generateStateAsync: generateStateAsync,
                       onRegenerate: _handleRegenerate,
                     ),
                     const SizedBox(height: 24),
@@ -209,7 +206,7 @@ class _PresentationCustomizationPageState
             ),
             // Bottom Action Bar
             PresentationCustomizationActionBar(
-              isLoading: isLoading,
+              generateStateAsync: generateStateAsync,
               onEditOutline: () => _navigateToEditor(context),
               onGenerate: _handleGenerate,
             ),

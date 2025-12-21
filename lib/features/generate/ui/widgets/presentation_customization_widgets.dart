@@ -2,18 +2,19 @@ import 'package:datn_mobile/features/generate/data/repository/repository_provide
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Displays generation settings like topic, slide count, language, and model
 class GenerationOptionsSection extends ConsumerWidget {
-  final bool isLoading;
+  final AsyncValue generateStateAsync;
   final VoidCallback onRegenerate;
 
   const GenerationOptionsSection({
     super.key,
-    required this.isLoading,
+    required this.generateStateAsync,
     required this.onRegenerate,
   });
 
@@ -82,23 +83,13 @@ class GenerationOptionsSection extends ConsumerWidget {
                 value: formState.language,
               ),
               // Model
-              textModelsAsync.when(
+              textModelsAsync.easyWhen(
                 data: (models) => _OptionItem(
                   icon: LucideIcons.bot,
                   label: t.generate.customization.model,
                   value:
                       formState.outlineModel?.displayName ??
                       t.generate.customization.notSet,
-                ),
-                loading: () => _OptionItem(
-                  icon: LucideIcons.bot,
-                  label: t.generate.customization.model,
-                  value: t.generate.customization.loading,
-                ),
-                error: (_, _) => _OptionItem(
-                  icon: LucideIcons.bot,
-                  label: t.generate.customization.model,
-                  value: t.generate.customization.error,
                 ),
               ),
             ],
@@ -108,18 +99,21 @@ class GenerationOptionsSection extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: isLoading ? null : onRegenerate,
-              icon: isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(LucideIcons.refreshCcw, size: 18),
-              label: Text(
-                isLoading
-                    ? t.generate.customization.regenerating
-                    : t.generate.customization.regenerateOutline,
+              onPressed: generateStateAsync.isLoading ? null : onRegenerate,
+              icon: generateStateAsync.easyWhen(
+                data: (_) => const Icon(LucideIcons.refreshCcw, size: 18),
+                loadingWidget: () => const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                skipLoadingOnRefresh: false,
+              ),
+              label: generateStateAsync.easyWhen(
+                data: (_) => Text(t.generate.customization.regenerateOutline),
+                loadingWidget: () =>
+                    Text(t.generate.customization.regenerating),
+                skipLoadingOnRefresh: false,
               ),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
@@ -285,7 +279,7 @@ class ImageModelSection extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-          imageModelsAsync.when(
+          imageModelsAsync.easyWhen(
             data: (state) {
               final models = state.availableModels
                   .where((m) => m.isEnabled)
@@ -320,13 +314,13 @@ class ImageModelSection extends ConsumerWidget {
                 }).toList(),
               );
             },
-            loading: () => const Center(
+            loadingWidget: () => const Center(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: CircularProgressIndicator(),
               ),
             ),
-            error: (error, stack) => Padding(
+            errorWidget: (error, stack) => Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 'Failed to load models',
@@ -419,13 +413,13 @@ class AvoidContentSection extends ConsumerWidget {
 
 /// Bottom action bar with Edit Outline and Generate buttons
 class PresentationCustomizationActionBar extends ConsumerWidget {
-  final bool isLoading;
+  final AsyncValue generateStateAsync;
   final VoidCallback onEditOutline;
   final VoidCallback onGenerate;
 
   const PresentationCustomizationActionBar({
     super.key,
-    required this.isLoading,
+    required this.generateStateAsync,
     required this.onEditOutline,
     required this.onGenerate,
   });
@@ -461,21 +455,24 @@ class PresentationCustomizationActionBar extends ConsumerWidget {
             Expanded(
               flex: 2,
               child: FilledButton.icon(
-                onPressed: isLoading ? null : onGenerate,
-                icon: isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Icon(LucideIcons.sparkle),
-                label: Text(
-                  isLoading
-                      ? t.generate.customization.generating
-                      : t.generate.customization.generate,
+                onPressed: generateStateAsync.isLoading ? null : onGenerate,
+                icon: generateStateAsync.easyWhen(
+                  data: (_) => const Icon(LucideIcons.sparkle),
+                  loadingWidget: () => const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
+                  skipLoadingOnRefresh: false,
+                ),
+                label: generateStateAsync.easyWhen(
+                  data: (_) => Text(t.generate.customization.generate),
+                  loadingWidget: () =>
+                      Text(t.generate.customization.generating),
+                  skipLoadingOnRefresh: false,
                 ),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),

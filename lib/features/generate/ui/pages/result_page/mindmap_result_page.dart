@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/generate/domain/entity/mindmap_node_content
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class MindmapResultPage extends ConsumerWidget {
             _buildAppBar(context, t),
             // Content
             Expanded(
-              child: generateState.when(
+              child: generateState.easyWhen(
                 data: (state) {
                   if (state.generatedMindmap == null) {
                     return Center(
@@ -43,8 +44,9 @@ class MindmapResultPage extends ConsumerWidget {
                     t,
                   );
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(
+                loadingWidget: () =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (error, _) => Center(
                   child: Text(
                     t.generate.mindmapResult.error(error: error.toString()),
                   ),

@@ -5,6 +5,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sh
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -112,7 +113,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
       child: Consumer(
         builder: (context, ref, _) {
           final modelsAsync = ref.watch(modelsControllerPod(modelType));
-          return modelsAsync.when(
+          return modelsAsync.easyWhen(
             data: (state) {
               final models = state.availableModels
                   .where((m) => m.isEnabled)
@@ -142,7 +143,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
                 },
               );
             },
-            loading: () => const SizedBox(
+            loadingWidget: () => const SizedBox(
               height: 48,
               child: Center(
                 child: SizedBox(
@@ -152,7 +153,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
                 ),
               ),
             ),
-            error: (_, _) =>
+            errorWidget: (_, _) =>
                 Text(t.generate.mindmapGenerate.failedToLoadModels),
           );
         },

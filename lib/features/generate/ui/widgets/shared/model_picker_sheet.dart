@@ -2,6 +2,7 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -48,7 +49,7 @@ class ModelPickerSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final modelsAsync = ref.watch(modelsControllerPod(modelType));
 
-    return modelsAsync.when(
+    return modelsAsync.easyWhen(
       data: (state) {
         final models = state.availableModels.where((m) => m.isEnabled).toList();
         if (models.isEmpty) {
@@ -77,14 +78,6 @@ class ModelPickerSheet extends ConsumerWidget {
           }).toList(),
         );
       },
-      loading: () => const Padding(
-        padding: EdgeInsets.all(20),
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (_, _) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(t.generate.presentationGenerate.failedToLoadModels),
-      ),
     );
   }
 }

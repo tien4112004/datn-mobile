@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_metad
 import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick_actions.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,7 @@ class ImageResultPage extends ConsumerWidget {
       backgroundColor: context.isDarkMode
           ? cs.surface
           : const Color(0xFFF9FAFB),
-      body: generateState.when(
+      body: generateState.easyWhen(
         data: (state) {
           final image = state.generatedImage;
           if (image == null) {
@@ -72,7 +73,7 @@ class ImageResultPage extends ConsumerWidget {
             ),
           );
         },
-        loading: () {
+        loadingWidget: () {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +93,7 @@ class ImageResultPage extends ConsumerWidget {
             ),
           );
         },
-        error: (error, stackTrace) {
+        errorWidget: (error, stackTrace) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24),

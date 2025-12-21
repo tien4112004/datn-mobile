@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/generate/data/dto/image_generation_request_dto.dart';
+import 'package:datn_mobile/features/generate/data/dto/mindmap_generate_request_dto.dart';
 import 'package:datn_mobile/features/generate/data/dto/outline_generate_request_dto.dart';
 import 'package:datn_mobile/features/generate/data/dto/presentation_generate_request_dto.dart';
 import 'package:datn_mobile/features/generate/data/repository/repository_provider.dart';

@@ -14,13 +14,11 @@ class MindmapRepositoryImpl implements MindmapRepository {
   ) async {
     final response = await _remoteSource.generateMindmap(request);
 
-    if (response.detail == null || response.detail!.isEmpty) {
-      throw Exception('Failed to generate mindmap: No data returned');
+    if (response.data == null) {
+      throw Exception('Failed to generate mindmap: No data returned from API');
     }
 
-    // The response.detail contains a JSON string of the mindmap structure
-    // TODO: call webview embedded FE mindmap edtior instead of parsing here
-    // return MindmapNodeContent.fromJson(response.detail!);
-    throw UnimplementedError();
+    // Map the DTO response to the domain entity
+    return MindmapNodeContent.fromDto(response.data!);
   }
 }

@@ -10,7 +10,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/presentation_wi
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_suggestions.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/suggestions/topic_suggestions.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';

@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/generate/data/dto/mindmap_generate_request_dto.dart';
+import 'package:datn_mobile/features/generate/data/dto/mindmap_node_content_dto.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -13,7 +14,7 @@ abstract class MindmapRemoteSource {
   /// POST /mindmaps/generate
   /// Generate a mindmap from a topic using AI
   @POST("/mindmaps/generate")
-  Future<ServerResponseDto<String>> generateMindmap(
+  Future<ServerResponseDto<MindmapNodeContentDto>> generateMindmap(
     @Body() MindmapGenerateRequestDto request,
   );
 }

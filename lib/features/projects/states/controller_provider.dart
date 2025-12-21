@@ -1,3 +1,5 @@
+import 'package:datn_mobile/features/projects/data/repository/repository_provider.dart';
+import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
 import 'package:datn_mobile/features/projects/domain/entity/mindmap.dart';
 import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
@@ -26,6 +28,23 @@ final createPresentationControllerProvider =
     AsyncNotifierProvider<CreatePresentationController, void>(
       () => CreatePresentationController(),
     );
+
+// Image Providers
+final imageByIdProvider = FutureProvider.family<ImageProject, String>((
+  ref,
+  id,
+) async {
+  final images = await ref
+      .read(imageServiceProvider)
+      .fetchImageMinimalsPaged(1);
+  return ImageProject(
+    id: id,
+    title: images.firstWhere((image) => image.id == id).title,
+    imageUrl: '',
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
+});
 
 final mindmapsControllerProvider =
     AsyncNotifierProvider<MindmapsController, MindmapListState>(

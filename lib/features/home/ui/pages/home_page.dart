@@ -7,6 +7,7 @@ import 'package:datn_mobile/features/home/ui/widgets/today_works_section.dart';
 import 'package:datn_mobile/features/home/ui/widgets/my_classes_section.dart';
 import 'package:datn_mobile/features/home/ui/widgets/recent_documents_section.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -82,7 +83,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.monetization_on,
+                            LucideIcons.coins,
                             size: 20,
                             color: Colors.amber.shade700,
                           ),

@@ -11,6 +11,8 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_shee
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_suggestions.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -80,12 +82,11 @@ class _PresentationGeneratePageState
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     // Listen for generation completion
     ref.listen(presentationGenerateControllerProvider, (previous, next) {
       next.when(
         data: (state) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           // Check if a new outline was generated
           final hadOutline =
               previous?.maybeWhen(
@@ -108,8 +109,11 @@ class _PresentationGeneratePageState
             }
           }
         },
-        loading: () {},
+        loading: () {
+          ref.read(loadingOverlayPod.notifier).state = true;
+        },
         error: (error, stackTrace) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           if (context.mounted) {
             SnackbarUtils.showError(
               context,
@@ -123,9 +127,7 @@ class _PresentationGeneratePageState
     });
 
     return Scaffold(
-      backgroundColor: context.isDarkMode
-          ? cs.surface
-          : const Color(0xFFF9FAFB),
+      backgroundColor: Themes.theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -165,8 +167,8 @@ class _PresentationGeneratePageState
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
+                  ResourceType.presentation.color.withValues(alpha: 0.8),
+                  ResourceType.presentation.color.withValues(alpha: 0.3),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -174,7 +176,7 @@ class _PresentationGeneratePageState
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
-              Icons.auto_awesome,
+              LucideIcons.presentation,
               size: 40,
               color: Colors.white,
             ),
@@ -255,6 +257,8 @@ class _PresentationGeneratePageState
                       context,
                       PresentationWidgetOptions().buildAllSettings(t),
                       ModelType.text,
+                      t.generate.generationSettings.title,
+                      t.generate.generationSettings.done,
                     );
                   },
                   child: Text(t.generate.advancedSettings),

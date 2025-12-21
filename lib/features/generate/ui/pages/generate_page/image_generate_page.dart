@@ -11,6 +11,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_
 import 'package:datn_mobile/features/generate/ui/widgets/options/image_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/image_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
@@ -156,19 +157,15 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
+                  ResourceType.image.color.withValues(alpha: 0.8),
+                  ResourceType.image.color.withValues(alpha: 0.3),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(
-              Icons.image_rounded,
-              size: 40,
-              color: Colors.white,
-            ),
+            child: const Icon(LucideIcons.image, size: 40, color: Colors.white),
           ),
           const SizedBox(height: 24),
           // Title
@@ -237,6 +234,8 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                           context,
                           ImageWidgetOptions().buildAllSettings(t),
                           ModelType.image,
+                          t.generate.generationSettings.title,
+                          t.generate.generationSettings.done,
                         );
                       },
                       child: Text(t.generate.advancedSettings),

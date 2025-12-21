@@ -4,6 +4,7 @@ import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Displays the generated image with loading and error states
 class ImageDisplayCard extends ConsumerWidget {
@@ -90,8 +91,11 @@ class ImageDisplayCard extends ConsumerWidget {
                 placeholder: (context, url) => const Center(
                   child: CircularProgressIndicator(color: Colors.white),
                 ),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.error, color: Colors.white, size: 48),
+                errorWidget: (context, url, error) => const Icon(
+                  LucideIcons.circleAlert,
+                  color: Colors.white,
+                  size: 48,
+                ),
               ),
             ),
           ),
@@ -138,7 +142,7 @@ class ImageDisplayCard extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.image_not_supported,
+              LucideIcons.imageOff,
               size: 64,
               color: context.secondaryTextColor,
             ),
@@ -162,7 +166,7 @@ class ImageDisplayCard extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.broken_image,
+              LucideIcons.imageOff,
               size: 48,
               color: context.secondaryTextColor,
             ),
@@ -175,7 +179,7 @@ class ImageDisplayCard extends ConsumerWidget {
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(LucideIcons.rotateCw),
                 label: const Text('Retry'),
               ),
             ],

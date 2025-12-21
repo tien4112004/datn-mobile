@@ -53,10 +53,10 @@ class AbstractDocumentCard extends ConsumerWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: Themes.boxRadius,
-                    color: Colors.grey.shade100,
+                    color: resourceType.color.withValues(alpha: 0.1),
                   ),
                   child: thumbnail == null
-                      ? DefaultThumbnail(resourceIcon: resourceType.icon)
+                      ? DefaultThumbnail(resourceType: resourceType)
                       : const Thumbnail(),
                 ),
                 Column(

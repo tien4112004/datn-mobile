@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/generate/data/dto/slide_theme_dto.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A visual card that previews a slide theme from API with title, body text, and color palette.
 ///
@@ -162,7 +163,11 @@ class ThemePreviewCard extends StatelessWidget {
                     color: Colors.blue,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.check, color: Colors.white, size: 16),
+                  child: const Icon(
+                    LucideIcons.check,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
           ],

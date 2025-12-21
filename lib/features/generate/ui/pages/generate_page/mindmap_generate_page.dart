@@ -10,6 +10,8 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_
 import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -84,22 +86,17 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     ref.listen(mindmapGenerateControllerProvider, (previous, next) {
       next.when(
         data: (state) {
-          // Check if a new mindmap was generated
-          final hadMindmap =
-              previous?.maybeWhen(
-                data: (prevState) => prevState.generatedMindmap != null,
-                orElse: () => false,
-              ) ??
-              false;
-          final hasNewMindmap = !hadMindmap && state.generatedMindmap != null;
-
-          if (hasNewMindmap) {
+          if (state.generatedMindmap != null) {
             // Navigate to result page
+            ref.read(loadingOverlayPod.notifier).state = false;
             context.router.push(const MindmapResultRoute());
           }
         },
-        loading: () {},
+        loading: () {
+          ref.read(loadingOverlayPod.notifier).state = true;
+        },
         error: (error, stackTrace) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           if (context.mounted) {
             SnackbarUtils.showError(
               context,
@@ -152,8 +149,8 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.secondary,
+                  ResourceType.mindmap.color.withValues(alpha: 0.8),
+                  ResourceType.mindmap.color.withValues(alpha: 0.3),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -161,7 +158,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Icon(
-              Icons.account_tree_rounded,
+              LucideIcons.brainCircuit400,
               size: 40,
               color: Colors.white,
             ),
@@ -255,6 +252,8 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                       context,
                       MindmapWidgetOptions().buildAllSettings(t),
                       ModelType.text,
+                      t.generate.generationSettings.title,
+                      t.generate.generationSettings.done,
                     );
                   },
                   child: Text(t.generate.advancedSettings),

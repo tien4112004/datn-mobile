@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:datn_mobile/const/resource.dart';
@@ -102,11 +101,6 @@ class AuthServiceImpl implements AuthService {
       );
     }
 
-    if (kDebugMode) {
-      log('Received Google Sign-In URL: $location');
-      log('Launching Google Sign-In URL: $location');
-    }
-
     WebviewService.launchExternalUrl(location);
   }
 
@@ -192,13 +186,8 @@ class AuthServiceImpl implements AuthService {
   Future<void> signUp(CredentialSignupRequest request) async {
     try {
       final response = await authRemoteSource.signup(request);
-
-      // Validate and extract user profile response
-      final userProfile = response.validateAndExtractData('sign-up');
-
-      if (kDebugMode) {
-        log('Sign-up successful for user: ${userProfile.email}');
-      }
+      // Validate response
+      response.validateAndExtractData('sign-up');
     } catch (e) {
       if (e is APIException) {
         rethrow;

@@ -4,9 +4,11 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
+import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class PresentationCustomizationPage extends ConsumerStatefulWidget {
@@ -78,17 +80,15 @@ class _PresentationCustomizationPageState
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
     final formState = ref.watch(presentationFormControllerProvider);
-    final generateState = ref.watch(presentationGenerateControllerProvider);
-
-    final isLoading = generateState.maybeWhen(
-      loading: () => true,
-      orElse: () => false,
+    final generateStateAsync = ref.watch(
+      presentationGenerateControllerProvider,
     );
 
     // Listen for generation completion (both outline regeneration and presentation)
     ref.listen(presentationGenerateControllerProvider, (previous, next) {
       next.when(
         data: (state) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           final wasLoading =
               previous?.maybeWhen(loading: () => true, orElse: () => false) ??
               false;
@@ -141,8 +141,11 @@ class _PresentationCustomizationPageState
             context.router.popUntilRoot();
           }
         },
-        loading: () {},
+        loading: () {
+          ref.read(loadingOverlayPod.notifier).state = true;
+        },
         error: (error, stackTrace) {
+          ref.read(loadingOverlayPod.notifier).state = false;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -172,7 +175,7 @@ class _PresentationCustomizationPageState
                   children: [
                     // Generation Options Section (from Step 1)
                     GenerationOptionsSection(
-                      isLoading: isLoading,
+                      generateStateAsync: generateStateAsync,
                       onRegenerate: _handleRegenerate,
                     ),
                     const SizedBox(height: 24),
@@ -203,7 +206,7 @@ class _PresentationCustomizationPageState
             ),
             // Bottom Action Bar
             PresentationCustomizationActionBar(
-              isLoading: isLoading,
+              generateStateAsync: generateStateAsync,
               onEditOutline: () => _navigateToEditor(context),
               onGenerate: _handleGenerate,
             ),
@@ -229,7 +232,7 @@ class _PresentationCustomizationPageState
         children: [
           IconButton(
             onPressed: () => _handleBack(),
-            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+            icon: const Icon(LucideIcons.arrowLeft, size: 20),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
@@ -248,7 +251,7 @@ class _PresentationCustomizationPageState
           IconButton(
             onPressed: () => _showHelpDialog(context),
             icon: Icon(
-              Icons.question_mark_outlined,
+              LucideIcons.badgeQuestionMark,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SettingOption extends StatelessWidget {
   const SettingOption({
@@ -28,7 +29,7 @@ class SettingOption extends StatelessWidget {
           borderRadius: Themes.boxRadius,
         ),
         child: Icon(
-          icon ?? Icons.settings,
+          icon ?? LucideIcons.settings,
           size: 24,
           color: Theme.of(context).primaryColor,
         ),
@@ -42,7 +43,7 @@ class SettingOption extends StatelessWidget {
               ),
             )
           : null,
-      trailing: trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
+      trailing: trailing ?? const Icon(LucideIcons.chevronRight, size: 16),
       onTap: onPressed,
     );
   }

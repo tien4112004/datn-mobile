@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 
 class Thumbnail extends StatelessWidget {
@@ -18,15 +19,12 @@ class Thumbnail extends StatelessWidget {
 }
 
 class DefaultThumbnail extends StatelessWidget {
-  const DefaultThumbnail({super.key, required this.resourceIcon});
+  const DefaultThumbnail({super.key, required this.resourceType});
 
-  final IconData resourceIcon;
+  final ResourceType resourceType;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12.0),
-      child: Center(child: Icon(resourceIcon)),
-    );
+    return Center(child: Icon(resourceType.icon, color: resourceType.color));
   }
 }

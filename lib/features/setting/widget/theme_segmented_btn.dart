@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/theme/theme_controller.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This class provider segmented button which can be used
 ///for getting current theme and switching theme
@@ -23,15 +24,15 @@ class _ThemeSegmentedBtnState extends ConsumerState<ThemeSegmentedBtn> {
       segments: const <ButtonSegment<ThemeMode>>[
         ButtonSegment<ThemeMode>(
           value: ThemeMode.light,
-          icon: Icon(Icons.light_mode),
+          icon: Icon(LucideIcons.sun),
         ),
         ButtonSegment<ThemeMode>(
           value: ThemeMode.dark,
-          icon: Icon(Icons.dark_mode),
+          icon: Icon(LucideIcons.moon),
         ),
         ButtonSegment<ThemeMode>(
           value: ThemeMode.system,
-          icon: Icon(Icons.brightness_auto),
+          icon: Icon(LucideIcons.monitor),
         ),
       ],
       selected: ref.watch(themeSelectionPod),

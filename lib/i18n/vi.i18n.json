@@ -100,7 +100,14 @@
       "systemDescription": "Theo cài đặt hệ thống"
     }
   },
-
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "retryLater": "Thử lại sau",
+    "somethingWentWrong": "Đã xảy ra lỗi!",
+    "pleaseWait": "Vui lòng chờ..."
+  },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",
   "todayWorks": "Công việc hôm nay!",
@@ -176,6 +183,16 @@
   "errors": {
     "network_error": "Đã xảy ra lỗi mạng. Vui lòng thử lại.",
     "unknown_error": "Đã xảy ra lỗi không xác định. Vui lòng thử lại.",
+    "dio": {
+      "connectionTimeout": "Kết nối hết thời gian. Vui lòng kiểm tra kết nối internet của bạn.",
+      "sendTimeout": "Không thể kết nối tới máy chủ. Vui lòng thử lại sau.",
+      "receiveTimeout": "Máy chủ phản hồi quá lâu. Vui lòng kiểm tra kết nối internet của bạn.",
+      "badCertificate": "Lỗi chứng chỉ bảo mật. Vui lòng cập nhật thiết bị hoặc liên hệ hỗ trợ.",
+      "badResponse": "Lỗi máy chủ. Vui lòng thử lại sau.",
+      "cancel": "Yêu cầu đã bị hủy.",
+      "connectionError": "Không thể kết nối tới máy chủ. Vui lòng thử lại sau.",
+      "unknown": "Lỗi mạng. Vui lòng kiểm tra kết nối internet của bạn."
+    },
     "UNCATEGORIZED_ERROR": "Đã xảy ra lỗi không mong muốn",
     "MODEL_NOT_FOUND": "Không tìm thấy mô hình",
     "MODEL_NOT_ENABLED": "Mô hình không được kích hoạt cho thao tác này",

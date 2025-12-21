@@ -1,4 +1,5 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,13 +30,7 @@ class TopicInputBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formState = ref.watch(this.formState);
-    final generateState = ref.watch(this.generateState);
-
-    // final isLoading = generateState.maybeWhen(
-    //   data: (state) => state.isLoading,
-    //   loading: () => true,
-    //   orElse: () => false,
-    // );
+    final generateStateAsync = ref.watch(generateState);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -62,7 +57,7 @@ class TopicInputBar extends ConsumerWidget {
             _buildGenerateButton(
               context,
               formState.isValid,
-              generateState.isLoading,
+              generateStateAsync,
             ),
           ],
         ),
@@ -127,12 +122,14 @@ class TopicInputBar extends ConsumerWidget {
     );
   }
 
-  /// Generate button with loading state.
+  /// Generate button with loading state using easyWhen.
   Widget _buildGenerateButton(
     BuildContext context,
     bool isValid,
-    bool isLoading,
+    AsyncValue generateStateAsync,
   ) {
+    final isLoading = generateStateAsync.isLoading;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       child: Material(
@@ -147,19 +144,21 @@ class TopicInputBar extends ConsumerWidget {
             width: 48,
             height: 48,
             alignment: Alignment.center,
-            child: isLoading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : Icon(
-                    Icons.arrow_upward_rounded,
-                    color: isValid ? Colors.white : Colors.grey[500],
-                  ),
+            child: generateStateAsync.easyWhen(
+              data: (_) => Icon(
+                Icons.arrow_upward_rounded,
+                color: isValid ? Colors.white : Colors.grey[500],
+              ),
+              loadingWidget: () => const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              ),
+              skipLoadingOnRefresh: false,
+            ),
           ),
         ),
       ),

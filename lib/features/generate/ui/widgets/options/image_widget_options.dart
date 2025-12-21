@@ -7,9 +7,11 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/art_style_picke
 import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ImageWidgetOptions {
   static List<String> get availableAspectRatios => [
@@ -63,15 +65,13 @@ class ImageWidgetOptions {
             onTap: () {
               PickerBottomSheet.show(
                 title: t.generate.imageGenerate.selectArtStyle,
-                subTitle: Text(
-                  'Choose the visual style for your presentation images',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
+                subTitle:
+                    'Choose the visual style for your presentation images',
                 context: context,
                 child: Container(
                   padding: const EdgeInsets.all(24),
                   child: SingleChildScrollView(
-                    child: artStylesAsync.when(
+                    child: artStylesAsync.easyWhen(
                       data: (artStyles) {
                         // Include 'None' option
                         final stylesWithNone = [
@@ -89,13 +89,13 @@ class ImageWidgetOptions {
                           ),
                         );
                       },
-                      loading: () => const Center(
+                      loadingWidget: () => const Center(
                         child: Padding(
                           padding: EdgeInsets.all(32.0),
                           child: CircularProgressIndicator(strokeWidth: 2.0),
                         ),
                       ),
-                      error: (error, stack) => Center(
+                      errorWidget: (error, stack) => Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
@@ -110,7 +110,7 @@ class ImageWidgetOptions {
                 ),
               );
             },
-            child: artStylesAsync.when(
+            child: artStylesAsync.easyWhen(
               data: (artStyles) {
                 // Handle 'None' selection
                 if (selectedStyle.isEmpty) {
@@ -136,7 +136,7 @@ class ImageWidgetOptions {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Icon(
-                                Icons.palette,
+                                LucideIcons.palette,
                                 color: Colors.grey,
                                 size: 14,
                               ),
@@ -148,7 +148,7 @@ class ImageWidgetOptions {
                             ),
                           ],
                         ),
-                        Icon(Icons.chevron_right, color: Colors.grey[400]),
+                        Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                       ],
                     ),
                   );
@@ -171,7 +171,7 @@ class ImageWidgetOptions {
                           'No art styles available',
                           style: TextStyle(fontWeight: FontWeight.w500),
                         ),
-                        Icon(Icons.chevron_right, color: Colors.grey[400]),
+                        Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                       ],
                     ),
                   );
@@ -213,7 +213,7 @@ class ImageWidgetOptions {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: const Icon(
-                                        Icons.palette,
+                                        LucideIcons.palette,
                                         color: Colors.white,
                                         size: 14,
                                       ),
@@ -229,7 +229,7 @@ class ImageWidgetOptions {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Icon(
-                                Icons.palette,
+                                LucideIcons.palette,
                                 color: Colors.white,
                                 size: 14,
                               ),
@@ -241,42 +241,12 @@ class ImageWidgetOptions {
                           ),
                         ],
                       ),
-                      Icon(Icons.chevron_right, color: Colors.grey[400]),
+                      Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                     ],
                   ),
                 );
               },
-              loading: () => Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'Loading...',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                    Icon(Icons.chevron_right, color: Colors.grey),
-                  ],
-                ),
-              ),
-              error: (error, stack) => Container(
+              errorWidget: (error, stack) => Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 12,
@@ -290,7 +260,11 @@ class ImageWidgetOptions {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.error, color: Colors.red[600], size: 20),
+                        Icon(
+                          LucideIcons.badgeAlert,
+                          color: Colors.red[600],
+                          size: 20,
+                        ),
                         const SizedBox(width: 12),
                         const Text(
                           'Error loading styles',
@@ -298,7 +272,7 @@ class ImageWidgetOptions {
                         ),
                       ],
                     ),
-                    Icon(Icons.chevron_right, color: Colors.grey[400]),
+                    Icon(LucideIcons.chevronRight, color: Colors.grey[400]),
                   ],
                 ),
               ),
@@ -307,10 +281,6 @@ class ImageWidgetOptions {
         );
       },
     );
-  }
-
-  List<Widget> buildAllSettings(Translations t) {
-    return [buildAspectRatioSetting(t), buildArtStyleSetting(t)];
   }
 
   List<Widget> buildAllSettings(Translations t) {

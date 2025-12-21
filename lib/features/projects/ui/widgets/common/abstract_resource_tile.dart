@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -41,16 +42,11 @@ class AbstractResourceTile extends ConsumerWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(
-                width: 100,
-                height: 56,
-                color: resourceType.color.withValues(alpha: 0.3),
+                constraints: const BoxConstraints(minWidth: 100, minHeight: 64),
+                color: resourceType.color.withValues(alpha: 0.1),
                 child: Center(
                   child: thumbnail == null
-                      ? Icon(
-                          resourceType.icon,
-                          color: Colors.white.withValues(alpha: 0.7),
-                          size: 32,
-                        )
+                      ? DefaultThumbnail(resourceType: resourceType)
                       : Image.memory(
                           base64Decode(thumbnail!),
                           fit: BoxFit.contain,

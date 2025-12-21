@@ -2,8 +2,10 @@ import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/states/theme/theme_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_preview_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Widget that displays theme selection with visual preview cards fetched from API.
 class ThemeSelectionSection extends ConsumerWidget {
@@ -33,7 +35,7 @@ class ThemeSelectionSection extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                Icons.palette_outlined,
+                LucideIcons.palette,
                 color: Theme.of(context).colorScheme.primary,
                 size: 20,
               ),
@@ -50,7 +52,7 @@ class ThemeSelectionSection extends ConsumerWidget {
                 GestureDetector(
                   onTap: onInfoTap,
                   child: const Icon(
-                    Icons.info_outline,
+                    LucideIcons.info,
                     size: 18,
                     color: Colors.grey,
                   ),
@@ -59,7 +61,7 @@ class ThemeSelectionSection extends ConsumerWidget {
               const Spacer(),
               TextButton.icon(
                 onPressed: () => _showThemeSelectionModal(context, ref),
-                icon: const Icon(Icons.grid_view, size: 16),
+                icon: const Icon(LucideIcons.grid3x3, size: 16),
                 label: Text(t.generate.themeSelection.viewAll),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -69,7 +71,7 @@ class ThemeSelectionSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           // Display selected theme
-          themesAsync.when(
+          themesAsync.easyWhen(
             data: (themes) {
               final selectedTheme = themes.firstWhere(
                 (t) => formState.themeId == t.id,
@@ -98,13 +100,13 @@ class ThemeSelectionSection extends ConsumerWidget {
                 ),
               );
             },
-            loading: () => const Center(
+            loadingWidget: () => const Center(
               child: Padding(
                 padding: EdgeInsets.all(24),
                 child: CircularProgressIndicator(),
               ),
             ),
-            error: (error, stackTrace) => Center(
+            errorWidget: (error, stackTrace) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
@@ -177,7 +179,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
                     const Spacer(),
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(LucideIcons.x),
                     ),
                   ],
                 ),
@@ -185,7 +187,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
               const Divider(height: 1),
               // Theme grid
               Expanded(
-                child: themesAsync.when(
+                child: themesAsync.easyWhen(
                   data: (themes) {
                     return GridView.builder(
                       controller: scrollController,
@@ -246,7 +248,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
                                         shape: BoxShape.circle,
                                       ),
                                       child: const Icon(
-                                        Icons.check,
+                                        LucideIcons.check,
                                         size: 16,
                                         color: Colors.white,
                                       ),
@@ -259,16 +261,6 @@ class _ThemeSelectionModal extends ConsumerWidget {
                       },
                     );
                   },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stackTrace) => Center(
-                    child: Text(
-                      'Failed to load themes: $error',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ],

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flash/flash.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This mixin used for showing dialogs,overlay,bootomsheet,snackbars which automatically disposed
 ///when the stateful class use this class disposes.s
@@ -128,7 +129,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
         builder: (context, controller) => FlashBar(
           controller: controller,
           indicatorColor: Colors.red,
-          icon: const Icon(Icons.tips_and_updates_outlined),
+          icon: const Icon(LucideIcons.lightbulb),
           title: title,
           content: content,
           actions:
@@ -191,7 +192,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(Icons.error_outline),
+    Icon? icon = const Icon(LucideIcons.circleAlert),
     Color? indicatorColor = const Color(0xFFE57373),
     Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
@@ -207,7 +208,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
                   (context, controller) {
                     return IconButton(
                       onPressed: controller.dismiss,
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(LucideIcons.circleX),
                     );
                   }
             : null,
@@ -220,7 +221,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(Icons.info_outline),
+    Icon? icon = const Icon(LucideIcons.info),
     Color? indicatorColor = const Color(0xFF64B5F6),
     Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
@@ -236,7 +237,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
                   (context, controller) {
                     return IconButton(
                       onPressed: controller.dismiss,
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(LucideIcons.circleX),
                     );
                   }
             : null,
@@ -249,7 +250,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(Icons.check_circle_outline),
+    Icon? icon = const Icon(LucideIcons.circleCheck),
     Color? indicatorColor = const Color(0xFF81C784),
     Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
@@ -265,7 +266,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
                   (context, controller) {
                     return IconButton(
                       onPressed: controller.dismiss,
-                      icon: const Icon(Icons.close),
+                      icon: const Icon(LucideIcons.circleX),
                     );
                   }
             : null,

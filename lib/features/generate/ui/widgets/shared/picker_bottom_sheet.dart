@@ -1,5 +1,4 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Generic reusable bottom sheet for pickers with scrollable content
@@ -50,10 +49,6 @@ class _PickerBottomSheetState extends State<PickerBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    if (kDebugMode) {
-      print('Is Save button null: ${widget.saveButton == null}');
-    }
     return DraggableScrollableSheet(
       maxChildSize: 0.9,
       key: _scrollKey,

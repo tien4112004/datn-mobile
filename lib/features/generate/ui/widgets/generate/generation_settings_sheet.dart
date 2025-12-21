@@ -40,11 +40,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
         optionWidgets: optionWidgets,
         modelType: modelType,
       ),
-      saveButton: GenerationSettingsSheet(
-        formControllerProvider: presentationFormControllerProvider,
-        optionWidgets: optionWidgets,
-        modelType: modelType,
-      )._buildDoneButton(context, buttonText),
+      saveButton: _buildDoneButton(context, buttonText),
     );
   }
 
@@ -162,7 +158,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
   }
 
   /// Done button to close the sheet.
-  Widget _buildDoneButton(BuildContext context, String buttonText) {
+  static Widget _buildDoneButton(BuildContext context, String buttonText) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

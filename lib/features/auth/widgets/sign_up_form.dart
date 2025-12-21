@@ -255,7 +255,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                     borderRadius: Themes.boxRadius,
                   ),
                   suffixIcon: IconButton(
-                    icon: const Icon(LucideIcons.brushCleaning),
+                    icon: const Icon(LucideIcons.circleX),
                     onPressed: () {
                       setState(() {
                         _selectedDate = DateTime.now();

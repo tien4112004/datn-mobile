@@ -5,17 +5,20 @@ import 'package:flutter/material.dart';
 /// Displays a title and content with a draggable handle
 class PickerBottomSheet extends StatelessWidget {
   final String title;
+  final Widget? subTitle;
   final Widget child;
 
   const PickerBottomSheet({
     super.key,
     required this.title,
+    this.subTitle,
     required this.child,
   });
 
   static void show({
     required BuildContext context,
     required String title,
+    Widget? subTitle,
     required Widget child,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -23,6 +26,7 @@ class PickerBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      useSafeArea: true,
       builder: (context) => DraggableScrollableSheet(
         builder: (context, scrollController) {
           return Container(
@@ -54,6 +58,7 @@ class PickerBottomSheet extends StatelessWidget {
                     color: isDark ? Colors.white : Colors.grey[900],
                   ),
                 ),
+                if (subTitle != null) ...[const SizedBox(height: 8), subTitle],
                 const SizedBox(height: 8),
                 // Content
                 Expanded(

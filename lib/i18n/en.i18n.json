@@ -336,8 +336,9 @@
       "topicHint": "Enter your mindmap topic...",
       "selectLanguage": "Select Language",
       "selectModel": "Select AI Model",
-      "selectMaxDepth": "Select Max Depth",
+      "selectMaxDepth": "Select Depth Level",
       "selectMaxBranches": "Select Max Branches",
+      "depthLevel": "Depth Level",
       "maxDepth": "Depth: $depth",
       "maxBranches": "Branches: $branches",
       "noModelsAvailable": "No models available",
@@ -352,6 +353,37 @@
       "generateNew": "Generate New",
       "save": "Save",
       "saveComingSoon": "Save feature coming soon!"
+    },
+    "imageGenerate": {
+      "title": "Image Generator",
+      "subtitle": "Describe the image you want to generate",
+      "enterPrompt": "Enter your image description...",
+      "tryThesePrompts": "Try these prompts:",
+      "promptSuggestions": {
+        "sunsetMountains": "A majestic sunset over snow-capped mountains, oil painting style",
+        "modernOffice": "Modern minimalist office with natural lighting and greenery",
+        "fantasyCharacter": "Fantasy character portrait with intricate armor and magical aura",
+        "productPhotography": "Professional product photography of a smartphone on a clean white background"
+      },
+      "error": "Error generating image: $error",
+      "selectAspectRatio": "Select Aspect Ratio",
+      "selectArtStyle": "Select Art Style"
+    },
+    "imageResult": {
+      "title": "Generated Image",
+      "noImageGenerated": "No image generated",
+      "imageDetails": "Image Details",
+      "prompt": "Prompt",
+      "model": "Model",
+      "format": "Format",
+      "created": "Created",
+      "copyPrompt": "Copy Prompt",
+      "share": "Share",
+      "downloadImage": "Download Image",
+      "generateAnother": "Generate Another",
+      "generatingImage": "Generating image...",
+      "errorGeneratingImage": "Error generating image",
+      "failedToLoadImage": "Failed to load image"
     }
   }
 }

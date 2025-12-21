@@ -25,10 +25,7 @@ class DropdownField<T> extends StatelessWidget {
       initialValue: value,
       isExpanded: true,
       items: items
-          .map((e) => DropdownMenuItem<T>(
-                value: e,
-                child: Text('$e'),
-              ))
+          .map((e) => DropdownMenuItem<T>(value: e, child: Text('$e')))
           .toList(),
       onChanged: onChanged,
       menuMaxHeight: 300,

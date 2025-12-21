@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/ui/pages/generate_page/image_generate_page.dart';
 import 'package:datn_mobile/features/generate/ui/pages/generate_page/mindmap_generate_page.dart';
 import 'package:datn_mobile/features/generate/ui/pages/generate_page/presentation_generate_page.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/generator_picker_sheet.dart';
@@ -29,13 +30,7 @@ class GeneratePage extends ConsumerWidget {
         body: switch (activeGeneratorType) {
           GeneratorType.presentation => const PresentationGeneratePage(),
           GeneratorType.mindmap => const MindmapGeneratePage(),
-          GeneratorType.image => Center(
-            child: Text(
-              t.generate.presentationGenerate.generatorComingSoon(
-                type: activeGeneratorType.getLabel(t),
-              ),
-            ),
-          ),
+          GeneratorType.image => const ImageGeneratePage(),
         },
       ),
     );

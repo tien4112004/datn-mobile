@@ -79,23 +79,6 @@ class _PresentationGenerationWebViewPageState
               }
             },
           ),
-          // if (_isLoading)
-          //   Container(
-          //     color: Colors.white,
-          //     child: const Center(
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         children: [
-          //           CircularProgressIndicator(),
-          //           SizedBox(height: 16),
-          //           Text(
-          //             'Preparing generation...',
-          //             style: TextStyle(color: Colors.grey),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
           if (_error != null)
             Center(
               child: Padding(

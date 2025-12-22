@@ -1,5 +1,4 @@
 import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
-import 'package:flutter/foundation.dart';
 
 /// Utility class for parsing markdown outline to slides and vice versa.
 class OutlineParser {
@@ -82,11 +81,7 @@ class OutlineParser {
 
   /// Extract slide titles for preview display.
   static List<String> extractSlideTitles(String markdown) {
-    debugPrint('Extracting slide titles from markdown outline.');
-    debugPrint(markdown);
-
     final blocks = markdown.split('\n\n');
-    debugPrint("BLOCKS: ${blocks.first}");
 
     final titles = <String>[];
 
@@ -95,7 +90,6 @@ class OutlineParser {
       if (trimmedLine.startsWith('### ')) {
         titles.add(trimmedLine.substring(4).trim());
       }
-      debugPrint("TITLES ${trimmedLine.toString()}");
     }
 
     return titles;

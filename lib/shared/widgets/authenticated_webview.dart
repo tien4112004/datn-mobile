@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,54 +52,95 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
   }
 
   Future<void> _setupCookies() async {
-    final secureStorage = ref.read(secureStoragePod);
-    final accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
-    final refreshToken = await secureStorage.read(key: R.REFRESH_TOKEN_KEY);
+    try {
+      debugPrint('Starting cookie setup for URL: ${widget.url}');
 
-    final uri = WebUri(widget.url);
-    final domain = Uri.parse(widget.url).host;
-    final cookieManager = CookieManager.instance();
+      final secureStorage = ref.read(secureStoragePod);
+      final accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
+      final refreshToken = await secureStorage.read(key: R.REFRESH_TOKEN_KEY);
 
-    // Set access token cookie
-    if (accessToken != null && accessToken.isNotEmpty) {
-      await cookieManager.setCookie(
-        url: uri,
-        name: "access_token",
-        value: accessToken,
-        isHttpOnly: true,
-        isSecure: true,
-        domain: domain,
-      );
-    }
-
-    // Set refresh token cookie
-    if (refreshToken != null && refreshToken.isNotEmpty) {
-      await cookieManager.setCookie(
-        url: uri,
-        name: "refresh_token",
-        value: refreshToken,
-        isHttpOnly: true,
-        isSecure: true,
-        domain: domain,
+      debugPrint(
+        'Tokens retrieved - Access: ${accessToken?.substring(0, 20)}..., Refresh: ${refreshToken?.substring(0, 20)}...',
       );
 
-      if (kDebugMode) {
-        print('Refresh token cookie set for domain: $domain');
+      final uri = WebUri(widget.url);
+      final cookieManager = CookieManager.instance();
+
+      debugPrint('Setting cookies for URL: ${widget.url}');
+
+      // Set access token cookie (without explicit domain to let it auto-infer)
+      if (accessToken != null && accessToken.isNotEmpty) {
+        await cookieManager
+            .setCookie(
+              url: uri,
+              name: "access_token",
+              value: accessToken,
+              isHttpOnly: true,
+              isSecure: true,
+            )
+            .timeout(
+              const Duration(seconds: 5),
+              onTimeout: () {
+                debugPrint('Access token cookie set timed out');
+                return true;
+              },
+            );
+        debugPrint('Access token cookie set successfully');
       }
-    }
 
-    if (mounted) {
-      setState(() {
-        _areCookiesSet = true;
-      });
+      // Set refresh token cookie
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await cookieManager
+            .setCookie(
+              url: uri,
+              name: "refresh_token",
+              value: refreshToken,
+              isHttpOnly: true,
+              isSecure: true,
+            )
+            .timeout(
+              const Duration(seconds: 5),
+              onTimeout: () {
+                debugPrint('Refresh token cookie set timed out');
+                return true;
+              },
+            );
+        debugPrint('Refresh token cookie set successfully');
+      }
+
+      debugPrint('Cookie setup completed. Mounted: $mounted');
+
+      if (mounted) {
+        debugPrint('Calling setState to update _areCookiesSet');
+        setState(() {
+          _areCookiesSet = true;
+        });
+        debugPrint('setState completed, _areCookiesSet: $_areCookiesSet');
+      } else {
+        debugPrint('WARNING: Widget not mounted, cannot call setState');
+      }
+    } catch (e, stackTrace) {
+      debugPrint('ERROR in _setupCookies: $e');
+      debugPrint('Stack trace: $stackTrace');
+
+      // Still set cookies as ready to prevent infinite loading
+      if (mounted) {
+        setState(() {
+          _areCookiesSet = true;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Building AuthenticatedWebView, cookies set: $_areCookiesSet');
+
     if (!_areCookiesSet) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    debugPrint('Cookies set, loading WebView for URL: ${widget.url}');
 
     return InAppWebView(
       initialUrlRequest: URLRequest(

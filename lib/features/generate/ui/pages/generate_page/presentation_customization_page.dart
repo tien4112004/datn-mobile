@@ -4,7 +4,6 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -378,6 +378,17 @@
       "pageTitle": "Tạo sơ đồ tư duy bằng AI",
       "subtitle": "Nhập chủ đề và để AI tạo sơ đồ tư duy có cấu trúc cho bạn",
       "topicHint": "Nhập chủ đề sơ đồ tư duy...",
+      "tryTheseTopics": "Thử các chủ đề này:",
+      "topicSuggestions": {
+        "projectManagement": "Quản lý dự án",
+        "pythonProgramming": "Lập trình Python",
+        "artificialIntelligence": "Trí tuệ nhân tạo",
+        "webDevelopment": "Phát triển Web",
+        "dataStructures": "Cấu trúc dữ liệu",
+        "digitalMarketingStrategy": "Chiến lược Marketing Kỹ thuật số",
+        "climateChangeSolutions": "Giải pháp Biến đổi Khí hậu",
+        "machineLearningAlgorithms": "Thuật toán Học máy"
+      },
       "selectLanguage": "Chọn ngôn ngữ",
       "selectModel": "Chọn mô hình AI",
       "selectMaxDepth": "Chọn cấp độ sâu",

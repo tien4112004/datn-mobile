@@ -10,6 +10,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_
 import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_picker_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/mindmap_widget_options.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_sheet.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/suggestions/mindmap_suggestions.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -260,6 +261,13 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 20),
+          // Quick Suggestions
+          MindmapSuggestions(
+            onSuggestionTap: (suggestion) {
+              _topicController.text = suggestion;
+            },
           ),
         ],
       ),

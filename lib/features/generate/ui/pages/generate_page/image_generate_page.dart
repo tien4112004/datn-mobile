@@ -4,7 +4,7 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/generate/image_suggestions.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/suggestions/image_suggestions.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/options/general_picker_options.dart';

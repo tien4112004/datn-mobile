@@ -1,4 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:datn_mobile/features/projects/states/controller_provider.dart';
+import 'package:datn_mobile/features/projects/ui/pages/common/generic_search_page.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,30 +16,32 @@ class MindmapSearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
 
-    // TODO: Wire to mindmapsControllerProvider once DTO is added
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(t.projects.mindmaps.search_mindmaps),
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(LucideIcons.map, size: 64, color: Colors.grey.shade400),
-            const SizedBox(height: 16),
-            Text(
-              t.projects.no_mindmaps,
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+    return GenericResourceSearchPage<MindmapMinimal>(
+      title: t.projects.mindmaps.search_mindmaps,
+      resourceAsyncProvider: mindmapsControllerProvider,
+      searchPredicate: (mindmap, query) {
+        return mindmap.title.toLowerCase().contains(query.toLowerCase());
+      },
+      itemBuilder: (context, mindmap, onTap) {
+        return ListTile(
+          leading: const Icon(LucideIcons.map),
+          title: Text(mindmap.title),
+          subtitle: Text(
+            mindmap.createdAt != null
+                ? t.projects.created_at(
+                    date: DateFormatHelper.formatRelativeDate(
+                      mindmap.createdAt!,
+                      ref: ref,
+                    ),
+                  )
+                : t.projects.unknown_date,
+          ),
+          trailing: const Icon(LucideIcons.chevronRight, size: 18),
+          onTap: onTap,
+        );
+      },
+      emptyStateMessage: t.projects.no_mindmaps,
+      noResultsMessage: 'No results found',
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
+import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
@@ -79,8 +80,50 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
               },
             ),
             const SizedBox(height: 16),
-            const Expanded(
-              child: Center(child: Text('This is the mindmap list view.')),
+            Expanded(
+              child: ref
+                  .watch(mindmapsControllerProvider)
+                  .when(
+                    data: (data) {
+                      if (data.value.isEmpty) {
+                        return const Center(
+                          child: Text('No mindmaps available'),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: data.value.length,
+                        itemBuilder: (context, index) {
+                          final mindmap = data.value[index];
+                          return ListTile(
+                            title: Text(mindmap.title),
+                            subtitle: mindmap.description != null
+                                ? Text(mindmap.description!)
+                                : null,
+                            onTap: () {
+                              context.router.push(const MindmapSearchRoute());
+                            },
+                          );
+                        },
+                      );
+                    },
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stackTrace) => Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Error: $error'),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              ref.invalidate(mindmapsControllerProvider);
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
             ),
           ],
         ),

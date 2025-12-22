@@ -376,6 +376,17 @@
       "pageTitle": "AI Mindmap Generator",
       "subtitle": "Enter your topic and let AI create a structured mindmap for you",
       "topicHint": "Enter your mindmap topic...",
+      "tryTheseTopics": "Try these topics:",
+      "topicSuggestions": {
+        "projectManagement": "Project Management",
+        "pythonProgramming": "Python Programming",
+        "artificialIntelligence": "Artificial Intelligence",
+        "webDevelopment": "Web Development",
+        "dataStructures": "Data Structures",
+        "digitalMarketingStrategy": "Digital Marketing Strategy",
+        "climateChangeSolutions": "Climate Change Solutions",
+        "machineLearningAlgorithms": "Machine Learning Algorithms"
+      },
       "selectLanguage": "Select Language",
       "selectModel": "Select AI Model",
       "selectMaxDepth": "Select Depth Level",

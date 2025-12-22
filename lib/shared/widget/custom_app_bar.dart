@@ -58,7 +58,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 96,
       title: Column(
         crossAxisAlignment: centerTitle
             ? CrossAxisAlignment.center

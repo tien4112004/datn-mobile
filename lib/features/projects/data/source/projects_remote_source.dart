@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:datn_mobile/features/projects/data/dto/image_project_dto.dart';
+import 'package:datn_mobile/features/projects/data/dto/image_project_minimal_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/mindmap_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/mindmap_minimal_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/presentation_dto.dart';
@@ -33,6 +35,26 @@ abstract class ProjectsRemoteSource {
   @GET("/presentations?page={pageKey}&pageSize={pageSize}&sort={sort}")
   Future<ServerResponseDto<List<PresentationMinimalDto>>>
   fetchPresentationMinimalsPaged({
+    @Path("pageKey") int pageKey = 1,
+    @Path("pageSize") int pageSize = 10,
+    @Path("sort") String sort = "desc",
+  });
+
+  // Image endpoints
+  @GET("/images")
+  Future<ServerResponseDto<List<ImageProjectMinimalDto>>> fetchImages();
+
+  @GET("/images/{id}")
+  Future<ServerResponseDto<ImageProjectDto>> fetchImageById(
+    @Path("id") String id,
+  );
+
+  @POST("/images")
+  Future<ImageProjectDto> createImage(@Body() ImageProjectDto image);
+
+  @GET("/images?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  Future<ServerResponseDto<List<ImageProjectMinimalDto>>>
+  fetchImageMinimalsPaged({
     @Path("pageKey") int pageKey = 1,
     @Path("pageSize") int pageSize = 10,
     @Path("sort") String sort = "desc",

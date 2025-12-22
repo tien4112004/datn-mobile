@@ -1,11 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
+import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/image/image_grid_card.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/image/image_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -28,6 +35,10 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
+    final pagingController = ref.watch(imagePagingControllerPod);
+    final viewPreferenceAsync = ref.watch(
+      viewPreferenceNotifierPod(ResourceType.image.name),
+    );
 
     _sortOptions = [
       t.projects.common_list.sort_date_modified,
@@ -76,10 +87,197 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
               onClearFilters: () {
                 ref.read(filterProvider.notifier).clearFilters();
               },
+              trailing: IconButton(
+                icon: Icon(
+                  viewPreferenceAsync
+                      ? LucideIcons.list
+                      : LucideIcons.layoutGrid,
+                  size: 24,
+                ),
+                onPressed: () async {
+                  // Get the notifier and toggle
+                  ref
+                      .read(
+                        viewPreferenceNotifierPod(
+                          ResourceType.image.name,
+                        ).notifier,
+                      )
+                      .toggle();
+                },
+              ),
             ),
             const SizedBox(height: 16),
-            const Expanded(
-              child: Center(child: Text('This is the image list view.')),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  pagingController.refresh();
+                },
+                child: PagingListener(
+                  controller: pagingController,
+                  builder: (context, state, fetchNextPage) {
+                    if (viewPreferenceAsync) {
+                      return PagedGridView<int, ImageProjectMinimal>(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.75,
+                            ),
+                        builderDelegate:
+                            PagedChildBuilderDelegate<ImageProjectMinimal>(
+                              itemBuilder: (context, item, index) =>
+                                  ImageGridCard(
+                                    image: item,
+                                    onTap: () {
+                                      context.router.push(
+                                        ImageDetailRoute(imageId: item.id),
+                                      );
+                                    },
+                                    onMoreOptions: () {
+                                      _showMoreOptions(context, item);
+                                    },
+                                  ),
+                              noMoreItemsIndicatorBuilder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: Text(
+                                    t.projects.no_images,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                              noItemsFoundIndicatorBuilder: (context) => Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      LucideIcons.image,
+                                      size: 64,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      t.projects.no_images,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              firstPageErrorIndicatorBuilder: (context) =>
+                                  const Center(
+                                    child: Text(
+                                      "t.projects.error_loading_images",
+                                    ),
+                                  ),
+                              newPageErrorIndicatorBuilder: (context) =>
+                                  const Center(
+                                    child: Text(
+                                      "t.projects.error_loading_images",
+                                    ),
+                                  ),
+                            ),
+                        state: state,
+                        fetchNextPage: fetchNextPage,
+                      );
+                    } else {
+                      return PagedListView.separated(
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 8,
+                          child: Divider(
+                            height: 1,
+                            color: Color.fromRGBO(189, 189, 189, 1),
+                          ),
+                        ),
+                        builderDelegate:
+                            PagedChildBuilderDelegate<ImageProjectMinimal>(
+                              itemBuilder: (context, item, index) => ImageTile(
+                                image: item,
+                                onTap: () {
+                                  context.router.push(
+                                    ImageDetailRoute(imageId: item.id),
+                                  );
+                                },
+                                onMoreOptions: () {
+                                  _showMoreOptions(context, item);
+                                },
+                              ),
+                              noMoreItemsIndicatorBuilder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: Text(
+                                    t.projects.no_images,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                              noItemsFoundIndicatorBuilder: (context) => Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      LucideIcons.image,
+                                      size: 64,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      t.projects.no_images,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              firstPageErrorIndicatorBuilder: (context) =>
+                                  const Center(
+                                    child: Text(
+                                      "t.projects.error_loading_images",
+                                    ),
+                                  ),
+                              newPageErrorIndicatorBuilder: (context) =>
+                                  const Center(
+                                    child: Text(
+                                      "t.projects.error_loading_images",
+                                    ),
+                                  ),
+                            ),
+                        state: state,
+                        fetchNextPage: fetchNextPage,
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showMoreOptions(BuildContext context, ImageProjectMinimal image) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('Delete'),
+              trailing: const Icon(LucideIcons.trash2),
+              onTap: () {
+                Navigator.pop(context);
+                // TODO: Implement delete
+              },
             ),
           ],
         ),

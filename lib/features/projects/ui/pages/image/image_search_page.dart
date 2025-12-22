@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,6 @@ class ImageSearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
 
-    // TODO: Wire to imagesControllerProvider once DTO is added
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -22,16 +22,51 @@ class ImageSearchPage extends ConsumerWidget {
         title: Text(t.projects.images.search_images),
         elevation: 0,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(LucideIcons.image, size: 64, color: Colors.grey.shade400),
+            // Search bar
+            TextField(
+              decoration: InputDecoration(
+                hintText: t.projects.images.search_images,
+                prefixIcon: const Icon(LucideIcons.search),
+                border: const OutlineInputBorder(
+                  borderRadius: Themes.boxRadius,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+              ),
+              onChanged: (query) {
+                // TODO: Implement search filtering
+              },
+            ),
             const SizedBox(height: 16),
-            Text(
-              t.projects.no_images,
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
-              textAlign: TextAlign.center,
+            // Search results placeholder
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      LucideIcons.image,
+                      size: 64,
+                      color: Colors.grey.shade400,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      t.projects.no_images,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey.shade600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

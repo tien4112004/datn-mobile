@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
@@ -47,13 +45,18 @@ class AbstractResourceTile extends ConsumerWidget {
                 child: Center(
                   child: thumbnail == null
                       ? DefaultThumbnail(resourceType: resourceType)
-                      : Image.memory(
-                          base64Decode(thumbnail!),
+                      : _isImageUrl(thumbnail!)
+                      ? Image.network(
+                          thumbnail!,
                           fit: BoxFit.contain,
                           width: 100,
                           height: 56,
                           cacheWidth: 100,
-                          cacheHeight: 56,
+                        )
+                      : Icon(
+                          resourceType.icon,
+                          size: 40,
+                          color: resourceType.color,
                         ),
                 ),
               ),
@@ -104,5 +107,10 @@ class AbstractResourceTile extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  bool _isImageUrl(String url) {
+    debugPrint('Checking if URL is image: $url');
+    return url.contains('.photos');
   }
 }

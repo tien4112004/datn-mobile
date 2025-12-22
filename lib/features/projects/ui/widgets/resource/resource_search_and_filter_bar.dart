@@ -19,6 +19,7 @@ class ResourceSearchAndFilterBar extends ConsumerWidget {
   final Function(String?) onGradeChanged;
   final Function(String) onSortChanged;
   final VoidCallback onClearFilters;
+  final Widget? trailing;
 
   const ResourceSearchAndFilterBar({
     super.key,
@@ -32,6 +33,7 @@ class ResourceSearchAndFilterBar extends ConsumerWidget {
     required this.onGradeChanged,
     required this.onSortChanged,
     required this.onClearFilters,
+    this.trailing,
   });
 
   @override
@@ -66,6 +68,7 @@ class ResourceSearchAndFilterBar extends ConsumerWidget {
               onSortChanged: onSortChanged,
               t: t,
             ),
+            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
           ],
         ),
       ],

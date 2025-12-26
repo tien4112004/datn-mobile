@@ -23,6 +23,7 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: SettingRoute.page, path: 'settings'),
         AutoRoute(page: PlaceholderRouteSchedule.page, path: 'schedules'),
         AutoRoute(page: PlaceholderRouteAnnounce.page, path: 'announces'),
+        AutoRoute(page: ClassRoute.page, path: 'classes'),
       ],
     ),
 
@@ -58,5 +59,17 @@ class AppRouter extends RootStackRouter {
     ),
     AutoRoute(page: MindmapSearchRoute.page, path: '/search/mindmaps'),
     AutoRoute(page: ImageSearchRoute.page, path: '/search/images'),
+
+    // Student Routes
+    AutoRoute(page: StudentListRoute.page, path: '/classes/:classId/students'),
+    AutoRoute(page: StudentDetailRoute.page, path: '/students/:studentId'),
+    AutoRoute(
+      page: StudentCreateRoute.page,
+      path: '/classes/:classId/students/create',
+    ),
+    AutoRoute(
+      page: StudentEditRoute.page,
+      path: '/classes/:classId/students/:studentId/edit',
+    ),
   ];
 }

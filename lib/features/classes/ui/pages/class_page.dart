@@ -146,18 +146,12 @@ class _ClassListContent extends StatelessWidget {
               onViewStudents: () {
                 context.router.push(StudentListRoute(classId: classEntity.id));
               },
-              onEdit: isStudent
-                  ? null
-                  : () {
-                      context.router.push(
-                        ClassEditRoute(classId: classEntity.id),
-                      );
-                    },
-              onDelete: isStudent
-                  ? null
-                  : () {
-                      _showDeleteConfirmation(context, classEntity);
-                    },
+              onEdit: () {
+                // TODO: Navigate to class edit
+              },
+              onDelete: () {
+                _showDeleteConfirmation(context, classEntity);
+              },
             );
           },
         ),

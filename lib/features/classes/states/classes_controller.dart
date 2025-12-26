@@ -58,3 +58,35 @@ class JoinClassController extends AsyncNotifier<void> {
     });
   }
 }
+
+/// Controller for updating a class.
+class UpdateClassController extends AsyncNotifier<void> {
+  @override
+  FutureOr<void> build() {
+    // Initial state - no operation
+  }
+
+  /// Updates a class and refreshes the list.
+  Future<void> updateClass({
+    required String classId,
+    String? name,
+    String? description,
+    String? settings,
+    bool? isActive,
+  }) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(classRepositoryProvider);
+      await repository.updateClass(
+        classId: classId,
+        name: name,
+        description: description,
+        settings: settings,
+        isActive: isActive,
+      );
+      // Refresh the classes list
+      ref.invalidate(classesControllerProvider);
+    });
+  }
+}

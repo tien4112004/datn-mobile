@@ -22,4 +22,13 @@ abstract class ClassRepository {
 
   /// Gets a single class by ID.
   Future<ClassEntity> getClassById(String classId);
+
+  /// Updates an existing class.
+  Future<ClassEntity> updateClass({
+    required String classId,
+    String? name,
+    String? description,
+    String? settings,
+    bool? isActive,
+  });
 }

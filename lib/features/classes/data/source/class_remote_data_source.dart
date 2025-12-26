@@ -33,4 +33,11 @@ abstract class ClassRemoteDataSource {
   Future<ServerResponseDto<ClassListResponseDto>> getClassById(
     @Path('classId') String classId,
   );
+
+  /// Updates an existing class.
+  @PUT('/classes/{classId}')
+  Future<ServerResponseDto<ClassListResponseDto>> updateClass(
+    @Path('classId') String classId,
+    @Body() Map<String, dynamic> request,
+  );
 }

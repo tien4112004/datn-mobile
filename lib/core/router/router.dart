@@ -60,6 +60,10 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: MindmapSearchRoute.page, path: '/search/mindmaps'),
     AutoRoute(page: ImageSearchRoute.page, path: '/search/images'),
 
+    // Class Routes
+    AutoRoute(page: ClassDetailRoute.page, path: '/classes/:classId'),
+    AutoRoute(page: ClassEditRoute.page, path: '/classes/:classId/edit'),
+
     // Student Routes
     AutoRoute(page: StudentListRoute.page, path: '/classes/:classId/students'),
     AutoRoute(page: StudentDetailRoute.page, path: '/students/:studentId'),

@@ -38,3 +38,9 @@ final joinClassControllerProvider =
     AsyncNotifierProvider<JoinClassController, void>(
       () => JoinClassController(),
     );
+
+/// Provider for updating a class.
+final updateClassControllerProvider =
+    AsyncNotifierProvider<UpdateClassController, void>(
+      () => UpdateClassController(),
+    );

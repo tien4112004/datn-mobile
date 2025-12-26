@@ -53,4 +53,23 @@ class ClassRepositoryImpl implements ClassRepository {
     final response = await _remoteDataSource.getClassById(classId);
     return response.data!.toEntity();
   }
+
+  @override
+  Future<ClassEntity> updateClass({
+    required String classId,
+    String? name,
+    String? description,
+    String? settings,
+    bool? isActive,
+  }) async {
+    final Map<String, dynamic> request = {};
+
+    if (name != null) request['name'] = name;
+    if (description != null) request['description'] = description;
+    if (settings != null) request['settings'] = settings;
+    if (isActive != null) request['isActive'] = isActive;
+
+    final response = await _remoteDataSource.updateClass(classId, request);
+    return response.data!.toEntity();
+  }
 }

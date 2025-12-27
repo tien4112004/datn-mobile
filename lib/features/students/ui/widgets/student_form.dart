@@ -83,141 +83,150 @@ class _StudentFormState extends State<StudentForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Student Information Section
-            if (!widget.isEditMode) ...[
-              const _SectionHeader(
-                title: 'Student Information',
-                icon: LucideIcons.user,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _fullNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name *',
-                  hintText: 'Enter student\'s full name',
-                  prefixIcon: Icon(LucideIcons.user),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Full name is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _DatePickerField(
-                label: 'Date of Birth',
-                icon: LucideIcons.calendar,
-                value: _dateOfBirth,
-                onChanged: (date) => setState(() => _dateOfBirth = date),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _genderController,
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
-                  hintText: 'Enter gender',
-                  prefixIcon: Icon(LucideIcons.users),
-                ),
-              ),
-              const SizedBox(height: 24),
+      child: Column(
+        children: [
+          // Scrollable form content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Student Information Section
+                  if (!widget.isEditMode) ...[
+                    const _SectionHeader(
+                      title: 'Student Information',
+                      icon: LucideIcons.user,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _fullNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Full Name *',
+                        hintText: 'Enter student\'s full name',
+                        prefixIcon: Icon(LucideIcons.user),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Full name is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _DatePickerField(
+                      label: 'Date of Birth',
+                      icon: LucideIcons.calendar,
+                      value: _dateOfBirth,
+                      onChanged: (date) => setState(() => _dateOfBirth = date),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _genderController,
+                      decoration: const InputDecoration(
+                        labelText: 'Gender',
+                        hintText: 'Enter gender',
+                        prefixIcon: Icon(LucideIcons.users),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
 
-              // Parent Information Section
-              const _SectionHeader(
-                title: 'Parent Information',
-                icon: LucideIcons.users,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _parentNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Parent Name *',
-                  hintText: 'Enter parent\'s name',
-                  prefixIcon: Icon(LucideIcons.circleUser),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Parent name is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _parentPhoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Parent Phone *',
-                  hintText: 'Enter parent\'s phone number',
-                  prefixIcon: Icon(LucideIcons.phone),
-                ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Parent phone is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-            ],
+                    // Parent Information Section
+                    const _SectionHeader(
+                      title: 'Parent Information',
+                      icon: LucideIcons.users,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _parentNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Parent Name *',
+                        hintText: 'Enter parent\'s name',
+                        prefixIcon: Icon(LucideIcons.circleUser),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Parent name is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _parentPhoneController,
+                      decoration: const InputDecoration(
+                        labelText: 'Parent Phone *',
+                        hintText: 'Enter parent\'s phone number',
+                        prefixIcon: Icon(LucideIcons.phone),
+                      ),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Parent phone is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                  ],
 
-            // Enrollment Information Section (both modes)
-            const _SectionHeader(
-              title: 'Enrollment Information',
-              icon: LucideIcons.school,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _addressController,
-              decoration: const InputDecoration(
-                labelText: 'Address',
-                hintText: 'Enter address',
-                prefixIcon: Icon(LucideIcons.mapPin),
+                  // Enrollment Information Section (both modes)
+                  const _SectionHeader(
+                    title: 'Enrollment Information',
+                    icon: LucideIcons.school,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: const InputDecoration(
+                      labelText: 'Address',
+                      hintText: 'Enter address',
+                      prefixIcon: Icon(LucideIcons.mapPin),
+                    ),
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _parentEmailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Parent Contact Email',
+                      hintText: 'Enter parent\'s email',
+                      prefixIcon: Icon(LucideIcons.mail),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        final emailRegex = RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        );
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Invalid email address';
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _DatePickerField(
+                    label: 'Enrollment Date',
+                    icon: LucideIcons.calendarCheck,
+                    value: _enrollmentDate,
+                    onChanged: (date) => setState(() => _enrollmentDate = date),
+                  ),
+                  const SizedBox(height: 16),
+                  _StatusDropdown(
+                    value: _status,
+                    onChanged: (status) => setState(() => _status = status),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
-              maxLines: 2,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _parentEmailController,
-              decoration: const InputDecoration(
-                labelText: 'Parent Contact Email',
-                hintText: 'Enter parent\'s email',
-                prefixIcon: Icon(LucideIcons.mail),
-              ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  final emailRegex = RegExp(
-                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                  );
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Invalid email address';
-                  }
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _DatePickerField(
-              label: 'Enrollment Date',
-              icon: LucideIcons.calendarCheck,
-              value: _enrollmentDate,
-              onChanged: (date) => setState(() => _enrollmentDate = date),
-            ),
-            const SizedBox(height: 16),
-            _StatusDropdown(
-              value: _status,
-              onChanged: (status) => setState(() => _status = status),
-            ),
-            const SizedBox(height: 32),
-
-            // Submit button
-            SizedBox(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              height: 56,
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: _onSubmit,
@@ -229,8 +238,9 @@ class _StudentFormState extends State<StudentForm> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }

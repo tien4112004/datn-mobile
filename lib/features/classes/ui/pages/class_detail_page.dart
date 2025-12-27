@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/states/controller_provider.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/detail/class_info_dialog.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/classwork_tab.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/stream_tab.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/students_tab.dart';
@@ -48,21 +50,10 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    final classState = ref.watch(classesControllerProvider);
+    final classState = ref.watch(detailClassControllerProvider(widget.classId));
 
     return classState.easyWhen(
-      data: (classes) {
-        // Find the specific class by ID
-        final classEntity = classes.firstWhere(
-          (c) => c.id == widget.classId,
-          orElse: () => ClassEntity(
-            id: widget.classId,
-            ownerId: '',
-            name: 'Class',
-            isActive: true,
-          ),
-        );
-
+      data: (classEntity) {
         return Scaffold(
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -278,7 +269,7 @@ class _ClassDetailAppBar extends StatelessWidget {
               title: const Text('Class Information'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Show class information dialog
+                ClassInfoDialog.show(context, classEntity);
               },
             ),
             ListTile(
@@ -300,7 +291,7 @@ class _ClassDetailAppBar extends StatelessWidget {
               title: const Text('Class Settings'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Navigate to class settings
+                context.router.push(ClassEditRoute(classId: classEntity.id));
               },
             ),
           ],

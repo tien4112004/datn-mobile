@@ -27,6 +27,12 @@ final classesControllerProvider =
       () => ClassesController(),
     );
 
+/// Provider for detail class controller.
+final detailClassControllerProvider =
+    AsyncNotifierProvider.family<DetailClassController, ClassEntity, String>(
+      (String classId) => DetailClassController(classId: classId),
+    );
+
 /// Provider for creating a new class.
 final createClassControllerProvider =
     AsyncNotifierProvider<CreateClassController, void>(

@@ -19,6 +19,22 @@ class ClassesController extends AsyncNotifier<List<ClassEntity>> {
   }
 }
 
+class DetailClassController extends AsyncNotifier<ClassEntity> {
+  final String classId;
+
+  DetailClassController({required this.classId});
+
+  @override
+  Future<ClassEntity> build() async {
+    return _fetchClass(classId);
+  }
+
+  Future<ClassEntity> _fetchClass(String classId) async {
+    final repository = ref.read(classRepositoryProvider);
+    return repository.getClassById(classId);
+  }
+}
+
 /// Controller for creating a new class.
 class CreateClassController extends AsyncNotifier<void> {
   @override

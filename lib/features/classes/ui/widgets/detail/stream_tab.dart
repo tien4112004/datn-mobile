@@ -35,37 +35,64 @@ class _StreamEmptyState extends StatelessWidget {
               // Animated icon container
               TweenAnimationBuilder<double>(
                 tween: Tween(begin: 0.0, end: 1.0),
-                duration: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 800),
                 curve: Curves.elasticOut,
                 builder: (context, value, child) {
                   return Transform.scale(scale: value, child: child);
                 },
-                child: Container(
-                  width: 120,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        colorScheme.primaryContainer,
-                        colorScheme.secondaryContainer,
-                      ],
-                    ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.primary.withValues(alpha: 0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Outer pulse circle
+                    Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.2,
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                    ],
-                  ),
-                  child: Icon(
-                    LucideIcons.messageSquare,
-                    size: 56,
-                    color: colorScheme.primary,
-                  ),
+                    ),
+                    // Middle pulse circle
+                    Container(
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.4,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorScheme.primaryContainer,
+                            colorScheme.secondaryContainer,
+                          ],
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: colorScheme.primary.withValues(alpha: 0.2),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        LucideIcons.messageSquare,
+                        size: 48,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),

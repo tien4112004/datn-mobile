@@ -66,12 +66,7 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
         return Scaffold(
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                _ClassDetailAppBar(
-                  classEntity: classEntity,
-                  tabController: _tabController,
-                ),
-              ];
+              return [_ClassDetailAppBar(classEntity: classEntity)];
             },
             body: TabBarView(
               controller: _tabController,
@@ -80,6 +75,43 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                 ClassworkTab(classId: widget.classId),
                 StudentsTab(classId: widget.classId),
               ],
+            ),
+          ),
+          bottomNavigationBar: Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: SafeArea(
+              child: TabBar(
+                controller: _tabController,
+                indicatorColor: Theme.of(context).colorScheme.primary,
+                labelColor: Theme.of(context).colorScheme.primary,
+                unselectedLabelColor: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant,
+                labelStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+                unselectedLabelStyle: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.normal),
+                tabs: const [
+                  Tab(
+                    text: 'STREAM',
+                    icon: Icon(LucideIcons.messageSquare, size: 20),
+                    iconMargin: EdgeInsets.only(bottom: 4),
+                  ),
+                  Tab(
+                    text: 'CLASSWORK',
+                    icon: Icon(LucideIcons.fileText, size: 20),
+                    iconMargin: EdgeInsets.only(bottom: 4),
+                  ),
+                  Tab(
+                    text: 'STUDENTS',
+                    icon: Icon(LucideIcons.users, size: 20),
+                    iconMargin: EdgeInsets.only(bottom: 4),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -91,18 +123,11 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
 /// Sliver app bar with class header and tab navigation.
 class _ClassDetailAppBar extends StatelessWidget {
   final ClassEntity classEntity;
-  final TabController tabController;
 
-  const _ClassDetailAppBar({
-    required this.classEntity,
-    required this.tabController,
-  });
+  const _ClassDetailAppBar({required this.classEntity});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return SliverAppBar(
       expandedHeight: 200,
       floating: false,
@@ -148,6 +173,9 @@ class _ClassDetailAppBar extends StatelessWidget {
             fontSize: 20,
           ),
         ),
+        centerTitle: true,
+        expandedTitleScale: 1.4,
+        titlePadding: const EdgeInsets.only(top: 16, bottom: 16),
         background: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -227,42 +255,6 @@ class _ClassDetailAppBar extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(48),
-        child: Container(
-          color: colorScheme.surface,
-          child: TabBar(
-            controller: tabController,
-            indicatorColor: colorScheme.primary,
-            labelColor: colorScheme.primary,
-            unselectedLabelColor: colorScheme.onSurfaceVariant,
-            labelStyle: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-            ),
-            unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.normal,
-            ),
-            tabs: const [
-              Tab(
-                text: 'STREAM',
-                icon: Icon(LucideIcons.messageSquare, size: 20),
-                iconMargin: EdgeInsets.only(bottom: 4),
-              ),
-              Tab(
-                text: 'CLASSWORK',
-                icon: Icon(LucideIcons.fileText, size: 20),
-                iconMargin: EdgeInsets.only(bottom: 4),
-              ),
-              Tab(
-                text: 'STUDENTS',
-                icon: Icon(LucideIcons.users, size: 20),
-                iconMargin: EdgeInsets.only(bottom: 4),
               ),
             ],
           ),

@@ -44,20 +44,52 @@ class _ClassworkEmptyState extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     // Background documents
-                    Positioned(
-                      top: 8,
-                      left: -12,
-                      child: _DocumentIcon(
-                        color: colorScheme.tertiaryContainer,
-                        opacity: 0.6,
+                    Container(
+                      width: 140,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorScheme.primaryContainer,
+                            colorScheme.secondaryContainer,
+                          ],
+                        ),
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(16),
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.2,
+                        ),
+                      ),
+                      child: Icon(
+                        LucideIcons.fileText,
+                        size: 48,
+                        color: colorScheme.primary,
                       ),
                     ),
-                    Positioned(
-                      top: 8,
-                      right: -12,
-                      child: _DocumentIcon(
-                        color: colorScheme.secondaryContainer,
-                        opacity: 0.6,
+                    Container(
+                      width: 120,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorScheme.primaryContainer,
+                            colorScheme.secondaryContainer,
+                          ],
+                        ),
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(16),
+                        color: colorScheme.primaryContainer.withValues(
+                          alpha: 0.4,
+                        ),
+                      ),
+                      child: Icon(
+                        LucideIcons.fileText,
+                        size: 48,
+                        color: colorScheme.primary,
                       ),
                     ),
                     // Main document

@@ -4,6 +4,7 @@ class StudentCredential {
   final String password;
   final String email;
   final String fullName;
+  final List<String> errors;
 
   StudentCredential({
     required this.studentId,
@@ -11,6 +12,7 @@ class StudentCredential {
     required this.password,
     required this.email,
     required this.fullName,
+    this.errors = const [],
   });
 
   @override

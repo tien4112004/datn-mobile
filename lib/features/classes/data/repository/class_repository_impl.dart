@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/classes/data/dto/class_create_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/class_list_response_dto.dart';
+import 'package:datn_mobile/features/classes/data/dto/class_response_dto.dart';
 import 'package:datn_mobile/features/classes/data/source/class_remote_data_source.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/domain/repository/class_repository.dart';
@@ -15,12 +16,14 @@ class ClassRepositoryImpl implements ClassRepository {
     int page = 1,
     int pageSize = 20,
     String? search,
+    String? sort,
     bool? isActive,
   }) async {
     final response = await _remoteDataSource.getClasses(
       page: page,
       pageSize: pageSize,
       search: search,
+      sort: sort,
       isActive: isActive,
     );
     final dtos = response.data ?? [];

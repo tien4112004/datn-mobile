@@ -7,6 +7,7 @@ abstract class ClassRepository {
     int page = 1,
     int pageSize = 20,
     String? search,
+    String? sort,
     bool? isActive,
   });
 

@@ -63,16 +63,11 @@ class StudentInfoSection extends StatelessWidget {
             const Divider(height: 32),
 
             // Information rows
-            _InfoRow(
-              icon: LucideIcons.user,
-              label: 'Username',
-              value: student.username,
-            ),
-            _InfoRow(
-              icon: LucideIcons.mail,
-              label: 'Email',
-              value: student.email,
-            ),
+            // _InfoRow(
+            //   icon: LucideIcons.user,
+            //   label: 'Username',
+            //   value: student.username,
+            // ),
             if (student.phoneNumber != null && student.phoneNumber!.isNotEmpty)
               _InfoRow(
                 icon: LucideIcons.phone,
@@ -88,7 +83,7 @@ class StudentInfoSection extends StatelessWidget {
             _InfoRow(
               icon: LucideIcons.calendar,
               label: 'Enrollment Date',
-              value: _formatDate(student.enrollmentDate),
+              value: _formatDate(student.createdAt),
             ),
             if (student.parentContactEmail != null &&
                 student.parentContactEmail!.isNotEmpty)

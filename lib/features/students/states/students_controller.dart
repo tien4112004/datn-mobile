@@ -9,7 +9,7 @@ class StudentsController extends AsyncNotifier<StudentListState> {
   @override
   Future<StudentListState> build() async {
     final students = await ref
-        .read(studentServiceProvider)
+        .read(studentRepositoryProvider)
         .getStudentsByClass(classId);
     return StudentListState(value: students, isFetched: true, isLoading: false);
   }
@@ -19,7 +19,7 @@ class StudentsController extends AsyncNotifier<StudentListState> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final students = await ref
-          .read(studentServiceProvider)
+          .read(studentRepositoryProvider)
           .getStudentsByClass(classId);
       return StudentListState(
         value: students,
@@ -45,7 +45,7 @@ class CreateStudentController extends AsyncNotifier<void> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await ref
-          .read(studentServiceProvider)
+          .read(studentRepositoryProvider)
           .createAndEnrollStudent(classId, request);
       // Invalidate the list to trigger a refresh
       ref.invalidate(studentsControllerProvider(classId));
@@ -68,7 +68,9 @@ class UpdateStudentController extends AsyncNotifier<void> {
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      await ref.read(studentServiceProvider).updateStudent(studentId, request);
+      await ref
+          .read(studentRepositoryProvider)
+          .updateStudent(studentId, request);
       // Invalidate the list to trigger a refresh
       ref.invalidate(studentsControllerProvider(classId));
       // Also invalidate the specific student
@@ -92,7 +94,7 @@ class RemoveStudentController extends AsyncNotifier<void> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await ref
-          .read(studentServiceProvider)
+          .read(studentRepositoryProvider)
           .removeStudentFromClass(classId, studentId);
       // Invalidate the list to trigger a refresh
       ref.invalidate(studentsControllerProvider(classId));

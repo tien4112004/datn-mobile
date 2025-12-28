@@ -8,15 +8,13 @@ part 'student_response_dto.g.dart';
 class StudentResponseDto {
   final String id;
   final String userId;
-  final DateTime enrollmentDate;
   final String? address;
   final String? parentContactEmail;
   final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String username;
-  final String password;
-  final String email;
+  final String? username;
+  final String? password;
   final String? firstName;
   final String? lastName;
   final String? avatarUrl;
@@ -25,7 +23,6 @@ class StudentResponseDto {
   StudentResponseDto({
     required this.id,
     required this.userId,
-    required this.enrollmentDate,
     this.address,
     this.parentContactEmail,
     required this.status,
@@ -33,7 +30,6 @@ class StudentResponseDto {
     required this.updatedAt,
     required this.username,
     required this.password,
-    required this.email,
     this.firstName,
     this.lastName,
     this.avatarUrl,
@@ -50,14 +46,12 @@ extension StudentResponseMapper on StudentResponseDto {
   Student toEntity() => Student(
     id: id,
     userId: userId,
-    enrollmentDate: enrollmentDate,
     address: address,
     parentContactEmail: parentContactEmail,
     status: StudentStatus.fromValue(status),
     createdAt: createdAt,
     updatedAt: updatedAt,
     username: username,
-    email: email,
     firstName: firstName,
     lastName: lastName,
     avatarUrl: avatarUrl,

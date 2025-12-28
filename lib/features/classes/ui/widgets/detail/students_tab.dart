@@ -3,6 +3,9 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/students/states/controller_provider.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_count_header.dart';
+import 'package:datn_mobile/shared/widgets/animated_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,12 +24,13 @@ class StudentsTab extends ConsumerWidget {
 
     return Scaffold(
       body: studentsState.easyWhen(
-        data: (listState) => _StudentsContent(
-          classId: classId,
-          students: listState.value,
+        data: (listState) => RefreshIndicator(
           onRefresh: () =>
               ref.read(studentsControllerProvider(classId).notifier).refresh(),
+          child: _StudentsContent(classId: classId, students: listState.value),
         ),
+        onRetry: () =>
+            ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
       floatingActionButton: Semantics(
         label: 'Add new student',
@@ -48,19 +52,19 @@ class StudentsTab extends ConsumerWidget {
 class _StudentsContent extends ConsumerWidget {
   final String classId;
   final List students;
-  final Future<void> Function() onRefresh;
 
-  const _StudentsContent({
-    required this.classId,
-    required this.students,
-    required this.onRefresh,
-  });
+  const _StudentsContent({required this.classId, required this.students});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (students.isEmpty) {
-      return _StudentsEmptyState(
-        onAddStudent: () {
+      return EnhancedEmptyState(
+        icon: LucideIcons.userPlus,
+        title: 'No Students Yet',
+        message:
+            'Start building your class roster.\nAdd students to begin tracking their progress.',
+        actionLabel: 'Add First Student',
+        onAction: () {
           context.router.push(StudentCreateRoute(classId: classId));
         },
       );
@@ -68,20 +72,25 @@ class _StudentsContent extends ConsumerWidget {
 
     return Column(
       children: [
-        // Student count header
-        _StudentCountHeader(studentCount: students.length),
-        // Student list
+        // Enhanced count header
+        EnhancedCountHeader(
+          icon: LucideIcons.users,
+          title: 'Class Roster',
+          count: students.length,
+          countLabel: 'Student',
+        ),
+        // Student list with animations
         Expanded(
           child: Semantics(
             label: '${students.length} students in this class',
-            child: RefreshIndicator(
-              onRefresh: onRefresh,
-              child: ListView.builder(
-                padding: const EdgeInsets.only(top: 8, bottom: 80),
-                itemCount: students.length,
-                itemBuilder: (context, index) {
-                  final student = students[index];
-                  return StudentTile(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 8, bottom: 80),
+              itemCount: students.length,
+              itemBuilder: (context, index) {
+                final student = students[index];
+                return AnimatedListItem(
+                  index: index,
+                  child: StudentTile(
                     key: ValueKey(student.id),
                     student: student,
                     onTap: () {
@@ -98,9 +107,9 @@ class _StudentsContent extends ConsumerWidget {
                       );
                     },
                     onDelete: () => _showDeleteDialog(context, ref, student),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -174,6 +183,10 @@ class _StudentsContent extends ConsumerWidget {
                           ).colorScheme.primary,
                         ),
                       );
+
+                      ref
+                          .read(studentsControllerProvider(classId).notifier)
+                          .refresh();
                     }
                   } catch (e) {
                     if (context.mounted) {
@@ -194,233 +207,6 @@ class _StudentsContent extends ConsumerWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Header showing student count with attractive design.
-class _StudentCountHeader extends StatelessWidget {
-  final int studentCount;
-
-  const _StudentCountHeader({required this.studentCount});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primaryContainer,
-            colorScheme.secondaryContainer,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  LucideIcons.users,
-                  color: colorScheme.primary,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Class Roster',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    '$studentCount ${studentCount == 1 ? 'Student' : 'Students'}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onPrimaryContainer.withValues(
-                        alpha: 0.8,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              color: colorScheme.primary,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '$studentCount',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Empty state for the Students tab.
-class _StudentsEmptyState extends StatelessWidget {
-  final VoidCallback onAddStudent;
-
-  const _StudentsEmptyState({required this.onAddStudent});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Semantics(
-      label:
-          'No students in this class yet. Add your first student to get started.',
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Animated icon with multiple circles
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0.0, end: 1.0),
-                duration: const Duration(milliseconds: 800),
-                curve: Curves.elasticOut,
-                builder: (context, value, child) {
-                  return Transform.scale(scale: value, child: child);
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // Outer pulse circle
-                    Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(
-                          alpha: 0.2,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    // Middle pulse circle
-                    Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(
-                          alpha: 0.4,
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    // Main icon container
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            colorScheme.primaryContainer,
-                            colorScheme.secondaryContainer,
-                          ],
-                        ),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        LucideIcons.userPlus,
-                        size: 48,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              // Title
-              Text(
-                'No Students Yet',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              // Description
-              Text(
-                'Start building your class roster.\nAdd students to begin tracking their progress.',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              // Add student button
-              Semantics(
-                label: 'Add first student',
-                button: true,
-                hint: 'Double tap to add your first student to this class',
-                child: FilledButton.icon(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    onAddStudent();
-                  },
-                  icon: const Icon(LucideIcons.userPlus),
-                  label: const Text('Add First Student'),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 16,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

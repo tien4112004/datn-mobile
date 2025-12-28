@@ -1,7 +1,7 @@
 import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
 import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
+import 'package:datn_mobile/features/students/data/repository/repository_provider.dart';
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/service/service_provider.dart';
 import 'package:datn_mobile/features/students/states/student_list_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,7 +19,7 @@ final studentByIdProvider = FutureProvider.family<Student, String>((
   ref,
   id,
 ) async {
-  return ref.read(studentServiceProvider).getStudentById(id);
+  return ref.read(studentRepositoryProvider).getStudentById(id);
 });
 
 /// Provider for creating a new student.

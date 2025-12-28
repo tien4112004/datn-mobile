@@ -63,8 +63,6 @@ class _StudentFormState extends State<StudentForm> {
     _parentEmailController = TextEditingController(
       text: student?.parentContactEmail ?? '',
     );
-
-    _enrollmentDate = student?.enrollmentDate;
     _status = student?.status;
   }
 

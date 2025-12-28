@@ -10,6 +10,7 @@ class StudentCredentialDto {
   final String password;
   final String email;
   final String fullName;
+  final List<String>? errors;
 
   StudentCredentialDto({
     required this.studentId,
@@ -17,6 +18,7 @@ class StudentCredentialDto {
     required this.password,
     required this.email,
     required this.fullName,
+    this.errors,
   });
 
   factory StudentCredentialDto.fromJson(Map<String, dynamic> json) =>
@@ -32,5 +34,6 @@ extension StudentCredentialMapper on StudentCredentialDto {
     password: password,
     email: email,
     fullName: fullName,
+    errors: errors ?? [],
   );
 }

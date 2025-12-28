@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/classes/data/dto/class_create_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/class_list_response_dto.dart';
+import 'package:datn_mobile/features/classes/data/dto/class_response_dto.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
@@ -19,24 +20,25 @@ abstract class ClassRemoteDataSource {
     @Query('page') int page = 1,
     @Query('pageSize') int pageSize = 20,
     @Query('search') String? search,
+    @Query('sort') String? sort,
     @Query('isActive') bool? isActive,
   });
 
   /// Creates a new class.
   @POST('/classes')
-  Future<ServerResponseDto<ClassListResponseDto>> createClass(
+  Future<ServerResponseDto<ClassResponseDto>> createClass(
     @Body() ClassCreateRequestDto request,
   );
 
   /// Gets a single class by ID.
   @GET('/classes/{classId}')
-  Future<ServerResponseDto<ClassListResponseDto>> getClassById(
+  Future<ServerResponseDto<ClassResponseDto>> getClassById(
     @Path('classId') String classId,
   );
 
   /// Updates an existing class.
   @PUT('/classes/{classId}')
-  Future<ServerResponseDto<ClassListResponseDto>> updateClass(
+  Future<ServerResponseDto<ClassResponseDto>> updateClass(
     @Path('classId') String classId,
     @Body() Map<String, dynamic> request,
   );

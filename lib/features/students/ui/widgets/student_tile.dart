@@ -26,14 +26,20 @@ class StudentTile extends StatelessWidget {
 
     // Create semantic label for screen readers
     final semanticLabel =
-        'Student: ${student.fullName}, Email: ${student.email}, Status: ${student.status.label}';
+        'Student: ${student.fullName}, Email: ${student.parentContactEmail}, Status: ${student.status.label}';
 
     return Semantics(
       label: semanticLabel,
       button: true,
       enabled: true,
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        elevation: 0,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        color: colorScheme.surfaceContainerLowest,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: colorScheme.outlineVariant, width: 1),
+        ),
         child: InkWell(
           onTap: onTap != null
               ? () {
@@ -41,42 +47,60 @@ class StudentTile extends StatelessWidget {
                   onTap?.call();
                 }
               : null,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                // Avatar with Hero animation for smooth transitions
+                // Enhanced avatar with gradient ring
                 Hero(
                   tag: 'student_avatar_${student.id}',
                   child: Semantics(
                     label: 'Avatar for ${student.fullName}',
                     image: true,
                     excludeSemantics: true,
-                    child: CircleAvatar(
-                      radius: 28,
-                      backgroundColor: colorScheme.primaryContainer,
-                      backgroundImage:
-                          student.avatarUrl != null &&
-                              student.avatarUrl!.isNotEmpty
-                          ? NetworkImage(student.avatarUrl!)
-                          : null,
-                      child:
-                          student.avatarUrl == null ||
-                              student.avatarUrl!.isEmpty
-                          ? Text(
-                              _getInitials(student.fullName),
-                              style: TextStyle(
-                                color: colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            )
-                          : null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [colorScheme.primary, colorScheme.secondary],
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: colorScheme.primary.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(2.5),
+                      child: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: colorScheme.surfaceContainerHighest,
+                        backgroundImage:
+                            student.avatarUrl != null &&
+                                student.avatarUrl!.isNotEmpty
+                            ? NetworkImage(student.avatarUrl!)
+                            : null,
+                        child:
+                            student.avatarUrl == null ||
+                                student.avatarUrl!.isEmpty
+                            ? Text(
+                                _getInitials(student.fullName),
+                                style: TextStyle(
+                                  color: colorScheme.onSurfaceVariant,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              )
+                            : null,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 // Student info
                 Expanded(
                   child: Column(
@@ -86,32 +110,58 @@ class StudentTile extends StatelessWidget {
                         student.fullName,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          letterSpacing: 0.15,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        student.email,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      const SizedBox(height: 5),
+                      // Row(
+                      //   children: [
+                      //     Icon(
+                      //       LucideIcons.mail,
+                      //       size: 14,
+                      //       color: colorScheme.onSurfaceVariant,
+                      //     ),
+                      //     const SizedBox(width: 6),
+                      //     Expanded(
+                      //       child: Text(
+                      //         student.,
+                      //         style: theme.textTheme.bodySmall?.copyWith(
+                      //           color: colorScheme.onSurfaceVariant,
+                      //         ),
+                      //         overflow: TextOverflow.ellipsis,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(height: 8),
-                      _StatusBadge(status: student.status),
+                      _EnhancedStatusBadge(status: student.status),
                     ],
                   ),
                 ),
-                // Actions menu
+                const SizedBox(width: 8),
+                // Enhanced actions menu
                 Semantics(
                   label: 'More actions for ${student.fullName}',
                   button: true,
                   hint: 'Double tap to open menu with edit and delete options',
                   child: PopupMenuButton<String>(
-                    icon: Icon(
-                      LucideIcons.ellipsisVertical,
-                      color: colorScheme.onSurfaceVariant,
+                    icon: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        LucideIcons.ellipsisVertical,
+                        size: 18,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     tooltip: 'More actions',
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
                     onSelected: (value) {
                       HapticFeedback.mediumImpact();
                       if (value == 'edit') {
@@ -128,10 +178,17 @@ class StudentTile extends StatelessWidget {
                           button: true,
                           child: Row(
                             children: [
-                              Icon(
-                                LucideIcons.pencil,
-                                size: 18,
-                                color: colorScheme.primary,
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  LucideIcons.pencil,
+                                  size: 16,
+                                  color: colorScheme.primary,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               const Text('Edit'),
@@ -139,6 +196,7 @@ class StudentTile extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const PopupMenuDivider(),
                       PopupMenuItem(
                         value: 'delete',
                         child: Semantics(
@@ -146,10 +204,17 @@ class StudentTile extends StatelessWidget {
                           button: true,
                           child: Row(
                             children: [
-                              Icon(
-                                LucideIcons.trash2,
-                                size: 18,
-                                color: colorScheme.error,
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.errorContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  LucideIcons.trash2,
+                                  size: 16,
+                                  color: colorScheme.error,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Text(
@@ -180,18 +245,22 @@ class StudentTile extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
+class _EnhancedStatusBadge extends StatelessWidget {
   final StudentStatus status;
 
-  const _StatusBadge({required this.status});
+  const _EnhancedStatusBadge({required this.status});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: status.color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: status.color.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Text(
         status.label.toUpperCase(),
@@ -199,7 +268,7 @@ class _StatusBadge extends StatelessWidget {
           color: status.color,
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          letterSpacing: 0.5,
+          letterSpacing: 0.8,
         ),
       ),
     );

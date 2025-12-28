@@ -34,9 +34,12 @@ class ClassCard extends StatelessWidget {
       button: true,
       child: Card(
         clipBehavior: Clip.antiAlias,
-        elevation: 1,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        shape: const RoundedRectangleBorder(borderRadius: Themes.boxRadius),
+        elevation: 0,
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
+          side: BorderSide(color: colorScheme.outlineVariant, width: 1),
+        ),
         child: InkWell(
           onTap: () {
             HapticFeedback.lightImpact();

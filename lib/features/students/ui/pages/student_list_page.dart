@@ -4,6 +4,9 @@ import 'package:datn_mobile/features/students/states/controller_provider.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_count_header.dart';
+import 'package:datn_mobile/shared/widgets/animated_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,38 +67,64 @@ class _StudentListContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (students.isEmpty) {
-      return _EmptyState(
-        onAddStudent: () {
+      return EnhancedEmptyState(
+        icon: LucideIcons.users,
+        title: 'No Students Yet',
+        message: 'Add students to this class to get started',
+        actionLabel: 'Add First Student',
+        onAction: () {
           context.router.push(StudentCreateRoute(classId: classId));
         },
       );
     }
 
-    return Semantics(
-      label: '${students.length} students in this class',
-      child: RefreshIndicator(
-        onRefresh: onRefresh,
-        child: ListView.builder(
-          padding: const EdgeInsets.only(top: 8, bottom: 80),
-          itemCount: students.length,
-          itemBuilder: (context, index) {
-            final student = students[index];
-            return StudentTile(
-              key: ValueKey(student.id),
-              student: student,
-              onTap: () {
-                context.router.push(StudentDetailRoute(studentId: student.id));
-              },
-              onEdit: () {
-                context.router.push(
-                  StudentEditRoute(classId: classId, studentId: student.id),
-                );
-              },
-              onDelete: () => _showDeleteDialog(context, ref, student),
-            );
-          },
+    return Column(
+      children: [
+        // Enhanced count header
+        EnhancedCountHeader(
+          icon: LucideIcons.users,
+          title: 'Student Roster',
+          count: students.length,
+          countLabel: 'Student',
         ),
-      ),
+        // Student list with animations
+        Expanded(
+          child: Semantics(
+            label: '${students.length} students in this class',
+            child: RefreshIndicator(
+              onRefresh: onRefresh,
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 8, bottom: 80),
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  final student = students[index];
+                  return AnimatedListItem(
+                    index: index,
+                    child: StudentTile(
+                      key: ValueKey(student.id),
+                      student: student,
+                      onTap: () {
+                        context.router.push(
+                          StudentDetailRoute(studentId: student.id),
+                        );
+                      },
+                      onEdit: () {
+                        context.router.push(
+                          StudentEditRoute(
+                            classId: classId,
+                            studentId: student.id,
+                          ),
+                        );
+                      },
+                      onDelete: () => _showDeleteDialog(context, ref, student),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -185,76 +214,6 @@ class _StudentListContent extends ConsumerWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  final VoidCallback onAddStudent;
-
-  const _EmptyState({required this.onAddStudent});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Semantics(
-      label:
-          'No students in this class yet. Add your first student to get started.',
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ExcludeSemantics(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    LucideIcons.users,
-                    size: 64,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'No Students Yet',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Add students to this class to get started',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              Semantics(
-                label: 'Add first student',
-                button: true,
-                hint: 'Double tap to add your first student to this class',
-                child: FilledButton.icon(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    onAddStudent();
-                  },
-                  icon: const Icon(LucideIcons.userPlus),
-                  label: const Text('Add First Student'),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

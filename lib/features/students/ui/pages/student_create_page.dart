@@ -17,26 +17,6 @@ class StudentCreatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Listen to the create controller state for loading/error
-    ref.listen(createStudentControllerProvider, (prev, next) {
-      next.whenOrNull(
-        data: (_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Student created successfully')),
-          );
-          context.router.maybePop();
-        },
-        error: (error, _) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: $error'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        },
-      );
-    });
-
     final isLoading = ref.watch(createStudentControllerProvider).isLoading;
 
     return Scaffold(
@@ -45,10 +25,44 @@ class StudentCreatePage extends ConsumerWidget {
         children: [
           StudentForm(
             classId: classId,
-            onCreateSubmit: (request) {
-              ref
-                  .read(createStudentControllerProvider.notifier)
-                  .create(classId: classId, request: request);
+            onCreateSubmit: (request) async {
+              try {
+                await ref
+                    .read(createStudentControllerProvider.notifier)
+                    .create(classId: classId, request: request);
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${request.fullName} removed successfully'),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  );
+
+                  ref
+                      .read(studentsControllerProvider(classId).notifier)
+                      .refresh();
+
+                  context.router.pop();
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to add student: $e'),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  );
+                }
+              }
+
+              ref.listen(createStudentControllerProvider, (prev, next) {
+                if (!next.isLoading && !next.hasError) {
+                  context.router.pop();
+                }
+              });
             },
           ),
           if (isLoading)

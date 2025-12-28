@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/features/students/states/controller_provider.dart';
+import 'package:datn_mobile/features/students/ui/widgets/student_credentials_dialog.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_form.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -27,24 +28,23 @@ class StudentCreatePage extends ConsumerWidget {
             classId: classId,
             onCreateSubmit: (request) async {
               try {
-                await ref
+                final createdStudent = await ref
                     .read(createStudentControllerProvider.notifier)
                     .create(classId: classId, request: request);
 
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${request.fullName} removed successfully'),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ),
-                  );
+                  // Show credentials dialog
+                  await StudentCredentialsDialog.show(context, createdStudent);
 
+                  // Refresh student list
                   ref
                       .read(studentsControllerProvider(classId).notifier)
                       .refresh();
 
-                  context.router.pop();
+                  // Navigate back
+                  if (context.mounted) {
+                    context.router.pop();
+                  }
                 }
               } catch (e) {
                 if (context.mounted) {
@@ -57,12 +57,6 @@ class StudentCreatePage extends ConsumerWidget {
                   );
                 }
               }
-
-              ref.listen(createStudentControllerProvider, (prev, next) {
-                if (!next.isLoading && !next.hasError) {
-                  context.router.pop();
-                }
-              });
             },
           ),
           if (isLoading)

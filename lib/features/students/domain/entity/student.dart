@@ -9,6 +9,7 @@ class Student {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? username;
+  final String? password;
   final String? firstName;
   final String? lastName;
   final String? avatarUrl;
@@ -23,6 +24,7 @@ class Student {
     required this.createdAt,
     required this.updatedAt,
     this.username,
+    this.password,
     this.firstName,
     this.lastName,
     this.avatarUrl,
@@ -45,6 +47,7 @@ class Student {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? username,
+    String? password,
     String? firstName,
     String? lastName,
     String? avatarUrl,
@@ -59,6 +62,7 @@ class Student {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       username: username ?? this.username,
+      password: password ?? this.password,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       avatarUrl: avatarUrl ?? this.avatarUrl,

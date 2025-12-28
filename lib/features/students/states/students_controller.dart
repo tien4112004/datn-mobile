@@ -31,25 +31,29 @@ class StudentsController extends AsyncNotifier<StudentListState> {
 }
 
 /// Controller for creating a new student.
-class CreateStudentController extends AsyncNotifier<void> {
+class CreateStudentController extends AsyncNotifier<Student?> {
   @override
-  Future<void> build() async {
-    // No-op
+  Future<Student?> build() async {
+    return null;
   }
 
   /// Creates a new student and enrolls them in the specified class.
-  Future<void> create({
+  /// Returns the created student with credentials.
+  Future<Student> create({
     required String classId,
     required StudentCreateRequestDto request,
   }) async {
     state = const AsyncLoading();
+    late Student createdStudent;
     state = await AsyncValue.guard(() async {
-      await ref
+      createdStudent = await ref
           .read(studentRepositoryProvider)
           .createAndEnrollStudent(classId, request);
       // Invalidate the list to trigger a refresh
       ref.invalidate(studentsControllerProvider(classId));
+      return createdStudent;
     });
+    return createdStudent;
   }
 }
 

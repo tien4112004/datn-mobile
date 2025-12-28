@@ -24,7 +24,7 @@ final studentByIdProvider = FutureProvider.family<Student, String>((
 
 /// Provider for creating a new student.
 final createStudentControllerProvider =
-    AsyncNotifierProvider<CreateStudentController, void>(
+    AsyncNotifierProvider<CreateStudentController, Student?>(
       () => CreateStudentController(),
     );
 

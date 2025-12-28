@@ -52,6 +52,7 @@ extension StudentResponseMapper on StudentResponseDto {
     createdAt: createdAt,
     updatedAt: updatedAt,
     username: username,
+    password: password,
     firstName: firstName,
     lastName: lastName,
     avatarUrl: avatarUrl,

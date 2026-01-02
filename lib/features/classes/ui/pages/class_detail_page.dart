@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/states/controller_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/class_info_dialog.dart';
@@ -51,13 +52,21 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
   @override
   Widget build(BuildContext context) {
     final classState = ref.watch(detailClassControllerProvider(widget.classId));
+    final userState = ref.watch(userControllerProvider);
+    final isStudent =
+        userState.value != null; // If role has value, the user is student
 
     return classState.easyWhen(
       data: (classEntity) {
         return Scaffold(
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [_ClassDetailAppBar(classEntity: classEntity)];
+              return [
+                _ClassDetailAppBar(
+                  classEntity: classEntity,
+                  isStudent: isStudent,
+                ),
+              ];
             },
             body: TabBarView(
               controller: _tabController,
@@ -114,8 +123,12 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
 /// Sliver app bar with class header and tab navigation.
 class _ClassDetailAppBar extends StatelessWidget {
   final ClassEntity classEntity;
+  final bool isStudent;
 
-  const _ClassDetailAppBar({required this.classEntity});
+  const _ClassDetailAppBar({
+    required this.classEntity,
+    required this.isStudent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -272,28 +285,32 @@ class _ClassDetailAppBar extends StatelessWidget {
                 ClassInfoDialog.show(context, classEntity);
               },
             ),
-            ListTile(
-              leading: Icon(LucideIcons.copy, color: colorScheme.primary),
-              title: const Text('Copy Join Code'),
-              subtitle: Text(classEntity.joinCode ?? 'Not available'),
-              onTap: () {
-                Navigator.pop(context);
-                if (classEntity.joinCode != null) {
-                  Clipboard.setData(ClipboardData(text: classEntity.joinCode!));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Join code copied')),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(LucideIcons.settings, color: colorScheme.primary),
-              title: const Text('Class Settings'),
-              onTap: () {
-                Navigator.pop(context);
-                context.router.push(ClassEditRoute(classId: classEntity.id));
-              },
-            ),
+            if (!isStudent) ...[
+              ListTile(
+                leading: Icon(LucideIcons.copy, color: colorScheme.primary),
+                title: const Text('Copy Join Code'),
+                subtitle: Text(classEntity.joinCode ?? 'Not available'),
+                onTap: () {
+                  Navigator.pop(context);
+                  if (classEntity.joinCode != null) {
+                    Clipboard.setData(
+                      ClipboardData(text: classEntity.joinCode!),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Join code copied')),
+                    );
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(LucideIcons.settings, color: colorScheme.primary),
+                title: const Text('Class Settings'),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.router.push(ClassEditRoute(classId: classEntity.id));
+                },
+              ),
+            ],
           ],
         ),
       ),

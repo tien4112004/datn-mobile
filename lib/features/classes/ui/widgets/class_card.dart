@@ -164,36 +164,39 @@ class ClassCard extends StatelessWidget {
           }
         },
         itemBuilder: (context) => [
-          const PopupMenuItem(
-            value: 'students',
-            child: Row(
-              children: [
-                Icon(LucideIcons.users, size: 18),
-                SizedBox(width: 12),
-                Text('View Students'),
-              ],
+          if (onViewStudents != null)
+            const PopupMenuItem(
+              value: 'students',
+              child: Row(
+                children: [
+                  Icon(LucideIcons.users, size: 18),
+                  SizedBox(width: 12),
+                  Text('View Students'),
+                ],
+              ),
             ),
-          ),
-          const PopupMenuItem(
-            value: 'edit',
-            child: Row(
-              children: [
-                Icon(LucideIcons.pencil, size: 18),
-                SizedBox(width: 12),
-                Text('Edit'),
-              ],
+          if (onEdit != null)
+            const PopupMenuItem(
+              value: 'edit',
+              child: Row(
+                children: [
+                  Icon(LucideIcons.pencil, size: 18),
+                  SizedBox(width: 12),
+                  Text('Edit'),
+                ],
+              ),
             ),
-          ),
-          const PopupMenuItem(
-            value: 'delete',
-            child: Row(
-              children: [
-                Icon(LucideIcons.trash2, size: 18),
-                SizedBox(width: 12),
-                Text('Delete'),
-              ],
+          if (onDelete != null)
+            const PopupMenuItem(
+              value: 'delete',
+              child: Row(
+                children: [
+                  Icon(LucideIcons.trash2, size: 18),
+                  SizedBox(width: 12),
+                  Text('Delete'),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

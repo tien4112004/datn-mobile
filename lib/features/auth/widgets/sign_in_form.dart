@@ -62,7 +62,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
               prefixIcon: const Icon(LucideIcons.mail),
               border: const OutlineInputBorder(borderRadius: Themes.boxRadius),
             ),
-            validator: (value) => _validateEmail(value),
+            validator: (value) => _validateNotBlank(value),
           ),
           const SizedBox(height: 16),
 
@@ -155,15 +155,10 @@ class _SignInFormState extends ConsumerState<SignInForm> {
     );
   }
 
-  String? _validateEmail(String? value) {
+  String? _validateNotBlank(String? value) {
     final t = ref.read(translationsPod);
     if (value == null || value.isEmpty) {
       return t.auth.signIn.validation.enterEmail;
-    }
-    if (!RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    ).hasMatch(value)) {
-      return t.auth.signIn.validation.invalidEmail;
     }
     return null;
   }

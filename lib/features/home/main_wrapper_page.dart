@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/shared/widget/no_internet_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
-class MainWrapperPage extends StatelessWidget {
+class MainWrapperPage extends ConsumerWidget {
   const MainWrapperPage({super.key, this.title = 'Placeholder'});
 
   final String title;
@@ -55,14 +57,24 @@ class MainWrapperPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userState = ref.watch(userControllerProvider);
+    final isStudent =
+        userState.value != null; // If role has value, the user is student
+
+    debugPrint("isStudent: $isStudent");
+
+    final routes = isStudent
+        ? [const ClassRoute(), const SettingRoute()]
+        : [
+            const HomeRoute(),
+            const ProjectsRoute(),
+            const ClassRoute(),
+            const SettingRoute(),
+          ];
+
     return AutoTabsScaffold(
-      routes: [
-        const HomeRoute(),
-        const ProjectsRoute(),
-        const ClassRoute(),
-        const SettingRoute(),
-      ],
+      routes: routes,
       bottomNavigationBuilder: (_, tabsRouter) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -75,68 +87,101 @@ class MainWrapperPage extends StatelessWidget {
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.shifting,
-            items: [
-              BottomNavigationBarItem(
-                icon: _bottomItemActivated(
-                  LucideIcons.house,
-                  "Home",
-                  false,
-                  context,
-                ),
-                activeIcon: _bottomItemActivated(
-                  LucideIcons.house400,
-                  "Home",
-                  true,
-                  context,
-                ),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: _bottomItemActivated(
-                  LucideIcons.folder,
-                  "Project",
-                  false,
-                  context,
-                ),
-                activeIcon: _bottomItemActivated(
-                  LucideIcons.folder,
-                  "Project",
-                  true,
-                  context,
-                ),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: _bottomItemActivated(
-                  LucideIcons.school,
-                  "Class",
-                  false,
-                  context,
-                ),
-                activeIcon: _bottomItemActivated(
-                  LucideIcons.school,
-                  "Class",
-                  true,
-                  context,
-                ),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: _bottomItemActivated(
-                  LucideIcons.user,
-                  "Profile",
-                  false,
-                  context,
-                ),
-                activeIcon: _bottomItemActivated(
-                  LucideIcons.user,
-                  "Profile",
-                  true,
-                  context,
-                ),
-                label: "",
-              ),
-            ],
+            items: isStudent
+                ? [
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.school,
+                        "Class",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.school,
+                        "Class",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.user,
+                        "Profile",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.user,
+                        "Profile",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                  ]
+                : [
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.house,
+                        "Home",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.house400,
+                        "Home",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.folder,
+                        "Project",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.folder,
+                        "Project",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.school,
+                        "Class",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.school,
+                        "Class",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: _bottomItemActivated(
+                        LucideIcons.user,
+                        "Profile",
+                        false,
+                        context,
+                      ),
+                      activeIcon: _bottomItemActivated(
+                        LucideIcons.user,
+                        "Profile",
+                        true,
+                        context,
+                      ),
+                      label: "",
+                    ),
+                  ],
           ),
         );
       },

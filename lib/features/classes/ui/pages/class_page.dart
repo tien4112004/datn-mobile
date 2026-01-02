@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/states/controller_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/app_drawer.dart';
@@ -21,6 +22,9 @@ class ClassPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final classesState = ref.watch(classesControllerProvider);
+    final userState = ref.watch(userControllerProvider);
+    final isStudent =
+        userState.value != null; // If role has value, the user is student
 
     return Scaffold(
       appBar: const _ClassListAppBar(),
@@ -28,14 +32,17 @@ class ClassPage extends ConsumerWidget {
       body: classesState.easyWhen(
         data: (classes) => _ClassListContent(
           classes: classes,
+          isStudent: isStudent,
           onRefresh: () =>
               ref.read(classesControllerProvider.notifier).refresh(),
         ),
       ),
       // Uncomment if need
-      floatingActionButton: ClassActionFab(
-        onCreateClass: () => const CreateClassDialog().show(context, ref),
-      ),
+      floatingActionButton: isStudent
+          ? null
+          : ClassActionFab(
+              onCreateClass: () => const CreateClassDialog().show(context, ref),
+            ),
     );
   }
 
@@ -106,9 +113,14 @@ class _ClassListAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class _ClassListContent extends StatelessWidget {
   final List<ClassEntity> classes;
+  final bool isStudent;
   final Future<void> Function() onRefresh;
 
-  const _ClassListContent({required this.classes, required this.onRefresh});
+  const _ClassListContent({
+    required this.classes,
+    required this.isStudent,
+    required this.onRefresh,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +146,18 @@ class _ClassListContent extends StatelessWidget {
               onViewStudents: () {
                 context.router.push(StudentListRoute(classId: classEntity.id));
               },
-              onEdit: () {
-                context.router.push(ClassEditRoute(classId: classEntity.id));
-              },
-              onDelete: () {
-                _showDeleteConfirmation(context, classEntity);
-              },
+              onEdit: isStudent
+                  ? null
+                  : () {
+                      context.router.push(
+                        ClassEditRoute(classId: classEntity.id),
+                      );
+                    },
+              onDelete: isStudent
+                  ? null
+                  : () {
+                      _showDeleteConfirmation(context, classEntity);
+                    },
             );
           },
         ),

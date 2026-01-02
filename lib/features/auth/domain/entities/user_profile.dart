@@ -10,12 +10,17 @@ class UserProfile {
   final DateTime dateOfBirth;
   final String phoneNumber;
 
+  // NOTE: This role is ONLY FOR STUDENT
+  // Mean that the value of this field, if not null, is always 'STUDENT'
+  final String? role;
+
   UserProfile({
     required this.email,
     required this.firstName,
     required this.lastName,
     required this.dateOfBirth,
     required this.phoneNumber,
+    this.role,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>

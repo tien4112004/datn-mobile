@@ -60,7 +60,7 @@ class MainWrapperPage extends StatelessWidget {
       routes: [
         const HomeRoute(),
         const ProjectsRoute(),
-        PlaceholderRouteSchedule(),
+        const ClassRoute(),
         const SettingRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
@@ -108,14 +108,14 @@ class MainWrapperPage extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: _bottomItemActivated(
-                  LucideIcons.calendarDays,
-                  "Schedule",
+                  LucideIcons.school,
+                  "Class",
                   false,
                   context,
                 ),
                 activeIcon: _bottomItemActivated(
-                  LucideIcons.calendarDays,
-                  "Schedule",
+                  LucideIcons.school,
+                  "Class",
                   true,
                   context,
                 ),

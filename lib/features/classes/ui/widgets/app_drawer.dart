@@ -36,6 +36,15 @@ class AppDrawer extends StatelessWidget {
                       Navigator.pop(context);
                     },
                   ),
+                  _buildNavItem(
+                    context,
+                    icon: LucideIcons.fileText,
+                    label: 'Exams',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.router.push(const ExamsRoute());
+                    },
+                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Divider(),

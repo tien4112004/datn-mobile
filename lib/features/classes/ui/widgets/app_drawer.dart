@@ -38,6 +38,15 @@ class AppDrawer extends StatelessWidget {
                   ),
                   _buildNavItem(
                     context,
+                    icon: LucideIcons.fileText,
+                    label: 'Exams',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.router.push(const ExamsRoute());
+                    },
+                  ),
+                  _buildNavItem(
+                    context,
                     icon: LucideIcons.calendarDays,
                     label: 'Calendar',
                     onTap: () {

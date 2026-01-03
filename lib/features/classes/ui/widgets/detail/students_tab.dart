@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/students/states/controller_provider.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
@@ -32,18 +33,21 @@ class StudentsTab extends ConsumerWidget {
         onRetry: () =>
             ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
-      floatingActionButton: Semantics(
-        label: 'Add new student',
-        button: true,
-        hint: 'Double tap to add a student to this class',
-        child: FloatingActionButton(
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.router.push(StudentCreateRoute(classId: classId));
-          },
-          child: const Icon(LucideIcons.userPlus),
-        ),
-      ),
+      floatingActionButton:
+          (ref.watch(userControllerProvider.notifier).isStudent())
+          ? Semantics(
+              label: 'Add new student',
+              button: true,
+              hint: 'Double tap to add a student to this class',
+              child: FloatingActionButton(
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.router.push(StudentCreateRoute(classId: classId));
+                },
+                child: const Icon(LucideIcons.userPlus),
+              ),
+            )
+          : null,
     );
   }
 }

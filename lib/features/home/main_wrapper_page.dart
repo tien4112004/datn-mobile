@@ -59,12 +59,9 @@ class MainWrapperPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userControllerProvider);
-    final isStudent =
-        userState.value != null &&
-        userState.value!.role ==
-            "student"; // If role has value, the user is student
-
-    debugPrint("isStudent: $isStudent");
+    final userStateNotifier = ref.watch(userControllerProvider.notifier);
+    final isStudent = userStateNotifier
+        .isStudent(); // If role has value, the user is student
 
     final routes = isStudent
         ? [const ClassRoute(), const SettingRoute()]
@@ -74,10 +71,16 @@ class MainWrapperPage extends ConsumerWidget {
             const ClassRoute(),
             const SettingRoute(),
           ];
+    debugPrint('User is student: $isStudent');
+    debugPrint('User role: ${userState.value?.role}');
 
     return AutoTabsScaffold(
       routes: routes,
       bottomNavigationBuilder: (_, tabsRouter) {
+        if (userState.isLoading) {
+          return const SizedBox.shrink();
+        }
+
         return Theme(
           data: Theme.of(context).copyWith(
             splashColor: Colors.transparent,

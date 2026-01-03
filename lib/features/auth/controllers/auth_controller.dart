@@ -1,5 +1,6 @@
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
+import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
@@ -15,8 +16,12 @@ class AuthController extends AsyncNotifier<AuthState> {
     // Initialize the auth service
     _authService = ref.watch(authServicePod);
 
+    final isAuthenticated = await ref
+        .read(secureStoragePod)
+        .containsKey(R.ACCESS_TOKEN_KEY);
+
     // Initial state
-    final initialState = AuthState(isAuthenticated: false);
+    final initialState = AuthState(isAuthenticated: isAuthenticated);
     state = AsyncValue.data(initialState);
 
     return initialState;

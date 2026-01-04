@@ -6,11 +6,21 @@ import 'package:datn_mobile/features/projects/service/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-final pagingControllerPod = Provider.autoDispose
-    .family<PagingController<int, PresentationMinimal>, (String?, SortOption?)>(
-      (ref, params) {
-        final searchQuery = params.$1;
-        final sort = params.$2;
+final presentationsPagingControllerPod =
+    Provider.autoDispose<PagingController<int, PresentationMinimal>>((ref) {
+      late final pagingController = PagingController<int, PresentationMinimal>(
+        getNextPageKey: (state) {
+          if (state.lastPageIsEmpty) {
+            return null;
+          }
+          return state.nextIntPageKey;
+        },
+        fetchPage: (pageKey) => ref
+            .read(presentationServiceProvider)
+            .fetchPresentationMinimalsPaged(pageKey),
+      );
+      return pagingController;
+    });
 
         late final pagingController =
             PagingController<int, PresentationMinimal>(
@@ -73,6 +83,21 @@ final mindmapPagingControllerPod = Provider.autoDispose
               search: searchQuery,
               sort: sort,
             ),
+      );
+      return pagingController;
+    });
+
+final mindmapsPagingControllerPod =
+    Provider.autoDispose<PagingController<int, MindmapMinimal>>((ref) {
+      late final pagingController = PagingController<int, MindmapMinimal>(
+        getNextPageKey: (state) {
+          if (state.lastPageIsEmpty) {
+            return null;
+          }
+          return state.nextIntPageKey;
+        },
+        fetchPage: (pageKey) =>
+            ref.read(mindmapServiceProvider).fetchMindmapMinimalsPaged(pageKey),
       );
       return pagingController;
     });

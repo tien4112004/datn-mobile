@@ -4,6 +4,7 @@ class MindmapMinimal {
   final String? description;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? thumbnail;
 
   const MindmapMinimal({
     required this.id,
@@ -11,6 +12,7 @@ class MindmapMinimal {
     this.description,
     this.createdAt,
     this.updatedAt,
+    this.thumbnail,
   });
 
   MindmapMinimal copyWith({
@@ -19,6 +21,7 @@ class MindmapMinimal {
     String? description,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? thumbnail,
   }) {
     return MindmapMinimal(
       id: id ?? this.id,
@@ -26,6 +29,7 @@ class MindmapMinimal {
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      thumbnail: thumbnail ?? this.thumbnail,
     );
   }
 }

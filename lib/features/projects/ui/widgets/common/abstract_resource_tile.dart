@@ -28,6 +28,7 @@ class AbstractResourceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint('Building AbstractResourceTile for $title');
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
@@ -42,22 +43,19 @@ class AbstractResourceTile extends ConsumerWidget {
               child: Container(
                 constraints: const BoxConstraints(minWidth: 100, minHeight: 64),
                 color: resourceType.color.withValues(alpha: 0.1),
-                child: Center(
-                  child: thumbnail == null
-                      ? DefaultThumbnail(resourceType: resourceType)
-                      : _isImageUrl(thumbnail!)
-                      ? Image.network(
-                          thumbnail!,
-                          fit: BoxFit.contain,
-                          width: 100,
-                          height: 56,
-                          cacheWidth: 100,
-                        )
-                      : Icon(
-                          resourceType.icon,
-                          size: 40,
-                          color: resourceType.color,
-                        ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  clipBehavior: Clip.hardEdge,
+                  child: Center(
+                    child: thumbnail == null
+                        ? DefaultThumbnail(resourceType: resourceType)
+                        : Image.network(
+                            thumbnail!,
+                            fit: BoxFit.contain,
+                            width: 100,
+                            cacheWidth: 200,
+                          ),
+                  ),
                 ),
               ),
             ),
@@ -108,10 +106,5 @@ class AbstractResourceTile extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  bool _isImageUrl(String url) {
-    debugPrint('Checking if URL is image: $url');
-    return url.contains('https://');
   }
 }

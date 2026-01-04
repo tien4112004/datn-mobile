@@ -145,11 +145,11 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                     return MindmapTile(
                                       mindmap: mindmap,
                                       onTap: () {
-                                        // context.router.push(
-                                        //   MindmapDetailRoute(
-                                        //     mindmapId: mindmap.id,
-                                        //   ),
-                                        // );
+                                        context.router.push(
+                                          MindmapDetailRoute(
+                                            mindmapId: mindmap.id,
+                                          ),
+                                        );
                                       },
                                       onMoreOptions: () {
                                         // TODO: Show options menu

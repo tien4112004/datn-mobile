@@ -151,7 +151,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
     final url = '${Config.presentationBaseUrl}/mobile';
 
     return AuthenticatedWebView(
-      url: url,
+      webViewUrl: url,
       onWebViewCreated: (controller) {
         _webViewController = controller;
       },

@@ -107,11 +107,12 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   }
 
   Widget _buildWebView({required String mindmapId}) {
-    final url = '${Config.mindmapBaseUrl}/mindmap/$mindmapId';
+    final url = '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId';
     return AuthenticatedWebView(
-      url: url,
-
-      onWebViewCreated: (controller) {},
+      webViewUrl: url,
+      onWebViewCreated: (controller) {
+        debugPrint('WebView created for mindmap: $mindmapId');
+      },
       onLoadStop: (controller, url) async {
         setState(() {
           _isWebViewLoading = false;
@@ -119,6 +120,11 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
       },
       onReceivedError: (controller, request, error) {
         debugPrint('WebView error: ${error.description}');
+      },
+      onConsoleMessage: (controller, message) {
+        debugPrint(
+          '[Mindmap WebApp] [${message.messageLevel.toString()}] ${message.message}',
+        );
       },
     );
   }

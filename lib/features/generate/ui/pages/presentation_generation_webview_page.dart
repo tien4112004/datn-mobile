@@ -62,7 +62,7 @@ class _PresentationGenerationWebViewPageState
       body: Stack(
         children: [
           AuthenticatedWebView(
-            url: '${Config.presentationBaseUrl}/generation',
+            webViewUrl: '${Config.presentationBaseUrl}/generation',
             onWebViewCreated: (controller) {
               _webViewController = controller;
               _registerHandlers(controller);

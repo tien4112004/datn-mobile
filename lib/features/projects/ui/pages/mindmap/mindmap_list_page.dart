@@ -1,12 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
+import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/mindmap/mindmap_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -29,6 +36,8 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final pagedMindmaps = ref.watch(mindmapsPagingControllerPod);
+    final mindmapController = ref.watch(mindmapsControllerProvider);
     final t = ref.watch(translationsPod);
 
     _sortOptions = [
@@ -80,50 +89,84 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
               },
             ),
             const SizedBox(height: 16),
-            Expanded(
-              child: ref
-                  .watch(mindmapsControllerProvider)
-                  .when(
-                    data: (data) {
-                      if (data.value.isEmpty) {
-                        return const Center(
-                          child: Text('No mindmaps available'),
-                        );
-                      }
-                      return ListView.builder(
-                        itemCount: data.value.length,
-                        itemBuilder: (context, index) {
-                          final mindmap = data.value[index];
-                          return ListTile(
-                            title: Text(mindmap.title),
-                            subtitle: mindmap.description != null
-                                ? Text(mindmap.description!)
-                                : null,
-                            onTap: () {
-                              context.router.push(const MindmapSearchRoute());
-                            },
-                          );
-                        },
-                      );
-                    },
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (error, stackTrace) => Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Error: $error'),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              ref.invalidate(mindmapsControllerProvider);
-                            },
-                            child: const Text('Retry'),
+            mindmapController.easyWhen(
+              data: (listState) => Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await ref
+                        .read(mindmapsControllerProvider.notifier)
+                        .refresh();
+                  },
+                  child: listState.value.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                ResourceType.mindmap.icon,
+                                size: 64,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                t.projects.no_presentations,
+                                style: TextStyle(
+                                  fontSize: Themes.fontSize.s18,
+                                  color: Colors.grey.shade600,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        )
+                      : PagingListener(
+                          controller: pagedMindmaps,
+                          builder: (context, state, fetchNextPage) =>
+                              PagedListView.separated(
+                                state: state,
+                                fetchNextPage: fetchNextPage,
+                                builderDelegate: PagedChildBuilderDelegate(
+                                  noMoreItemsIndicatorBuilder: (context) =>
+                                      Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Center(
+                                          child: Text(
+                                            'No more presentations',
+                                            style: TextStyle(
+                                              fontSize: Themes.fontSize.s14,
+                                              color: Colors.grey.shade600,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  itemBuilder: (context, item, index) {
+                                    var mindmap = item as MindmapMinimal;
+                                    return MindmapTile(
+                                      mindmap: mindmap,
+                                      onTap: () {
+                                        // context.router.push(
+                                        //   MindmapDetailRoute(
+                                        //     mindmapId: mindmap.id,
+                                        //   ),
+                                        // );
+                                      },
+                                      onMoreOptions: () {
+                                        // TODO: Show options menu
+                                      },
+                                    );
+                                  },
+                                ),
+                                separatorBuilder: (context, index) => SizedBox(
+                                  height: Themes.padding.p8,
+                                  child: const Divider(
+                                    height: 1,
+                                    color: Color.fromRGBO(189, 189, 189, 1),
+                                  ),
+                                ),
+                              ),
+                        ),
+                ),
+              ),
             ),
           ],
         ),

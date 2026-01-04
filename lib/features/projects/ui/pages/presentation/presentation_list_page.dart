@@ -67,7 +67,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   }
 
   Widget _buildContent(BuildContext context, dynamic t) {
-    final pagedPresentations = ref.watch(pagingControllerPod);
+    final pagedPresentations = ref.watch(presentationsPagingControllerPod);
     final controllerProvider = ref.watch(presentationsControllerProvider);
 
     return Column(

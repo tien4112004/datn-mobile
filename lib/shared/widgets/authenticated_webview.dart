@@ -5,6 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 /// A widget that renders an authenticated InAppWebView with session cookies.
 ///
@@ -59,24 +60,36 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
       final accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
       final refreshToken = await secureStorage.read(key: R.REFRESH_TOKEN_KEY);
 
-      debugPrint(
-        'Tokens retrieved - Access: ${accessToken?.substring(0, 20)}..., Refresh: ${refreshToken?.substring(0, 20)}...',
-      );
-
       final uri = WebUri(widget.url);
+      String domain = 'api.huy-devops.site';
+      // if (uri.host != 'localhost') {
+      //   debugPrint(
+      //     'WARNING: The URL host is not localhost. Cookies may not be set correctly for cross-domain requests.',
+      //   );
+      //   final parts = uri.host.split('.');
+      //   if (parts.length >= 2) {
+      //     domain = '.${parts.sublist(parts.length - 2).join('.')}';
+      //   }
+      // }
+
       final cookieManager = CookieManager.instance();
 
       debugPrint('Setting cookies for URL: ${widget.url}');
 
+      final accessTokenExpiry = JwtDecoder.getExpirationDate(accessToken!);
       // Set access token cookie (without explicit domain to let it auto-infer)
-      if (accessToken != null && accessToken.isNotEmpty) {
+      if (accessToken.isNotEmpty) {
         await cookieManager
             .setCookie(
               url: uri,
               name: "access_token",
               value: accessToken,
+              domain: domain,
+              path: '/',
+              expiresDate: accessTokenExpiry.millisecondsSinceEpoch,
               isHttpOnly: true,
               isSecure: true,
+              sameSite: HTTPCookieSameSitePolicy.NONE,
             )
             .timeout(
               const Duration(seconds: 5),
@@ -88,6 +101,7 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
         debugPrint('Access token cookie set successfully');
       }
 
+      final refreshTokenExpiry = JwtDecoder.getExpirationDate(accessToken);
       // Set refresh token cookie
       if (refreshToken != null && refreshToken.isNotEmpty) {
         await cookieManager
@@ -95,8 +109,12 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
               url: uri,
               name: "refresh_token",
               value: refreshToken,
+              domain: domain,
+              path: '/',
+              expiresDate: refreshTokenExpiry.millisecondsSinceEpoch,
               isHttpOnly: true,
               isSecure: true,
+              sameSite: HTTPCookieSameSitePolicy.NONE,
             )
             .timeout(
               const Duration(seconds: 5),

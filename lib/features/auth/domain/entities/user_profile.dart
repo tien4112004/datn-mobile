@@ -23,6 +23,8 @@ class UserProfile {
     this.role,
   });
 
+  String get fullName => '$firstName $lastName';
+
   UserProfile copyWith({
     String? email,
     String? firstName,

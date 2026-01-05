@@ -15,6 +15,7 @@ import 'package:datn_mobile/features/classes/states/posts_controller.dart';
 import 'package:datn_mobile/features/classes/states/update_post_controller.dart';
 import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 // Data Source Providers
 /// Provider for post remote data source
@@ -82,3 +83,5 @@ final deleteCommentControllerProvider =
     AsyncNotifierProvider<DeleteCommentController, void>(
       DeleteCommentController.new,
     );
+
+final grantFocusStateProvider = StateProvider<bool>((ref) => false);

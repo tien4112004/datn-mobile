@@ -1,6 +1,6 @@
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:datn_mobile/features/classes/ui/pages/post_create_page.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/post_card.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/post_create_dialog.dart';
 import 'package:datn_mobile/shared/widgets/animated_list_item.dart';
 import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -50,12 +50,18 @@ class _PostListState extends ConsumerState<PostList> {
     await ref.read(postsControllerProvider(widget.classId).notifier).refresh();
   }
 
-  void _showCreatePostDialog() {
+  Future<void> _navigateToCreatePost() async {
     HapticFeedback.mediumImpact();
-    showDialog(
-      context: context,
-      builder: (context) => PostCreateDialog(classId: widget.classId),
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => PostCreatePage(classId: widget.classId),
+      ),
     );
+
+    // Refresh posts if creation was successful
+    if (result == true && mounted) {
+      ref.invalidate(postsControllerProvider(widget.classId));
+    }
   }
 
   @override
@@ -71,7 +77,7 @@ class _PostListState extends ConsumerState<PostList> {
               title: 'No Posts Yet',
               message: 'Your teacher will post announcements and updates here.',
               actionLabel: 'Create First Post',
-              onAction: _showCreatePostDialog,
+              onAction: _navigateToCreatePost,
             );
           }
 
@@ -196,7 +202,7 @@ class _PostListState extends ConsumerState<PostList> {
         label: 'Create new post',
         button: true,
         child: FloatingActionButton.extended(
-          onPressed: _showCreatePostDialog,
+          onPressed: _navigateToCreatePost,
           icon: const Icon(LucideIcons.plus),
           label: const Text('New Post'),
         ),

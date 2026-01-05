@@ -10,7 +10,7 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/internet_checker_pod.dart';
-import 'package:datn_mobile/shared/widget/no_internet_widget.dart';
+import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:spot/spot.dart';
 import '../../helpers/pump_app.dart';

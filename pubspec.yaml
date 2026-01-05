@@ -58,6 +58,7 @@ dependencies:
   cached_network_image: ^3.4.1
   uuid: ^4.1.0
   shared_preferences: ^2.2.0
+  timeago: ^3.7.0
 
 dev_dependencies:
   flutter_test:

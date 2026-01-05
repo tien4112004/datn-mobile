@@ -3,7 +3,7 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/students/states/controller_provider.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widgets/enhanced_count_header.dart';
 import 'package:datn_mobile/shared/widgets/animated_list_item.dart';

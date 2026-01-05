@@ -17,8 +17,8 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/core/theme/theme_controller.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/widget/no_internet_widget.dart';
-import 'package:datn_mobile/shared/widget/responsive_wrapper.dart';
+import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
+import 'package:datn_mobile/shared/widgets/responsive_wrapper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 
 ///This class holds Material App or Cupertino App

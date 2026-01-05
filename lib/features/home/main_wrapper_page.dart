@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/shared/widget/no_internet_widget.dart';
+import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

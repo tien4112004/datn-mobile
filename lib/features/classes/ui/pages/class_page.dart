@@ -8,7 +8,7 @@ import 'package:datn_mobile/features/classes/ui/widgets/class_action_fab.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/class_card.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/shared/create_class_dialog.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

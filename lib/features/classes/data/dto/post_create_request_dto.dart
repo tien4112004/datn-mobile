@@ -1,0 +1,28 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'post_create_request_dto.g.dart';
+
+/// Data Transfer Object for creating a new post
+@JsonSerializable(includeIfNull: false)
+class PostCreateRequestDto {
+  final String content;
+  final String type;
+  final List<String>? attachments;
+  final List<String>? linkedResourceIds;
+  final String? linkedLessonId;
+  final bool? allowComments;
+
+  const PostCreateRequestDto({
+    required this.content,
+    required this.type,
+    this.attachments,
+    this.linkedResourceIds,
+    this.linkedLessonId,
+    this.allowComments,
+  });
+
+  factory PostCreateRequestDto.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateRequestDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PostCreateRequestDtoToJson(this);
+}

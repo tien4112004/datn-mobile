@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/widget/dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/dropdown_field.dart';
 
 /// Base class for all option field types
 abstract class OptionFieldConfig {

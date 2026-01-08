@@ -5,16 +5,22 @@ class CommentEntity {
   final String postId;
   final String userId;
   final String content;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  // Optional user details (if provided by backend in future)
+  final String? authorName;
+  final String? authorAvatarUrl;
 
   const CommentEntity({
     required this.id,
     required this.postId,
     required this.userId,
     required this.content,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.authorName,
+    this.authorAvatarUrl,
   });
 
   /// Creates a copy of this entity with the specified fields replaced
@@ -25,14 +31,18 @@ class CommentEntity {
     String? content,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? authorName,
+    String? authorAvatarUrl,
   }) {
     return CommentEntity(
       id: id ?? this.id,
       postId: postId ?? this.postId,
       userId: userId ?? this.userId,
       content: content ?? this.content,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      authorName: authorName ?? this.authorName,
+      authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
     );
   }
 

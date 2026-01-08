@@ -10,16 +10,16 @@ class CommentResponseDto {
   final String postId;
   final String userId;
   final String content;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const CommentResponseDto({
     required this.id,
     required this.postId,
     required this.userId,
     required this.content,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory CommentResponseDto.fromJson(Map<String, dynamic> json) =>

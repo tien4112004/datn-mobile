@@ -1,5 +1,4 @@
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/enum/student_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -26,7 +25,7 @@ class StudentTile extends StatelessWidget {
 
     // Create semantic label for screen readers
     final semanticLabel =
-        'Student: ${student.fullName}, Email: ${student.parentContactEmail}, Status: ${student.status.label}';
+        'Student: ${student.fullName}, Email: ${student.parentContactEmail}';
 
     return Semantics(
       label: semanticLabel,
@@ -133,8 +132,6 @@ class StudentTile extends StatelessWidget {
                       //     ),
                       //   ],
                       // ),
-                      const SizedBox(height: 8),
-                      _EnhancedStatusBadge(status: student.status),
                     ],
                   ),
                 ),
@@ -242,35 +239,5 @@ class StudentTile extends StatelessWidget {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     }
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
-  }
-}
-
-class _EnhancedStatusBadge extends StatelessWidget {
-  final StudentStatus status;
-
-  const _EnhancedStatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: status.color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: status.color.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          color: status.color,
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.8,
-        ),
-      ),
-    );
   }
 }

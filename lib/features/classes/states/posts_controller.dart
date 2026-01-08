@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Controller for managing the list of posts for a specific class
@@ -48,6 +49,8 @@ class PostsController extends AsyncNotifier<List<PostEntity>> {
           page: _currentPage,
           size: 20,
         );
+
+        debugPrint("newPosts: ${newPosts.length}");
 
         if (newPosts.isEmpty) {
           _hasMore = false;

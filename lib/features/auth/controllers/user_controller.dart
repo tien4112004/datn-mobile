@@ -1,3 +1,5 @@
+import 'package:datn_mobile/const/resource.dart';
+import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
@@ -11,17 +13,86 @@ class UserController extends AsyncNotifier<UserProfile?> {
   Future<UserProfile?> build() async {
     final authState = ref.watch(authControllerPod);
 
-    // If authenticated, fetch user profile
+    // If authenticated, fetch user profile from API or storage
     if (authState.value?.isAuthenticated == true) {
-      return _fetchUser();
+      return _initializeUserProfile();
     }
-
-    // If not authenticated, return null
     return null;
   }
 
-  Future<UserProfile?> _fetchUser() async {
+  /// Initialize user profile from storage or API
+  Future<UserProfile?> _initializeUserProfile() async {
+    try {
+      // Try to get from local storage first
+      final cachedProfile = await _getUserProfileFromStorage();
+      if (cachedProfile != null) {
+        return cachedProfile;
+      }
+
+      // If not in storage, fetch from API
+      return await fetchAndStoreUserProfile();
+    } catch (e) {
+      // If failed, try fetching from API
+      return await fetchAndStoreUserProfile();
+    }
+  }
+
+  /// Fetch user profile from API and store to local storage
+  Future<UserProfile> fetchAndStoreUserProfile() async {
     final repository = ref.read(userRepositoryProvider);
-    return await repository.getCurrentUser();
+    final profile = await repository.getCurrentUser();
+
+    // Store to local storage
+    await _saveUserProfileToStorage(profile);
+
+    return profile;
+  }
+
+  /// Update user profile with new data
+  Future<void> updateUserProfile(UserProfile updatedProfile) async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      // Update in local storage
+      await _saveUserProfileToStorage(updatedProfile);
+
+      return updatedProfile;
+    });
+  }
+
+  /// Refresh user profile from API
+  Future<void> refreshUserProfile() async {
+    state = const AsyncValue.loading();
+
+    state = await AsyncValue.guard(() async {
+      return await fetchAndStoreUserProfile();
+    });
+  }
+
+  /// Get user profile from local storage
+  Future<UserProfile?> _getUserProfileFromStorage() async {
+    try {
+      final storage = ref.read(appStorageProvider);
+      final json = storage.getJson(key: R.USER_PROFILE_KEY);
+
+      if (json != null) {
+        return UserProfile.fromJson(json);
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Save user profile to local storage
+  Future<void> _saveUserProfileToStorage(UserProfile profile) async {
+    try {
+      final storage = ref.read(appStorageProvider);
+      await storage.putJson(key: R.USER_PROFILE_KEY, value: profile.toJson());
+    } catch (e) {
+      // Log error but don't throw - storage failure shouldn't break the app
+      // print('Failed to save user profile to storage: $e');
+    }
   }
 }

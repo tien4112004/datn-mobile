@@ -1,7 +1,6 @@
 import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
 import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/enum/student_status.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -48,7 +47,6 @@ class _StudentFormState extends State<StudentForm> {
 
   DateTime? _dateOfBirth;
   DateTime? _enrollmentDate;
-  StudentStatus? _status;
 
   @override
   void initState() {
@@ -63,7 +61,6 @@ class _StudentFormState extends State<StudentForm> {
     _parentEmailController = TextEditingController(
       text: student?.parentContactEmail ?? '',
     );
-    _status = student?.status;
   }
 
   @override
@@ -212,11 +209,6 @@ class _StudentFormState extends State<StudentForm> {
                     onChanged: (date) => setState(() => _enrollmentDate = date),
                   ),
                   const SizedBox(height: 16),
-                  _StatusDropdown(
-                    value: _status,
-                    onChanged: (status) => setState(() => _status = status),
-                  ),
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -255,7 +247,6 @@ class _StudentFormState extends State<StudentForm> {
         parentContactEmail: _parentEmailController.text.isNotEmpty
             ? _parentEmailController.text
             : null,
-        status: _status?.getValue(),
       );
       widget.onUpdateSubmit?.call(request);
     } else {
@@ -275,7 +266,6 @@ class _StudentFormState extends State<StudentForm> {
             : null,
         classId: widget.classId,
         enrollmentDate: _enrollmentDate,
-        status: _status?.getValue(),
       );
       widget.onCreateSubmit?.call(request);
     }
@@ -353,44 +343,6 @@ class _DatePickerField extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatusDropdown extends StatelessWidget {
-  final StudentStatus? value;
-  final ValueChanged<StudentStatus?> onChanged;
-
-  const _StatusDropdown({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<StudentStatus>(
-      initialValue: value,
-      decoration: const InputDecoration(
-        labelText: 'Status',
-        prefixIcon: Icon(LucideIcons.activity),
-      ),
-      items: StudentStatus.values.map((status) {
-        return DropdownMenuItem(
-          value: status,
-          child: Row(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: status.color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(status.label[0].toUpperCase() + status.label.substring(1)),
-            ],
-          ),
-        );
-      }).toList(),
-      onChanged: onChanged,
     );
   }
 }

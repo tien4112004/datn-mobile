@@ -3,12 +3,35 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'class_response_dto.g.dart';
 
+/// Teacher response dto.
+@JsonSerializable()
+class TeacherResponseDto {
+  final String id;
+  final String firstName;
+  final String lastName;
+  final String email;
+
+  TeacherResponseDto({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
+
+  factory TeacherResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$TeacherResponseDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeacherResponseDtoToJson(this);
+
+  String get fullName => '$firstName $lastName';
+}
+
 /// DTO for full class details.
 /// Based on ClassResponseDto schema from classes.yaml API.
 @JsonSerializable()
 class ClassResponseDto {
   final String id;
-  final String ownerId;
+  final TeacherResponseDto teacher;
   final String name;
   final String? description;
   final String? joinCode;
@@ -19,7 +42,7 @@ class ClassResponseDto {
 
   ClassResponseDto({
     required this.id,
-    required this.ownerId,
+    required this.teacher,
     required this.name,
     this.description,
     this.joinCode,
@@ -39,7 +62,9 @@ class ClassResponseDto {
 extension ClassResponseMapper on ClassResponseDto {
   ClassEntity toEntity() => ClassEntity(
     id: id,
-    ownerId: ownerId,
+    teacherId: teacher.id,
+    teacherName: teacher.fullName,
+    teacherEmail: teacher.email,
     name: name,
     description: description,
     joinCode: joinCode,

@@ -121,7 +121,7 @@ class ClassCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        classEntity.displayInstructorName,
+                        classEntity.teacherName,
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.9),
                           fontSize: 14,

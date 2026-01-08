@@ -4,28 +4,28 @@ import 'package:flutter/material.dart';
 /// Pure business object without JSON annotations.
 class ClassEntity {
   final String id;
-  final String ownerId;
+  final String teacherId;
+  final String teacherName;
+  final String teacherEmail;
   final String name;
   final String? joinCode;
   final bool isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  /// Optional instructor name (derived from owner info).
-  final String? instructorName;
-
   /// Optional class description.
   final String? description;
 
   const ClassEntity({
     required this.id,
-    required this.ownerId,
+    required this.teacherId,
+    required this.teacherName,
+    required this.teacherEmail,
     required this.name,
     this.joinCode,
     required this.isActive,
     this.createdAt,
     this.updatedAt,
-    this.instructorName,
     this.description,
   });
 
@@ -38,7 +38,7 @@ class ClassEntity {
     Color.fromARGB(255, 229, 57, 53), // Red
     Color.fromARGB(255, 142, 36, 170), // Purple
     Color.fromARGB(255, 0, 172, 193), // Cyan
-    Color.fromARGB(255, 255, 112, 67), // Deep Orange
+    Color.fromARGB(255, 243, 111, 71), // Deep Orange
     Color.fromARGB(255, 92, 107, 192), // Indigo
   ];
 
@@ -48,29 +48,28 @@ class ClassEntity {
     return _headerColors[index];
   }
 
-  /// Gets the display name for the instructor.
-  String get displayInstructorName => instructorName ?? 'Instructor';
-
   ClassEntity copyWith({
     String? id,
-    String? ownerId,
+    String? teacherId,
+    String? teacherName,
+    String? teacherEmail,
     String? name,
     String? joinCode,
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? instructorName,
     String? description,
   }) {
     return ClassEntity(
       id: id ?? this.id,
-      ownerId: ownerId ?? this.ownerId,
+      teacherId: teacherId ?? this.teacherId,
+      teacherName: teacherName ?? this.teacherName,
+      teacherEmail: teacherEmail ?? this.teacherEmail,
       name: name ?? this.name,
       joinCode: joinCode ?? this.joinCode,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      instructorName: instructorName ?? this.instructorName,
       description: description ?? this.description,
     );
   }

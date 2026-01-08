@@ -1,11 +1,8 @@
-import 'package:datn_mobile/features/students/enum/student_status.dart';
-
 class Student {
   final String id;
   final String userId;
   final String? address;
   final String? parentContactEmail;
-  final StudentStatus status;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? username;
@@ -20,7 +17,6 @@ class Student {
     required this.userId,
     this.address,
     this.parentContactEmail,
-    required this.status,
     required this.createdAt,
     required this.updatedAt,
     this.username,
@@ -43,7 +39,6 @@ class Student {
     String? userId,
     String? address,
     String? parentContactEmail,
-    StudentStatus? status,
     DateTime? createdAt,
     DateTime? updatedAt,
     String? username,
@@ -58,7 +53,6 @@ class Student {
       userId: userId ?? this.userId,
       address: address ?? this.address,
       parentContactEmail: parentContactEmail ?? this.parentContactEmail,
-      status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       username: username ?? this.username,

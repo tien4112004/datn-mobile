@@ -1,5 +1,4 @@
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/enum/student_status.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'student_response_dto.g.dart';
@@ -10,7 +9,6 @@ class StudentResponseDto {
   final String userId;
   final String? address;
   final String? parentContactEmail;
-  final String status;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? username;
@@ -25,7 +23,6 @@ class StudentResponseDto {
     required this.userId,
     this.address,
     this.parentContactEmail,
-    required this.status,
     required this.createdAt,
     required this.updatedAt,
     required this.username,
@@ -48,7 +45,6 @@ extension StudentResponseMapper on StudentResponseDto {
     userId: userId,
     address: address,
     parentContactEmail: parentContactEmail,
-    status: StudentStatus.fromValue(status),
     createdAt: createdAt,
     updatedAt: updatedAt,
     username: username,

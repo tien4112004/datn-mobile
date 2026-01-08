@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/classes/data/dto/class_response_dto.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,7 +9,7 @@ part 'class_list_response_dto.g.dart';
 @JsonSerializable()
 class ClassListResponseDto {
   final String id;
-  final String ownerId;
+  final TeacherResponseDto teacher;
   final String name;
   final String? joinCode;
   final bool isActive;
@@ -17,7 +18,7 @@ class ClassListResponseDto {
 
   ClassListResponseDto({
     required this.id,
-    required this.ownerId,
+    required this.teacher,
     required this.name,
     this.joinCode,
     required this.isActive,
@@ -35,7 +36,9 @@ class ClassListResponseDto {
 extension ClassListResponseMapper on ClassListResponseDto {
   ClassEntity toEntity() => ClassEntity(
     id: id,
-    ownerId: ownerId,
+    teacherId: teacher.id,
+    teacherName: teacher.fullName,
+    teacherEmail: teacher.email,
     name: name,
     joinCode: joinCode,
     isActive: isActive,

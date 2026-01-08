@@ -1,7 +1,8 @@
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Comprehensive class information dialog following Material Design 3 guidelines.
@@ -16,13 +17,13 @@ class ClassInfoDialog {
   }
 }
 
-class _ClassInfoDialogContent extends StatelessWidget {
+class _ClassInfoDialogContent extends ConsumerWidget {
   final ClassEntity classEntity;
 
   const _ClassInfoDialogContent({required this.classEntity});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       elevation: 3,
@@ -94,13 +95,13 @@ class _ClassInfoDialogContent extends StatelessWidget {
                         _buildInfoRow(
                           context: context,
                           label: 'Name',
-                          value: classEntity.displayInstructorName,
+                          value: classEntity.teacherName,
                         ),
                         const SizedBox(height: 12),
                         _buildInfoRow(
                           context: context,
                           label: 'Owner ID',
-                          value: classEntity.ownerId,
+                          value: classEntity.teacherId,
                           isMonospace: true,
                         ),
                       ],
@@ -141,7 +142,10 @@ class _ClassInfoDialogContent extends StatelessWidget {
                           _buildInfoRow(
                             context: context,
                             label: 'Created',
-                            value: _formatDateTime(classEntity.createdAt!),
+                            value: DateFormatHelper.formatRelativeDate(
+                              ref: ref,
+                              classEntity.createdAt!,
+                            ),
                           ),
                           if (classEntity.updatedAt != null)
                             const SizedBox(height: 12),
@@ -150,7 +154,10 @@ class _ClassInfoDialogContent extends StatelessWidget {
                           _buildInfoRow(
                             context: context,
                             label: 'Last Updated',
-                            value: _formatDateTime(classEntity.updatedAt!),
+                            value: DateFormatHelper.formatRelativeDate(
+                              ref: ref,
+                              classEntity.updatedAt!,
+                            ),
                           ),
                       ],
                     ),
@@ -382,10 +389,5 @@ class _ClassInfoDialogContent extends StatelessWidget {
         ),
       );
     }
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    final DateFormat formatter = DateFormat('MMM dd, yyyy • hh:mm a');
-    return formatter.format(dateTime);
   }
 }

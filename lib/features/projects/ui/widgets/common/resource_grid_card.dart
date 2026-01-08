@@ -1,9 +1,9 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ResourceGridCard extends ConsumerWidget {
@@ -111,9 +111,10 @@ class ResourceGridCard extends ConsumerWidget {
                     const SizedBox(height: 4),
                   ],
                   Text(
-                    DateFormat(
-                      'yyyy-MM-dd',
-                    ).format(updatedAt ?? DateTime.now()),
+                    DateFormatHelper.formatRelativeDate(
+                      ref: ref,
+                      updatedAt ?? DateTime.now(),
+                    ),
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],

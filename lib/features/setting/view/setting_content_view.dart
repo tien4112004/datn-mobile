@@ -151,7 +151,13 @@ class SettingContentView extends ConsumerWidget {
                   builder: (context, ref, child) {
                     return ElevatedButton(
                       onPressed: () {
-                        ref.read(authControllerPod.notifier).signOut();
+                        try {
+                          ref.read(authControllerPod.notifier).signOut();
+                        } catch (e) {
+                          // Ignore
+                        } finally {
+                          context.router.replaceAll([const SignInRoute()]);
+                        }
                       },
                       child: Text(
                         t.settings.logOut,

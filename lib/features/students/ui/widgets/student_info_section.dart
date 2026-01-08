@@ -1,5 +1,4 @@
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/enum/student_status.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -53,8 +52,6 @@ class StudentInfoSection extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      _StatusBadge(status: student.status),
                     ],
                   ),
                 ),
@@ -108,32 +105,6 @@ class StudentInfoSection extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  final StudentStatus status;
-
-  const _StatusBadge({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: status.color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        status.label.toUpperCase(),
-        style: TextStyle(
-          color: status.color,
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
   }
 }
 

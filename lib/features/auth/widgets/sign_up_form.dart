@@ -1,5 +1,6 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -246,7 +247,10 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
                   // Format the date for display (requires `intl` package)
-                  text: DateFormat('yyyy-MM-dd').format(_selectedDate),
+                  text: DateFormatHelper.formatRelativeDate(
+                    ref: ref,
+                    _selectedDate,
+                  ),
                 ),
                 decoration: InputDecoration(
                   labelText: t.auth.signUp.dateOfBirth,

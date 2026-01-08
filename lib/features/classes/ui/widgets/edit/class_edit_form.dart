@@ -130,10 +130,10 @@ class ClassEditForm extends StatelessWidget {
               ),
             ],
           ),
-          if (classEntity.instructorName != null) ...[
+          ...[
             const SizedBox(height: 12),
             Text(
-              'Instructor: ${classEntity.instructorName}',
+              'Teacher: ${classEntity.teacherName}',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white.withValues(alpha: 0.85),
               ),

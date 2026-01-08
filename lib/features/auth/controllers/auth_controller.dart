@@ -1,3 +1,6 @@
+import 'package:datn_mobile/const/resource.dart';
+import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
@@ -26,6 +29,12 @@ class AuthController extends AsyncNotifier<AuthState> {
         email: email,
         password: password,
       );
+
+      // Fetch and store user profile after successful login
+      await ref
+          .read(userControllerProvider.notifier)
+          .fetchAndStoreUserProfile();
+
       return AuthState(isAuthenticated: true);
     });
   }
@@ -62,6 +71,12 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await _authService.signInWithGoogle();
+
+      // Fetch and store user profile after successful login
+      await ref
+          .read(userControllerProvider.notifier)
+          .fetchAndStoreUserProfile();
+
       return AuthState(isAuthenticated: true);
     });
   }
@@ -70,7 +85,21 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await _authService.signOut();
+
+      // Clear user profile from storage
+      await _clearUserProfile();
+
       return AuthState(isAuthenticated: false);
     });
+  }
+
+  /// Clear user profile from local storage
+  Future<void> _clearUserProfile() async {
+    try {
+      final storage = ref.read(appStorageProvider);
+      await storage.delete(key: R.USER_PROFILE_KEY);
+    } catch (e) {
+      // print('Failed to clear user profile from storage: $e');
+    }
   }
 }

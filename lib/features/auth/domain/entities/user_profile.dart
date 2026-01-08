@@ -27,4 +27,6 @@ class UserProfile {
       _$UserProfileFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+
+  String get fullName => "$firstName $lastName";
 }

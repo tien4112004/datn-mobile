@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal
 import 'package:datn_mobile/features/projects/service/service_provider.dart';
 import 'package:datn_mobile/features/projects/states/mindmap_list_state.dart';
 import 'package:datn_mobile/features/projects/states/presentation_list_state.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'presentation_controller.dart';
@@ -40,8 +41,8 @@ final imageByIdProvider = FutureProvider.family<ImageProject, String>((
     id: id,
     title: images.firstWhere((image) => image.id == id).title,
     imageUrl: '',
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
+    createdAt: DateFormatHelper.getNow(),
+    updatedAt: DateFormatHelper.getNow(),
   );
 });
 

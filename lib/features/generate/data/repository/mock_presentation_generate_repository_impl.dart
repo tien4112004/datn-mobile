@@ -11,7 +11,7 @@
 
 //     // Return mock outline response
 //     return OutlineGenerateResponse(
-//       id: 'mock-outline-${DateTime.now().millisecondsSinceEpoch}',
+//       id: 'mock-outline-${DateFormatHelper.getNow().millisecondsSinceEpoch}',
 //       outline: '''### ${outlineData.topic}
 
 // ---
@@ -37,7 +37,7 @@
 
 // ---
 // *Generated outline with ${outlineData.slideCount} slides in ${outlineData.language}*''',
-//       createdAt: DateTime.now().toIso8601String(),
+//       createdAt: DateFormatHelper.getNow().toIso8601String(),
 //     );
 //   }
 
@@ -50,11 +50,11 @@
 
 //     // Return mock response
 //     return PresentationGenerateResponse(
-//       id: 'mock-presentation-${DateTime.now().millisecondsSinceEpoch}',
+//       id: 'mock-presentation-${DateFormatHelper.getNow().millisecondsSinceEpoch}',
 //       title:
 //           'Generated: ${request.outline.substring(0, request.outline.length.clamp(0, 30))}...',
 //       status: 'completed',
-//       createdAt: DateTime.now(),
+//       createdAt: DateFormatHelper.getNow(),
 //     );
 //   }
 // }

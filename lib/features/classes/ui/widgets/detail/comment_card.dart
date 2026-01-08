@@ -3,6 +3,7 @@ import 'package:datn_mobile/features/classes/domain/entity/comment_entity.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_actions.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_author_info.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_avatar.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -30,7 +31,7 @@ class CommentCard extends ConsumerWidget {
 
     return Semantics(
       label:
-          'Comment by $authorName, posted ${timeago.format(comment.createdAt ?? DateTime.now())}',
+          'Comment by $authorName, posted ${timeago.format(comment.createdAt ?? DateFormatHelper.getNow())}',
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(

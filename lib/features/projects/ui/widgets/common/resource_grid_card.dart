@@ -113,7 +113,7 @@ class ResourceGridCard extends ConsumerWidget {
                   Text(
                     DateFormatHelper.formatRelativeDate(
                       ref: ref,
-                      updatedAt ?? DateTime.now(),
+                      updatedAt ?? DateFormatHelper.getNow(),
                     ),
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),

@@ -69,7 +69,7 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
             body: TabBarView(
               controller: _tabController,
               children: [
-                StreamTab(classId: widget.classId),
+                StreamTab(classEntity: classEntity),
                 ClassworkTab(classId: widget.classId),
                 StudentsTab(classId: widget.classId),
               ],

@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
 import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -317,9 +318,9 @@ class _DatePickerField extends StatelessWidget {
       onTap: () async {
         final date = await showDatePicker(
           context: context,
-          initialDate: value ?? DateTime.now(),
+          initialDate: value ?? DateFormatHelper.getNow(),
           firstDate: DateTime(1900),
-          lastDate: DateTime.now().add(const Duration(days: 365)),
+          lastDate: DateFormatHelper.getNow().add(const Duration(days: 365)),
         );
         if (date != null) {
           onChanged(date);

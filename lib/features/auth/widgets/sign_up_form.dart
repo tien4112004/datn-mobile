@@ -4,7 +4,6 @@ import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
@@ -27,7 +26,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate = DateFormatHelper.getNow();
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
 
   String? _termsErrorText;
@@ -61,7 +60,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      lastDate: DateFormatHelper.getNow(),
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -262,13 +261,13 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                     icon: const Icon(LucideIcons.circleX),
                     onPressed: () {
                       setState(() {
-                        _selectedDate = DateTime.now();
+                        _selectedDate = DateFormatHelper.getNow();
                       });
                     },
                   ),
                 ),
                 validator: (value) {
-                  final now = DateTime.now();
+                  final now = DateFormatHelper.getNow();
                   final age = now.year - _selectedDate.year;
                   final isBeforeBirthday =
                       now.month < _selectedDate.month ||

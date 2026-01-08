@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+
 ///This is the base class exception which can be
 ///used to throw with a message
 class BaseException implements Exception {
@@ -20,7 +22,7 @@ class APIException implements BaseException {
     this.errorCode,
     required this.errorMessage,
     DateTime? timestamp,
-  }) : timestamp = timestamp ?? DateTime.now();
+  }) : timestamp = timestamp ?? DateFormatHelper.getNow();
 
   APIException copyWith({int? code, String? errorCode, String? errorMessage}) {
     return APIException(
@@ -47,7 +49,7 @@ class APIException implements BaseException {
       errorMessage: map['errorMessage'] ?? '',
       timestamp: map['timestamp'] != null
           ? DateTime.parse(map['timestamp'])
-          : DateTime.now(),
+          : DateFormatHelper.getNow(),
     );
   }
 

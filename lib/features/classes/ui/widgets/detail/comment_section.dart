@@ -1,9 +1,11 @@
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_card.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_empty_state.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_error_state.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_input.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_list.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Section displaying comments for a post with input field
 class CommentSection extends ConsumerWidget {
@@ -32,94 +34,14 @@ class CommentSection extends ConsumerWidget {
           commentsState.when(
             data: (comments) {
               if (comments.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    children: [
-                      Icon(
-                        LucideIcons.messageSquare,
-                        size: 48,
-                        color: colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'No comments yet',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        allowComments
-                            ? 'Be the first to comment!'
-                            : 'Comments are disabled for this post',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                );
+                return CommentEmptyState(allowComments: allowComments);
               }
-
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                itemCount: comments.length,
-                separatorBuilder: (context, index) => Divider(
-                  height: 1,
-                  indent: 56,
-                  color: colorScheme.outlineVariant,
-                ),
-                itemBuilder: (context, index) {
-                  final comment = comments[index];
-                  return CommentCard(
-                    key: ValueKey(comment.id),
-                    comment: comment,
-                    canDelete: true, // TODO: Check user permissions
-                  );
-                },
-              );
+              return CommentList(comments: comments);
             },
-            loading: () => const Padding(
-              padding: EdgeInsets.all(24),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (error, stack) => Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Icon(
-                    LucideIcons.circleAlert,
-                    size: 48,
-                    color: colorScheme.error,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Failed to load comments',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: colorScheme.error,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    error.toString(),
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () =>
-                        ref.invalidate(commentsControllerProvider(postId)),
-                    icon: const Icon(LucideIcons.refreshCw, size: 18),
-                    label: const Text('Retry'),
-                  ),
-                ],
-              ),
+            loading: () => const CommentLoadingState(),
+            error: (error, stack) => CommentErrorState(
+              error: error,
+              onRetry: () => ref.invalidate(commentsControllerProvider(postId)),
             ),
           ),
 

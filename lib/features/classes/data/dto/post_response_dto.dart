@@ -4,12 +4,35 @@ import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
 
 part 'post_response_dto.g.dart';
 
+/// Author response dto
+@JsonSerializable()
+class AuthorResponseDto {
+  final String id;
+  final String firstName;
+  final String lastName;
+  final String email;
+
+  const AuthorResponseDto({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
+
+  factory AuthorResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$AuthorResponseDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuthorResponseDtoToJson(this);
+
+  String get fullName => '$firstName $lastName';
+}
+
 /// Data Transfer Object for Post API responses
 @JsonSerializable()
 class PostResponseDto {
   final String id;
   final String classId;
-  final String authorId;
+  final AuthorResponseDto author;
   final String content;
   final String type;
   final List<String>? attachments;
@@ -24,7 +47,7 @@ class PostResponseDto {
   const PostResponseDto({
     required this.id,
     required this.classId,
-    required this.authorId,
+    required this.author,
     required this.content,
     required this.type,
     this.attachments,
@@ -48,7 +71,9 @@ extension PostResponseMapper on PostResponseDto {
   PostEntity toEntity() => PostEntity(
     id: id,
     classId: classId,
-    authorId: authorId,
+    authorId: author.id,
+    authorName: author.fullName,
+    authorEmail: author.email,
     content: content,
     type: PostType.fromString(type),
     attachments: attachments ?? [],

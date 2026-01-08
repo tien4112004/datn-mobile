@@ -32,7 +32,7 @@ class ClassDetailAppBar extends StatelessWidget {
         button: true,
         hint: 'Double tap to return to classes list',
         child: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft),
+          icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
           onPressed: () {
             HapticFeedback.lightImpact();
             context.router.maybePop();
@@ -46,7 +46,7 @@ class ClassDetailAppBar extends StatelessWidget {
           button: true,
           hint: 'Double tap to see more options',
           child: IconButton(
-            icon: const Icon(LucideIcons.ellipsisVertical),
+            icon: const Icon(LucideIcons.ellipsisVertical, color: Colors.white),
             onPressed: () {
               HapticFeedback.mediumImpact();
               _showClassOptions(context);

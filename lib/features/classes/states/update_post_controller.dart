@@ -47,12 +47,13 @@ class UpdatePostController extends AsyncNotifier<void> {
   Future<void> togglePin({
     required String classId,
     required String postId,
+    required bool pinned,
   }) async {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
       final repository = ref.read(postRepositoryProvider);
-      await repository.togglePin(postId);
+      await repository.togglePin(postId, pinned);
 
       // Refresh the posts list
       ref.invalidate(postsControllerProvider(classId));

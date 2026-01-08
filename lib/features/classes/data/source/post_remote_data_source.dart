@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/classes/data/dto/pin_post_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_response_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_create_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_update_request_dto.dart';
@@ -52,5 +53,6 @@ abstract class PostRemoteDataSource {
   @POST('/posts/{postId}/pin')
   Future<ServerResponseDto<PostResponseDto>> togglePin(
     @Path('postId') String postId,
+    @Body() PinPostRequestDto request,
   );
 }

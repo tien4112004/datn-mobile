@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/classes/data/dto/pin_post_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_create_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_response_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_update_request_dto.dart';
@@ -89,8 +90,11 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
-  Future<PostEntity> togglePin(String postId) async {
-    final response = await _remoteDataSource.togglePin(postId);
+  Future<PostEntity> togglePin(String postId, bool pinned) async {
+    final response = await _remoteDataSource.togglePin(
+      postId,
+      PinPostRequestDto(pinned: pinned),
+    );
     return response.data!.toEntity();
   }
 }

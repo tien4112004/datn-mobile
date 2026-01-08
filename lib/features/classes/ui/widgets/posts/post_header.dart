@@ -3,7 +3,6 @@ import 'package:datn_mobile/features/classes/ui/widgets/detail/post_type_chip.da
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_author_avatar.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_author_info.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_menu.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/post_pin_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,7 +45,6 @@ class PostHeader extends ConsumerWidget {
                     createdAt: post.createdAt,
                   ),
                 ),
-                PostPinIndicator(isPinned: post.isPinned),
               ],
             ),
           ),

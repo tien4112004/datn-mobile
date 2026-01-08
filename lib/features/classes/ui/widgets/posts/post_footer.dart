@@ -28,9 +28,13 @@ class PostFooter extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
-      ),
+      decoration: allowComments
+          ? BoxDecoration(
+              border: Border(
+                top: BorderSide(color: colorScheme.outlineVariant),
+              ),
+            )
+          : null,
       child: Row(
         children: [
           // Comment count button
@@ -54,16 +58,6 @@ class PostFooter extends StatelessWidget {
             ),
 
           const Spacer(),
-
-          // // Updated indicator
-          // if (updatedAt != createdAt)
-          //   Text(
-          //     'Edited',
-          //     style: theme.textTheme.bodySmall?.copyWith(
-          //       color: colorScheme.onSurfaceVariant,
-          //       fontStyle: FontStyle.italic,
-          //     ),
-          //   ),
         ],
       ),
     );

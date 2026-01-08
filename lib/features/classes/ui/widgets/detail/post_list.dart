@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
 import 'package:datn_mobile/features/classes/providers/post_paging_controller_pod.dart';
 import 'package:datn_mobile/features/classes/ui/pages/post_upsert_page.dart';
@@ -12,9 +13,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// List of posts with pull-to-refresh and pagination
 class PostList extends ConsumerStatefulWidget {
-  final String classId;
+  final ClassEntity classEntity;
 
-  const PostList({super.key, required this.classId});
+  const PostList({super.key, required this.classEntity});
 
   @override
   ConsumerState<PostList> createState() => _PostListState();
@@ -23,7 +24,7 @@ class PostList extends ConsumerStatefulWidget {
 class _PostListState extends ConsumerState<PostList> {
   Future<void> _onRefresh() async {
     HapticFeedback.lightImpact();
-    final controller = ref.read(postPagingControllerPod(widget.classId));
+    final controller = ref.read(postPagingControllerPod(widget.classEntity.id));
     controller.refresh();
   }
 
@@ -31,20 +32,24 @@ class _PostListState extends ConsumerState<PostList> {
     HapticFeedback.mediumImpact();
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (context) => PostUpsertPage(classId: widget.classId),
+        builder: (context) => PostUpsertPage(classId: widget.classEntity.id),
       ),
     );
 
     // Refresh posts if creation was successful
     if (result == true && mounted) {
-      final controller = ref.read(postPagingControllerPod(widget.classId));
+      final controller = ref.read(
+        postPagingControllerPod(widget.classEntity.id),
+      );
       controller.refresh();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final pagingController = ref.watch(postPagingControllerPod(widget.classId));
+    final pagingController = ref.watch(
+      postPagingControllerPod(widget.classEntity.id),
+    );
 
     return Scaffold(
       body: RefreshIndicator(
@@ -64,7 +69,7 @@ class _PostListState extends ConsumerState<PostList> {
                       child: PostCard(
                         key: ValueKey(item.id),
                         post: item,
-                        classId: widget.classId,
+                        classEntity: widget.classEntity,
                       ),
                     );
                   },

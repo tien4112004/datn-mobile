@@ -43,5 +43,5 @@ abstract class PostRepository {
   Future<void> deletePost(String postId);
 
   /// Toggles the pin status of a post
-  Future<PostEntity> togglePin(String postId);
+  Future<PostEntity> togglePin(String postId, bool pinned);
 }

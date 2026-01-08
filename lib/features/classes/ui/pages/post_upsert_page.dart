@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/classes/ui/widgets/posts/post_actions_secti
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_editor_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_segmented_control.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/widgets/richtext_toolbar.dart';
 import 'package:markdown_quill/markdown_quill.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +163,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _selectDate() async {
-    final now = DateTime.now();
+    final now = DateFormatHelper.getNow();
     final picked = await showDatePicker(
       context: context,
       initialDate: _scheduledDate ?? now,

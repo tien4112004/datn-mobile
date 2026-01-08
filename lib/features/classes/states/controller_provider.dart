@@ -23,7 +23,7 @@ final classRepositoryProvider = Provider<ClassRepository>((ref) {
 
 /// Provider for classes list controller.
 final classesControllerProvider =
-    AsyncNotifierProvider<ClassesController, List<ClassEntity>>(
+    AsyncNotifierProvider.autoDispose<ClassesController, List<ClassEntity>>(
       () => ClassesController(),
     );
 

@@ -56,28 +56,13 @@ class SettingContentView extends ConsumerWidget {
             SettingSection(
               title: t.accountSetting,
               options: [
-                // TODO: Delete this later
-                SettingOption(
-                  title: "Go to sign in",
-                  onPressed: () => {context.router.push(const SignInRoute())},
-                ),
-                SettingOption(
-                  title: 'Go to Students',
-                  onPressed: () {
-                    // Using a mock class ID for testing
-                    context.router.push(
-                      StudentListRoute(classId: 'mock-class-1'),
-                    );
-                  },
-                  icon: LucideIcons.users,
-                ),
                 // FOR TESTING ONLY
                 SettingOption(
                   title: t.personalInformation,
                   onPressed: () => _navigateWithFallback(
                     context,
                     ref,
-                    'personal-information',
+                    '/personal-information',
                   ),
                   icon: LucideIcons.user,
                 ),

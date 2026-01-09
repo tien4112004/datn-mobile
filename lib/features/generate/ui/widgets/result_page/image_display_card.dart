@@ -76,6 +76,7 @@ class ImageDisplayCard extends ConsumerWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
+          extendBodyBehindAppBar: true,
           backgroundColor: Colors.black,
           appBar: AppBar(
             backgroundColor: Colors.black,
@@ -83,6 +84,7 @@ class ImageDisplayCard extends ConsumerWidget {
           ),
           body: Center(
             child: InteractiveViewer(
+              transformationController: TransformationController(),
               minScale: 0.5,
               maxScale: 4.0,
               child: CachedNetworkImage(

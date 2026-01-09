@@ -101,7 +101,7 @@ class SettingContentView extends ConsumerWidget {
                   onPressed: () => _navigateWithFallback(
                     context,
                     ref,
-                    'personal-information',
+                    '/personal-information',
                   ),
                   icon: LucideIcons.user,
                 ),

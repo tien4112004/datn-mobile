@@ -5,6 +5,7 @@ part 'user_profile.g.dart';
 
 @JsonSerializable()
 class UserProfile {
+  final String id;
   final String? email;
   final String firstName;
   final String lastName;
@@ -16,6 +17,7 @@ class UserProfile {
   final UserRole? role;
 
   UserProfile({
+    required this.id,
     required this.lastName,
     required this.firstName,
     required this.phoneNumber,

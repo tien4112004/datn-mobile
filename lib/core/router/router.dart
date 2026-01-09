@@ -56,7 +56,11 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ImageDetailRoute.page, path: '/image/:imageId'),
     AutoRoute(page: SignInRoute.page, path: '/sign-in'),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
-    // Class Routes
+    AutoRoute(
+      page: PersonalInformationRoute.page,
+      path: '/personal-information',
+      guards: [RouteGuard(secureStorage)],
+    ), // Class Routes
     AutoRoute(page: ClassDetailRoute.page, path: '/classes/:classId'),
     AutoRoute(page: ClassEditRoute.page, path: '/classes/:classId/edit'),
 

@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:datn_mobile/features/students/domain/entity/student.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,7 +146,8 @@ class StudentTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   // Enhanced actions menu
-                  ref.watch(userControllerProvider.notifier).isStudent()
+                  ref.watch(userControllerProvider).value?.role ==
+                          UserRole.student
                       ? const SizedBox.shrink()
                       : Semantics(
                           label: 'More actions for ${student.fullName}',

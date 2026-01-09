@@ -1,8 +1,9 @@
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
 import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userControllerProvider =
@@ -11,12 +12,15 @@ final userControllerProvider =
 class UserController extends AsyncNotifier<UserProfile?> {
   @override
   Future<UserProfile?> build() async {
-    final authState = ref.watch(authControllerPod);
+    final secureStorage = ref.watch(secureStoragePod);
 
     // If authenticated, fetch user profile from API or storage
-    if (authState.value?.isAuthenticated == true) {
+    if (await secureStorage.containsKey(key: R.ACCESS_TOKEN_KEY)) {
+      debugPrint('User is authenticated');
       return _initializeUserProfile();
     }
+
+    debugPrint('User is not authenticated');
     return null;
   }
 
@@ -25,6 +29,7 @@ class UserController extends AsyncNotifier<UserProfile?> {
     try {
       // Try to get from local storage first
       final cachedProfile = await _getUserProfileFromStorage();
+      debugPrint('User profile fetched from storage: $cachedProfile');
       if (cachedProfile != null) {
         return cachedProfile;
       }
@@ -41,6 +46,8 @@ class UserController extends AsyncNotifier<UserProfile?> {
   Future<UserProfile> fetchAndStoreUserProfile() async {
     final repository = ref.read(userRepositoryProvider);
     final profile = await repository.getCurrentUser();
+
+    debugPrint('User profile fetched from API: $profile');
 
     // Store to local storage
     await _saveUserProfileToStorage(profile);
@@ -65,9 +72,12 @@ class UserController extends AsyncNotifier<UserProfile?> {
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
+      debugPrint('Refreshing user profile...');
       return await fetchAndStoreUserProfile();
     });
   }
+
+  bool get isStudent => state.value?.role == 'student';
 
   /// Get user profile from local storage
   Future<UserProfile?> _getUserProfileFromStorage() async {

@@ -36,9 +36,6 @@ class AuthorAPIInterceptor extends Interceptor {
       debugPrint('Error reading access token: $e');
     }
 
-    debugPrint('Request Options: ${options.method} ${options.path}');
-    debugPrint('Request Headers: ${options.headers}');
-
     handler.next(options);
   }
 }

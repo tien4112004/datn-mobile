@@ -4,10 +4,10 @@ part 'user_profile.g.dart';
 
 @JsonSerializable()
 class UserProfile {
-  final String email;
+  final String? email;
   final String firstName;
   final String lastName;
-  final DateTime dateOfBirth;
+  final DateTime? dateOfBirth;
   final String phoneNumber;
 
   // NOTE: This role is ONLY FOR STUDENT
@@ -15,11 +15,11 @@ class UserProfile {
   final String? role;
 
   UserProfile({
-    required this.email,
-    required this.firstName,
     required this.lastName,
-    required this.dateOfBirth,
+    required this.firstName,
     required this.phoneNumber,
+    this.email,
+    this.dateOfBirth,
     this.role,
   });
 

@@ -10,7 +10,6 @@ import 'package:datn_mobile/features/projects/ui/widgets/mindmap/mindmap_tile.da
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -157,11 +156,12 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                     );
                                   },
                                 ),
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: Themes.padding.p8,
-                                  child: const Divider(
-                                    height: 1,
-                                    color: Color.fromRGBO(189, 189, 189, 1),
+                                separatorBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(left: 132),
+                                  child: Divider(
+                                    height: Themes.padding.p8,
+                                    thickness: 1,
+                                    color: Colors.grey.shade300,
                                   ),
                                 ),
                               ),

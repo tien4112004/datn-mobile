@@ -38,24 +38,32 @@ class AbstractResourceTile extends ConsumerWidget {
         child: Row(
           children: [
             // Thumbnail
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                constraints: const BoxConstraints(minWidth: 100, minHeight: 64),
-                color: resourceType.color.withValues(alpha: 0.1),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  clipBehavior: Clip.hardEdge,
-                  child: Center(
-                    child: thumbnail == null
-                        ? DefaultThumbnail(resourceType: resourceType)
-                        : Image.network(
-                            thumbnail!,
-                            fit: BoxFit.contain,
-                            width: 100,
-                            cacheWidth: 200,
-                          ),
-                  ),
+            Container(
+              constraints: const BoxConstraints(
+                minWidth: 100,
+                minHeight: 64,
+                maxWidth: 120,
+                maxHeight: 80,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: resourceType.color.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                clipBehavior: Clip.hardEdge,
+                child: Center(
+                  child: thumbnail == null
+                      ? DefaultThumbnail(resourceType: resourceType)
+                      : Image.network(
+                          thumbnail!,
+                          fit: BoxFit.fitHeight,
+                          cacheWidth: 200,
+                        ),
                 ),
               ),
             ),
@@ -74,7 +82,7 @@ class AbstractResourceTile extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   if (description != null) ...[
                     Text(
                       description!,
@@ -85,7 +93,7 @@ class AbstractResourceTile extends ConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                   ],
                   Text(
                     DateFormatHelper.formatRelativeDate(

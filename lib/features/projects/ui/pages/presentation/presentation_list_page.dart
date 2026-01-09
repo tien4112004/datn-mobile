@@ -136,11 +136,12 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                       controller: pagedPresentations,
                       builder: (context, state, fetchNextPage) =>
                           PagedListView.separated(
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: Themes.padding.p8,
-                              child: const Divider(
-                                height: 1,
-                                color: Color.fromRGBO(189, 189, 189, 1),
+                            separatorBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.only(left: 132),
+                              child: Divider(
+                                height: Themes.padding.p8,
+                                thickness: 1,
+                                color: Colors.grey.shade300,
                               ),
                             ),
                             builderDelegate: PagedChildBuilderDelegate(

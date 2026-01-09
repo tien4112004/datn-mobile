@@ -21,15 +21,22 @@ class ResourceTypeCard extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
+      splashColor: resourceType.color.withValues(alpha: 0.1),
+      highlightColor: resourceType.color.withValues(alpha: 0.05),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        constraints: const BoxConstraints(minHeight: 64),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: resourceType.color.withValues(alpha: 0.1),
+                color: Colors.white,
                 borderRadius: Themes.boxRadius,
+                border: Border.all(
+                  color: resourceType.color.withValues(alpha: 0.2),
+                  width: 1,
+                ),
               ),
               child: Icon(
                 resourceType.icon,
@@ -38,15 +45,20 @@ class ResourceTypeCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 16),
-            Text(
-              resourceType.getLabel(t),
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            Expanded(
+              child: Text(
+                resourceType.getLabel(t),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.3,
+                ),
+              ),
             ),
-            const Spacer(),
             Icon(
               LucideIcons.chevronRight,
-              size: 16,
-              color: Colors.grey.shade600,
+              size: 20,
+              color: Colors.grey.shade700,
             ),
           ],
         ),

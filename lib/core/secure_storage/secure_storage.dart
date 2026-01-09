@@ -18,4 +18,8 @@ class SecureStorage {
   Future<void> delete({required String key}) async {
     await storage.delete(key: key);
   }
+
+  Future<bool> containsKey({required String key}) async {
+    return await storage.containsKey(key: key);
+  }
 }

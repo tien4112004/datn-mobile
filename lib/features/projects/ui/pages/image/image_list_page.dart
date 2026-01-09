@@ -186,11 +186,12 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                       );
                     } else {
                       return PagedListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 8,
+                        separatorBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.only(left: 132),
                           child: Divider(
-                            height: 1,
-                            color: Color.fromRGBO(189, 189, 189, 1),
+                            height: 8,
+                            thickness: 1,
+                            color: Colors.grey.shade300,
                           ),
                         ),
                         builderDelegate:

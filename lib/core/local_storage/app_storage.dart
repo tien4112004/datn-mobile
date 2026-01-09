@@ -26,6 +26,28 @@ class AppStorage {
     await appBox?.put(key, value);
   }
 
+  /// for getting JSON value for a given key from the box
+  Map<String, dynamic>? getJson({required String key}) {
+    final value = appBox?.get(key);
+    if (value is Map) {
+      return Map<String, dynamic>.from(value);
+    }
+    return null;
+  }
+
+  /// for storing JSON value on defined key on the box
+  Future<void> putJson({
+    required String key,
+    required Map<String, dynamic> value,
+  }) async {
+    await appBox?.put(key, value);
+  }
+
+  /// for deleting a specific key from the box
+  Future<void> delete({required String key}) async {
+    await appBox?.delete(key);
+  }
+
   /// for clearing all data in box
   Future<void> clearAllData() async {
     await appBox?.clear();

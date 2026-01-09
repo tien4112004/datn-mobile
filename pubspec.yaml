@@ -1,11 +1,11 @@
 name: datn_mobile
-description: ""
+description: ''
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
-  flutter: ">=3.8.0"
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.8.0'
 
 dependencies:
   auto_route: ^10.1.2
@@ -58,6 +58,9 @@ dependencies:
   cached_network_image: ^3.4.1
   uuid: ^4.1.0
   shared_preferences: ^2.2.0
+  timeago: ^3.7.0
+  flutter_quill: ^11.5.0
+  markdown_quill: ^4.3.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +77,7 @@ dev_dependencies:
   json_serializable: ^6.11.1
   retrofit_generator: ^10.0.0
   flutter_pre_commit: ^0.2.4
+  dart_quill_delta: ^10.8.3
 
 flutter:
   uses-material-design: true

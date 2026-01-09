@@ -5,7 +5,7 @@ import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

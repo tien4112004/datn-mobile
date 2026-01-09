@@ -62,6 +62,17 @@ class SettingContentView extends ConsumerWidget {
                   onPressed: () => {context.router.push(const SignInRoute())},
                 ),
                 SettingOption(
+                  title: 'Go to Students',
+                  onPressed: () {
+                    // Using a mock class ID for testing
+                    context.router.push(
+                      StudentListRoute(classId: 'mock-class-1'),
+                    );
+                  },
+                  icon: LucideIcons.users,
+                ),
+                // FOR TESTING ONLY
+                SettingOption(
                   title: t.personalInformation,
                   onPressed: () => _navigateWithFallback(
                     context,
@@ -140,7 +151,13 @@ class SettingContentView extends ConsumerWidget {
                   builder: (context, ref, child) {
                     return ElevatedButton(
                       onPressed: () {
-                        ref.read(authControllerPod.notifier).signOut();
+                        try {
+                          ref.read(authControllerPod.notifier).signOut();
+                        } catch (e) {
+                          // Ignore
+                        } finally {
+                          context.router.replaceAll([const SignInRoute()]);
+                        }
                       },
                       child: Text(
                         t.settings.logOut,

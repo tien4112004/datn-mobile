@@ -10,6 +10,7 @@ import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/auto_route_observer.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -17,8 +18,8 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/core/theme/theme_controller.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/widget/no_internet_widget.dart';
-import 'package:datn_mobile/shared/widget/responsive_wrapper.dart';
+import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
+import 'package:datn_mobile/shared/widgets/responsive_wrapper.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 
 ///This class holds Material App or Cupertino App
@@ -96,6 +97,7 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
+            FlutterQuillLocalizations.delegate,
           ],
           builder: (context, child) {
             if (mounted) {

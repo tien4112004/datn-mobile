@@ -11,6 +11,7 @@ class UserProfileResponse {
   final DateTime dateOfBirth;
   final String? phoneNumber;
   final String? avatarUrl;
+  final String? role;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -22,6 +23,7 @@ class UserProfileResponse {
     required this.email,
     required this.firstName,
     required this.lastName,
+    this.role,
   });
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) =>

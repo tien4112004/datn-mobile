@@ -7,7 +7,7 @@ import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/internet_checker_pod.dart';
-import 'package:datn_mobile/shared/widget/app_locale_popup.dart';
+import 'package:datn_mobile/shared/widgets/app_locale_popup.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:spot/spot.dart';
 

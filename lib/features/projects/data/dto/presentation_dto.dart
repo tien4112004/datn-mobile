@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/projects/data/dto/slide_dto.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'presentation_dto.g.dart';
@@ -52,8 +53,8 @@ extension PresentationEntityMapper on Presentation {
     title: title,
     metaData: {},
     slides: [],
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
+    createdAt: DateFormatHelper.getNow(),
+    updatedAt: DateFormatHelper.getNow(),
     isParsed: false,
     viewport: {'width': 1000, 'height': 562.5},
   );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/widget/box.dart';
-import 'package:datn_mobile/shared/widget/info_dot.dart';
+import 'package:datn_mobile/shared/widgets/box.dart';
+import 'package:datn_mobile/shared/widgets/info_dot.dart';
 
 class OptionBox extends StatefulWidget {
   final String title;

@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_project_dto.g.dart';
@@ -43,8 +44,8 @@ extension ImageProjectEntityMapper on ImageProject {
     id: id,
     title: title,
     imageUrl: imageUrl,
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
+    createdAt: DateFormatHelper.getNow(),
+    updatedAt: DateFormatHelper.getNow(),
     description: description,
   );
 }

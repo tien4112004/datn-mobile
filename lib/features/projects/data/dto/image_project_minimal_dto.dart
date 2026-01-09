@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_project_minimal_dto.g.dart';
@@ -40,7 +41,7 @@ extension ImageProjectMinimalEntityMapper on ImageProjectMinimal {
     id: id,
     title: title,
     imageUrl: imageUrl,
-    createdAt: createdAt ?? DateTime.now(),
-    updatedAt: updatedAt ?? DateTime.now(),
+    createdAt: createdAt ?? DateFormatHelper.getNow(),
+    updatedAt: updatedAt ?? DateFormatHelper.getNow(),
   );
 }

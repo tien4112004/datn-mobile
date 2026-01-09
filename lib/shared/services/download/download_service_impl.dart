@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:gal/gal.dart';
@@ -86,7 +87,7 @@ class DownloadServiceImpl implements DownloadService {
 
       // Sanitize prompt and create filename
       final sanitizedPrompt = _sanitizeFilename(prompt);
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final timestamp = DateFormatHelper.getNow().millisecondsSinceEpoch;
       final extension = _getFileExtension(url);
       final filename = '${sanitizedPrompt}_$timestamp$extension';
 

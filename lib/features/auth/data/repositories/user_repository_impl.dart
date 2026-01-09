@@ -1,6 +1,7 @@
 import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
 import 'package:datn_mobile/features/auth/data/sources/user_remote_source.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:datn_mobile/features/auth/domain/repository/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
@@ -19,7 +20,7 @@ class UserRepositoryImpl implements UserRepository {
       lastName: dto.lastName,
       dateOfBirth: dto.dateOfBirth ?? DateTime(1970, 1, 1),
       phoneNumber: dto.phoneNumber ?? '',
-      role: dto.role,
+      role: UserRole.fromString(dto.role),
     );
 
     // Save to cache after fetching from API

@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/widgets/dropdown_field.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,14 +37,12 @@ class PresentationWidgetOptions {
           label: t.generate.presentationGenerate.selectSlideCount,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return DropdownField<int>(
+              return FlexDropdownField<int>(
                 value: formPresentationState.slideCount,
                 items: availableSlideCounts,
                 onChanged: (value) {
-                  if (value != null) {
-                    formController.updateSlideCount(value);
-                    setSheetState(() {});
-                  }
+                  formController.updateSlideCount(value);
+                  setSheetState(() {});
                 },
               );
             },

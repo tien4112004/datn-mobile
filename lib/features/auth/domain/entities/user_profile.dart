@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_profile.g.dart';
@@ -10,9 +11,9 @@ class UserProfile {
   final DateTime? dateOfBirth;
   final String phoneNumber;
 
-  // NOTE: This role is ONLY FOR STUDENT
-  // Mean that the value of this field, if not null, is always 'STUDENT'
-  final String? role;
+  // User role - can be student or teacher
+  @JsonKey(fromJson: _roleFromJson, toJson: _roleToJson)
+  final UserRole? role;
 
   UserProfile({
     required this.email,
@@ -31,7 +32,7 @@ class UserProfile {
     String? lastName,
     DateTime? dateOfBirth,
     String? phoneNumber,
-    String? role,
+    UserRole? role,
   }) {
     return UserProfile(
       email: email ?? this.email,
@@ -42,6 +43,9 @@ class UserProfile {
       role: role ?? this.role,
     );
   }
+
+  static UserRole? _roleFromJson(String? value) => UserRole.fromString(value);
+  static String? _roleToJson(UserRole? role) => role?.value;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);

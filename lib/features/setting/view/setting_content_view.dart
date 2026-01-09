@@ -1,7 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/core/router/router_pod.dart';
@@ -45,7 +43,7 @@ class SettingContentView extends ConsumerWidget {
       }
     });
 
-    final userState = ref.watch(userControllerProvider);
+    // final userStateNotifier = ref.watch(userControllerProvider.notifier);
 
     return SingleChildScrollView(
       child: Padding(
@@ -56,48 +54,43 @@ class SettingContentView extends ConsumerWidget {
           children: [
             const SettingProfilePicture(),
             const SizedBox(height: 20),
-            SettingSection(
-              title: 'Showcase Area',
-              options: [
-                SettingOption(
-                  title: 'Question Widgets Showcase',
-                  onPressed: () {
-                    context.router.push(const QuestionShowcaseRoute());
-                  },
-                  icon: LucideIcons.layoutDashboard,
-                ),
-                SettingOption(
-                  title: userState.value?.role == null
-                      ? 'Switch to Student View'
-                      : 'Switch to Teacher View',
-                  onPressed: () {
-                    final currentRole = ref
-                        .read(userControllerProvider)
-                        .value
-                        ?.role;
-                    debugPrint("Current user role: $currentRole");
+            // SettingSection(
+            //   title: 'Showcase Area',
+            //   options: [
+            //     SettingOption(
+            //       title: 'Question Widgets Showcase',
+            //       onPressed: () {
+            //         context.router.push(const QuestionShowcaseRoute());
+            //       },
+            //       icon: LucideIcons.layoutDashboard,
+            //     ),
+            //     SettingOption(
+            //       title: userStateNotifier.isStudent()
+            //           ? 'Switch to Teacher View'
+            //           : 'Switch to Student View',
+            //       onPressed: () {
+            //         final currentRole = ref
+            //             .read(userControllerProvider)
+            //             .value
+            //             ?.role;
+            //         debugPrint("Current user role: $currentRole");
 
-                    // Toggle between student and teacher
-                    if (currentRole == null) {
-                      debugPrint("Switching to Student View Mode");
-                      ref
-                          .read(userControllerProvider.notifier)
-                          .setUserRole('student');
-                    } else {
-                      debugPrint("Switching to Teacher View Mode");
-                      ref
-                          .read(userControllerProvider.notifier)
-                          .setUserRole('teacher');
-                    }
-
-                    // Reload app for changes to take effect
-                    final router = ref.read(autorouterProvider);
-                    router.replaceAll([MainWrapperRoute()]);
-                  },
-                  icon: LucideIcons.userCog,
-                ),
-              ],
-            ),
+            //         // Toggle between student and teacher
+            //         if (userStateNotifier.isStudent()) {
+            //           debugPrint("Switching to Student View Mode");
+            //           ref
+            //               .read(userControllerProvider.notifier)
+            //               .setUserRole(UserRole.teacher);
+            //         } else {
+            //           ref
+            //               .read(userControllerProvider.notifier)
+            //               .setUserRole(UserRole.student);
+            //         }
+            //       },
+            //       icon: LucideIcons.userCog,
+            //     ),
+            //   ],
+            // ),
             SettingSection(
               title: t.accountSetting,
               options: [

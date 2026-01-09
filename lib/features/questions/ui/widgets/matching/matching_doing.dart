@@ -1,7 +1,7 @@
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_card_wrapper.dart';
-import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 
 /// Matching Question in Doing Mode
 class MatchingDoing extends StatefulWidget {
@@ -105,11 +105,11 @@ class _MatchingDoingState extends State<MatchingDoing> {
             ),
           ),
           const SizedBox(height: 8),
-          DropdownField<String>(
+          FlexDropdownField<String>(
             value: currentValue,
             items: dropdownItems,
             onChanged: (value) {
-              if (value != null && value != placeholder) {
+              if (value != placeholder) {
                 _selectMatch(pair.left, value);
               } else {
                 _selectMatch(pair.left, null);

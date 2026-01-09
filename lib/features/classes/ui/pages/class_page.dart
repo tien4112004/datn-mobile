@@ -22,9 +22,9 @@ class ClassPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final classesState = ref.watch(classesControllerProvider);
-    final userState = ref.watch(userControllerProvider);
-    final isStudent =
-        userState.value != null; // If role has value, the user is student
+    final isStudent = ref
+        .watch(userControllerProvider.notifier)
+        .isStudent(); // If role has value, the user is student
 
     return Scaffold(
       appBar: const _ClassListAppBar(),

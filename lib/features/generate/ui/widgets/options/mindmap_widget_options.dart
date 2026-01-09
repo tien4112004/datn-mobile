@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/widgets/dropdown_field.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,14 +21,12 @@ class MindmapWidgetOptions {
           label: t.generate.mindmapGenerate.depthLevel,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return DropdownField<int>(
+              return FlexDropdownField<int>(
                 value: formState.maxDepth,
                 items: availableMaxDepths,
                 onChanged: (value) {
-                  if (value != null) {
-                    formController.updateMaxDepth(value);
-                    setSheetState(() {});
-                  }
+                  formController.updateMaxDepth(value);
+                  setSheetState(() {});
                 },
               );
             },
@@ -48,14 +46,12 @@ class MindmapWidgetOptions {
           label: t.generate.mindmapGenerate.selectMaxBranches,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return DropdownField<int>(
+              return FlexDropdownField<int>(
                 value: formState.maxBranchesPerNode,
                 items: availableMaxBranches,
                 onChanged: (value) {
-                  if (value != null) {
-                    formController.updateMaxBranchesPerNode(value);
-                    setSheetState(() {});
-                  }
+                  formController.updateMaxBranchesPerNode(value);
+                  setSheetState(() {});
                 },
               );
             },

@@ -61,6 +61,7 @@ dependencies:
   timeago: ^3.7.0
   flutter_quill: ^11.5.0
   markdown_quill: ^4.3.0
+  flex_dropdown: ^0.1.0
 
 dev_dependencies:
   flutter_test:

@@ -35,7 +35,8 @@ class StudentsTab extends ConsumerWidget {
       ),
       floatingActionButton:
           (ref.watch(userControllerProvider.notifier).isStudent())
-          ? Semantics(
+          ? null
+          : Semantics(
               label: 'Add new student',
               button: true,
               hint: 'Double tap to add a student to this class',
@@ -46,8 +47,7 @@ class StudentsTab extends ConsumerWidget {
                 },
                 child: const Icon(LucideIcons.userPlus),
               ),
-            )
-          : null,
+            ),
     );
   }
 }

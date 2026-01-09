@@ -6,7 +6,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dar
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widgets/dropdown_field.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -81,14 +81,12 @@ class GenerationSettingsSheet extends ConsumerWidget {
       label: t.generate.mindmapGenerate.selectLanguage,
       child: StatefulBuilder(
         builder: (context, setSheetState) {
-          return DropdownField<String>(
+          return FlexDropdownField<String>(
             value: formState.language,
             items: _availableLanguages,
             onChanged: (value) {
-              if (value != null) {
-                formController.updateLanguage(value);
-                setSheetState(() {});
-              }
+              formController.updateLanguage(value);
+              setSheetState(() {});
             },
           );
         },
@@ -123,17 +121,15 @@ class GenerationSettingsSheet extends ConsumerWidget {
                   models.first.displayName;
               return StatefulBuilder(
                 builder: (context, setSheetState) {
-                  return DropdownField<String>(
+                  return FlexDropdownField<String>(
                     value: currentValue,
                     items: displayNames,
                     onChanged: (value) {
-                      if (value != null) {
-                        final model = models.firstWhere(
-                          (m) => m.displayName == value,
-                        );
-                        formController.updateOutlineModel(model);
-                        setSheetState(() {});
-                      }
+                      final model = models.firstWhere(
+                        (m) => m.displayName == value,
+                      );
+                      formController.updateOutlineModel(model);
+                      setSheetState(() {});
                     },
                   );
                 },

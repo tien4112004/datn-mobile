@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
-import 'package:datn_mobile/shared/widget/dropdown_field.dart';
 
 // Multiple Choice Widgets
 import 'package:datn_mobile/features/questions/ui/widgets/multiple_choice/multiple_choice_editing.dart';
@@ -172,16 +172,14 @@ class _QuestionShowcasePageState extends State<QuestionShowcasePage> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        DropdownField<QuestionType>(
+                        FlexDropdownField<QuestionType>(
                           value: _selectedType,
                           items: QuestionType.values,
                           itemLabelBuilder: (type) => type.displayName,
                           onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _selectedType = value;
-                              });
-                            }
+                            setState(() {
+                              _selectedType = value;
+                            });
                           },
                         ),
                       ],
@@ -197,16 +195,14 @@ class _QuestionShowcasePageState extends State<QuestionShowcasePage> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        DropdownField<QuestionMode>(
+                        FlexDropdownField<QuestionMode>(
                           value: _selectedMode,
                           items: _getAvailableModes(),
                           itemLabelBuilder: (mode) => mode.displayName,
                           onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                _selectedMode = value;
-                              });
-                            }
+                            setState(() {
+                              _selectedMode = value;
+                            });
                           },
                         ),
                       ],

@@ -3,6 +3,7 @@ import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
 import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userControllerProvider =
@@ -30,6 +31,8 @@ class UserController extends AsyncNotifier<UserProfile?> {
     final repository = ref.read(userRepositoryProvider);
     final profile = await repository.getCurrentUser();
 
+    debugPrint('User profile fetched from API: $profile');
+
     // Store to local storage
     await _saveUserProfileToStorage(profile);
 
@@ -53,9 +56,12 @@ class UserController extends AsyncNotifier<UserProfile?> {
     state = const AsyncValue.loading();
 
     state = await AsyncValue.guard(() async {
+      debugPrint('Refreshing user profile...');
       return await fetchAndStoreUserProfile();
     });
   }
+
+  bool get isStudent => state.value?.role == 'student';
 
   /// Get user profile from local storage
   Future<UserProfile?> _getUserProfileFromStorage() async {

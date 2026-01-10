@@ -10,6 +10,8 @@ import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_searc
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -147,32 +149,21 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                                   ),
                                 ),
                               ),
-                              noItemsFoundIndicatorBuilder: (context) => Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.image,
-                                      size: 64,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      t.projects.no_images,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              noItemsFoundIndicatorBuilder: (context) =>
+                                  EnhancedEmptyState(
+                                    icon: LucideIcons.image,
+                                    title: t.projects.no_images,
+                                    message:
+                                        'Create your first image to get started',
+                                  ),
                               firstPageErrorIndicatorBuilder: (context) =>
-                                  const Center(
-                                    child: Text(
-                                      "t.projects.error_loading_images",
-                                    ),
+                                  EnhancedErrorState(
+                                    title: 'Error loading images',
+                                    message:
+                                        state.error?.toString() ??
+                                        'Unknown error',
+                                    actionLabel: 'Retry',
+                                    onRetry: () => pagingController.refresh(),
                                   ),
                               newPageErrorIndicatorBuilder: (context) =>
                                   const Center(
@@ -215,32 +206,21 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                                   ),
                                 ),
                               ),
-                              noItemsFoundIndicatorBuilder: (context) => Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      LucideIcons.image,
-                                      size: 64,
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      t.projects.no_images,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              noItemsFoundIndicatorBuilder: (context) =>
+                                  EnhancedEmptyState(
+                                    icon: LucideIcons.image,
+                                    title: t.projects.no_images,
+                                    message:
+                                        'Create your first image to get started',
+                                  ),
                               firstPageErrorIndicatorBuilder: (context) =>
-                                  const Center(
-                                    child: Text(
-                                      "t.projects.error_loading_images",
-                                    ),
+                                  EnhancedErrorState(
+                                    title: 'Error loading images',
+                                    message:
+                                        state.error?.toString() ??
+                                        'Unknown error',
+                                    actionLabel: 'Retry',
+                                    onRetry: () => pagingController.refresh(),
                                   ),
                               newPageErrorIndicatorBuilder: (context) =>
                                   const Center(

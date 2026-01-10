@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -146,12 +147,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
       floatingActionButton: state.currentBankType == BankType.personal
           ? FloatingActionButton.extended(
               onPressed: () {
-                // TODO: Navigate to question creation page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Question creation coming soon!'),
-                  ),
-                );
+                context.router.navigate(QuestionModifyRoute(questionId: null));
               },
               elevation: 8,
               shape: RoundedRectangleBorder(

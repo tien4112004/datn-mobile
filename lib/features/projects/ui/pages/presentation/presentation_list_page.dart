@@ -11,6 +11,7 @@ import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_searc
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -111,26 +112,10 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                     .refresh();
               },
               child: listState.value.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            ResourceType.presentation.icon,
-                            size: 64,
-                            color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            t.projects.no_presentations,
-                            style: TextStyle(
-                              fontSize: Themes.fontSize.s18,
-                              color: Colors.grey.shade600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                  ? EnhancedEmptyState(
+                      icon: ResourceType.presentation.icon,
+                      title: t.projects.no_presentations,
+                      message: 'Create your first presentation to get started',
                     )
                   : PagingListener(
                       controller: pagedPresentations,

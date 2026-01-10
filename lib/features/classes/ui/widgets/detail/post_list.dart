@@ -5,6 +5,7 @@ import 'package:datn_mobile/features/classes/ui/pages/post_upsert_page.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/post_card.dart';
 import 'package:datn_mobile/shared/widget/animated_list_item.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,38 +74,13 @@ class _PostListState extends ConsumerState<PostList> {
                       ),
                     );
                   },
-                  firstPageErrorIndicatorBuilder: (context) => Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            LucideIcons.circleAlert,
-                            size: 48,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Error loading posts',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            state.error?.toString() ?? 'Unknown error',
-                            style: Theme.of(context).textTheme.bodySmall,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          FilledButton.icon(
-                            onPressed: () => pagingController.refresh(),
-                            icon: const Icon(LucideIcons.refreshCw, size: 18),
-                            label: const Text('Retry'),
-                          ),
-                        ],
+                  firstPageErrorIndicatorBuilder: (context) =>
+                      EnhancedErrorState(
+                        title: 'Error loading posts',
+                        message: state.error?.toString() ?? 'Unknown error',
+                        actionLabel: 'Retry',
+                        onRetry: () => pagingController.refresh(),
                       ),
-                    ),
-                  ),
                   noItemsFoundIndicatorBuilder: (context) => EnhancedEmptyState(
                     icon: LucideIcons.messageSquare,
                     title: 'No Posts Yet',

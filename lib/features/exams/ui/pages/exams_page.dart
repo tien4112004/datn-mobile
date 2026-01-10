@@ -5,6 +5,8 @@ import 'package:datn_mobile/features/exams/ui/widgets/exam_card.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_filters_bar.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_form_dialog.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -69,7 +71,13 @@ class _ExamsPageState extends ConsumerState<ExamsPage> {
             child: examsAsync.when(
               data: (exams) {
                 if (exams.isEmpty) {
-                  return _buildEmptyState(colorScheme);
+                  return EnhancedEmptyState(
+                    icon: LucideIcons.fileText,
+                    title: 'No exams yet',
+                    message: 'Create your first exam to get started',
+                    actionLabel: 'Create Exam',
+                    onAction: () => _showCreateExamDialog(context),
+                  );
                 }
                 return RefreshIndicator(
                   onRefresh: () async {
@@ -100,40 +108,14 @@ class _ExamsPageState extends ConsumerState<ExamsPage> {
                   ],
                 ),
               ),
-              error: (error, stack) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.circleX,
-                      size: 48,
-                      color: colorScheme.error,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Failed to load exams',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: colorScheme.error,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      error.toString(),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    FilledButton.icon(
-                      onPressed: () {
-                        ref.read(examsControllerProvider.notifier).refresh();
-                      },
-                      icon: const Icon(LucideIcons.refreshCw, size: 18),
-                      label: const Text('Retry'),
-                    ),
-                  ],
-                ),
+              error: (error, stack) => EnhancedErrorState(
+                icon: LucideIcons.circleX,
+                title: 'Failed to load exams',
+                message: error.toString(),
+                actionLabel: 'Retry',
+                onRetry: () {
+                  ref.read(examsControllerProvider.notifier).refresh();
+                },
               ),
             ),
           ),
@@ -144,49 +126,6 @@ class _ExamsPageState extends ConsumerState<ExamsPage> {
         icon: const Icon(LucideIcons.plus),
         label: const Text('Create Exam'),
         elevation: 2,
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(ColorScheme colorScheme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              LucideIcons.fileText,
-              size: 64,
-              color: colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'No exams yet',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Create your first exam to get started',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
-            onPressed: () => _showCreateExamDialog(context),
-            icon: const Icon(LucideIcons.plus, size: 18),
-            label: const Text('Create Exam'),
-          ),
-        ],
       ),
     );
   }

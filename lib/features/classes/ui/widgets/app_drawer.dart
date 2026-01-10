@@ -45,6 +45,15 @@ class AppDrawer extends StatelessWidget {
                       context.router.push(const ExamsRoute());
                     },
                   ),
+                  _buildNavItem(
+                    context,
+                    icon: LucideIcons.calendarDays,
+                    label: 'Question Bank',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.router.push(const QuestionBankRoute());
+                    },
+                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Divider(),

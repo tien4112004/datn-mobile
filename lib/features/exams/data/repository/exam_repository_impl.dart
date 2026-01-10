@@ -3,6 +3,7 @@ import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
 import 'package:datn_mobile/features/exams/domain/entity/matrix_item_entity.dart';
 import 'package:datn_mobile/features/exams/domain/repository/exam_repository.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
 /// Implementation of ExamRepository using mock data source.
 class ExamRepositoryImpl implements ExamRepository {

@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'exam_response_dto.g.dart';
@@ -47,7 +48,7 @@ extension ExamResponseMapper on ExamResponseDto {
     description: description,
     topic: topic,
     gradeLevel: gradeLevel,
-    status: ExamStatus.fromString(status),
+    status: ExamStatus.fromName(status),
     difficulty: difficulty,
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,

@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
 import 'package:datn_mobile/features/exams/domain/entity/matrix_item_entity.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
 /// Repository interface for exam data operations.
 abstract class ExamRepository {

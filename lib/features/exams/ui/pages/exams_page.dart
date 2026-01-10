@@ -4,7 +4,7 @@ import 'package:datn_mobile/features/exams/states/controller_provider.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_card.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_filters_bar.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_form_dialog.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:datn_mobile/features/classes/states/controller_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/app_drawer.dart';
@@ -22,9 +23,9 @@ class ClassPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final classesState = ref.watch(classesControllerProvider);
-    final isStudent = ref
-        .watch(userControllerProvider.notifier)
-        .isStudent(); // If role has value, the user is student
+    final isStudent =
+        ref.watch(userControllerProvider).value?.role ==
+        UserRole.student; // If role has value, the user is student
 
     return Scaffold(
       appBar: const _ClassListAppBar(),

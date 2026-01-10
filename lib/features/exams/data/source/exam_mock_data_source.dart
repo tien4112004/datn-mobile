@@ -2,6 +2,7 @@ import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
 import 'package:datn_mobile/features/exams/domain/entity/matrix_item_entity.dart';
 import 'package:datn_mobile/features/exams/domain/repository/exam_repository.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
 /// Mock data source for exam operations.
 /// Simulates API responses for development/testing.
@@ -284,7 +285,7 @@ class ExamMockDataSource {
       ),
       MatrixItemEntity(
         topic: topic,
-        questionType: QuestionType.trueFalse,
+        questionType: QuestionType.matching,
         count: (totalQuestions * 0.3).round(),
         pointsEach: (totalPoints ~/ totalQuestions),
         difficulty: difficulty,
@@ -292,7 +293,7 @@ class ExamMockDataSource {
       ),
       MatrixItemEntity(
         topic: topic,
-        questionType: QuestionType.fillBlank,
+        questionType: QuestionType.fillInBlank,
         count: (totalQuestions * 0.2).round(),
         pointsEach: (totalPoints ~/ totalQuestions),
         difficulty: difficulty,

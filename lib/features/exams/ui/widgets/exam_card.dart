@@ -1,9 +1,9 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
-import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
 import 'package:datn_mobile/features/exams/states/controller_provider.dart';
 import 'package:datn_mobile/features/exams/ui/pages/exam_detail_page.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/exam_form_dialog.dart';
 import 'package:datn_mobile/features/exams/ui/widgets/status_badge.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -73,9 +73,9 @@ class ExamCard extends ConsumerWidget {
                   ),
                   _buildInfoChip(
                     context,
-                    icon: _getDifficultyIcon(exam.difficulty),
+                    icon: Difficulty.getDifficultyIcon(exam.difficulty),
                     label: exam.difficulty.displayName,
-                    color: _getDifficultyColor(exam.difficulty, colorScheme),
+                    color: Difficulty.getDifficultyColor(exam.difficulty),
                   ),
                 ],
               ),
@@ -218,28 +218,6 @@ class ExamCard extends ConsumerWidget {
           ),
       ],
     );
-  }
-
-  IconData _getDifficultyIcon(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return LucideIcons.trendingDown;
-      case Difficulty.medium:
-        return LucideIcons.minus;
-      case Difficulty.hard:
-        return LucideIcons.trendingUp;
-    }
-  }
-
-  Color _getDifficultyColor(Difficulty difficulty, ColorScheme colorScheme) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return Colors.green;
-      case Difficulty.medium:
-        return Colors.orange;
-      case Difficulty.hard:
-        return Colors.red;
-    }
   }
 
   String _formatDate(DateTime date) {

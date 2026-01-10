@@ -76,6 +76,7 @@ class AppRouter extends RootStackRouter {
 
     // Exam Routes
     AutoRoute(page: ExamsRoute.page, path: '/exams'),
+    AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
 
     // Question Showcase Route
     AutoRoute(page: QuestionShowcaseRoute.page, path: '/question-showcase'),

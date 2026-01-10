@@ -34,7 +34,7 @@ enum PostType {
   }
 
   /// Converts API string to PostType enum
-  static PostType fromString(String value) {
+  static PostType fromName(String value) {
     switch (value) {
       case 'announcement':
         return PostType.announcement;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/widgets/question_badges.dart';
 
 /// A wrapper widget that provides Material 3 styling for question cards
 class QuestionCardWrapper extends StatelessWidget {
@@ -30,15 +31,15 @@ class QuestionCardWrapper extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Card(
-      elevation: 0,
+      elevation: 1,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         side: BorderSide(color: colorScheme.outlineVariant, width: 1),
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -55,9 +56,14 @@ class QuestionCardWrapper extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _buildTypeBadge(theme),
-                  _buildDifficultyBadge(theme),
-                  if (points != null) _buildPointsChip(theme),
+                  QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
+                  DifficultyBadge(
+                    difficulty: difficulty,
+                    iconSize: 16,
+                    fontSize: 12,
+                  ),
+                  if (points != null)
+                    PointsBadge(points: points!, iconSize: 16, fontSize: 12),
                 ],
               ),
               const SizedBox(height: 16),
@@ -165,135 +171,6 @@ class QuestionCardWrapper extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildTypeBadge(ThemeData theme) {
-    final colorScheme = theme.colorScheme;
-    Color badgeColor;
-    IconData icon;
-
-    switch (type) {
-      case QuestionType.multipleChoice:
-        badgeColor = colorScheme.primary;
-        icon = Icons.radio_button_checked;
-        break;
-      case QuestionType.matching:
-        badgeColor = colorScheme.primary;
-        icon = Icons.compare_arrows;
-        break;
-      case QuestionType.openEnded:
-        badgeColor = colorScheme.primary;
-        icon = Icons.edit_note_outlined;
-        break;
-      case QuestionType.fillInBlank:
-        badgeColor = colorScheme.primary;
-        icon = Icons.text_fields;
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: badgeColor.withValues(alpha: 0.5), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: badgeColor),
-          const SizedBox(width: 6),
-          Text(
-            type.displayName,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: badgeColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDifficultyBadge(ThemeData theme) {
-    Color badgeColor;
-    IconData icon;
-    String label;
-
-    switch (difficulty) {
-      case Difficulty.easy:
-        badgeColor = Colors.green;
-        icon = Icons.trending_down;
-        label = 'Easy';
-        break;
-      case Difficulty.medium:
-        badgeColor = Colors.orange;
-        icon = Icons.trending_flat;
-        label = 'Medium';
-        break;
-      case Difficulty.hard:
-        badgeColor = Colors.red;
-        icon = Icons.trending_up;
-        label = 'Hard';
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: badgeColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: badgeColor.withValues(alpha: 0.3), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: badgeColor),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: badgeColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPointsChip(ThemeData theme) {
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: colorScheme.tertiaryContainer,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: colorScheme.tertiary.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.star_rounded,
-            size: 16,
-            color: colorScheme.onTertiaryContainer,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '$points pts',
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: colorScheme.onTertiaryContainer,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

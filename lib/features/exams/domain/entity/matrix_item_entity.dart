@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
 /// Domain entity for exam matrix item.
 /// Represents a specification for generating a group of questions.

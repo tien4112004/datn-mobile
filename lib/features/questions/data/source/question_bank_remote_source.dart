@@ -3,6 +3,7 @@ import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto.d
 import 'package:datn_mobile/features/questions/data/dto/question_batch_response_dto.dart';
 import 'package:datn_mobile/features/questions/data/dto/question_create_request_dto.dart';
 import 'package:datn_mobile/features/questions/data/dto/question_update_request_dto.dart';
+import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
@@ -28,7 +29,9 @@ abstract class QuestionBankRemoteSource {
 
   /// Get single question by ID.
   @GET('/questionbank/{id}')
-  Future<QuestionBankItemDto> getQuestionById(@Path('id') String id);
+  Future<ServerResponseDto<QuestionBankItemDto>> getQuestionById(
+    @Path('id') String id,
+  );
 
   /// Create questions (batch).
   @POST('/questionbank')
@@ -38,7 +41,7 @@ abstract class QuestionBankRemoteSource {
 
   /// Update question.
   @PUT('/questionbank/{id}')
-  Future<QuestionBankItemDto> updateQuestion(
+  Future<ServerResponseDto<QuestionBankItemDto>> updateQuestion(
     @Path('id') String id,
     @Body() QuestionUpdateRequestDto updates,
   );

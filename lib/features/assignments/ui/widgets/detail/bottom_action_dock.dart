@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+/// Bottom action dock for save/cancel operations in edit mode.
+/// Follows Material Design 3 with elevated styling.
+class BottomActionDock extends StatelessWidget {
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
+  final bool isSaving;
+
+  const BottomActionDock({
+    super.key,
+    required this.onCancel,
+    required this.onSave,
+    this.isSaving = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+            width: 1,
+          ),
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              // Cancel button
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: isSaving ? null : onCancel,
+                  icon: const Icon(LucideIcons.x, size: 18),
+                  label: const Text('Cancel'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Save button
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: isSaving ? null : onSave,
+                  icon: isSaving
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              colorScheme.onPrimary,
+                            ),
+                          ),
+                        )
+                      : const Icon(LucideIcons.save, size: 18),
+                  label: Text(isSaving ? 'Saving...' : 'Save Changes'),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

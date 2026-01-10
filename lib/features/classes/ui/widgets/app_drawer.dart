@@ -42,7 +42,7 @@ class AppDrawer extends StatelessWidget {
                     label: 'Exams',
                     onTap: () {
                       Navigator.pop(context);
-                      context.router.push(const ExamsRoute());
+                      context.router.push(const AssignmentsRoute());
                     },
                   ),
                   _buildNavItem(

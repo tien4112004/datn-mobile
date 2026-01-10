@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
 /// Section containing basic information fields for a question
 class QuestionBasicInfoSection extends StatelessWidget {
@@ -9,10 +10,11 @@ class QuestionBasicInfoSection extends StatelessWidget {
   final QuestionType selectedType;
   final Difficulty selectedDifficulty;
   final TextEditingController pointsController;
-  final TextEditingController titleImageUrlController;
+  final String? titleImageUrl;
   final TextEditingController explanationController;
   final ValueChanged<QuestionType> onTypeChanged;
   final ValueChanged<Difficulty> onDifficultyChanged;
+  final ValueChanged<String?> onTitleImageChanged;
 
   const QuestionBasicInfoSection({
     super.key,
@@ -20,10 +22,11 @@ class QuestionBasicInfoSection extends StatelessWidget {
     required this.selectedType,
     required this.selectedDifficulty,
     required this.pointsController,
-    required this.titleImageUrlController,
+    this.titleImageUrl,
     required this.explanationController,
     required this.onTypeChanged,
     required this.onDifficultyChanged,
+    required this.onTitleImageChanged,
   });
 
   @override
@@ -140,26 +143,13 @@ class QuestionBasicInfoSection extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // Title image URL (optional)
-        TextFormField(
-          controller: titleImageUrlController,
-          decoration: InputDecoration(
-            labelText: 'Title Image URL (Optional)',
-            hintText: 'https://example.com/image.jpg',
-            prefixIcon: const Icon(Icons.image_outlined),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            contentPadding: const EdgeInsets.all(16),
-            helperText: 'Add an image to accompany your question',
-          ),
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              final uri = Uri.tryParse(value);
-              if (uri == null || !uri.hasScheme) {
-                return 'Please enter a valid URL';
-              }
-            }
-            return null;
-          },
+        // Title image (optional) - upload or URL
+        ImageInputField(
+          initialValue: titleImageUrl,
+          onChanged: onTitleImageChanged,
+          label: 'Question Image',
+          hint: 'https://example.com/image.jpg',
+          isRequired: false,
         ),
         const SizedBox(height: 16),
 

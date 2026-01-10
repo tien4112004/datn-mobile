@@ -30,12 +30,12 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
   // Basic info controllers
   final _titleController = TextEditingController();
   final _pointsController = TextEditingController();
-  final _titleImageUrlController = TextEditingController();
   final _explanationController = TextEditingController();
 
   // Basic info state
   QuestionType _selectedType = QuestionType.multipleChoice;
   Difficulty _selectedDifficulty = Difficulty.knowledge;
+  String? _titleImageUrl;
 
   // Multiple choice state
   List<MultipleChoiceOptionData> _mcOptions = [
@@ -85,7 +85,6 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
   void _addChangeListeners() {
     _titleController.addListener(_markUnsaved);
     _pointsController.addListener(_markUnsaved);
-    _titleImageUrlController.addListener(_markUnsaved);
     _explanationController.addListener(_markUnsaved);
     _expectedAnswerController.addListener(_markUnsaved);
     _maxLengthController.addListener(_markUnsaved);
@@ -109,7 +108,6 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
   void dispose() {
     _titleController.dispose();
     _pointsController.dispose();
-    _titleImageUrlController.dispose();
     _explanationController.dispose();
     _expectedAnswerController.dispose();
     _maxLengthController.dispose();
@@ -267,7 +265,7 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: colorScheme.surfaceContainer,
+        backgroundColor: colorScheme.surface,
         appBar: CustomAppBar(
           title: _isEditing ? 'Edit Question' : 'Create Question',
           actions: [
@@ -299,7 +297,7 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
                 selectedType: _selectedType,
                 selectedDifficulty: _selectedDifficulty,
                 pointsController: _pointsController,
-                titleImageUrlController: _titleImageUrlController,
+                titleImageUrl: _titleImageUrl,
                 explanationController: _explanationController,
                 onTypeChanged: (type) {
                   setState(() {
@@ -310,6 +308,12 @@ class _QuestionModifyPageState extends State<QuestionModifyPage> {
                 onDifficultyChanged: (difficulty) {
                   setState(() {
                     _selectedDifficulty = difficulty;
+                    _markUnsaved();
+                  });
+                },
+                onTitleImageChanged: (url) {
+                  setState(() {
+                    _titleImageUrl = url;
                     _markUnsaved();
                   });
                 },

@@ -11,7 +11,7 @@ enum UserRole {
   final String value;
 
   /// Create UserRole from string value
-  static UserRole? fromString(String? value) {
+  static UserRole? fromName(String? value) {
     if (value == null) return null;
     try {
       return UserRole.values.firstWhere((role) => role.value == value);

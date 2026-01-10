@@ -90,7 +90,7 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
             title: t.projects.recently_works,
           ),
           Text(
-            t.projects.type_of_resources,
+            t.projects.categories,
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: Themes.fontSize.s24,

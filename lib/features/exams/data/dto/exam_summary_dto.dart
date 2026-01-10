@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'exam_summary_dto.g.dart';
@@ -50,8 +51,8 @@ extension ExamSummaryMapper on ExamSummaryDto {
     title: title,
     description: description,
     topic: topic,
-    gradeLevel: GradeLevel.fromString(gradeLevel),
-    status: ExamStatus.fromString(status),
+    gradeLevel: GradeLevel.fromName(gradeLevel),
+    status: ExamStatus.fromName(status),
     difficulty: difficulty,
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,

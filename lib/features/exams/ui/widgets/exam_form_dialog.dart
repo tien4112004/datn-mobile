@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
 import 'package:datn_mobile/features/exams/states/controller_provider.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -199,9 +200,11 @@ class _ExamFormDialogState extends ConsumerState<ExamFormDialog> {
                             child: Row(
                               children: [
                                 Icon(
-                                  _getDifficultyIcon(difficulty),
+                                  Difficulty.getDifficultyIcon(difficulty),
                                   size: 18,
-                                  color: _getDifficultyColor(difficulty),
+                                  color: Difficulty.getDifficultyColor(
+                                    difficulty,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Text(difficulty.displayName),
@@ -267,28 +270,6 @@ class _ExamFormDialogState extends ConsumerState<ExamFormDialog> {
         ),
       ),
     );
-  }
-
-  IconData _getDifficultyIcon(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return LucideIcons.trendingDown;
-      case Difficulty.medium:
-        return LucideIcons.minus;
-      case Difficulty.hard:
-        return LucideIcons.trendingUp;
-    }
-  }
-
-  Color _getDifficultyColor(Difficulty difficulty) {
-    switch (difficulty) {
-      case Difficulty.easy:
-        return Colors.green;
-      case Difficulty.medium:
-        return Colors.orange;
-      case Difficulty.hard:
-        return Colors.red;
-    }
   }
 
   Future<void> _saveExam() async {

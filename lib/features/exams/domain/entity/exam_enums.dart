@@ -21,35 +21,10 @@ enum ExamStatus {
     }
   }
 
-  static ExamStatus fromString(String value) {
+  static ExamStatus fromName(String value) {
     return ExamStatus.values.firstWhere(
       (e) => e.name.toUpperCase() == value.toUpperCase(),
       orElse: () => ExamStatus.draft,
-    );
-  }
-}
-
-/// Difficulty level enumeration.
-enum Difficulty {
-  easy,
-  medium,
-  hard;
-
-  String get displayName {
-    switch (this) {
-      case Difficulty.easy:
-        return 'Easy';
-      case Difficulty.medium:
-        return 'Medium';
-      case Difficulty.hard:
-        return 'Hard';
-    }
-  }
-
-  static Difficulty fromString(String value) {
-    return Difficulty.values.firstWhere(
-      (e) => e.name.toLowerCase() == value.toLowerCase(),
-      orElse: () => Difficulty.medium,
     );
   }
 }
@@ -97,7 +72,7 @@ enum GradeLevel {
     }
   }
 
-  static GradeLevel fromString(String value) {
+  static GradeLevel fromName(String value) {
     switch (value.toUpperCase()) {
       case 'K':
         return GradeLevel.k;
@@ -113,62 +88,6 @@ enum GradeLevel {
         return GradeLevel.grade5;
       default:
         return GradeLevel.k;
-    }
-  }
-}
-
-/// Question type enumeration.
-enum QuestionType {
-  multipleChoice,
-  trueFalse,
-  fillBlank,
-  longAnswer,
-  matching;
-
-  String get displayName {
-    switch (this) {
-      case QuestionType.multipleChoice:
-        return 'Multiple Choice';
-      case QuestionType.trueFalse:
-        return 'True/False';
-      case QuestionType.fillBlank:
-        return 'Fill in the Blank';
-      case QuestionType.longAnswer:
-        return 'Long Answer';
-      case QuestionType.matching:
-        return 'Matching';
-    }
-  }
-
-  String get apiValue {
-    switch (this) {
-      case QuestionType.multipleChoice:
-        return 'multiple_choice';
-      case QuestionType.trueFalse:
-        return 'true_false';
-      case QuestionType.fillBlank:
-        return 'fill_blank';
-      case QuestionType.longAnswer:
-        return 'long_answer';
-      case QuestionType.matching:
-        return 'matching';
-    }
-  }
-
-  static QuestionType fromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'multiple_choice':
-        return QuestionType.multipleChoice;
-      case 'true_false':
-        return QuestionType.trueFalse;
-      case 'fill_blank':
-        return QuestionType.fillBlank;
-      case 'long_answer':
-        return QuestionType.longAnswer;
-      case 'matching':
-        return QuestionType.matching;
-      default:
-        return QuestionType.multipleChoice;
     }
   }
 }
@@ -206,7 +125,7 @@ enum ContextType {
     }
   }
 
-  static ContextType fromString(String value) {
+  static ContextType fromName(String value) {
     switch (value.toLowerCase()) {
       case 'reading_passage':
         return ContextType.readingPassage;

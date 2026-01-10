@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';

@@ -20,7 +20,7 @@ class UserRepositoryImpl implements UserRepository {
       lastName: dto.lastName,
       dateOfBirth: dto.dateOfBirth ?? DateTime(1970, 1, 1),
       phoneNumber: dto.phoneNumber ?? '',
-      role: UserRole.fromString(dto.role),
+      role: UserRole.fromName(dto.role),
     );
 
     // Save to cache after fetching from API

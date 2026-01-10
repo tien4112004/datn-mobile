@@ -75,7 +75,7 @@ extension PostResponseMapper on PostResponseDto {
     authorName: author.fullName,
     authorEmail: author.email,
     content: content,
-    type: PostType.fromString(type),
+    type: PostType.fromName(type),
     attachments: attachments ?? [],
     linkedResourceIds: linkedResourceIds ?? [],
     linkedLessonId: linkedLessonId,

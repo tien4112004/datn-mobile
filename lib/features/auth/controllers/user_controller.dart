@@ -96,8 +96,8 @@ class UserController extends AsyncNotifier<UserProfile?> {
     }
   }
 
-  Future<void> _clearCachedUser() async {
-    final repository = ref.read(userRepositoryProvider);
-    await repository.clearCachedUser();
-  }
+  // Future<void> _clearCachedUser() async {
+  //   final repository = ref.read(userRepositoryProvider);
+  //   await repository.clearCachedUser();
+  // }
 }

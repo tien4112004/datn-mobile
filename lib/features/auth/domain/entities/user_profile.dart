@@ -44,13 +44,11 @@ class UserProfile {
     );
   }
 
-  static UserRole? _roleFromJson(String? value) => UserRole.fromString(value);
+  static UserRole? _roleFromJson(String? value) => UserRole.fromName(value);
   static String? _roleToJson(UserRole? role) => role?.value;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserProfileToJson(this);
-
-  String get fullName => "$firstName $lastName";
 }

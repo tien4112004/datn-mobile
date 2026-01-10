@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/exams/data/dto/question_order_dto.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_entity.dart';
 import 'package:datn_mobile/features/exams/domain/entity/exam_enums.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'exam_detail_dto.g.dart';
@@ -64,9 +65,9 @@ extension ExamDetailMapper on ExamDetailDto {
     title: title,
     description: description,
     topic: topic,
-    gradeLevel: GradeLevel.fromString(gradeLevel),
-    status: ExamStatus.fromString(status),
-    difficulty: Difficulty.fromString(difficulty),
+    gradeLevel: GradeLevel.fromName(gradeLevel),
+    status: ExamStatus.fromName(status),
+    difficulty: Difficulty.fromName(difficulty),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

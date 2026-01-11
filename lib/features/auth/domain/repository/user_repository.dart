@@ -9,4 +9,15 @@ abstract class UserRepository {
   Future<UserProfile?> getCachedUser();
   Future<void> saveCachedUser(UserProfile profile);
   Future<void> clearCachedUser();
+
+  Future<UserProfileResponse> getUserProfile(String userId);
+
+  Future<UserProfileResponse> updateUserProfile(
+    String userId,
+    UserProfileUpdateRequest request,
+  );
+
+  Future<String> updateUserAvatar(String userId, File avatar);
+
+  Future<void> removeUserAvatar(String userId);
 }

@@ -16,7 +16,7 @@ class MindmapsController extends AsyncNotifier<MindmapListState> {
     try {
       final response = await ref
           .read(mindmapServiceProvider)
-          .fetchMindmapMinimalsPaged(1, pageSize: 10, sort: "desc");
+          .fetchMindmapMinimalsPaged(1, 10);
 
       return MindmapListState(response, true, false, null);
     } catch (e) {
@@ -30,7 +30,7 @@ class MindmapsController extends AsyncNotifier<MindmapListState> {
     state = await AsyncValue.guard(() async {
       final response = await ref
           .read(mindmapServiceProvider)
-          .fetchMindmapMinimalsPaged(1, pageSize: 10, sort: "desc");
+          .fetchMindmapMinimalsPaged(1, 10);
       return MindmapListState(response, true, false, null);
     });
   }

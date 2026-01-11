@@ -309,6 +309,6 @@ class _PresentationCustomizationPageState
     //     .read(presentationGenerateControllerProvider.notifier)
     //     .generatePresentation(request);
 
-    context.router.push(const PresentationGenerationWebViewRoute());
+    // context.router.push(const PresentationGenerationWebViewRoute());
   }
 }

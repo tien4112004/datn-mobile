@@ -3,6 +3,7 @@ import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
 import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,7 +62,7 @@ class UserController extends AsyncNotifier<UserProfile?> {
     });
   }
 
-  bool get isStudent => state.value?.role == 'student';
+  bool get isStudent => state.value?.role == UserRole.student;
 
   /// Get user profile from local storage
   Future<UserProfile?> _getUserProfileFromStorage() async {

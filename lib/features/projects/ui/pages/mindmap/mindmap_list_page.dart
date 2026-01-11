@@ -12,7 +12,6 @@ import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:async';
 
@@ -55,8 +54,6 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pagedMindmaps = ref.watch(mindmapsPagingControllerPod);
-    final mindmapController = ref.watch(mindmapsControllerProvider);
     final t = ref.watch(translationsPod);
     final pagingController = ref.watch(
       mindmapPagingControllerPod((_searchQuery, _sortOption)),

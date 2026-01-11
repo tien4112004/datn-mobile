@@ -29,6 +29,7 @@ class UserProfile {
   String get fullName => '$firstName $lastName';
 
   UserProfile copyWith({
+    String? id,
     String? email,
     String? firstName,
     String? lastName,
@@ -37,6 +38,7 @@ class UserProfile {
     UserRole? role,
   }) {
     return UserProfile(
+      id: id ?? this.id,
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

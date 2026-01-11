@@ -6,7 +6,7 @@ part 'question_create_request_dto.g.dart';
 @JsonSerializable()
 class QuestionCreateRequestDto {
   final String title;
-  final String type; // MULTIPLE_CHOICE, MATCHING, FILL_IN_THE_BLANK, OPEN_ENDED
+  final String type; // MULTIPLE_CHOICE, MATCHING, FILL_IN_BLANK, OPEN_ENDED
   final String
   difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION, ADVANCED_APPLICATION
   final String? explanation;

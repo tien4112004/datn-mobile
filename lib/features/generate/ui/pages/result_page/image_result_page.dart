@@ -7,7 +7,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
+import 'package:datn_mobile/shared/services/service_pod.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';

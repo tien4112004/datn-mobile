@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
 /// Card widget for displaying and editing a multiple choice option
 class OptionItemCard extends StatelessWidget {
@@ -113,18 +114,12 @@ class OptionItemCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Image URL field (optional)
-            TextFormField(
+            // Image field (optional) - supports upload, camera, and URL
+            ImageInputField(
               initialValue: imageUrl,
-              decoration: InputDecoration(
-                labelText: 'Image URL (Optional)',
-                hintText: 'https://example.com/image.jpg',
-                prefixIcon: const Icon(Icons.image_outlined, size: 20),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                contentPadding: const EdgeInsets.all(12),
-              ),
+              label: 'Option Image',
+              hint: 'Upload, take photo, or enter URL',
+              isRequired: false,
               onChanged: onImageUrlChanged,
             ),
             const SizedBox(height: 12),

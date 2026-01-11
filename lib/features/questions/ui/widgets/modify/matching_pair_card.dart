@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
 /// Card widget for displaying and editing a matching question pair
 class MatchingPairCard extends StatelessWidget {
@@ -125,20 +126,11 @@ class MatchingPairCard extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 8),
-                      TextFormField(
+                      ImageInputField(
                         initialValue: leftImageUrl,
-                        decoration: InputDecoration(
-                          labelText: 'Image URL',
-                          hintText: 'Optional',
-                          prefixIcon: const Icon(
-                            Icons.image_outlined,
-                            size: 18,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.all(12),
-                        ),
+                        label: 'Left Image',
+                        hint: 'Upload, take photo, or enter URL',
+                        isRequired: false,
                         onChanged: onLeftImageChanged,
                       ),
                     ],
@@ -203,20 +195,11 @@ class MatchingPairCard extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 8),
-                      TextFormField(
+                      ImageInputField(
                         initialValue: rightImageUrl,
-                        decoration: InputDecoration(
-                          labelText: 'Image URL',
-                          hintText: 'Optional',
-                          prefixIcon: const Icon(
-                            Icons.image_outlined,
-                            size: 18,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.all(12),
-                        ),
+                        label: 'Right Image',
+                        hint: 'Upload, take photo, or enter URL',
+                        isRequired: false,
                         onChanged: onRightImageChanged,
                       ),
                     ],

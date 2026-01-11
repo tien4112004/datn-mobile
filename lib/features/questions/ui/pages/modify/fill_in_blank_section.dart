@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/modify/segment_item_card.dart';
 
 /// Section for managing fill-in-blank question segments
+/// Uses raw text input format: "Text {{answer1 | answer2}} more text"
 class FillInBlankSection extends StatefulWidget {
   final List<SegmentData> segments;
   final bool caseSensitive;
@@ -22,71 +22,178 @@ class FillInBlankSection extends StatefulWidget {
 }
 
 class _FillInBlankSectionState extends State<FillInBlankSection> {
-  late List<SegmentData> _segments;
+  late TextEditingController _rawInputController;
+  late FocusNode _textFieldFocusNode;
+  late List<SegmentData> _parsedSegments;
+  String? _parseError;
 
   @override
   void initState() {
     super.initState();
-    _segments = List.from(widget.segments);
+    // Convert initial segments to raw text format
+    _rawInputController = TextEditingController(
+      text: _generateRawInput(widget.segments),
+    );
+    _textFieldFocusNode = FocusNode();
+    _parsedSegments = List.from(widget.segments);
+
+    // Listen to text changes
+    _rawInputController.addListener(_onRawInputChanged);
   }
 
-  void _addTextSegment() {
-    setState(() {
-      _segments.add(
+  @override
+  void dispose() {
+    _rawInputController.dispose();
+    _textFieldFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _onRawInputChanged() {
+    final rawText = _rawInputController.text;
+    try {
+      final segments = _parseRawInput(rawText);
+      setState(() {
+        _parsedSegments = segments;
+        _parseError = null;
+      });
+      widget.onSegmentsChanged(segments);
+    } catch (e) {
+      setState(() {
+        _parseError = e.toString();
+      });
+    }
+  }
+
+  /// Insert {{}} at cursor position and place cursor in the middle
+  void _insertBlankAtCursor() {
+    final currentText = _rawInputController.text;
+    final cursorPosition = _rawInputController.selection.baseOffset;
+
+    // If no selection or invalid position, append at end
+    final insertPosition = cursorPosition >= 0
+        ? cursorPosition
+        : currentText.length;
+
+    // Insert {{}} at cursor position
+    final newText =
+        '${currentText.substring(0, insertPosition)}{{}}${currentText.substring(insertPosition)}';
+
+    // Update text
+    _rawInputController.text = newText;
+
+    // Set cursor position to be between the braces (insertPosition + 2 to be after {{)
+    _rawInputController.selection = TextSelection.fromPosition(
+      TextPosition(offset: insertPosition + 2),
+    );
+
+    // Request focus so user can immediately type
+    _textFieldFocusNode.requestFocus();
+  }
+
+  /// Parse raw text input into segments
+  /// Format: "Text {{answer1 | answer2 | ...}} more text"
+  List<SegmentData> _parseRawInput(String input) {
+    if (input.trim().isEmpty) {
+      return [
         SegmentData(
           type: SegmentType.text,
           content: '',
           acceptableAnswers: null,
         ),
-      );
-    });
-    widget.onSegmentsChanged(_segments);
-  }
-
-  void _addBlankSegment() {
-    setState(() {
-      _segments.add(
-        SegmentData(
-          type: SegmentType.blank,
-          content: 'blank',
-          acceptableAnswers: [],
-        ),
-      );
-    });
-    widget.onSegmentsChanged(_segments);
-  }
-
-  void _removeSegment(int index) {
-    if (_segments.length <= 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least 1 segment is required'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
+      ];
     }
 
-    setState(() {
-      _segments.removeAt(index);
-    });
-    widget.onSegmentsChanged(_segments);
+    final segments = <SegmentData>[];
+    final regex = RegExp(r'\{\{(.*?)\}\}');
+    final matches = regex.allMatches(input);
+
+    int currentIndex = 0;
+
+    for (final match in matches) {
+      // Add text before the blank (if any)
+      if (match.start > currentIndex) {
+        final textContent = input.substring(currentIndex, match.start);
+        if (textContent.isNotEmpty) {
+          segments.add(
+            SegmentData(
+              type: SegmentType.text,
+              content: textContent,
+              acceptableAnswers: null,
+            ),
+          );
+        }
+      }
+
+      // Add the blank segment
+      final blankContent = match.group(1) ?? '';
+      final answers = blankContent
+          .split('|')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+
+      if (answers.isNotEmpty) {
+        segments.add(
+          SegmentData(
+            type: SegmentType.blank,
+            content: answers.first,
+            acceptableAnswers: answers,
+          ),
+        );
+      }
+
+      currentIndex = match.end;
+    }
+
+    // Add remaining text after last blank (if any)
+    if (currentIndex < input.length) {
+      final textContent = input.substring(currentIndex);
+      if (textContent.isNotEmpty) {
+        segments.add(
+          SegmentData(
+            type: SegmentType.text,
+            content: textContent,
+            acceptableAnswers: null,
+          ),
+        );
+      }
+    }
+
+    // If no segments were created, add an empty text segment
+    if (segments.isEmpty) {
+      segments.add(
+        SegmentData(
+          type: SegmentType.text,
+          content: input,
+          acceptableAnswers: null,
+        ),
+      );
+    }
+
+    return segments;
   }
 
-  void _updateSegment(
-    int index, {
-    String? content,
-    List<String>? acceptableAnswers,
-  }) {
-    setState(() {
-      _segments[index] = SegmentData(
-        type: _segments[index].type,
-        content: content ?? _segments[index].content,
-        acceptableAnswers:
-            acceptableAnswers ?? _segments[index].acceptableAnswers,
-      );
-    });
-    widget.onSegmentsChanged(_segments);
+  /// Generate raw text from segments
+  /// Converts segments back to the format: "Text {{answer1 | answer2}} more text"
+  String _generateRawInput(List<SegmentData> segments) {
+    final buffer = StringBuffer();
+
+    for (final segment in segments) {
+      if (segment.type == SegmentType.text) {
+        buffer.write(segment.content);
+      } else if (segment.type == SegmentType.blank) {
+        buffer.write('{{');
+        if (segment.acceptableAnswers != null &&
+            segment.acceptableAnswers!.isNotEmpty) {
+          buffer.write(segment.acceptableAnswers!.join(' | '));
+        } else {
+          buffer.write(segment.content);
+        }
+        buffer.write('}}');
+      }
+    }
+
+    return buffer.toString();
   }
 
   @override
@@ -100,12 +207,12 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
         // Section header
         _buildSectionHeader(
           context,
-          'Fill in the Blank Segments',
-          'Build your question with text and blank segments',
+          'Fill in the Blank Question',
+          'Use {{answer}} syntax to create blanks',
         ),
         const SizedBox(height: 16),
 
-        // Info card
+        // Format info card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -115,17 +222,47 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
               color: colorScheme.primary.withValues(alpha: 0.2),
             ),
           ),
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.info_outline, color: colorScheme.primary, size: 20),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'Create a question by alternating text and blank segments. Text segments display static content, while blanks require student input.',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurface,
+              Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: colorScheme.primary,
+                    size: 20,
                   ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Format Guide',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildFormatExample(
+                theme,
+                colorScheme,
+                'Single answer:',
+                'The capital of France is {{Paris}}',
+              ),
+              const SizedBox(height: 8),
+              _buildFormatExample(
+                theme,
+                colorScheme,
+                'Multiple answers:',
+                'The color is {{red | blue | green}}',
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '• Use {{}} to create a blank\n'
+                '• Use | to separate multiple acceptable answers\n'
+                '• The first answer will be shown as primary',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -133,62 +270,61 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
         ),
         const SizedBox(height: 24),
 
-        // Segments list
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _segments.length,
-          itemBuilder: (context, index) {
-            return SegmentItemCard(
-              key: ValueKey('segment_$index'),
-              index: index,
-              type: _segments[index].type,
-              content: _segments[index].content,
-              acceptableAnswers: _segments[index].acceptableAnswers,
-              canRemove: _segments.length > 1,
-              onRemove: () => _removeSegment(index),
-              onContentChanged: (value) =>
-                  _updateSegment(index, content: value),
-              onAcceptableAnswersChanged: (value) =>
-                  _updateSegment(index, acceptableAnswers: value),
-            );
-          },
-        ),
-
-        // Add segment buttons
-        const SizedBox(height: 8),
+        // Raw text input with quick insert button
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _addTextSegment,
-                icon: const Icon(Icons.text_fields_outlined),
-                label: const Text('Add Text'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+            Text(
+              'Question Text *',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _addBlankSegment,
-                icon: const Icon(Icons.edit_outlined),
-                label: const Text('Add Blank'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            FilledButton.tonalIcon(
+              onPressed: _insertBlankAtCursor,
+              icon: const Icon(Icons.add_circle_outline, size: 18),
+              label: const Text('Insert Blank'),
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
+                minimumSize: const Size(0, 36),
+                visualDensity: VisualDensity.compact,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _rawInputController,
+          focusNode: _textFieldFocusNode,
+          maxLines: 5,
+          decoration: InputDecoration(
+            hintText:
+                'Example: The {{quick | fast}} brown fox jumps over the {{lazy}} dog.',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            filled: true,
+            fillColor: colorScheme.surfaceContainerLowest,
+            errorText: _parseError,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Preview section
+        Text(
+          'Preview',
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        _buildPreview(theme, colorScheme),
+
+        const SizedBox(height: 24),
 
         // Case sensitive toggle
         SwitchListTile(
@@ -209,7 +345,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 4),
         ),
 
-        // Validation hint
+        // Validation warnings
         if (!_hasAtLeastOneBlank())
           Container(
             margin: const EdgeInsets.only(top: 16),
@@ -231,7 +367,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Please add at least one blank segment',
+                    'Please add at least one blank using {{answer}} syntax',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w500,
@@ -246,7 +382,141 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
   }
 
   bool _hasAtLeastOneBlank() {
-    return _segments.any((segment) => segment.type == SegmentType.blank);
+    return _parsedSegments.any((segment) => segment.type == SegmentType.blank);
+  }
+
+  Widget _buildFormatExample(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    String label,
+    String example,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Text(
+              example,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontFamily: 'monospace',
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPreview(ThemeData theme, ColorScheme colorScheme) {
+    if (_parsedSegments.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Center(
+          child: Text(
+            'Preview will appear here',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        runSpacing: 8,
+        children: _parsedSegments.map((segment) {
+          if (segment.type == SegmentType.text) {
+            return Text(
+              segment.content,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
+            );
+          } else {
+            // Blank segment - show as chip
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: colorScheme.primary.withValues(alpha: 0.5),
+                  width: 2,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.edit_outlined,
+                    size: 16,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    segment.content,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (segment.acceptableAnswers != null &&
+                      segment.acceptableAnswers!.length > 1) ...[
+                    const SizedBox(width: 6),
+                    Tooltip(
+                      message:
+                          'Accepts: ${segment.acceptableAnswers!.join(', ')}',
+                      child: Icon(
+                        Icons.info_outline,
+                        size: 14,
+                        color: colorScheme.onPrimaryContainer.withValues(
+                          alpha: 0.7,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }
+        }).toList(),
+      ),
+    );
   }
 
   Widget _buildSectionHeader(
@@ -292,4 +562,24 @@ class SegmentData {
     required this.content,
     this.acceptableAnswers,
   });
+
+  /// Convert to JSON for API submission
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type == SegmentType.text ? 'TEXT' : 'BLANK',
+      'content': content,
+      if (acceptableAnswers != null) 'acceptableAnswers': acceptableAnswers,
+    };
+  }
+
+  /// Create from JSON
+  factory SegmentData.fromJson(Map<String, dynamic> json) {
+    return SegmentData(
+      type: json['type'] == 'TEXT' ? SegmentType.text : SegmentType.blank,
+      content: json['content'] as String,
+      acceptableAnswers: json['acceptableAnswers'] != null
+          ? List<String>.from(json['acceptableAnswers'])
+          : null,
+    );
+  }
 }

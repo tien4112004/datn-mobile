@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/questions/domain/entity/question_create_req
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
 import 'package:datn_mobile/features/questions/domain/repository/question_bank_repository.dart';
+import 'package:flutter/material.dart';
 
 /// Implementation of QuestionBankRepository using remote data source.
 class QuestionBankRepositoryImpl implements QuestionBankRepository {
@@ -56,7 +57,11 @@ class QuestionBankRepositoryImpl implements QuestionBankRepository {
   createQuestions(List<QuestionCreateRequestEntity> requests) async {
     // Convert domain entities to DTOs
     final dtos = requests.map((entity) => entity.toDto()).toList();
+    debugPrint("Start to create questions: ${dtos.toString()}");
     final response = await _remoteSource.createQuestions(dtos);
+    debugPrint(
+      "End to create questions: ${response.data.successful.toString()}",
+    );
 
     return (
       successful: response.data.successful

@@ -44,7 +44,7 @@ String _questionTypeToApiValue(QuestionType type) {
     case QuestionType.matching:
       return 'MATCHING';
     case QuestionType.fillInBlank:
-      return 'FILL_IN_THE_BLANK';
+      return 'FILL_IN_BLANK';
     case QuestionType.openEnded:
       return 'OPEN_ENDED';
   }

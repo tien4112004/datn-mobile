@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:datn_mobile/shared/services/media_service_provider.dart';
 import 'dart:io';
 
 /// Widget for selecting images either by uploading from device or entering URL
-class ImageInputField extends StatefulWidget {
+class ImageInputField extends ConsumerStatefulWidget {
   final String? initialValue;
   final ValueChanged<String?> onChanged;
   final String label;
@@ -20,13 +22,14 @@ class ImageInputField extends StatefulWidget {
   });
 
   @override
-  State<ImageInputField> createState() => _ImageInputFieldState();
+  ConsumerState<ImageInputField> createState() => _ImageInputFieldState();
 }
 
-class _ImageInputFieldState extends State<ImageInputField> {
+class _ImageInputFieldState extends ConsumerState<ImageInputField> {
   final ImagePicker _picker = ImagePicker();
   String? _imageUrl;
   File? _localImage;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -49,13 +52,43 @@ class _ImageInputFieldState extends State<ImageInputField> {
         setState(() {
           _localImage = File(image.path);
           _imageUrl = null;
+          _isUploading = true;
         });
-        // TODO: Upload to server and get URL
-        // For now, use local path
-        widget.onChanged(image.path);
+
+        try {
+          // Upload to server and get CDN URL
+          final mediaService = ref.read(mediaServiceProvider);
+          final response = await mediaService.uploadMedia(filePath: image.path);
+
+          if (mounted) {
+            setState(() {
+              _imageUrl = response.cdnUrl;
+              _localImage = null;
+              _isUploading = false;
+            });
+            widget.onChanged(response.cdnUrl);
+          }
+        } catch (uploadError) {
+          if (mounted) {
+            setState(() {
+              _localImage = null;
+              _isUploading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to upload image: $uploadError'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        }
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to pick image: $e'),
@@ -80,13 +113,43 @@ class _ImageInputFieldState extends State<ImageInputField> {
         setState(() {
           _localImage = File(image.path);
           _imageUrl = null;
+          _isUploading = true;
         });
-        // TODO: Upload to server and get URL
-        // For now, use local path
-        widget.onChanged(image.path);
+
+        try {
+          // Upload to server and get CDN URL
+          final mediaService = ref.read(mediaServiceProvider);
+          final response = await mediaService.uploadMedia(filePath: image.path);
+
+          if (mounted) {
+            setState(() {
+              _imageUrl = response.cdnUrl;
+              _localImage = null;
+              _isUploading = false;
+            });
+            widget.onChanged(response.cdnUrl);
+          }
+        } catch (uploadError) {
+          if (mounted) {
+            setState(() {
+              _localImage = null;
+              _isUploading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to upload image: $uploadError'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        }
       }
     } catch (e) {
       if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to take photo: $e'),
@@ -304,8 +367,32 @@ class _ImageInputFieldState extends State<ImageInputField> {
         ),
         const SizedBox(height: 8),
 
-        // Image preview or choose button
-        if (hasImage) ...[
+        // Show uploading indicator
+        if (_isUploading) ...[
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: colorScheme.primary.withValues(alpha: 0.5),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Uploading image...',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ] else if (hasImage) ...[
           // Image preview
           Stack(
             children: [
@@ -374,35 +461,36 @@ class _ImageInputFieldState extends State<ImageInputField> {
                       ),
               ),
               // Action buttons overlay
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: _showImageSourceDialog,
-                      style: IconButton.styleFrom(
-                        backgroundColor: colorScheme.surface.withValues(
-                          alpha: 0.9,
+              if (!_isUploading)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: _showImageSourceDialog,
+                        style: IconButton.styleFrom(
+                          backgroundColor: colorScheme.surface.withValues(
+                            alpha: 0.9,
+                          ),
+                          foregroundColor: colorScheme.onSurface,
                         ),
-                        foregroundColor: colorScheme.onSurface,
+                        tooltip: 'Change image',
                       ),
-                      tooltip: 'Change image',
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: _clearImage,
-                      style: IconButton.styleFrom(
-                        backgroundColor: colorScheme.errorContainer,
-                        foregroundColor: colorScheme.onErrorContainer,
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: _clearImage,
+                        style: IconButton.styleFrom(
+                          backgroundColor: colorScheme.errorContainer,
+                          foregroundColor: colorScheme.onErrorContainer,
+                        ),
+                        tooltip: 'Remove image',
                       ),
-                      tooltip: 'Remove image',
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ] else ...[
@@ -410,7 +498,7 @@ class _ImageInputFieldState extends State<ImageInputField> {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: _showImageSourceDialog,
+              onPressed: _isUploading ? null : _showImageSourceDialog,
               icon: const Icon(Icons.add_photo_alternate_outlined),
               label: const Text('Choose Image'),
               style: OutlinedButton.styleFrom(

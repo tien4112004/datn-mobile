@@ -6,14 +6,18 @@ part 'question_bank_response_dto.g.dart';
 /// Pagination metadata.
 @JsonSerializable()
 class PaginationDto {
+  @JsonKey(name: 'currentPage')
   final int page;
-  final int limit;
+  @JsonKey(name: 'pageSize')
+  final int pageSize;
+  @JsonKey(name: 'totalItems')
   final int total;
+  @JsonKey(name: 'totalPages')
   final int totalPages;
 
   PaginationDto({
     required this.page,
-    required this.limit,
+    required this.pageSize,
     required this.total,
     required this.totalPages,
   });

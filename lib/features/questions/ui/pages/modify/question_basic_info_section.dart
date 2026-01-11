@@ -6,27 +6,33 @@ import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
 /// Section containing basic information fields for a question
 class QuestionBasicInfoSection extends StatelessWidget {
-  final TextEditingController titleController;
+  final String title;
   final QuestionType selectedType;
   final Difficulty selectedDifficulty;
-  final TextEditingController pointsController;
+  final int points;
   final String? titleImageUrl;
-  final TextEditingController explanationController;
+  final String explanation;
+  final ValueChanged<String> onTitleChanged;
   final ValueChanged<QuestionType> onTypeChanged;
   final ValueChanged<Difficulty> onDifficultyChanged;
+  final ValueChanged<int> onPointsChanged;
   final ValueChanged<String?> onTitleImageChanged;
+  final ValueChanged<String> onExplanationChanged;
 
   const QuestionBasicInfoSection({
     super.key,
-    required this.titleController,
+    required this.title,
     required this.selectedType,
     required this.selectedDifficulty,
-    required this.pointsController,
+    required this.points,
     this.titleImageUrl,
-    required this.explanationController,
+    required this.explanation,
+    required this.onTitleChanged,
     required this.onTypeChanged,
     required this.onDifficultyChanged,
+    required this.onPointsChanged,
     required this.onTitleImageChanged,
+    required this.onExplanationChanged,
   });
 
   @override
@@ -47,7 +53,8 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Title field (required)
         TextFormField(
-          controller: titleController,
+          initialValue: title,
+          onChanged: onTitleChanged,
           decoration: InputDecoration(
             labelText: 'Question Title *',
             hintText: 'Enter your question here',
@@ -120,7 +127,13 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Points field (optional)
         TextFormField(
-          controller: pointsController,
+          initialValue: points.toString(),
+          onChanged: (value) {
+            final parsedPoints = int.tryParse(value);
+            if (parsedPoints != null) {
+              onPointsChanged(parsedPoints);
+            }
+          },
           decoration: InputDecoration(
             labelText: 'Points (Optional)',
             hintText: '0',
@@ -155,7 +168,8 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Explanation field (optional)
         TextFormField(
-          controller: explanationController,
+          initialValue: explanation,
+          onChanged: onExplanationChanged,
           decoration: InputDecoration(
             labelText: 'Explanation (Optional)',
             hintText: 'Explain why this is the correct answer...',

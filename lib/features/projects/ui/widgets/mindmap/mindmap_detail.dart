@@ -27,9 +27,8 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   @override
   Widget build(BuildContext context) {
     if (InAppWebViewPlatform.instance == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Mindmap Detail')),
-        body: const Center(
+      return const Scaffold(
+        body: Center(
           child: Text(
             'WebView is not supported on this platform.',
             style: TextStyle(fontSize: 16, color: Colors.grey),
@@ -43,11 +42,12 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
 
   Widget _buildContent({required String mindmapId}) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Mindmap Detail")),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
+        bottom: false,
         child: Stack(
           children: [
-            _buildWebView(mindmapId: widget.mindmapId),
+            Positioned.fill(child: _buildWebView(mindmapId: widget.mindmapId)),
             if (_isWebViewLoading)
               Container(
                 color: Colors.white,
@@ -110,6 +110,7 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
     final url = '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId';
     return AuthenticatedWebView(
       webViewUrl: url,
+      enableZoom: false,
       onWebViewCreated: (controller) {
         debugPrint('WebView created for mindmap: $mindmapId');
       },

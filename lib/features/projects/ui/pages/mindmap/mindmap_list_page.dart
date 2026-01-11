@@ -98,26 +98,35 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                         .refresh();
                   },
                   child: listState.value.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                ResourceType.mindmap.icon,
-                                size: 64,
-                                color: Colors.grey.shade400,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                t.projects.no_presentations,
-                                style: TextStyle(
-                                  fontSize: Themes.fontSize.s18,
-                                  color: Colors.grey.shade600,
+                      ? ListView(
+                          // Make it scrollable!
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      ResourceType.mindmap.icon,
+                                      size: 64,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      t.projects.no_mindmaps,
+                                      style: TextStyle(
+                                        fontSize: Themes.fontSize.s18,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         )
                       : PagingListener(
                           controller: pagedMindmaps,
@@ -131,7 +140,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                         padding: const EdgeInsets.all(16.0),
                                         child: Center(
                                           child: Text(
-                                            'No more presentations',
+                                            t.projects.no_more_mindmaps,
                                             style: TextStyle(
                                               fontSize: Themes.fontSize.s14,
                                               color: Colors.grey.shade600,

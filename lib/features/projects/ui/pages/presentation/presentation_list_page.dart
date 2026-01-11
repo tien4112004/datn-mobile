@@ -53,7 +53,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: t.projects.title,
+        title: t.projects.presentations.title,
         leading: IconButton(
           icon: const Icon(LucideIcons.chevronLeft),
           onPressed: () => Navigator.of(context).pop(),
@@ -149,7 +149,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: Center(
                                   child: Text(
-                                    'No more presentations',
+                                    t.projects.no_more_presentations,
                                     style: TextStyle(
                                       fontSize: Themes.fontSize.s14,
                                       color: Colors.grey.shade600,

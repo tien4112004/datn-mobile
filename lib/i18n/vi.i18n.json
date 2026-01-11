@@ -175,7 +175,9 @@
     "sort_name_asc": "Tên (A-Z)",
     "sort_name_desc": "Tên (Z-A)",
     "no_presentations": "Chưa có bài thuyết trình nào",
+    "no_more_presentations": "Không còn bài thuyết trình nào",
     "no_mindmaps": "Chưa có sơ đồ tư duy nào",
+    "no_more_mindmaps": "Không còn sơ đồ tư duy nào",
     "no_images": "Chưa có hình ảnh nào",
     "back_to_resources": "Quay lại Tài nguyên",
     "coming_soon": "$type sắp ra mắt",
@@ -452,4 +454,3 @@
     }
   }
 }
-

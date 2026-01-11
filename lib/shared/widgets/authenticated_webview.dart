@@ -27,6 +27,7 @@ class AuthenticatedWebView extends ConsumerStatefulWidget {
     this.onReceivedError,
     this.onConsoleMessage,
     this.additionalHeaders,
+    this.enableZoom = true,
   });
 
   final String webViewUrl;
@@ -45,6 +46,7 @@ class AuthenticatedWebView extends ConsumerStatefulWidget {
   )?
   onConsoleMessage;
   final Map<String, String>? additionalHeaders;
+  final bool enableZoom;
 
   @override
   ConsumerState<AuthenticatedWebView> createState() =>
@@ -91,7 +93,7 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
         (function() {
           try {
             localStorage.setItem('access_token', '$_accessToken');
-            console.log('[AuthWebView] Token injected into localStorage');
+            console.info('[AuthWebView] Token injected into localStorage');
           } catch (e) {
             console.error('[AuthWebView] Failed to inject token:', e);
           }
@@ -126,7 +128,9 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
         loadWithOverviewMode: true,
         useWideViewPort: true,
         displayZoomControls: false,
-        supportZoom: true,
+        supportZoom: widget.enableZoom,
+        disallowOverScroll: true,
+        verticalScrollBarEnabled: false,
         thirdPartyCookiesEnabled: true,
         transparentBackground: false,
         useHybridComposition: true,

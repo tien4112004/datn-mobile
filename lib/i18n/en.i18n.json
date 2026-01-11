@@ -130,7 +130,7 @@
       "no_results_message": "No results found"
     },
     "presentations": {
-      "title": "Presentation",
+      "title": "Presentations",
       "search_presentations": "Search presentations...",
       "all_presentations": "All Presentations"
     },
@@ -165,7 +165,9 @@
     "sort_name_asc": "Name (A-Z)",
     "sort_name_desc": "Name (Z-A)",
     "no_presentations": "No presentations yet",
+    "no_more_presentations": "No more presentations",
     "no_mindmaps": "No mindmaps yet",
+    "no_more_mindmaps": "No more mindmaps",
     "no_images": "No images yet",
     "back_to_resources": "Back to Resources",
     "coming_soon": "$type coming soon",

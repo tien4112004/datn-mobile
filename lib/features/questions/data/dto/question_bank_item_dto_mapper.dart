@@ -136,11 +136,11 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
             ?.map(
               (s) => BlankSegment(
                 id: s['id'] as String,
-                type: s['type'] == 'blank'
+                type: s['type'] == 'BLANK'
                     ? SegmentType.blank
                     : SegmentType.text,
                 content: s['content'] as String,
-                acceptableAnswers: s['type'] == 'blank'
+                acceptableAnswers: s['type'] == 'BLANK'
                     ? (s['acceptableAnswers'] as List<dynamic>?)
                           ?.map((a) => a as String)
                           .toList()

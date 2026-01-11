@@ -122,13 +122,13 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                         questionBankState.currentBankType == BankType.personal,
                     isLoadingMore: questionBankState.isLoadingMore,
                     onView: (item) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('View: ${item.id}')),
+                      context.router.push(
+                        QuestionDetailRoute(questionId: item.id),
                       );
                     },
                     onEdit: (item) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Edit: ${item.id}')),
+                      context.router.push(
+                        QuestionUpsertRoute(questionId: item.id),
                       );
                     },
                     onDelete: (item) => _showDeleteConfirmation(item),

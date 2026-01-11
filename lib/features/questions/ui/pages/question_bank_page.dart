@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/question_bank_loading.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/questions/provider/question_bank_provider.dart';
+import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_header.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_bank_loading.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -42,7 +43,10 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(questionBankProvider);
+    final questionBankController = ref.watch(questionBankProvider);
+    final questionBankControllerNotifier = ref.watch(
+      questionBankProvider.notifier,
+    );
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -74,7 +78,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 icon: const Icon(Icons.refresh_rounded),
                 tooltip: 'Refresh',
                 onPressed: () {
-                  ref.read(questionBankProvider.notifier).refresh();
+                  questionBankControllerNotifier.refresh();
                 },
               ),
             ],
@@ -86,17 +90,17 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 bottom: 16,
               ),
               background: QuestionBankHeader(
-                selectedType: state.currentBankType,
+                selectedType: questionBankControllerNotifier.currentBankType,
                 onTypeChanged: (type) {
-                  ref.read(questionBankProvider.notifier).switchBankType(type);
+                  questionBankControllerNotifier.switchBankType(type);
                 },
                 searchController: _searchController,
                 onSearchSubmitted: (value) {
-                  ref.read(questionBankProvider.notifier).search(value);
+                  questionBankControllerNotifier.search(value);
                 },
                 onSearchCleared: () {
                   _searchController.clear();
-                  ref.read(questionBankProvider.notifier).clearSearch();
+                  questionBankControllerNotifier.clearSearch();
                 },
                 onSearchChanged: () {
                   setState(() {}); // Update to show/hide clear button
@@ -105,43 +109,43 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
             ),
           ),
         ],
-        body: state.isLoading && state.questions.isEmpty
-            ? const QuestionBankLoading()
-            : state.questions.isEmpty
-            ? _buildEmptyState(theme, state.currentBankType)
-            : QuestionBankList(
-                questions: state.questions,
-                isPersonal: state.currentBankType == BankType.personal,
-                isLoadingMore: state.isLoadingMore,
-                onRefresh: () async {
-                  await ref.read(questionBankProvider.notifier).refresh();
-                },
-                onView: (item) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('View: ${item.id}')));
-                },
-                onEdit: (item) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Edit: ${item.id}')));
-                },
-                onDelete: (item) => _showDeleteConfirmation(item),
-              ),
+        body: questionBankController.easyWhen(
+          data: (questionBankState) => RefreshIndicator(
+            onRefresh: () async {
+              await questionBankControllerNotifier.refresh();
+            },
+            child: questionBankState.questions.isEmpty
+                ? _buildEmptyState(theme, questionBankState.currentBankType)
+                : QuestionBankList(
+                    questions: questionBankState.questions,
+                    isPersonal:
+                        questionBankState.currentBankType == BankType.personal,
+                    isLoadingMore: questionBankState.isLoadingMore,
+                    onView: (item) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('View: ${item.id}')),
+                      );
+                    },
+                    onEdit: (item) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Edit: ${item.id}')),
+                      );
+                    },
+                    onDelete: (item) => _showDeleteConfirmation(item),
+                  ),
+          ),
+          loadingWidget: () => const QuestionBankLoading(),
+        ),
       ),
-      floatingActionButton: state.currentBankType == BankType.personal
-          ? FloatingActionButton.extended(
-              onPressed: () {
-                context.router.navigate(QuestionModifyRoute(questionId: null));
-              },
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Add Question'),
-            )
-          : null,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          context.router.push(QuestionUpsertRoute(questionId: null));
+        },
+        elevation: 8,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Add Question'),
+      ),
     );
   }
 
@@ -157,9 +161,8 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
       actionLabel: isPersonal ? 'Create Question' : null,
       onAction: isPersonal
           ? () {
-              // TODO: Navigate to question creation
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Question creation coming soon!')),
+              ref.context.router.navigate(
+                QuestionUpsertRoute(questionId: null),
               );
             }
           : null,

@@ -75,7 +75,7 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
         return QuestionType.matching;
       case 'OPEN_ENDED':
         return QuestionType.openEnded;
-      case 'FILL_IN_THE_BLANK':
+      case 'FILL_IN_BLANK':
         return QuestionType.fillInBlank;
       default:
         return QuestionType.multipleChoice;

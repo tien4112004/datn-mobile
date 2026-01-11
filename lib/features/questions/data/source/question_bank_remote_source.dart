@@ -17,7 +17,7 @@ abstract class QuestionBankRemoteSource {
       _QuestionBankRemoteSource;
 
   /// Get paginated list of questions.
-  @GET('/questionbank')
+  @GET('/question-bank')
   Future<QuestionBankResponseDto> getQuestions({
     @Query('bankType') required String bankType,
     @Query('page') int page = 1,
@@ -28,25 +28,25 @@ abstract class QuestionBankRemoteSource {
   });
 
   /// Get single question by ID.
-  @GET('/questionbank/{id}')
+  @GET('/question-bank/{id}')
   Future<ServerResponseDto<QuestionBankItemDto>> getQuestionById(
     @Path('id') String id,
   );
 
   /// Create questions (batch).
-  @POST('/questionbank')
+  @POST('/question-bank')
   Future<QuestionBatchResponseDto> createQuestions(
     @Body() List<QuestionCreateRequestDto> requests,
   );
 
   /// Update question.
-  @PUT('/questionbank/{id}')
+  @PUT('/question-bank/{id}')
   Future<ServerResponseDto<QuestionBankItemDto>> updateQuestion(
     @Path('id') String id,
     @Body() QuestionUpdateRequestDto updates,
   );
 
   /// Delete question.
-  @DELETE('/questionbank/{id}')
+  @DELETE('/question-bank/{id}')
   Future<void> deleteQuestion(@Path('id') String id);
 }

@@ -8,15 +8,14 @@ import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'download_service.dart';
-import 'models/download_progress.dart';
+import '../models/download_progress.dart';
 
 /// Implementation of DownloadService
 /// Handles file downloading with progress tracking and storage management
-class DownloadServiceImpl implements DownloadService {
+class DownloadService {
   final Dio _dio;
 
-  DownloadServiceImpl(this._dio);
+  DownloadService(this._dio);
 
   /// Sanitize filename by removing/replacing invalid characters
   String _sanitizeFilename(String filename) {

@@ -3,13 +3,17 @@ import 'package:flutter/services.dart';
 
 /// Section for managing open-ended question settings
 class OpenEndedSection extends StatelessWidget {
-  final TextEditingController expectedAnswerController;
-  final TextEditingController maxLengthController;
+  final String? expectedAnswer;
+  final int? maxLength;
+  final ValueChanged<String> onExpectedAnswerChanged;
+  final ValueChanged<int?> onMaxLengthChanged;
 
   const OpenEndedSection({
     super.key,
-    required this.expectedAnswerController,
-    required this.maxLengthController,
+    this.expectedAnswer,
+    this.maxLength,
+    required this.onExpectedAnswerChanged,
+    required this.onMaxLengthChanged,
   });
 
   @override
@@ -58,7 +62,8 @@ class OpenEndedSection extends StatelessWidget {
 
         // Expected answer field
         TextFormField(
-          controller: expectedAnswerController,
+          initialValue: expectedAnswer ?? '',
+          onChanged: onExpectedAnswerChanged,
           decoration: InputDecoration(
             labelText: 'Expected Answer (Optional)',
             hintText: 'Enter a sample or expected answer for reference',
@@ -75,7 +80,17 @@ class OpenEndedSection extends StatelessWidget {
 
         // Max length field
         TextFormField(
-          controller: maxLengthController,
+          initialValue: maxLength?.toString() ?? '',
+          onChanged: (value) {
+            if (value.isEmpty) {
+              onMaxLengthChanged(null);
+            } else {
+              final parsed = int.tryParse(value);
+              if (parsed != null) {
+                onMaxLengthChanged(parsed);
+              }
+            }
+          },
           decoration: InputDecoration(
             labelText: 'Maximum Length (Optional)',
             hintText: '0',

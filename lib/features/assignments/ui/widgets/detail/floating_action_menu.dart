@@ -90,7 +90,6 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
               child: Container(color: Colors.black.withValues(alpha: 3)),
             ),
           ),
-
         // Speed dial items
         Positioned(
           right: 16,

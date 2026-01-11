@@ -11,12 +11,13 @@ class FillInBlankViewing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    debugPrint(question.data.segments.toString());
 
     return QuestionCardWrapper(
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
-      points: question.points,
+      points: question.points ?? 0,
       type: question.type,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +35,10 @@ class FillInBlankViewing extends StatelessWidget {
             children: question.data.segments.map((segment) {
               if (segment.type == SegmentType.text) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 4,
+                  ),
                   child: Text(
                     segment.content,
                     style: theme.textTheme.bodyMedium,

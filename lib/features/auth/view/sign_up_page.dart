@@ -5,9 +5,7 @@ import 'package:datn_mobile/features/auth/widgets/divider.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:datn_mobile/features/auth/widgets/sign_up_form.dart';
 import 'package:datn_mobile/features/auth/widgets/switch_page.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
 import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,23 +33,10 @@ class _SignUpPageState extends State<SignUpPage> with GlobalHelper {
         final t = ref.watch(translationsPod);
 
         ref.listen(authControllerPod, (previous, next) {
-          next.when(
-            data: (state) {
-              ref.watch(loadingOverlayPod.notifier).state = false;
-              if (state.isSignedUp) {
-                // Navigate to the verification page
-                context.router.replace(const SignInRoute());
-              }
-            },
-            loading: () {
-              ref.watch(loadingOverlayPod.notifier).state = true;
-            },
-            error: (error, stackTrace) {
-              ref.watch(loadingOverlayPod.notifier).state = false;
-              final exception = next.error as APIException;
-              showErrorSnack(child: Text(exception.errorMessage));
-            },
-          );
+          if (!next.isLoading && next.value?.isSignedUp == true) {
+            // Navigate to the sign-in page
+            context.router.replace(const SignInRoute());
+          }
         });
 
         return Scaffold(
@@ -99,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> with GlobalHelper {
                       GoogleAuthButton(
                         onPressed: () async {
                           await ref
-                              .watch(authControllerPod.notifier)
+                              .read(authControllerPod.notifier)
                               .signInWithGoogle();
                         },
                         style: const AuthButtonStyle(

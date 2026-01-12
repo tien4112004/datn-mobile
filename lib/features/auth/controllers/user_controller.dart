@@ -1,6 +1,6 @@
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
 import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,30 +11,18 @@ final userControllerProvider =
 class UserController extends AsyncNotifier<UserProfile?> {
   @override
   Future<UserProfile?> build() async {
-    final authState = ref.watch(authControllerPod);
-
-    // If authenticated, fetch user profile from API or storage
-    if (authState.value?.isAuthenticated == true) {
-      return _initializeUserProfile();
+    // Try to get from local storage first
+    final cachedProfile = await _getUserProfileFromStorage();
+    if (cachedProfile != null) {
+      return cachedProfile;
     }
+
+    // If not in storage, fetch from API
+    if (await ref.read(secureStoragePod).containsKey(R.ACCESS_TOKEN_KEY)) {
+      return await fetchAndStoreUserProfile();
+    }
+
     return null;
-  }
-
-  /// Initialize user profile from storage or API
-  Future<UserProfile?> _initializeUserProfile() async {
-    try {
-      // Try to get from local storage first
-      final cachedProfile = await _getUserProfileFromStorage();
-      if (cachedProfile != null) {
-        return cachedProfile;
-      }
-
-      // If not in storage, fetch from API
-      return await fetchAndStoreUserProfile();
-    } catch (e) {
-      // If failed, try fetching from API
-      return await fetchAndStoreUserProfile();
-    }
   }
 
   /// Fetch user profile from API and store to local storage

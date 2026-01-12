@@ -60,7 +60,9 @@ class MainWrapperPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userControllerProvider);
     final isStudent =
-        userState.value != null; // If role has value, the user is student
+        userState.value != null &&
+        userState.value!.role ==
+            "student"; // If role has value, the user is student
 
     debugPrint("isStudent: $isStudent");
 

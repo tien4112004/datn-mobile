@@ -2,26 +2,30 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_info_header.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_metadata_section.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
+import 'package:datn_mobile/shared/widgets/question_badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-// Import viewing widgets
-import 'package:datn_mobile/features/questions/ui/widgets/multiple_choice/multiple_choice_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/matching/matching_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/fill_in_blank/fill_in_blank_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/open_ended/open_ended_viewing.dart';
+// Import detail widgets
+import 'package:datn_mobile/features/questions/ui/widgets/detail/question_title_section.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/detail/question_content_card.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/detail/stats_section.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/detail/explanation_card.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/detail/question_metadata_section.dart';
 
 /// Question Detail Page - displays complete question information in view mode
-/// with an edit toggle in the app bar that navigates to QuestionUpsertPage.
 ///
-/// Follows Material Design 3 guidelines and Flutter best practices.
+/// Features:
+/// - Material Design 3 components and styling
+/// - Enhanced visual hierarchy with proper typography
+/// - Modular widget composition for reusability
+/// - Responsive loading, error, and empty states
+/// - Edit navigation with haptic feedback
 @RoutePage()
 class QuestionDetailPage extends ConsumerStatefulWidget {
   final String questionId;
@@ -63,58 +67,39 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
       body: questionBankAsync.easyWhen(
         data: (questionBankState) {
           // Get the question from the state
-          if (questionBankState.questions.isEmpty) {
+          if (questionBankState.selectedQuestion == null) {
             return _buildEmptyState(context);
           }
 
-          final questionItem = questionBankState.questions.first;
+          final questionItem = questionBankState.selectedQuestion!;
           final question = questionItem.question;
 
           return CustomScrollView(
             slivers: [
               // Sticky App Bar
-              SliverAppBar(
-                pinned: true,
-                elevation: 0,
-                backgroundColor: colorScheme.surface,
-                surfaceTintColor: colorScheme.surfaceTint,
-                leading: IconButton(
-                  icon: const Icon(LucideIcons.arrowLeft),
-                  onPressed: () => context.router.maybePop(),
-                ),
-                title: Text(
-                  'Question Details',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                actions: [
-                  // Edit Button
-                  IconButton(
-                    icon: const Icon(LucideIcons.pencil, size: 20),
-                    onPressed: _navigateToEdit,
-                    tooltip: 'Edit Question',
-                  ),
-                  const SizedBox(width: 8),
-                ],
-              ),
+              _buildAppBar(context, theme, colorScheme),
 
-              // Question Info Header
-              SliverToBoxAdapter(child: QuestionInfoHeader(question: question)),
-
-              // Question Content Section
+              // Question Title Section
               SliverToBoxAdapter(
-                child: _buildQuestionContent(context, question),
+                child: QuestionTitleSection(question: question),
               ),
+
+              // Question Type & Difficulty Badges
+              SliverToBoxAdapter(child: _buildBadgesSection(question)),
+
+              // Question Content Card
+              SliverToBoxAdapter(
+                child: QuestionContentCard(question: question),
+              ),
+
+              // Stats Section
+              SliverToBoxAdapter(child: StatsSection(question: question)),
 
               // Explanation Section (if available)
               if (question.explanation != null &&
                   question.explanation!.isNotEmpty)
                 SliverToBoxAdapter(
-                  child: _buildExplanationSection(
-                    context,
-                    question.explanation!,
-                  ),
+                  child: ExplanationCard(explanation: question.explanation!),
                 ),
 
               // Metadata Section
@@ -127,7 +112,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
               ),
 
               // Bottom padding
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              const SliverToBoxAdapter(child: SizedBox(height: 24)),
             ],
           );
         },
@@ -137,106 +122,61 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     );
   }
 
-  Widget _buildQuestionContent(BuildContext context, BaseQuestion question) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+  /// App Bar - Sticky header with back button and edit action
+  SliverAppBar _buildAppBar(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return SliverAppBar(
+      pinned: true,
+      elevation: 0,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surfaceTint,
+      leading: IconButton(
+        icon: const Icon(LucideIcons.arrowLeft),
+        onPressed: () => context.router.maybePop(),
+        tooltip: 'Back',
+      ),
+      title: Text(
+        'Question Details',
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Question Content',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ),
-          const Divider(height: 1),
-          _buildTypeSpecificContent(question),
-        ],
-      ),
+      actions: [
+        IconButton(
+          icon: const Icon(LucideIcons.pencil, size: 20),
+          onPressed: _navigateToEdit,
+          tooltip: 'Edit Question',
+          style: IconButton.styleFrom(foregroundColor: colorScheme.primary),
+        ),
+        const SizedBox(width: 8),
+      ],
     );
   }
 
-  Widget _buildTypeSpecificContent(BaseQuestion question) {
-    // Use existing viewing widgets based on question type
-    if (question is MultipleChoiceQuestion) {
-      return MultipleChoiceViewing(question: question);
-    } else if (question is MatchingQuestion) {
-      return MatchingViewing(question: question);
-    } else if (question is FillInBlankQuestion) {
-      return FillInBlankViewing(question: question);
-    } else if (question is OpenEndedQuestion) {
-      return OpenEndedViewing(question: question);
-    }
-
-    return const SizedBox.shrink();
-  }
-
-  Widget _buildExplanationSection(BuildContext context, String explanation) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  /// Badges Section - Question Type & Difficulty chips
+  Widget _buildBadgesSection(BaseQuestion question) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(
-                  LucideIcons.lightbulb,
-                  size: 20,
-                  color: colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Explanation',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              explanation,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurface,
-                height: 1.5,
-              ),
-            ),
+          QuestionTypeBadge(type: question.type, iconSize: 18, fontSize: 14),
+          DifficultyBadge(
+            difficulty: question.difficulty,
+            iconSize: 18,
+            fontSize: 14,
           ),
         ],
       ),
     );
   }
 
+  /// Loading State - Shows circular progress indicator
   Widget _buildLoadingState(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -253,7 +193,8 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
           title: Text(
             'Question Details',
             style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
             ),
           ),
         ),
@@ -278,26 +219,31 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     );
   }
 
+  /// Error State - Uses EnhancedErrorState widget
   Widget _buildErrorState(BuildContext context, Object error) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           pinned: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: colorScheme.surface,
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
             onPressed: () => context.router.maybePop(),
           ),
           title: Text(
             'Question Details',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+            ),
           ),
         ),
         SliverFillRemaining(
           child: EnhancedErrorState(
             message: 'Failed to load question',
+            actionLabel: 'Retry',
             onRetry: () {
               ref
                   .read(questionBankProvider.notifier)
@@ -309,21 +255,25 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     );
   }
 
+  /// Empty State - Uses EnhancedEmptyState widget
   Widget _buildEmptyState(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           pinned: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: colorScheme.surface,
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
             onPressed: () => context.router.maybePop(),
           ),
           title: Text(
             'Question Details',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
+            ),
           ),
         ),
         const SliverFillRemaining(

@@ -41,6 +41,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
     // Initialize form state
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_isEditing) {
+        debugPrint('Editing question ${widget.questionId}');
         _loadQuestion();
       } else {
         ref.read(questionFormProvider.notifier).initializeForCreate();
@@ -48,19 +49,25 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
     });
   }
 
+  @override
+  void dispose() {
+    // Invalidate the provider to ensure state is reset when page is closed
+    super.dispose();
+  }
+
   Future<void> _loadQuestion() async {
-    // Load the question from the bank
+    // Load the question from the bank if not already loaded
     await ref
         .read(questionBankProvider.notifier)
         .getQuestionById(widget.questionId!);
 
-    // Get the loaded question
+    // Get the loaded question - read the state again after the async operation
     final questionBankState = ref.read(questionBankProvider);
     questionBankState.whenData((state) {
-      if (state.questions.isNotEmpty) {
-        final questionItem = state.questions.first;
+      debugPrint('Question bank state: $state');
+      if (state.selectedQuestion != null) {
+        final questionItem = state.selectedQuestion!;
         final question = questionItem.question;
-
         // Convert question data to Map<String, dynamic>
         Map<String, dynamic> data = {};
         if (question is MultipleChoiceQuestion) {
@@ -123,6 +130,8 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
               explanation: question.explanation,
               data: data,
             );
+
+        setState(() {});
       }
     });
   }
@@ -171,14 +180,6 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
               ),
             );
       } else {
-        debugPrint('Creating question');
-        debugPrint('Type: ${formState.type.toString()}');
-        debugPrint('Difficulty: ${formState.difficulty.toString()}');
-        debugPrint('Title: ${formState.title}');
-        debugPrint('Points: ${formState.points}');
-        debugPrint('Explanation: ${formState.explanation}');
-        debugPrint('Title Image URL: ${formState.titleImageUrl}');
-
         await ref
             .read(questionBankProvider.notifier)
             .createQuestion(
@@ -225,6 +226,22 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
     final colorScheme = theme.colorScheme;
     final formState = ref.watch(questionFormProvider);
     final hasUnsavedChanges = ref.watch(hasUnsavedChangesProvider);
+    final questionBankState = ref.watch(questionBankProvider);
+
+    // Show loading while fetching question data in edit mode
+    if (_isEditing && questionBankState.isLoading && formState.title.isEmpty) {
+      return Scaffold(
+        backgroundColor: colorScheme.surface,
+        appBar: CustomAppBar(
+          title: 'Edit Question',
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.router.maybePop(),
+          ),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return PopScope(
       canPop: !hasUnsavedChanges,
@@ -266,6 +283,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
             children: [
               // Basic information section
               QuestionBasicInfoSection(
+                key: ValueKey(formState.questionId),
                 title: formState.title,
                 selectedType: formState.type,
                 selectedDifficulty: formState.difficulty,

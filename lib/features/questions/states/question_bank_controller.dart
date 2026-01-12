@@ -109,11 +109,7 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
     state = await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
       final result = await repository.getQuestionById(id);
-      return QuestionBankState(
-        questions: [result],
-        currentBankType: state.value!.currentBankType,
-        searchQuery: state.value!.searchQuery,
-      );
+      return state.value!.copyWith(selectedQuestion: result);
     });
   }
 
@@ -129,11 +125,7 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
         id,
         questionUpdateRequestEntity,
       );
-      return QuestionBankState(
-        questions: [result],
-        currentBankType: state.value!.currentBankType,
-        searchQuery: state.value!.searchQuery,
-      );
+      return state.value!.copyWith(selectedQuestion: result);
     });
   }
 }

@@ -28,7 +28,8 @@ class QuestionTypeBadge extends StatelessWidget {
     final icon = QuestionType.getIcon(type);
 
     return Container(
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 10),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: badgeColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
@@ -77,7 +78,7 @@ class DifficultyBadge extends StatelessWidget {
 
     return Container(
       padding:
-          padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: badgeColor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),

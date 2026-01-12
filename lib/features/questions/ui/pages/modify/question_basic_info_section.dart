@@ -5,7 +5,7 @@ import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
 /// Section containing basic information fields for a question
-class QuestionBasicInfoSection extends StatelessWidget {
+class QuestionBasicInfoSection extends StatefulWidget {
   final String title;
   final QuestionType selectedType;
   final Difficulty selectedDifficulty;
@@ -36,6 +36,51 @@ class QuestionBasicInfoSection extends StatelessWidget {
   });
 
   @override
+  State<QuestionBasicInfoSection> createState() =>
+      _QuestionBasicInfoSectionState();
+}
+
+class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
+  late TextEditingController _titleController;
+  late TextEditingController _pointsController;
+  late TextEditingController _explanationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.title);
+    _pointsController = TextEditingController(text: widget.points.toString());
+    _explanationController = TextEditingController(text: widget.explanation);
+  }
+
+  @override
+  void didUpdateWidget(covariant QuestionBasicInfoSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.title != oldWidget.title &&
+        widget.title != _titleController.text) {
+      _titleController.text = widget.title;
+    }
+    if (widget.points != oldWidget.points) {
+      final pointsStr = widget.points.toString();
+      if (pointsStr != _pointsController.text) {
+        _pointsController.text = pointsStr;
+      }
+    }
+    if (widget.explanation != oldWidget.explanation &&
+        widget.explanation != _explanationController.text) {
+      _explanationController.text = widget.explanation;
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _pointsController.dispose();
+    _explanationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -53,8 +98,8 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Title field (required)
         TextFormField(
-          initialValue: title,
-          onChanged: onTitleChanged,
+          controller: _titleController,
+          onChanged: widget.onTitleChanged,
           decoration: InputDecoration(
             labelText: 'Question Title *',
             hintText: 'Enter your question here',
@@ -89,9 +134,9 @@ class QuestionBasicInfoSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   FlexDropdownField<QuestionType>(
-                    value: selectedType,
+                    value: widget.selectedType,
                     items: QuestionType.values,
-                    onChanged: onTypeChanged,
+                    onChanged: widget.onTypeChanged,
                     itemLabelBuilder: (type) => type.displayName,
                   ),
                 ],
@@ -113,9 +158,9 @@ class QuestionBasicInfoSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   FlexDropdownField<Difficulty>(
-                    value: selectedDifficulty,
+                    value: widget.selectedDifficulty,
                     items: Difficulty.values,
-                    onChanged: onDifficultyChanged,
+                    onChanged: widget.onDifficultyChanged,
                     itemLabelBuilder: (diff) => diff.displayName,
                   ),
                 ],
@@ -127,11 +172,11 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Points field (optional)
         TextFormField(
-          initialValue: points.toString(),
+          controller: _pointsController,
           onChanged: (value) {
             final parsedPoints = int.tryParse(value);
             if (parsedPoints != null) {
-              onPointsChanged(parsedPoints);
+              widget.onPointsChanged(parsedPoints);
             }
           },
           decoration: InputDecoration(
@@ -158,8 +203,9 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Title image (optional) - upload or URL
         ImageInputField(
-          initialValue: titleImageUrl,
-          onChanged: onTitleImageChanged,
+          key: ValueKey(widget.titleImageUrl),
+          initialValue: widget.titleImageUrl,
+          onChanged: widget.onTitleImageChanged,
           label: 'Question Image',
           hint: 'https://example.com/image.jpg',
           isRequired: false,
@@ -168,8 +214,8 @@ class QuestionBasicInfoSection extends StatelessWidget {
 
         // Explanation field (optional)
         TextFormField(
-          initialValue: explanation,
-          onChanged: onExplanationChanged,
+          controller: _explanationController,
+          onChanged: widget.onExplanationChanged,
           decoration: InputDecoration(
             labelText: 'Explanation (Optional)',
             hintText: 'Explain why this is the correct answer...',

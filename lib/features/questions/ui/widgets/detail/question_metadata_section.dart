@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:intl/intl.dart';
 
-/// Displays question metadata including created and updated timestamps
+/// Enhanced Metadata Section - Displays question metadata with improved visual hierarchy
+///
+/// Features:
+/// - SurfaceContainerLowest background for subtle appearance
+/// - Icons with reduced opacity for better hierarchy
+/// - Uppercase labels with letter spacing
+/// - Date format: "MMM dd, yyyy — hh:mm a"
+/// - Monospace font for owner ID
 class QuestionMetadataSection extends StatelessWidget {
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -19,67 +26,97 @@ class QuestionMetadataSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final dateFormat = DateFormat('MMM dd, yyyy - hh:mm a');
+    final dateFormat = DateFormat('MMM dd, yyyy — hh:mm a');
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
+        color: colorScheme.surfaceContainerLowest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.3),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
               'Metadata',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                // Created At
-                _buildMetadataRow(
-                  context: context,
-                  icon: LucideIcons.calendarPlus,
-                  label: 'Created',
-                  value: dateFormat.format(createdAt),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Updated At
-                _buildMetadataRow(
-                  context: context,
-                  icon: LucideIcons.calendarClock,
-                  label: 'Last Updated',
-                  value: dateFormat.format(updatedAt),
-                ),
-
-                // Owner ID (if available)
-                if (ownerId != null) ...[
-                  const SizedBox(height: 12),
-                  _buildMetadataRow(
-                    context: context,
-                    icon: LucideIcons.user,
-                    label: 'Owner ID',
-                    value: ownerId!,
+            const SizedBox(height: 20),
+            // Created Date
+            _buildMetadataRow(
+              context: context,
+              icon: LucideIcons.calendar,
+              label: 'CREATED',
+              value: dateFormat.format(createdAt),
+            ),
+            const SizedBox(height: 16),
+            // Updated Date
+            _buildMetadataRow(
+              context: context,
+              icon: LucideIcons.refreshCw,
+              label: 'LAST UPDATED',
+              value: dateFormat.format(updatedAt),
+              valueColor: colorScheme.onSurfaceVariant,
+            ),
+            // Owner ID (if available)
+            if (ownerId != null) ...[
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    LucideIcons.user,
+                    size: 20,
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'OWNER ID',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                            color: colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.6,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            ownerId!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontFamily: 'monospace',
+                              color: colorScheme.onSurfaceVariant,
+                              height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -89,6 +126,7 @@ class QuestionMetadataSection extends StatelessWidget {
     required IconData icon,
     required String label,
     required String value,
+    Color? valueColor,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -96,7 +134,11 @@ class QuestionMetadataSection extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 18, color: colorScheme.primary),
+        Icon(
+          icon,
+          size: 20,
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -105,15 +147,17 @@ class QuestionMetadataSection extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text(
                 value,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                  color: valueColor ?? colorScheme.onSurface,
                 ),
               ),
             ],

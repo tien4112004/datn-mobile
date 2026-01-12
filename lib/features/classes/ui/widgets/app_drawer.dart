@@ -36,15 +36,6 @@ class AppDrawer extends StatelessWidget {
                       Navigator.pop(context);
                     },
                   ),
-                  _buildNavItem(
-                    context,
-                    icon: LucideIcons.calendarDays,
-                    label: 'Calendar',
-                    onTap: () {
-                      Navigator.pop(context);
-                      context.router.push(PlaceholderRouteSchedule());
-                    },
-                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Divider(),

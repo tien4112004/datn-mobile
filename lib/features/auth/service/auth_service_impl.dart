@@ -107,9 +107,6 @@ class AuthServiceImpl implements AuthService {
   @override
   Future<void> handleGoogleSignInCallback(Uri uri) async {
     try {
-      debugPrint('Auth callback URI: $uri');
-      debugPrint('Auth callback query parameters: ${uri.queryParameters}');
-
       final accessToken = uri.queryParameters['access_token'];
       final refreshToken = uri.queryParameters['refresh_token'];
 
@@ -120,8 +117,6 @@ class AuthServiceImpl implements AuthService {
           errorCode: 'INVALID_CALLBACK',
         );
       }
-
-      debugPrint('Received auth code: $accessToken and state: $refreshToken');
 
       // Store tokens with error handling
       try {
@@ -163,8 +158,6 @@ class AuthServiceImpl implements AuthService {
           errorCode: 'LOGOUT_ERROR',
         );
       }
-
-      debugPrint('Sign-out successful');
 
       // Delete local tokens only if remote logout is successful
       await secureStorage.delete(key: R.ACCESS_TOKEN_KEY);

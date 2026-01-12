@@ -72,6 +72,15 @@ class AuthController extends AsyncNotifier<AuthState> {
     state = await AsyncValue.guard(() async {
       await _authService.signInWithGoogle();
 
+      return AuthState(isAuthenticated: false);
+    });
+  }
+
+  Future<void> handleGoogleCallback(Uri uri) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      await _authService.handleGoogleSignInCallback(uri);
+
       // Fetch and store user profile after successful login
       await ref
           .read(userControllerProvider.notifier)

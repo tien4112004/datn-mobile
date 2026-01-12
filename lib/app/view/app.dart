@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
-import 'package:datn_mobile/features/auth/service/service_provider.dart';
+import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +60,7 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
     debugPrint('Handling auth callback: $uri');
     if (uri.host == 'auth-callback') {
       try {
-        await ref.read(authServicePod).handleGoogleSignInCallback(uri);
+        await ref.read(authControllerPod.notifier).handleGoogleCallback(uri);
       } on Exception catch (e, stack) {
         log('Error handling auth callback: $e', stackTrace: stack);
         showErrorSnack(

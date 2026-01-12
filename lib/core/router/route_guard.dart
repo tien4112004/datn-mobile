@@ -17,9 +17,12 @@ class RouteGuard extends AutoRouteGuard {
         await secureStorage.read(key: R.ACCESS_TOKEN_KEY) != null;
 
     if (isAuthenticated) {
+      router.popUntil((route) {
+        return route.settings.name == '/';
+      });
       resolver.next(true);
     } else {
-      router.replace(const SignInRoute());
+      router.replaceAll([const SignInRoute()]);
     }
   }
 }

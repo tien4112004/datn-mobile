@@ -6,5 +6,9 @@ abstract interface class ImageService {
   Future<ImageProject> fetchImageById(String id);
   Future<void> addImage(ImageProject image);
 
-  Future<List<ImageProjectMinimal>> fetchImageMinimalsPaged(int pageKey);
+  Future<List<ImageProjectMinimal>> fetchImageMinimalsPaged(
+    int pageKey, {
+    int pageSize = 10,
+    String? search,
+  });
 }

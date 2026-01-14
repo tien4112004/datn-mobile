@@ -42,23 +42,17 @@ abstract class ProjectsRemoteSource {
 
   // Image endpoints
   @GET("/images")
-  Future<ServerResponseDto<List<ImageProjectMinimalDto>>> fetchImages();
+  Future<ServerResponseDto<List<ImageProjectMinimalDto>>> fetchImages({
+    @Query("page") int page = 1,
+    @Query("size") int size = 10,
+    @Query("search") String? search,
+  });
 
   @GET("/images/{id}")
-  Future<ServerResponseDto<ImageProjectDto>> fetchImageById(
-    @Path("id") String id,
-  );
+  Future<ServerResponseDto<ImageProjectDto>> fetchImageById(@Path("id") int id);
 
   @POST("/images")
   Future<ImageProjectDto> createImage(@Body() ImageProjectDto image);
-
-  @GET("/images?page={pageKey}&pageSize={pageSize}&sort={sort}")
-  Future<ServerResponseDto<List<ImageProjectMinimalDto>>>
-  fetchImageMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
-  });
 
   // Mindmap endpoints
   @GET("/mindmaps")

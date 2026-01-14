@@ -127,6 +127,6 @@ class ResourceGridCard extends ConsumerWidget {
   }
 
   bool _isImageUrl(String url) {
-    return url.contains('.photos');
+    return url.contains('https://');
   }
 }

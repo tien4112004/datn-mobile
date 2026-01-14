@@ -24,12 +24,12 @@ class ImageServiceImpl implements ImageService {
   Future<List<ImageProjectMinimal>> fetchImageMinimalsPaged(
     int pageKey, {
     int pageSize = 10,
-    String sort = "desc",
+    String? search,
   }) {
     return _repo.fetchImageMinimalsPaged(
       pageKey,
       pageSize: pageSize,
-      sort: sort,
+      search: search,
     );
   }
 }

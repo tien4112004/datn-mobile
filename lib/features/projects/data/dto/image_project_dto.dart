@@ -1,25 +1,26 @@
 import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_project_dto.g.dart';
 
 @JsonSerializable()
 class ImageProjectDto {
-  String id;
-  String title;
-  String imageUrl;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String? description;
+  final int id;
+  final String originalFilename;
+  final String url;
+  final String mediaType;
+  final int fileSize;
+  final String createdAt;
+  final String updatedAt;
 
   ImageProjectDto({
     required this.id,
-    required this.title,
-    required this.imageUrl,
+    required this.originalFilename,
+    required this.url,
+    required this.mediaType,
+    required this.fileSize,
     required this.createdAt,
     required this.updatedAt,
-    this.description,
   });
 
   factory ImageProjectDto.fromJson(Map<String, dynamic> json) =>
@@ -30,22 +31,25 @@ class ImageProjectDto {
 
 extension ImageProjectMapper on ImageProjectDto {
   ImageProject toEntity() => ImageProject(
-    id: id,
-    title: title,
-    imageUrl: imageUrl,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    description: description,
+    id: id.toString(),
+    title: originalFilename, // Map originalFilename to title for UI
+    imageUrl: url, // Map url to imageUrl for UI
+    mediaType: mediaType,
+    fileSize: fileSize,
+    createdAt: DateTime.parse(createdAt),
+    updatedAt: DateTime.parse(updatedAt),
+    description: null, // Not provided by API
   );
 }
 
 extension ImageProjectEntityMapper on ImageProject {
   ImageProjectDto toDto() => ImageProjectDto(
-    id: id,
-    title: title,
-    imageUrl: imageUrl,
-    createdAt: DateFormatHelper.getNow(),
-    updatedAt: DateFormatHelper.getNow(),
-    description: description,
+    id: int.parse(id),
+    originalFilename: title,
+    url: imageUrl,
+    mediaType: mediaType ?? 'IMAGE_JPEG',
+    fileSize: fileSize ?? 0,
+    createdAt: createdAt.toIso8601String(),
+    updatedAt: updatedAt.toIso8601String(),
   );
 }

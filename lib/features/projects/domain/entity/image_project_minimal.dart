@@ -1,14 +1,14 @@
 class ImageProjectMinimal {
   final String id;
   final String title;
-  final String imageUrl;
+  final String url;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   const ImageProjectMinimal({
     required this.id,
     required this.title,
-    required this.imageUrl,
+    required this.url,
     this.createdAt,
     this.updatedAt,
   });
@@ -23,7 +23,7 @@ class ImageProjectMinimal {
     return ImageProjectMinimal(
       id: id ?? this.id,
       title: title ?? this.title,
-      imageUrl: imageUrl ?? this.imageUrl,
+      url: imageUrl ?? url,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

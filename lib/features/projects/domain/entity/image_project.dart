@@ -1,10 +1,12 @@
 class ImageProject {
   String id;
-  String title;
-  String imageUrl;
+  String title; // Maps from API's originalFilename
+  String imageUrl; // Maps from API's url
   DateTime createdAt;
   DateTime updatedAt;
   String? description;
+  String? mediaType; // New field from IMAGE_API.md
+  int? fileSize; // New field from IMAGE_API.md
 
   ImageProject({
     required this.id,
@@ -13,6 +15,8 @@ class ImageProject {
     required this.createdAt,
     required this.updatedAt,
     this.description,
+    this.mediaType,
+    this.fileSize,
   });
 
   Map<String, dynamic> toJson() {
@@ -23,6 +27,8 @@ class ImageProject {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'description': description,
+      'mediaType': mediaType,
+      'fileSize': fileSize,
     };
   }
 }

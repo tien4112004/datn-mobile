@@ -18,7 +18,7 @@ class ImageRepositoryImpl implements ImageRepository {
 
   @override
   Future<ImageProject> fetchImageById(String id) async {
-    final dtoResponse = await _remoteSource.fetchImageById(id);
+    final dtoResponse = await _remoteSource.fetchImageById(int.parse(id));
 
     if (dtoResponse.data == null) {
       throw Exception('Image not found');
@@ -31,29 +31,14 @@ class ImageRepositoryImpl implements ImageRepository {
   Future<List<ImageProjectMinimal>> fetchImageMinimalsPaged(
     int pageKey, {
     int pageSize = 10,
-    String sort = "desc",
-  }) {
-    // return _remoteSource
-    //     .fetchImageMinimalsPaged(
-    //       pageKey: pageKey,
-    //       pageSize: pageSize,
-    //       sort: sort,
-    //     )
-    //     .then(
-    //       (dtoResponse) =>
-    //           dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [],
-    //     );
-
-    // Mock images
-    return Future.value(
-      List.generate(
-        pageSize,
-        (index) => ImageProjectMinimal(
-          id: 'img_${(pageKey - 1) * pageSize + index + 1}',
-          title: 'Image ${(pageKey - 1) * pageSize + index + 1}',
-          imageUrl: 'https://picsum.photos/300/200',
-        ),
-      ),
+    String? search,
+  }) async {
+    final dtoResponse = await _remoteSource.fetchImages(
+      page: pageKey,
+      size: pageSize,
+      search: search,
     );
+
+    return dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [];
   }
 }

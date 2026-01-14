@@ -2,18 +2,17 @@ import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 
 class Thumbnail extends StatelessWidget {
-  const Thumbnail({super.key});
+  const Thumbnail({super.key, required this.imageUrl});
 
   // Mock url
   // final String imageUrl;
-  final String _imageUrl =
-      "https://claritycareconsulting.co.uk/wp-content/uploads/et_temp/Blank-Profile-Picture-34126_1080x675.jpg";
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.0),
-      child: Image.network(_imageUrl, fit: BoxFit.cover),
+      child: Image.network(imageUrl, fit: BoxFit.cover),
     );
   }
 }

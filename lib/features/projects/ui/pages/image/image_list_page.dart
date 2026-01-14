@@ -37,7 +37,8 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final pagingController = ref.watch(imagePagingControllerPod);
+    // Pass null for search query - maintains current behavior where search navigates to separate page
+    final pagingController = ref.watch(imagePagingControllerPod(""));
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.image.name),
     );

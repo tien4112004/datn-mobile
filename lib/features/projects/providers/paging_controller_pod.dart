@@ -20,8 +20,11 @@ final pagingControllerPod =
       return pagingController;
     });
 
-final imagePagingControllerPod =
-    Provider.autoDispose<PagingController<int, ImageProjectMinimal>>((ref) {
+final imagePagingControllerPod = Provider.autoDispose
+    .family<PagingController<int, ImageProjectMinimal>, String?>((
+      ref,
+      searchQuery,
+    ) {
       late final pagingController = PagingController<int, ImageProjectMinimal>(
         getNextPageKey: (state) {
           if (state.lastPageIsEmpty) {
@@ -29,8 +32,9 @@ final imagePagingControllerPod =
           }
           return state.nextIntPageKey;
         },
-        fetchPage: (pageKey) =>
-            ref.read(imageServiceProvider).fetchImageMinimalsPaged(pageKey),
+        fetchPage: (pageKey) => ref
+            .read(imageServiceProvider)
+            .fetchImageMinimalsPaged(pageKey, search: searchQuery),
       );
       return pagingController;
     });

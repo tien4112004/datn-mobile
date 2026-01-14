@@ -108,6 +108,13 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                   createdAt: questionItem.createdAt,
                   updatedAt: questionItem.updatedAt,
                   ownerId: questionItem.ownerId,
+                  grade: questionItem.grade == null
+                      ? "Grade 5"
+                      : questionItem.grade!.displayName,
+                  chapter: questionItem.chapter,
+                  subject: questionItem.subject == null
+                      ? "Math"
+                      : questionItem.subject!.displayName,
                 ),
               ),
 

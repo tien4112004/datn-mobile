@@ -13,6 +13,9 @@ class QuestionCreateRequestDto {
   final String? titleImageUrl;
   final int? points;
   final Map<String, dynamic> data;
+  final String? grade;
+  final String? chapter;
+  final String? subject;
 
   QuestionCreateRequestDto({
     required this.title,
@@ -22,6 +25,9 @@ class QuestionCreateRequestDto {
     this.titleImageUrl,
     this.points,
     required this.data,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 
   factory QuestionCreateRequestDto.fromJson(Map<String, dynamic> json) =>

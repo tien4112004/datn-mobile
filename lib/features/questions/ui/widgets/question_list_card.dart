@@ -63,6 +63,87 @@ class QuestionListCard extends StatelessWidget {
                       vertical: 6,
                     ),
                   ),
+                  const SizedBox(width: 8),
+
+                  // Grade badge (if available)
+                  if (item.grade != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.secondaryContainer.withValues(
+                          alpha: 0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: colorScheme.secondary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        item.grade!.displayName,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ),
+                  if (item.grade != null) const SizedBox(width: 8),
+
+                  // Subject badge (if available)
+                  if (item.subject != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.tertiaryContainer.withValues(
+                          alpha: 0.5,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: colorScheme.tertiary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        item.subject!.displayName,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onTertiaryContainer,
+                        ),
+                      ),
+                    ),
+                  if (item.subject != null) const SizedBox(width: 8),
+
+                  // Chapter badge (if available)
+                  if (item.chapter != null && item.chapter!.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.6,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: colorScheme.outline.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Text(
+                        item.chapter!,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
                   const Spacer(),
 
                   // More menu (actions)

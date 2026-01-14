@@ -128,6 +128,9 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
               titleImageUrl: question.titleImageUrl,
               points: question.points ?? 0,
               explanation: question.explanation,
+              grade: questionItem.grade?.apiValue,
+              chapter: questionItem.chapter,
+              subject: questionItem.subject?.apiValue,
               data: data,
             );
 
@@ -177,6 +180,9 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
                 difficulty: formState.difficulty,
                 titleImageUrl: formState.titleImageUrl,
                 data: formState.getDataPayload(),
+                grade: formState.grade,
+                chapter: formState.chapter,
+                subject: formState.subject,
               ),
             );
       } else {
@@ -191,6 +197,9 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
                 difficulty: formState.difficulty,
                 titleImageUrl: formState.titleImageUrl,
                 data: formState.getDataPayload(),
+                grade: formState.grade,
+                chapter: formState.chapter,
+                subject: formState.subject,
               ),
             );
 
@@ -290,6 +299,9 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
                 points: formState.points,
                 titleImageUrl: formState.titleImageUrl,
                 explanation: formState.explanation,
+                grade: formState.grade,
+                chapter: formState.chapter,
+                subject: formState.subject,
                 onTitleChanged: (value) {
                   ref.read(questionFormProvider.notifier).updateTitle(value);
                 },
@@ -313,6 +325,15 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpsertPage> {
                   ref
                       .read(questionFormProvider.notifier)
                       .updateExplanation(value);
+                },
+                onGradeChanged: (value) {
+                  ref.read(questionFormProvider.notifier).updateGrade(value);
+                },
+                onChapterChanged: (value) {
+                  ref.read(questionFormProvider.notifier).updateChapter(value);
+                },
+                onSubjectChanged: (value) {
+                  ref.read(questionFormProvider.notifier).updateSubject(value);
                 },
               ),
               const SizedBox(height: 32),

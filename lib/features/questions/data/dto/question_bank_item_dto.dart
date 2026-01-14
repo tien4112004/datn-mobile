@@ -17,6 +17,9 @@ class QuestionBankItemDto {
   final String ownerId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? grade;
+  final String? chapter;
+  final String? subject;
 
   QuestionBankItemDto({
     required this.id,
@@ -30,6 +33,9 @@ class QuestionBankItemDto {
     required this.ownerId,
     required this.createdAt,
     required this.updatedAt,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 
   factory QuestionBankItemDto.fromJson(Map<String, dynamic> json) =>

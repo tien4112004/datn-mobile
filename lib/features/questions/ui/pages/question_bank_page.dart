@@ -56,7 +56,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 200,
+            expandedHeight: 300,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
@@ -95,6 +95,8 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                   questionBankControllerNotifier.switchBankType(type);
                 },
                 searchController: _searchController,
+                selectedGrade: questionBankController.value?.gradeFilter,
+                selectedSubject: questionBankController.value?.subjectFilter,
                 onSearchSubmitted: (value) {
                   questionBankControllerNotifier.search(value);
                 },
@@ -104,6 +106,19 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 },
                 onSearchChanged: () {
                   setState(() {}); // Update to show/hide clear button
+                },
+                onGradeChanged: (value) {
+                  questionBankControllerNotifier.setGradeFilter(
+                    value?.apiValue,
+                  );
+                },
+                onSubjectChanged: (value) {
+                  questionBankControllerNotifier.setSubjectFilter(value);
+                },
+                onClearFilters: () {
+                  _searchController.clear();
+                  questionBankControllerNotifier.clearFilters();
+                  setState(() {});
                 },
               ),
             ),

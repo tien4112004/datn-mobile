@@ -13,6 +13,9 @@ class QuestionUpdateRequestDto {
   final String? titleImageUrl;
   final int? points;
   final Map<String, dynamic>? data;
+  final String? grade;
+  final String? chapter;
+  final String? subject;
 
   QuestionUpdateRequestDto({
     this.title,
@@ -22,6 +25,9 @@ class QuestionUpdateRequestDto {
     this.titleImageUrl,
     this.points,
     this.data,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 
   factory QuestionUpdateRequestDto.fromJson(Map<String, dynamic> json) =>

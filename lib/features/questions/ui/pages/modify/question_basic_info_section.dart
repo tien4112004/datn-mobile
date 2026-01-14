@@ -12,12 +12,18 @@ class QuestionBasicInfoSection extends StatefulWidget {
   final int points;
   final String? titleImageUrl;
   final String explanation;
+  final Grade? grade;
+  final String? chapter;
+  final Subject? subject;
   final ValueChanged<String> onTitleChanged;
   final ValueChanged<QuestionType> onTypeChanged;
   final ValueChanged<Difficulty> onDifficultyChanged;
   final ValueChanged<int> onPointsChanged;
   final ValueChanged<String?> onTitleImageChanged;
   final ValueChanged<String> onExplanationChanged;
+  final ValueChanged<Grade?> onGradeChanged;
+  final ValueChanged<String> onChapterChanged;
+  final ValueChanged<Subject?> onSubjectChanged;
 
   const QuestionBasicInfoSection({
     super.key,
@@ -27,12 +33,18 @@ class QuestionBasicInfoSection extends StatefulWidget {
     required this.points,
     this.titleImageUrl,
     required this.explanation,
+    this.grade,
+    this.chapter,
+    this.subject,
     required this.onTitleChanged,
     required this.onTypeChanged,
     required this.onDifficultyChanged,
     required this.onPointsChanged,
     required this.onTitleImageChanged,
     required this.onExplanationChanged,
+    required this.onGradeChanged,
+    required this.onChapterChanged,
+    required this.onSubjectChanged,
   });
 
   @override
@@ -44,6 +56,7 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
   late TextEditingController _titleController;
   late TextEditingController _pointsController;
   late TextEditingController _explanationController;
+  late TextEditingController _chapterController;
 
   @override
   void initState() {
@@ -51,6 +64,7 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
     _titleController = TextEditingController(text: widget.title);
     _pointsController = TextEditingController(text: widget.points.toString());
     _explanationController = TextEditingController(text: widget.explanation);
+    _chapterController = TextEditingController(text: widget.chapter ?? '');
   }
 
   @override
@@ -70,6 +84,9 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
         widget.explanation != _explanationController.text) {
       _explanationController.text = widget.explanation;
     }
+    if (widget.chapter != oldWidget.chapter) {
+      _chapterController.text = widget.chapter ?? '';
+    }
   }
 
   @override
@@ -77,6 +94,7 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
     _titleController.dispose();
     _pointsController.dispose();
     _explanationController.dispose();
+    _chapterController.dispose();
     super.dispose();
   }
 
@@ -198,6 +216,72 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
             }
             return null;
           },
+        ),
+        const SizedBox(height: 16),
+
+        // Grade, Chapter, and Subject fields
+        Row(
+          children: [
+            // Grade dropdown
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Grade',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FlexDropdownField<Grade>(
+                    value: widget.grade ?? Grade.grade1,
+                    items: Grade.values,
+                    onChanged: widget.onGradeChanged,
+                    itemLabelBuilder: (grade) => grade.displayName,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Subject dropdown
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Subject',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  FlexDropdownField<Subject>(
+                    value: widget.subject ?? Subject.english,
+                    items: Subject.values,
+                    onChanged: widget.onSubjectChanged,
+                    itemLabelBuilder: (subject) => subject.displayName,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Chapter field (text input)
+        TextFormField(
+          controller: _chapterController,
+          onChanged: widget.onChapterChanged,
+          decoration: InputDecoration(
+            labelText: 'Chapter (Optional)',
+            hintText: 'e.g., Chapter 5',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            contentPadding: const EdgeInsets.all(16),
+          ),
         ),
         const SizedBox(height: 16),
 

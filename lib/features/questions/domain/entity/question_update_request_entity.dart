@@ -10,6 +10,9 @@ class QuestionUpdateRequestEntity {
   final String? titleImageUrl;
   final int? points;
   final Map<String, dynamic>? data;
+  final Grade? grade;
+  final String? chapter;
+  final Subject? subject;
 
   const QuestionUpdateRequestEntity({
     this.title,
@@ -19,5 +22,8 @@ class QuestionUpdateRequestEntity {
     this.titleImageUrl,
     this.points,
     this.data,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 }

@@ -9,6 +9,9 @@ class QuestionCreateRequestEntity {
   final String? titleImageUrl;
   final int? points;
   final Map<String, dynamic> data;
+  final Grade? grade;
+  final String? chapter;
+  final Subject? subject;
 
   const QuestionCreateRequestEntity({
     required this.title,
@@ -18,5 +21,8 @@ class QuestionCreateRequestEntity {
     this.titleImageUrl,
     this.points,
     required this.data,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 }

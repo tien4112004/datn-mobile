@@ -9,6 +9,9 @@ class QuestionBankState {
   final bool isLoadingMore;
   final String? error;
   final String? searchQuery;
+  final Grade? gradeFilter;
+  final Subject? subjectFilter;
+  final String? chapterFilter;
 
   const QuestionBankState({
     this.questions = const [],
@@ -18,6 +21,9 @@ class QuestionBankState {
     this.error,
     this.selectedQuestion,
     this.searchQuery,
+    this.gradeFilter,
+    this.subjectFilter,
+    this.chapterFilter,
   });
 
   QuestionBankState copyWith({
@@ -28,6 +34,9 @@ class QuestionBankState {
     bool? isLoadingMore,
     String? error,
     String? searchQuery,
+    Grade? gradeFilter,
+    Subject? subjectFilter,
+    String? chapterFilter,
   }) {
     return QuestionBankState(
       questions: questions ?? this.questions,
@@ -37,6 +46,9 @@ class QuestionBankState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       error: error,
       searchQuery: searchQuery ?? this.searchQuery,
+      gradeFilter: gradeFilter ?? this.gradeFilter,
+      subjectFilter: subjectFilter ?? this.subjectFilter,
+      chapterFilter: chapterFilter ?? this.chapterFilter,
     );
   }
 }

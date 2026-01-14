@@ -14,12 +14,18 @@ class QuestionMetadataSection extends StatelessWidget {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? ownerId;
+  final String? grade;
+  final String? chapter;
+  final String? subject;
 
   const QuestionMetadataSection({
     super.key,
     required this.createdAt,
     required this.updatedAt,
     this.ownerId,
+    this.grade,
+    this.chapter,
+    this.subject,
   });
 
   @override
@@ -66,53 +72,34 @@ class QuestionMetadataSection extends StatelessWidget {
               value: dateFormat.format(updatedAt),
               valueColor: colorScheme.onSurfaceVariant,
             ),
-            // Owner ID (if available)
-            if (ownerId != null) ...[
+            // Grade (if available)
+            if (grade != null && grade!.isNotEmpty) ...[
               const SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    LucideIcons.user,
-                    size: 20,
-                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'OWNER ID',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                            color: colorScheme.onSurfaceVariant.withValues(
-                              alpha: 0.6,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: colorScheme.surfaceContainerHighest
-                                .withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            ownerId!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontFamily: 'monospace',
-                              color: colorScheme.onSurfaceVariant,
-                              height: 1.4,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              _buildMetadataRow(
+                context: context,
+                icon: LucideIcons.bookOpen,
+                label: 'GRADE',
+                value: grade!,
+              ),
+            ],
+            // Subject (if available)
+            if (subject != null && subject!.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _buildMetadataRow(
+                context: context,
+                icon: LucideIcons.library,
+                label: 'SUBJECT',
+                value: subject!,
+              ),
+            ],
+            // Chapter (if available)
+            if (chapter != null && chapter!.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              _buildMetadataRow(
+                context: context,
+                icon: LucideIcons.layers,
+                label: 'CHAPTER',
+                value: chapter!,
               ),
             ],
           ],

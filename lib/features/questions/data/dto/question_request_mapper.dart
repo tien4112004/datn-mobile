@@ -17,6 +17,9 @@ extension QuestionCreateRequestEntityMapper on QuestionCreateRequestEntity {
       titleImageUrl: titleImageUrl,
       points: points,
       data: data,
+      grade: grade?.apiValue,
+      chapter: chapter,
+      subject: subject?.apiValue,
     );
   }
 }
@@ -32,6 +35,9 @@ extension QuestionUpdateRequestEntityMapper on QuestionUpdateRequestEntity {
       titleImageUrl: titleImageUrl,
       points: points,
       data: data,
+      grade: grade?.apiValue,
+      chapter: chapter,
+      subject: subject?.apiValue,
     );
   }
 }

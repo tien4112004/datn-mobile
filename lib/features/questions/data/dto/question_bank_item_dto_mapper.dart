@@ -64,6 +64,9 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
       ownerId: ownerId,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      grade: Grade.fromApiValue(grade),
+      chapter: chapter,
+      subject: Subject.fromApiValue(subject),
     );
   }
 

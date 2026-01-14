@@ -22,6 +22,8 @@ class QuestionBankRepositoryImpl implements QuestionBankRepository {
     String? search,
     String? sortBy,
     String? sortDirection,
+    String? grade,
+    String? chapter,
   }) async {
     final response = await _remoteSource.getQuestions(
       bankType: bankType.name,
@@ -30,6 +32,8 @@ class QuestionBankRepositoryImpl implements QuestionBankRepository {
       search: search,
       sortBy: sortBy,
       sortDirection: sortDirection,
+      grade: grade,
+      chapter: chapter,
     );
 
     return response.data.map((dto) => dto.toEntity()).toList();

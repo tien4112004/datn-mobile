@@ -23,6 +23,9 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     String? titleImageUrl,
     required int points,
     String? explanation,
+    String? grade,
+    String? chapter,
+    String? subject,
     required Map<String, dynamic> data,
   }) {
     state = QuestionFormState(
@@ -33,6 +36,9 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
       titleImageUrl: titleImageUrl,
       points: points,
       explanation: explanation ?? '',
+      grade: grade != null ? Grade.fromApiValue(grade) : null,
+      chapter: chapter,
+      subject: subject != null ? Subject.fromApiValue(subject) : null,
       hasUnsavedChanges: false,
     );
 
@@ -126,6 +132,18 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
 
   void updateExplanation(String explanation) {
     state = state.copyWith(explanation: explanation, hasUnsavedChanges: true);
+  }
+
+  void updateGrade(Grade? grade) {
+    state = state.copyWith(grade: grade, hasUnsavedChanges: true);
+  }
+
+  void updateChapter(String chapter) {
+    state = state.copyWith(chapter: chapter, hasUnsavedChanges: true);
+  }
+
+  void updateSubject(Subject? subject) {
+    state = state.copyWith(subject: subject, hasUnsavedChanges: true);
   }
 
   // === Multiple Choice Updates ===

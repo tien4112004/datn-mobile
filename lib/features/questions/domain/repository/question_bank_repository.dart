@@ -13,6 +13,8 @@ abstract class QuestionBankRepository {
     String? search,
     String? sortBy,
     String? sortDirection,
+    String? grade,
+    String? chapter,
   });
 
   /// Gets a single question by ID.

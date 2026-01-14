@@ -239,3 +239,103 @@ enum BankType {
     }
   }
 }
+
+/// Grade levels for questions (1-5)
+enum Grade {
+  grade1,
+  grade2,
+  grade3,
+  grade4,
+  grade5;
+
+  String get displayName {
+    switch (this) {
+      case Grade.grade1:
+        return 'Grade 1';
+      case Grade.grade2:
+        return 'Grade 2';
+      case Grade.grade3:
+        return 'Grade 3';
+      case Grade.grade4:
+        return 'Grade 4';
+      case Grade.grade5:
+        return 'Grade 5';
+    }
+  }
+
+  String get apiValue {
+    switch (this) {
+      case Grade.grade1:
+        return '1';
+      case Grade.grade2:
+        return '2';
+      case Grade.grade3:
+        return '3';
+      case Grade.grade4:
+        return '4';
+      case Grade.grade5:
+        return '5';
+    }
+  }
+
+  static Grade? fromApiValue(String? value) {
+    if (value == null) return null;
+    switch (value) {
+      case '1':
+        return Grade.grade1;
+      case '2':
+        return Grade.grade2;
+      case '3':
+        return Grade.grade3;
+      case '4':
+        return Grade.grade4;
+      case '5':
+        return Grade.grade5;
+      default:
+        return null;
+    }
+  }
+}
+
+/// Subject categories for questions
+enum Subject {
+  english,
+  mathematics,
+  literature;
+
+  String get displayName {
+    switch (this) {
+      case Subject.english:
+        return 'English';
+      case Subject.mathematics:
+        return 'Mathematics';
+      case Subject.literature:
+        return 'Literature';
+    }
+  }
+
+  String get apiValue {
+    switch (this) {
+      case Subject.english:
+        return 'ENGLISH';
+      case Subject.mathematics:
+        return 'MATHEMATICS';
+      case Subject.literature:
+        return 'LITERATURE';
+    }
+  }
+
+  static Subject? fromApiValue(String? value) {
+    if (value == null) return null;
+    switch (value.toUpperCase()) {
+      case 'ENGLISH':
+        return Subject.english;
+      case 'MATHEMATICS':
+        return Subject.mathematics;
+      case 'LITERATURE':
+        return Subject.literature;
+      default:
+        return null;
+    }
+  }
+}

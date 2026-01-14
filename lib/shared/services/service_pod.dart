@@ -1,11 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
+import 'package:dio/dio.dart';
 import 'download_service.dart';
+import 'share_service.dart';
 
-/// Riverpod provider for DownloadService
-/// Injects the configured Dio instance
+final downloadDioProvider = Provider<Dio>((ref) {
+  final dio = Dio();
+  return dio;
+});
+
 final downloadServiceProvider = Provider<DownloadService>((ref) {
-  final dio = ref.read(dioPod);
+  final dio = ref.read(downloadDioProvider);
   return DownloadService(dio);
+});
+
+final shareServiceProvider = Provider<ShareService>((ref) {
+  return ShareService(ref.read(downloadServiceProvider));
 });

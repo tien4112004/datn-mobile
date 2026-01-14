@@ -1,5 +1,3 @@
-/// Utility functions for formatting various data types
-
 /// Formats file size in bytes to human-readable string
 ///
 /// Examples:

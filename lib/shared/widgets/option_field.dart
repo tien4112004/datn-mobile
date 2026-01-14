@@ -1,5 +1,5 @@
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/widgets/dropdown_field.dart';
 
 /// Base class for all option field types
 abstract class OptionFieldConfig {
@@ -50,7 +50,11 @@ class SelectionOption extends OptionFieldConfig {
   Widget build(BuildContext context) {
     return buildWithLabel(
       context,
-      DropdownField<String>(value: value, items: items, onChanged: onChanged),
+      FlexDropdownField<String>(
+        value: value,
+        items: items,
+        onChanged: onChanged,
+      ),
     );
   }
 }

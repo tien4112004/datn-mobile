@@ -1,9 +1,9 @@
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_empty_state.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_error_state.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_input.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_list.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_loading_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,9 +39,15 @@ class CommentSection extends ConsumerWidget {
               return CommentList(comments: comments);
             },
             loading: () => const CommentLoadingState(),
-            error: (error, stack) => CommentErrorState(
-              error: error,
-              onRetry: () => ref.invalidate(commentsControllerProvider(postId)),
+            error: (error, stack) => Padding(
+              padding: const EdgeInsets.all(24),
+              child: EnhancedErrorState(
+                title: 'Failed to load comments',
+                message: error.toString(),
+                actionLabel: 'Retry',
+                onRetry: () =>
+                    ref.invalidate(commentsControllerProvider(postId)),
+              ),
             ),
           ),
 

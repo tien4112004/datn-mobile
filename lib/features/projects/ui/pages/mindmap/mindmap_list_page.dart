@@ -5,6 +5,8 @@ import 'package:datn_mobile/features/projects/states/controller_provider.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -86,8 +88,10 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                   .when(
                     data: (data) {
                       if (data.value.isEmpty) {
-                        return const Center(
-                          child: Text('No mindmaps available'),
+                        return const EnhancedEmptyState(
+                          icon: LucideIcons.brain,
+                          title: 'No mindmaps available',
+                          message: 'Create your first mindmap to get started',
                         );
                       }
                       return ListView.builder(
@@ -108,20 +112,13 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                     },
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
-                    error: (error, stackTrace) => Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Error: $error'),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              ref.invalidate(mindmapsControllerProvider);
-                            },
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
+                    error: (error, stackTrace) => EnhancedErrorState(
+                      title: 'Error loading mindmaps',
+                      message: error.toString(),
+                      actionLabel: 'Retry',
+                      onRetry: () {
+                        ref.invalidate(mindmapsControllerProvider);
+                      },
                     ),
                   ),
             ),

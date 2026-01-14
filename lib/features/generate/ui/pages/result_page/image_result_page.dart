@@ -7,7 +7,9 @@ import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/services/download/download_service_pod.dart';
+import 'package:datn_mobile/shared/services/service_pod.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -31,7 +33,11 @@ class ImageResultPage extends ConsumerWidget {
         data: (state) {
           final image = state.generatedImage;
           if (image == null) {
-            return _buildNoImageState(context, t);
+            return EnhancedEmptyState(
+              icon: LucideIcons.imageOff,
+              title: t.generate.imageResult.noImageGenerated,
+              message: 'Please try generating an image first',
+            );
           }
 
           return SingleChildScrollView(
@@ -94,41 +100,12 @@ class ImageResultPage extends ConsumerWidget {
           );
         },
         errorWidget: (error, stackTrace) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(LucideIcons.badgeAlert, size: 64, color: cs.error),
-                  const SizedBox(height: 16),
-                  Text(
-                    t.generate.imageResult.errorGeneratingImage,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: context.isDarkMode
-                          ? Colors.white
-                          : Colors.grey[900],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    error.toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.secondaryTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () => context.router.back(),
-                    child: Text(t.generate.imageResult.generateAnother),
-                  ),
-                ],
-              ),
-            ),
+          return EnhancedErrorState(
+            icon: LucideIcons.badgeAlert,
+            title: t.generate.imageResult.errorGeneratingImage,
+            message: error.toString(),
+            actionLabel: t.generate.imageResult.generateAnother,
+            onRetry: () => context.router.back(),
           );
         },
       ),
@@ -151,26 +128,6 @@ class ImageResultPage extends ConsumerWidget {
       leading: IconButton(
         icon: const Icon(LucideIcons.arrowLeft),
         onPressed: () => context.router.back(),
-      ),
-    );
-  }
-
-  Widget _buildNoImageState(BuildContext context, Translations t) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            LucideIcons.imageOff,
-            size: 64,
-            color: context.secondaryTextColor,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            t.generate.imageResult.noImageGenerated,
-            style: TextStyle(fontSize: 16, color: context.secondaryTextColor),
-          ),
-        ],
       ),
     );
   }

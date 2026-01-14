@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorage {
   // Placeholder for secure storage implementation
   final FlutterSecureStorage storage;
+
+  static const String _userProfileKey = 'user_profile';
 
   SecureStorage(this.storage);
 
@@ -19,7 +23,31 @@ class SecureStorage {
     await storage.delete(key: key);
   }
 
-  Future<bool> containsKey(String key) {
-    return storage.containsKey(key: key);
+  Future containsKey(String s) async {
+    return await storage.containsKey(key: s);
+  }
+
+  // User profile specific methods
+  Future<void> saveUserProfile(UserProfile profile) async {
+    final jsonString = jsonEncode(profile.toJson());
+    await write(key: _userProfileKey, value: jsonString);
+  }
+
+  Future<UserProfile?> loadUserProfile() async {
+    final jsonString = await read(key: _userProfileKey);
+    if (jsonString == null) return null;
+
+    try {
+      final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+      return UserProfile.fromJson(jsonMap);
+    } catch (e) {
+      // If parsing fails, delete the corrupted data
+      await deleteUserProfile();
+      return null;
+    }
+  }
+
+  Future<void> deleteUserProfile() async {
+    await delete(key: _userProfileKey);
   }
 }

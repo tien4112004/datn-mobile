@@ -44,6 +44,8 @@ class SettingContentView extends ConsumerWidget {
       }
     });
 
+    // final userStateNotifier = ref.watch(userControllerProvider.notifier);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -53,24 +55,46 @@ class SettingContentView extends ConsumerWidget {
           children: [
             const SettingProfilePicture(),
             const SizedBox(height: 20),
+            // SettingSection(
+            //   title: 'Showcase Area',
+            //   options: [
+            //     SettingOption(
+            //       title: 'Question Widgets Showcase',
+            //       onPressed: () {
+            //         context.router.push(const QuestionShowcaseRoute());
+            //       },
+            //       icon: LucideIcons.layoutDashboard,
+            //     ),
+            //     SettingOption(
+            //       title: userStateNotifier.isStudent()
+            //           ? 'Switch to Teacher View'
+            //           : 'Switch to Student View',
+            //       onPressed: () {
+            //         final currentRole = ref
+            //             .read(userControllerProvider)
+            //             .value
+            //             ?.role;
+            //         debugPrint("Current user role: $currentRole");
+
+            //         // Toggle between student and teacher
+            //         if (userStateNotifier.isStudent()) {
+            //           debugPrint("Switching to Student View Mode");
+            //           ref
+            //               .read(userControllerProvider.notifier)
+            //               .setUserRole(UserRole.teacher);
+            //         } else {
+            //           ref
+            //               .read(userControllerProvider.notifier)
+            //               .setUserRole(UserRole.student);
+            //         }
+            //       },
+            //       icon: LucideIcons.userCog,
+            //     ),
+            //   ],
+            // ),
             SettingSection(
               title: t.accountSetting,
               options: [
-                // TODO: Delete this later
-                SettingOption(
-                  title: "Go to sign in",
-                  onPressed: () => {context.router.push(const SignInRoute())},
-                ),
-                SettingOption(
-                  title: 'Go to Students',
-                  onPressed: () {
-                    // Using a mock class ID for testing
-                    context.router.push(
-                      StudentListRoute(classId: 'mock-class-1'),
-                    );
-                  },
-                  icon: LucideIcons.users,
-                ),
                 // FOR TESTING ONLY
                 SettingOption(
                   title: t.personalInformation,

@@ -83,4 +83,9 @@ class UserController extends AsyncNotifier<UserProfile?> {
       // print('Failed to save user profile to storage: $e');
     }
   }
+
+  // Future<void> _clearCachedUser() async {
+  //   final repository = ref.read(userRepositoryProvider);
+  //   await repository.clearCachedUser();
+  // }
 }

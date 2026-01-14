@@ -18,10 +18,7 @@ class AuthorAPIInterceptor extends Interceptor {
   ) async {
     try {
       final accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
-      debugPrint('Access token: $accessToken');
-
       final refreshToken = await secureStorage.read(key: R.REFRESH_TOKEN_KEY);
-      debugPrint('Refresh token: $refreshToken');
 
       String cookies =
           '${R.ACCESS_TOKEN_KEY}=${accessToken ?? ''}; ${R.REFRESH_TOKEN_KEY}=${refreshToken ?? ''}';
@@ -35,9 +32,6 @@ class AuthorAPIInterceptor extends Interceptor {
     } catch (e) {
       debugPrint('Error reading access token: $e');
     }
-
-    debugPrint('Request Options: ${options.method} ${options.path}');
-    debugPrint('Request Headers: ${options.headers}');
 
     handler.next(options);
   }

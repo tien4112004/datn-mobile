@@ -73,5 +73,17 @@ class AppRouter extends RootStackRouter {
       page: StudentEditRoute.page,
       path: '/classes/:classId/students/:studentId/edit',
     ),
+
+    // Exam Routes
+    AutoRoute(page: AssignmentsRoute.page, path: '/assignments'),
+    AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
+    AutoRoute(page: QuestionDetailRoute.page, path: '/questions/:questionId'),
+    AutoRoute(
+      page: QuestionUpsertRoute.page,
+      path: '/questions/:questionId/edit',
+    ),
+
+    // Question Showcase Route
+    AutoRoute(page: QuestionShowcaseRoute.page, path: '/question-showcase'),
   ];
 }

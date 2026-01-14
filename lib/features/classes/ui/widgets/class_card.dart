@@ -1,14 +1,16 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Google Classroom-style course card widget.
 ///
 /// Displays a colored header section with course title,
 /// instructor name, and an options menu.
-class ClassCard extends StatelessWidget {
+class ClassCard extends ConsumerWidget {
   final ClassEntity classEntity;
   final VoidCallback? onTap;
   final VoidCallback? onViewStudents;
@@ -25,9 +27,11 @@ class ClassCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final instructorName =
+        ref.read(userControllerProvider).value?.fullName ?? 'Instructor';
 
     return Semantics(
       label: 'Class card for ${classEntity.name}',
@@ -49,7 +53,7 @@ class ClassCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Colored header section
-              _buildHeader(context),
+              _buildHeader(context, instructorName),
               // Content section
               _buildContent(context, colorScheme),
             ],
@@ -59,7 +63,7 @@ class ClassCard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, String instructorName) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(

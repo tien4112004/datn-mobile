@@ -4,11 +4,14 @@ class DropdownField<T> extends StatelessWidget {
   final T value;
   final List<T> items;
   final ValueChanged<T?> onChanged;
+  final String Function(T)? itemLabelBuilder;
+
   const DropdownField({
     super.key,
     required this.value,
     required this.items,
     required this.onChanged,
+    this.itemLabelBuilder,
   });
 
   @override
@@ -25,7 +28,12 @@ class DropdownField<T> extends StatelessWidget {
       initialValue: value,
       isExpanded: true,
       items: items
-          .map((e) => DropdownMenuItem<T>(value: e, child: Text('$e')))
+          .map(
+            (e) => DropdownMenuItem<T>(
+              value: e,
+              child: Text(itemLabelBuilder?.call(e) ?? '$e'),
+            ),
+          )
           .toList(),
       onChanged: onChanged,
       menuMaxHeight: 300,

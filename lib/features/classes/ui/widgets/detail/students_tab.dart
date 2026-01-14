@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
+import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
 import 'package:datn_mobile/features/students/states/controller_provider.dart';
 import 'package:datn_mobile/features/students/ui/widgets/student_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_count_header.dart';
-import 'package:datn_mobile/shared/widgets/animated_list_item.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widget/enhanced_count_header.dart';
+import 'package:datn_mobile/shared/widget/animated_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,18 +34,21 @@ class StudentsTab extends ConsumerWidget {
         onRetry: () =>
             ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
-      floatingActionButton: Semantics(
-        label: 'Add new student',
-        button: true,
-        hint: 'Double tap to add a student to this class',
-        child: FloatingActionButton(
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.router.push(StudentCreateRoute(classId: classId));
-          },
-          child: const Icon(LucideIcons.userPlus),
-        ),
-      ),
+      floatingActionButton:
+          (ref.watch(userControllerProvider).value?.role == UserRole.student)
+          ? null
+          : Semantics(
+              label: 'Add new student',
+              button: true,
+              hint: 'Double tap to add a student to this class',
+              child: FloatingActionButton(
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.router.push(StudentCreateRoute(classId: classId));
+                },
+                child: const Icon(LucideIcons.userPlus),
+              ),
+            ),
     );
   }
 }

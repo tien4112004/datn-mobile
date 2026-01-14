@@ -7,7 +7,7 @@ import 'package:datn_mobile/features/classes/ui/widgets/posts/post_content.dart'
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_footer.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_header.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_pin_indicator.dart';
-import 'package:datn_mobile/shared/widgets/themed_card.dart';
+import 'package:datn_mobile/shared/widget/themed_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

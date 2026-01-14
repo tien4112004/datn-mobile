@@ -134,20 +134,20 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
               child = AnnotatedRegion<SystemUiOverlayStyle>(
                 value: currentTheme == ThemeMode.dark
                     ? SystemUiOverlayStyle.light.copyWith(
-                        statusBarColor: Colors.white.withOpacity(0.4),
+                        statusBarColor: Colors.white.withValues(alpha: 0.4),
                         systemNavigationBarColor: Colors.black,
                         systemNavigationBarDividerColor: Colors.black,
                         systemNavigationBarIconBrightness: Brightness.dark,
                       )
                     : currentTheme == ThemeMode.light
                     ? SystemUiOverlayStyle.dark.copyWith(
-                        statusBarColor: Colors.white.withOpacity(0.4),
+                        statusBarColor: Colors.white.withValues(alpha: 0.4),
                         systemNavigationBarColor: Colors.grey,
                         systemNavigationBarDividerColor: Colors.grey,
                         systemNavigationBarIconBrightness: Brightness.light,
                       )
                     : SystemUiOverlayStyle.dark.copyWith(
-                        statusBarColor: Colors.white.withOpacity(0.4),
+                        statusBarColor: Colors.white.withValues(alpha: 0.4),
                         systemNavigationBarColor: Colors.grey,
                         systemNavigationBarDividerColor: Colors.grey,
                         systemNavigationBarIconBrightness: Brightness.light,

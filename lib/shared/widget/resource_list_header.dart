@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -150,52 +151,44 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
   }
 
   Widget _buildSortButton() {
-    return PopupMenuButton<String>(
-      onSelected: widget.onSortChanged,
-      itemBuilder: (context) {
-        return widget.sortOptions.map((option) {
-          return PopupMenuItem<String>(
-            value: option,
-            child: Row(
-              children: [
-                if (option == widget.selectedSort)
-                  const Icon(LucideIcons.check, size: 16)
-                else
-                  const SizedBox(width: 16),
-                const SizedBox(width: 8),
-                Text(option),
-              ],
-            ),
-          );
-        }).toList();
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Themes.padding.p12,
-          vertical: Themes.padding.p12,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+    return FlexDropdownField<String>(
+      value: widget.selectedSort,
+      items: widget.sortOptions,
+      onChanged: widget.onSortChanged,
+      itemLabelBuilder: (item) => item,
+      buttonBuilder: (context, openMenu) {
+        return InkWell(
+          onTap: openMenu,
           borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Themes.padding.p12,
+              vertical: Themes.padding.p12,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(LucideIcons.arrowUpDown, size: 18),
-                const SizedBox(width: 8),
-                Text(
-                  widget.selectedSort,
-                  style: TextStyle(fontSize: Themes.fontSize.s14),
+                Row(
+                  children: [
+                    const Icon(LucideIcons.arrowUpDown, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      widget.selectedSort,
+                      style: TextStyle(fontSize: Themes.fontSize.s14),
+                    ),
+                  ],
                 ),
+                const Icon(LucideIcons.chevronDown, size: 18),
               ],
             ),
-            const Icon(LucideIcons.chevronDown, size: 18),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

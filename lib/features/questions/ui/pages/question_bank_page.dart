@@ -56,7 +56,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 300,
+            expandedHeight: 260,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,

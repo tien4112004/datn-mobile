@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/bank_type_switcher.dart';
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Header widget for Question Bank page containing bank switcher and search
 class QuestionBankHeader extends StatelessWidget {
@@ -42,7 +43,7 @@ class QuestionBankHeader extends StatelessWidget {
         left: 16,
         right: 16,
         top: 80, // Space for app bar + title
-        bottom: 16,
+        bottom: 0,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -84,74 +85,31 @@ class QuestionBankHeader extends StatelessWidget {
             onChanged: (_) => onSearchChanged(),
           ),
           const SizedBox(height: 12),
-          // Filter row for Grade and Subject
-          Row(
-            children: [
-              // Grade dropdown filter
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        'Grade',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    FlexDropdownField<Grade>(
-                      value: selectedGrade ?? Grade.grade1,
-                      items: Grade.values,
-                      onChanged: onGradeChanged,
-                      itemLabelBuilder: (grade) => grade.displayName,
-                    ),
-                  ],
-                ),
+          // Generic filters bar
+          GenericFiltersBar(
+            filters: [
+              FilterConfig<Grade>(
+                label: 'Grade',
+                icon: LucideIcons.graduationCap,
+                selectedValue: selectedGrade,
+                options: Grade.values,
+                displayNameBuilder: (grade) => grade.displayName,
+                onChanged: onGradeChanged,
+                allLabel: 'All Grades',
+                allIcon: LucideIcons.list,
               ),
-              const SizedBox(width: 8),
-              //Subject dropdown filter
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        'Subject',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    FlexDropdownField<Subject>(
-                      value: selectedSubject ?? Subject.english,
-                      items: Subject.values,
-                      onChanged: onSubjectChanged,
-                      itemLabelBuilder: (subject) => subject.displayName,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              // Clear filters button
-              IconButton(
-                icon: const Icon(Icons.filter_alt_off_outlined),
-                onPressed: onClearFilters,
-                tooltip: 'Clear Filters',
-                style: IconButton.styleFrom(
-                  backgroundColor: colorScheme.surfaceContainerHighest
-                      .withValues(alpha: 0.5),
-                  foregroundColor: colorScheme.onSurfaceVariant,
-                  padding: const EdgeInsets.all(14),
-                ),
+              FilterConfig<Subject>(
+                label: 'Subject',
+                icon: LucideIcons.bookOpen,
+                selectedValue: selectedSubject,
+                options: Subject.values,
+                displayNameBuilder: (subject) => subject.displayName,
+                onChanged: onSubjectChanged,
+                allLabel: 'All Subjects',
+                allIcon: LucideIcons.list,
               ),
             ],
+            onClearFilters: onClearFilters,
           ),
         ],
       ),

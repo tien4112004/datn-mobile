@@ -26,9 +26,7 @@ class ImageResultPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: _buildAppBar(context, t),
-      backgroundColor: context.isDarkMode
-          ? cs.surface
-          : const Color(0xFFF9FAFB),
+      backgroundColor: cs.surface,
       body: generateState.easyWhen(
         data: (state) {
           final image = state.generatedImage;

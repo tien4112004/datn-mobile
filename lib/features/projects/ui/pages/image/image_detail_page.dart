@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
 import 'package:datn_mobile/features/projects/providers/image_detail_provider.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_display_card.dart';
@@ -30,9 +31,7 @@ class ImageDetailPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: _buildAppBar(context),
-      backgroundColor: context.isDarkMode
-          ? cs.surface
-          : const Color(0xFFF9FAFB),
+      backgroundColor: cs.surface,
       body: imageAsync.easyWhen(
         data: (image) => SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -50,19 +49,6 @@ class ImageDetailPage extends ConsumerWidget {
               // Quick Actions
               _buildQuickActions(context, ref, image),
               const SizedBox(height: 20),
-
-              // Back Button
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () => context.router.back(),
-                  icon: const Icon(LucideIcons.arrowLeft),
-                  label: const Text('Back to Images'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -120,14 +106,9 @@ class ImageDetailPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Filename
-          _buildMetadataField(context, label: 'FILENAME', value: image.title),
+          _buildMetadataField(context, label: 'Filename', value: image.title),
 
           if (image.mediaType != null || image.fileSize != null) ...[
-            const SizedBox(height: 16),
-            Divider(
-              color: context.isDarkMode ? Colors.grey[700] : Colors.grey[200],
-              height: 1,
-            ),
             const SizedBox(height: 16),
           ],
 
@@ -139,7 +120,7 @@ class ImageDetailPage extends ConsumerWidget {
                   Expanded(
                     child: _buildMetadataField(
                       context,
-                      label: 'TYPE',
+                      label: 'Type',
                       value: formatMediaType(image.mediaType!),
                       isSmall: true,
                     ),
@@ -150,7 +131,7 @@ class ImageDetailPage extends ConsumerWidget {
                   Expanded(
                     child: _buildMetadataField(
                       context,
-                      label: 'SIZE',
+                      label: 'Size',
                       value: formatFileSize(image.fileSize!),
                       isSmall: true,
                     ),
@@ -159,11 +140,6 @@ class ImageDetailPage extends ConsumerWidget {
             ),
 
           const SizedBox(height: 16),
-          Divider(
-            color: context.isDarkMode ? Colors.grey[700] : Colors.grey[200],
-            height: 1,
-          ),
-          const SizedBox(height: 16),
 
           // Created and Updated dates
           Row(
@@ -171,7 +147,7 @@ class ImageDetailPage extends ConsumerWidget {
               Expanded(
                 child: _buildMetadataField(
                   context,
-                  label: 'CREATED',
+                  label: 'Created',
                   value: DateFormat('MMM d, yyyy').format(image.createdAt),
                   isSmall: true,
                 ),
@@ -180,7 +156,7 @@ class ImageDetailPage extends ConsumerWidget {
               Expanded(
                 child: _buildMetadataField(
                   context,
-                  label: 'UPDATED',
+                  label: 'Updated',
                   value: DateFormat('MMM d, yyyy').format(image.updatedAt),
                   isSmall: true,
                 ),
@@ -191,14 +167,9 @@ class ImageDetailPage extends ConsumerWidget {
           // Description (if available)
           if (image.description != null && image.description!.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Divider(
-              color: context.isDarkMode ? Colors.grey[700] : Colors.grey[200],
-              height: 1,
-            ),
-            const SizedBox(height: 16),
             _buildMetadataField(
               context,
-              label: 'DESCRIPTION',
+              label: 'Description',
               value: image.description!,
             ),
           ],
@@ -241,9 +212,12 @@ class ImageDetailPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context, WidgetRef ref, image) {
+  Widget _buildQuickActions(
+    BuildContext context,
+    WidgetRef ref,
+    ImageProject image,
+  ) {
     return ImageQuickActions(
-      copyLabel: 'Copy URL',
       onCopyPrompt: () => _copyImageUrl(context, image.imageUrl),
       onShare: () => _shareImage(context, ref, image.imageUrl, image.title),
       onDownload: () =>

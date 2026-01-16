@@ -30,10 +30,7 @@ class ImageQuickActions extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: context.isDarkMode ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

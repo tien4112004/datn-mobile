@@ -6,5 +6,8 @@ abstract interface class PresentationService {
   Future<Presentation> fetchPresentationById(String id);
   Future<void> addPresentation(Presentation presentation);
 
-  Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(int pageKey);
+  Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
+    int pageKey, {
+    String? search,
+  });
 }

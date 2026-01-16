@@ -27,6 +27,18 @@ enum ResourceType {
     icon: LucideIcons.brainCircuit,
     color: Colors.purple,
     modelType: ModelType.text,
+  ),
+  question(
+    label: 'question',
+    icon: LucideIcons.fileQuestionMark,
+    color: Colors.teal,
+    modelType: ModelType.text,
+  ),
+  assignment(
+    label: 'assignment',
+    icon: LucideIcons.clipboardList,
+    color: Colors.indigo,
+    modelType: ModelType.text,
   );
 
   final String label;
@@ -71,6 +83,10 @@ enum ResourceType {
         return t.generate.resourceTypes.presentation;
       case ResourceType.mindmap:
         return t.generate.resourceTypes.mindmap;
+      case ResourceType.question:
+        return 'Questions Bank';
+      case ResourceType.assignment:
+        return 'Assignments';
     }
   }
 

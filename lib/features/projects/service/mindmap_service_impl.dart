@@ -20,11 +20,13 @@ class MindmapServiceImpl implements MindmapService {
     int pageKey, {
     int pageSize = 10,
     String sort = "desc",
+    String? search,
   }) {
     return _repository.fetchMindmapMinimalsPaged(
       pageKey,
       pageSize: pageSize,
       sort: sort,
+      search: search,
     );
   }
 }

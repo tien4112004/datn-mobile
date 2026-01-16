@@ -1,13 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
-import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
+import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/mindmap/mindmap_tile.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/mindmap/mindmap_grid_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
-import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
-import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
+import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
+import 'package:datn_mobile/shared/widget/resource_list_header.dart';
+import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -22,6 +24,7 @@ class MindmapListPage extends ConsumerStatefulWidget {
 class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   late String _sortOption;
   late List<String> _sortOptions;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -32,6 +35,14 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
+    final pagingController = ref.watch(
+      mindmapPagingControllerPod(_searchQuery),
+    );
+    final viewPreferenceAsync = ref.watch(
+      viewPreferenceNotifierPod(ResourceType.mindmap.name),
+    );
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     _sortOptions = [
       t.projects.common_list.sort_date_modified,
@@ -45,82 +56,132 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
     }
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: t.projects.mindmaps.title,
-        leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
-          onPressed: () => Navigator.of(context).pop(),
+      backgroundColor: colorScheme.surface,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 172,
+            floating: false,
+            backgroundColor: colorScheme.surface,
+            surfaceTintColor: colorScheme.surface,
+            leading: Semantics(
+              label: 'Go back',
+              button: true,
+              hint: 'Double tap to return to previous page',
+              child: IconButton(
+                icon: const Icon(LucideIcons.arrowLeft),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  context.router.maybePop();
+                },
+                tooltip: 'Back',
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(LucideIcons.refreshCw),
+                tooltip: 'Refresh',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  pagingController.refresh();
+                },
+              ),
+            ],
+            title: Text(t.projects.mindmaps.title),
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 16, right: 16),
+              background: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 80, 16, 16),
+                child: ResourceListHeader(
+                  searchQuery: _searchQuery,
+                  onSearchChanged: (query) {
+                    setState(() {
+                      _searchQuery = query;
+                    });
+                  },
+                  selectedSort: _sortOption,
+                  sortOptions: _sortOptions,
+                  onSortChanged: (sort) {
+                    setState(() {
+                      _sortOption = sort;
+                    });
+                  },
+                  showViewToggle: true,
+                  isGridView: viewPreferenceAsync,
+                  onViewToggle: () {
+                    HapticFeedback.selectionClick();
+                    ref
+                        .read(
+                          viewPreferenceNotifierPod(
+                            ResourceType.mindmap.name,
+                          ).notifier,
+                        )
+                        .toggle();
+                  },
+                  searchHint: t.projects.mindmaps.search_mindmaps,
+                  t: t,
+                ),
+              ),
+            ),
+          ),
+        ],
+        body: UnifiedResourceList<MindmapMinimal>(
+          pagingController: pagingController,
+          isGridView: viewPreferenceAsync,
+          gridCardBuilder: (item) => MindmapGridCard(
+            mindmap: item,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              // TODO: Navigate to mindmap detail when route is available
+              // context.router.push(MindmapDetailRoute(mindmapId: item.id));
+            },
+            onMoreOptions: () {
+              _showMoreOptions(context, item);
+            },
+          ),
+          listTileBuilder: (item) => MindmapTile(
+            mindmap: item,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              // TODO: Navigate to mindmap detail when route is available
+              // context.router.push(MindmapDetailRoute(mindmapId: item.id));
+            },
+            onMoreOptions: () {
+              _showMoreOptions(context, item);
+            },
+          ),
+          emptyIcon: LucideIcons.brain,
+          emptyTitle: 'No mindmaps available',
+          emptyMessage: 'Create your first mindmap to get started',
+          noMoreItemsText: 'No more mindmaps',
+          onRefresh: () {
+            pagingController.refresh();
+          },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    );
+  }
+
+  void _showMoreOptions(BuildContext context, MindmapMinimal mindmap) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            ResourceSearchAndFilterBar(
-              hintText: t.projects.mindmaps.search_mindmaps,
-              onSearchTap: () {
-                context.router.push(const MindmapSearchRoute());
+            ListTile(
+              leading: Icon(LucideIcons.trash2, color: colorScheme.error),
+              title: Text('Delete', style: TextStyle(color: colorScheme.error)),
+              onTap: () {
+                HapticFeedback.lightImpact();
+                Navigator.pop(context);
+                // TODO: Implement delete
               },
-              subjects: ['Math', 'Science', 'English', 'History', 'PE'],
-              grades: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
-              selectedSort: _sortOption,
-              sortOptions: _sortOptions,
-              onSubjectChanged: (subject) {
-                ref.read(filterProvider.notifier).setSubject(subject);
-              },
-              onGradeChanged: (grade) {
-                ref.read(filterProvider.notifier).setGrade(grade);
-              },
-              onSortChanged: (sort) {
-                setState(() {
-                  _sortOption = sort;
-                });
-              },
-              onClearFilters: () {
-                ref.read(filterProvider.notifier).clearFilters();
-              },
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ref
-                  .watch(mindmapsControllerProvider)
-                  .when(
-                    data: (data) {
-                      if (data.value.isEmpty) {
-                        return const EnhancedEmptyState(
-                          icon: LucideIcons.brain,
-                          title: 'No mindmaps available',
-                          message: 'Create your first mindmap to get started',
-                        );
-                      }
-                      return ListView.builder(
-                        itemCount: data.value.length,
-                        itemBuilder: (context, index) {
-                          final mindmap = data.value[index];
-                          return ListTile(
-                            title: Text(mindmap.title),
-                            subtitle: mindmap.description != null
-                                ? Text(mindmap.description!)
-                                : null,
-                            onTap: () {
-                              context.router.push(const MindmapSearchRoute());
-                            },
-                          );
-                        },
-                      );
-                    },
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (error, stackTrace) => EnhancedErrorState(
-                      title: 'Error loading mindmaps',
-                      message: error.toString(),
-                      actionLabel: 'Retry',
-                      onRetry: () {
-                        ref.invalidate(mindmapsControllerProvider);
-                      },
-                    ),
-                  ),
             ),
           ],
         ),

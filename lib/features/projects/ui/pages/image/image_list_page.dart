@@ -2,19 +2,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
 import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/image/image_grid_card.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/image/image_tile.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_search_and_filter_bar.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
-import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
-import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
+import 'package:datn_mobile/shared/widget/resource_list_header.dart';
+import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -27,6 +24,7 @@ class ImageListPage extends ConsumerStatefulWidget {
 class _ImageListPageState extends ConsumerState<ImageListPage> {
   late String _sortOption;
   late List<String> _sortOptions;
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -37,11 +35,12 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    // Pass null for search query - maintains current behavior where search navigates to separate page
-    final pagingController = ref.watch(imagePagingControllerPod(""));
+    final pagingController = ref.watch(imagePagingControllerPod(_searchQuery));
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.image.name),
     );
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     _sortOptions = [
       t.projects.common_list.sort_date_modified,
@@ -55,196 +54,119 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
     }
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: t.projects.images.title,
-        leading: IconButton(
-          icon: const Icon(LucideIcons.chevronLeft),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ResourceSearchAndFilterBar(
-              hintText: t.projects.images.search_images,
-              onSearchTap: () {
-                context.router.push(const ImageSearchRoute());
-              },
-              subjects: ['Math', 'Science', 'English', 'History', 'PE'],
-              grades: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5'],
-              selectedSort: _sortOption,
-              sortOptions: _sortOptions,
-              onSubjectChanged: (subject) {
-                ref.read(filterProvider.notifier).setSubject(subject);
-              },
-              onGradeChanged: (grade) {
-                ref.read(filterProvider.notifier).setGrade(grade);
-              },
-              onSortChanged: (sort) {
-                setState(() {
-                  _sortOption = sort;
-                });
-              },
-              onClearFilters: () {
-                ref.read(filterProvider.notifier).clearFilters();
-              },
-              trailing: IconButton(
-                icon: Icon(
-                  viewPreferenceAsync
-                      ? LucideIcons.list
-                      : LucideIcons.layoutGrid,
-                  size: 24,
-                ),
-                onPressed: () async {
-                  // Get the notifier and toggle
-                  ref
-                      .read(
-                        viewPreferenceNotifierPod(
-                          ResourceType.image.name,
-                        ).notifier,
-                      )
-                      .toggle();
+      backgroundColor: colorScheme.surface,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 172,
+            floating: false,
+            backgroundColor: colorScheme.surface,
+            surfaceTintColor: colorScheme.surface,
+            leading: Semantics(
+              label: 'Go back',
+              button: true,
+              hint: 'Double tap to return to previous page',
+              child: IconButton(
+                icon: const Icon(LucideIcons.arrowLeft),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  context.router.maybePop();
                 },
+                tooltip: 'Back',
               ),
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
+            actions: [
+              IconButton(
+                icon: const Icon(LucideIcons.refreshCw),
+                tooltip: 'Refresh',
+                onPressed: () {
+                  HapticFeedback.lightImpact();
                   pagingController.refresh();
                 },
-                child: PagingListener(
-                  controller: pagingController,
-                  builder: (context, state, fetchNextPage) {
-                    if (viewPreferenceAsync) {
-                      return PagedGridView<int, ImageProjectMinimal>(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.75,
-                            ),
-                        builderDelegate:
-                            PagedChildBuilderDelegate<ImageProjectMinimal>(
-                              itemBuilder: (context, item, index) =>
-                                  ImageGridCard(
-                                    image: item,
-                                    onTap: () {
-                                      context.router.push(
-                                        ImageDetailRoute(imageId: item.id),
-                                      );
-                                    },
-                                    onMoreOptions: () {
-                                      _showMoreOptions(context, item);
-                                    },
-                                  ),
-                              noMoreItemsIndicatorBuilder: (context) => Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: Text(
-                                    t.projects.no_images,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                              noItemsFoundIndicatorBuilder: (context) =>
-                                  EnhancedEmptyState(
-                                    icon: LucideIcons.image,
-                                    title: t.projects.no_images,
-                                    message:
-                                        'Create your first image to get started',
-                                  ),
-                              firstPageErrorIndicatorBuilder: (context) =>
-                                  EnhancedErrorState(
-                                    title: 'Error loading images',
-                                    message:
-                                        state.error?.toString() ??
-                                        'Unknown error',
-                                    actionLabel: 'Retry',
-                                    onRetry: () => pagingController.refresh(),
-                                  ),
-                              newPageErrorIndicatorBuilder: (context) =>
-                                  const Center(
-                                    child: Text(
-                                      "t.projects.error_loading_images",
-                                    ),
-                                  ),
-                            ),
-                        state: state,
-                        fetchNextPage: fetchNextPage,
-                      );
-                    } else {
-                      return PagedListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 8,
-                          child: Divider(
-                            height: 1,
-                            color: Color.fromRGBO(189, 189, 189, 1),
-                          ),
-                        ),
-                        builderDelegate:
-                            PagedChildBuilderDelegate<ImageProjectMinimal>(
-                              itemBuilder: (context, item, index) => ImageTile(
-                                image: item,
-                                onTap: () {
-                                  context.router.push(
-                                    ImageDetailRoute(imageId: item.id),
-                                  );
-                                },
-                                onMoreOptions: () {
-                                  _showMoreOptions(context, item);
-                                },
-                              ),
-                              noMoreItemsIndicatorBuilder: (context) => Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Center(
-                                  child: Text(
-                                    t.projects.no_images,
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ),
-                              noItemsFoundIndicatorBuilder: (context) =>
-                                  EnhancedEmptyState(
-                                    icon: LucideIcons.image,
-                                    title: t.projects.no_images,
-                                    message:
-                                        'Create your first image to get started',
-                                  ),
-                              firstPageErrorIndicatorBuilder: (context) =>
-                                  EnhancedErrorState(
-                                    title: 'Error loading images',
-                                    message:
-                                        state.error?.toString() ??
-                                        'Unknown error',
-                                    actionLabel: 'Retry',
-                                    onRetry: () => pagingController.refresh(),
-                                  ),
-                              newPageErrorIndicatorBuilder: (context) =>
-                                  const Center(
-                                    child: Text(
-                                      "t.projects.error_loading_images",
-                                    ),
-                                  ),
-                            ),
-                        state: state,
-                        fetchNextPage: fetchNextPage,
-                      );
-                    }
+              ),
+            ],
+            title: Text(t.projects.images.title),
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: 16,
+              ),
+              background: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 80, 16, 16),
+                child: ResourceListHeader(
+                  searchQuery: _searchQuery,
+                  onSearchChanged: (query) {
+                    setState(() {
+                      _searchQuery = query;
+                    });
                   },
+                  selectedSort: _sortOption,
+                  sortOptions: _sortOptions,
+                  onSortChanged: (sort) {
+                    setState(() {
+                      _sortOption = sort;
+                    });
+                  },
+                  showViewToggle: true,
+                  isGridView: viewPreferenceAsync,
+                  onViewToggle: () {
+                    HapticFeedback.selectionClick();
+                    ref
+                        .read(
+                          viewPreferenceNotifierPod(
+                            ResourceType.image.name,
+                          ).notifier,
+                        )
+                        .toggle();
+                  },
+                  searchHint: t.projects.images.search_images,
+                  t: t,
                 ),
               ),
             ),
-          ],
+          ),
+        ],
+        body: UnifiedResourceList<ImageProjectMinimal>(
+          pagingController: pagingController,
+          isGridView: viewPreferenceAsync,
+          gridCardBuilder: (item) => ImageGridCard(
+            image: item,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              context.router.push(ImageDetailRoute(imageId: item.id));
+            },
+            onMoreOptions: () {
+              _showMoreOptions(context, item);
+            },
+          ),
+          listTileBuilder: (item) => ImageTile(
+            image: item,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              context.router.push(ImageDetailRoute(imageId: item.id));
+            },
+            onMoreOptions: () {
+              _showMoreOptions(context, item);
+            },
+          ),
+          emptyIcon: LucideIcons.image,
+          emptyTitle: t.projects.no_images,
+          emptyMessage: 'Create your first image to get started',
+          noMoreItemsText: t.projects.no_images,
+          onRefresh: () {
+            pagingController.refresh();
+          },
         ),
       ),
     );
   }
 
   void _showMoreOptions(BuildContext context, ImageProjectMinimal image) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -253,9 +175,10 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Delete'),
-              trailing: const Icon(LucideIcons.trash2),
+              leading: Icon(LucideIcons.trash2, color: colorScheme.error),
+              title: Text('Delete', style: TextStyle(color: colorScheme.error)),
               onTap: () {
+                HapticFeedback.lightImpact();
                 Navigator.pop(context);
                 // TODO: Implement delete
               },

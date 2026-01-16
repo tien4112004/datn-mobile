@@ -32,12 +32,13 @@ abstract class ProjectsRemoteSource {
   );
 
   // /presentations?page=1&pageSize=20&sort=desc
-  @GET("/presentations?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  @GET("/presentations")
   Future<ServerResponseDto<List<PresentationMinimalDto>>>
   fetchPresentationMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
+    @Query("page") int pageKey = 1,
+    @Query("pageSize") int pageSize = 10,
+    @Query("sort") String sort = "desc",
+    @Query("search") String? search,
   });
 
   // Image endpoints
@@ -62,10 +63,11 @@ abstract class ProjectsRemoteSource {
   Future<ServerResponseDto<MindmapDto>> fetchMindmapById(@Path("id") String id);
 
   // /mindmaps?page=1&pageSize=20&sort=desc
-  @GET("/mindmaps?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  @GET("/mindmaps")
   Future<ServerResponseDto<List<MindmapMinimalDto>>> fetchMindmapMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
+    @Query("page") int pageKey = 1,
+    @Query("pageSize") int pageSize = 10,
+    @Query("sort") String sort = "desc",
+    @Query("search") String? search,
   });
 }

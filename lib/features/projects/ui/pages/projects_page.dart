@@ -67,6 +67,10 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
         context.router.push(const MindmapListRoute());
       case ResourceType.image:
         context.router.push(const ImageListRoute());
+      case ResourceType.question:
+        context.router.push(const QuestionBankRoute());
+      case ResourceType.assignment:
+        context.router.push(const AssignmentsRoute());
       default:
         break;
     }

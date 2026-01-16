@@ -23,13 +23,8 @@ class PresentationServiceImpl implements PresentationService {
   @override
   Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
     int pageKey, {
-    int pageSize = 10,
-    String sort = "desc",
+    String? search,
   }) {
-    return _repo.fetchPresentationMinimalsPaged(
-      pageKey,
-      pageSize: pageSize,
-      sort: sort,
-    );
+    return _repo.fetchPresentationMinimalsPaged(pageKey, search: search);
   }
 }

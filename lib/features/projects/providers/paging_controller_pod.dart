@@ -52,7 +52,13 @@ final imagePagingControllerPod = Provider.autoDispose
     });
 
 final mindmapPagingControllerPod = Provider.autoDispose
-    .family<PagingController<int, MindmapMinimal>, String?>((ref, searchQuery) {
+    .family<PagingController<int, MindmapMinimal>, (String?, SortOption?)>((
+      ref,
+      params,
+    ) {
+      final searchQuery = params.$1;
+      final sort = params.$2;
+
       late final pagingController = PagingController<int, MindmapMinimal>(
         getNextPageKey: (state) {
           if (state.lastPageIsEmpty) {
@@ -62,7 +68,11 @@ final mindmapPagingControllerPod = Provider.autoDispose
         },
         fetchPage: (pageKey) => ref
             .read(mindmapServiceProvider)
-            .fetchMindmapMinimalsPaged(pageKey, search: searchQuery),
+            .fetchMindmapMinimalsPaged(
+              pageKey,
+              search: searchQuery,
+              sort: sort,
+            ),
       );
       return pagingController;
     });

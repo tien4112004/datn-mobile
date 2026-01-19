@@ -159,7 +159,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     }
 
     try {
-      ref.read(questionFormProvider.notifier).setLoading(true);
+      debugPrint('Saving question with ID: ${widget.questionId}');
 
       await ref
           .read(questionBankProvider.notifier)
@@ -186,10 +186,6 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     } catch (e) {
       if (!mounted) return;
       _showErrorSnackBar('Error saving question: $e');
-    } finally {
-      if (mounted) {
-        ref.read(questionFormProvider.notifier).setLoading(false);
-      }
     }
   }
 

@@ -198,10 +198,6 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     state = state.copyWith(hasUnsavedChanges: false);
   }
 
-  void setLoading(bool loading) {
-    state = state.copyWith(isLoading: loading);
-  }
-
   /// Reset form to initial state
   void reset() {
     state = const QuestionFormState();

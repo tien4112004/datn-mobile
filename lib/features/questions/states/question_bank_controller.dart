@@ -17,13 +17,16 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
   Future<void> createQuestion(QuestionCreateRequestEntity request) async {
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
+    await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
       final result = await repository.createQuestions(
         List<QuestionCreateRequestEntity>.from([request]),
       );
 
-      return QuestionBankState(questions: result.successful);
+      if (result.successful.isNotEmpty) {
+        // Refresh the current view
+        await loadQuestionsWithFilter();
+      }
     });
   }
 
@@ -36,20 +39,19 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
     state = await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
 
-      final chapterParam = filterParams.chapterFilters.isNotEmpty
-          ? filterParams.chapterFilters.first
-          : null;
-
       final result = await repository.getQuestions(
         bankType: filterParams.bankType,
         page: 1,
         pageSize: 20,
         search: filterParams.searchQuery,
-        grade: filterParams.gradeFilter,
-        chapter: chapterParam,
+        grade: filterParams.grade,
+        chapter: filterParams.chapter,
+        difficulty: filterParams.difficulty,
+        subject: filterParams.subject,
+        type: filterParams.type,
       );
 
-      return QuestionBankState(questions: result);
+      return state.value!.copyWith(questions: result);
     });
   }
 
@@ -64,7 +66,7 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
         bankType: filterParams.bankType,
       );
 
-      return QuestionBankState(questions: result);
+      return state.value!.copyWith(questions: result);
     });
   }
 
@@ -79,12 +81,14 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
   }
 
   Future<void> getQuestionById(String id) async {
+    // Preserve current state before setting to loading
+    final previousState = state.value ?? const QuestionBankState();
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
       final result = await repository.getQuestionById(id);
-      return state.value!.copyWith(selectedQuestion: result);
+      return previousState.copyWith(selectedQuestion: result);
     });
   }
 
@@ -100,7 +104,16 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
         id,
         questionUpdateRequestEntity,
       );
-      return state.value!.copyWith(selectedQuestion: result);
+
+      // Refresh the current view in background
+      // unawaited(loadQuestionsWithFilter());
+
+      debugPrint('Updated question: ${result.id}');
+
+      return QuestionBankState(
+        questions: state.value?.questions ?? [],
+        selectedQuestion: result,
+      );
     });
   }
 }

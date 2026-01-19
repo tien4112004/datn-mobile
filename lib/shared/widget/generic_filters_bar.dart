@@ -72,7 +72,9 @@ class FilterConfig<T> implements BaseFilterConfig {
   }
 
   @override
-  void onClear() {}
+  void onClear() {
+    onChanged(null);
+  }
 }
 
 /// Generic filters bar widget that supports multiple filter types
@@ -136,20 +138,6 @@ class GenericFiltersBar extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            Icon(
-              LucideIcons.settings,
-              size: 18,
-              color: colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Filters:',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 12),
             ...filters.map((filter) {
               return Padding(
                 padding: const EdgeInsets.only(right: 8),

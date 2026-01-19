@@ -69,8 +69,6 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
     }
 
     try {
-      ref.read(questionFormProvider.notifier).setLoading(true);
-
       await ref
           .read(questionBankProvider.notifier)
           .createQuestion(
@@ -95,10 +93,6 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
     } catch (e) {
       if (!mounted) return;
       _showErrorSnackBar('Error saving question: $e');
-    } finally {
-      if (mounted) {
-        ref.read(questionFormProvider.notifier).setLoading(false);
-      }
     }
   }
 

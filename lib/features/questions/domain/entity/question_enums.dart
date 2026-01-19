@@ -38,13 +38,13 @@ enum QuestionType {
   String get apiValue {
     switch (this) {
       case QuestionType.multipleChoice:
-        return 'multiple_choice';
+        return 'MULTIPLE_CHOICE';
       case QuestionType.matching:
-        return 'matching';
+        return 'MATCHING';
       case QuestionType.openEnded:
-        return 'open_ended';
+        return 'OPEN_ENDED';
       case QuestionType.fillInBlank:
-        return 'fill_in_blank';
+        return 'FILL_IN_BLANK';
     }
   }
 
@@ -242,7 +242,6 @@ enum BankType {
 
 /// Grade levels for questions (1-5)
 enum Grade {
-  all,
   grade1,
   grade2,
   grade3,
@@ -251,8 +250,6 @@ enum Grade {
 
   String get displayName {
     switch (this) {
-      case Grade.all:
-        return 'All Grades';
       case Grade.grade1:
         return 'Grade 1';
       case Grade.grade2:
@@ -268,8 +265,6 @@ enum Grade {
 
   String get apiValue {
     switch (this) {
-      case Grade.all:
-        return 'ALL';
       case Grade.grade1:
         return '1';
       case Grade.grade2:
@@ -286,8 +281,6 @@ enum Grade {
   static Grade? fromApiValue(String? value) {
     if (value == null) return null;
     switch (value.toUpperCase()) {
-      case 'ALL':
-        return Grade.all;
       case '1':
         return Grade.grade1;
       case '2':
@@ -306,15 +299,12 @@ enum Grade {
 
 /// Subject categories for questions
 enum Subject {
-  all,
   english,
   mathematics,
   literature;
 
   String get displayName {
     switch (this) {
-      case Subject.all:
-        return 'All';
       case Subject.english:
         return 'English';
       case Subject.mathematics:
@@ -326,22 +316,18 @@ enum Subject {
 
   String get apiValue {
     switch (this) {
-      case Subject.all:
-        return '';
       case Subject.english:
-        return 'ENGLISH';
+        return 'TA';
       case Subject.mathematics:
-        return 'MATHEMATICS';
+        return 'T';
       case Subject.literature:
-        return 'LITERATURE';
+        return 'V';
     }
   }
 
   static Subject? fromApiValue(String? value) {
     if (value == null) return null;
     switch (value.toUpperCase()) {
-      case 'ALL':
-        return Subject.all;
       case 'ENGLISH':
         return Subject.english;
       case 'MATHEMATICS':

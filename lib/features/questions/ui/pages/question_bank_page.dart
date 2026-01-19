@@ -72,7 +72,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 icon: const Icon(Icons.refresh_rounded),
                 tooltip: 'Refresh',
                 onPressed: () {
-                  questionBankControllerNotifier.loadQuestions();
+                  questionBankControllerNotifier.loadQuestionsWithFilter();
                 },
               ),
             ],
@@ -86,7 +86,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
         body: questionBankController.easyWhen(
           data: (questionBankState) => RefreshIndicator(
             onRefresh: () async {
-              await questionBankControllerNotifier.loadQuestions();
+              await questionBankControllerNotifier.loadQuestionsWithFilter();
             },
             child: questionBankState.questions.isEmpty
                 ? _buildEmptyState(theme, questionFilterState.bankType)

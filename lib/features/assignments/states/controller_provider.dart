@@ -6,10 +6,17 @@ import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/matrix_item_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/repository/assignment_repository.dart';
+import 'package:datn_mobile/features/assignments/states/assignment_filter_state.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 part 'assignment_controller.dart';
+
+/// Provider for assignment filter state
+final assignmentFilterProvider = StateProvider<AssignmentFilterState>((ref) {
+  return const AssignmentFilterState();
+});
 
 /// Provider for the assignment mock data source.
 final assignmentMockDataSourceProvider = Provider<AssignmentMockDataSource>((

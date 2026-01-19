@@ -11,10 +11,13 @@ abstract class QuestionBankRepository {
     int page = 1,
     int pageSize = 10,
     String? search,
-    String? sortBy,
-    String? sortDirection,
     String? grade,
     String? chapter,
+    String? difficulty,
+    String? subject,
+    String? type,
+    String? sortBy,
+    String? sortDirection,
   });
 
   /// Gets a single question by ID.

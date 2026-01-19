@@ -1,24 +1,24 @@
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/shared/state/base_filter_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class QuestionBankFilterState implements BaseFilterState {
-  final BankType bankType;
-  final String? searchQuery;
-  final Grade? gradeFilter;
-  final Subject? subjectFilter;
-  final List<String> chapterFilters;
-  final QuestionType? questionTypeFilter;
-  final Difficulty? difficultyFilter;
+part 'question_bank_filter_state.freezed.dart';
 
-  const QuestionBankFilterState({
-    this.bankType = BankType.personal,
-    this.searchQuery,
-    this.gradeFilter,
-    this.subjectFilter,
-    this.chapterFilters = const [],
-    this.questionTypeFilter,
-    this.difficultyFilter,
-  });
+@freezed
+abstract class QuestionBankFilterState
+    with _$QuestionBankFilterState
+    implements BaseFilterState {
+  const QuestionBankFilterState._();
+
+  const factory QuestionBankFilterState({
+    @Default(BankType.personal) BankType bankType,
+    String? searchQuery,
+    Grade? gradeFilter,
+    Subject? subjectFilter,
+    @Default([]) List<String> chapterFilters,
+    QuestionType? questionTypeFilter,
+    Difficulty? difficultyFilter,
+  }) = _QuestionBankFilterState;
 
   @override
   QuestionBankFilterParams getFilterParams() {
@@ -30,30 +30,6 @@ class QuestionBankFilterState implements BaseFilterState {
       chapterFilters: chapterFilters,
       questionTypeFilter: questionTypeFilter?.apiValue,
       difficultyFilter: difficultyFilter?.apiValue,
-    );
-  }
-
-  QuestionBankFilterState copyWith({
-    BankType? bankType,
-    String? searchQuery,
-    Grade? gradeFilter,
-    Subject? subjectFilter,
-    List<String>? chapterFilters,
-    QuestionType? questionTypeFilter,
-    Difficulty? difficultyFilter,
-    Grade? grade,
-    Subject? subject,
-    QuestionType? questionType,
-    Difficulty? difficulty,
-  }) {
-    return QuestionBankFilterState(
-      bankType: bankType ?? this.bankType,
-      searchQuery: searchQuery ?? this.searchQuery,
-      gradeFilter: gradeFilter ?? this.gradeFilter,
-      subjectFilter: subjectFilter ?? this.subjectFilter,
-      chapterFilters: chapterFilters ?? this.chapterFilters,
-      questionTypeFilter: questionTypeFilter ?? this.questionTypeFilter,
-      difficultyFilter: difficultyFilter ?? this.difficultyFilter,
     );
   }
 
@@ -95,4 +71,12 @@ class QuestionBankFilterParams implements BaseFilterParams {
     this.difficultyFilter,
     this.bankType = BankType.personal,
   });
+
+  // Computed properties for API compatibility
+  String? get difficulty => difficultyFilter;
+  String? get subject => subjectFilter;
+  String? get type => questionTypeFilter;
+  String? get grade => gradeFilter;
+  String? get chapter =>
+      chapterFilters.isNotEmpty ? chapterFilters.first : null;
 }

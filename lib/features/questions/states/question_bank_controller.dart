@@ -6,7 +6,12 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
     return const QuestionBankState();
   }
 
-  BankType get currentBankType => state.value!.currentBankType;
+  void updateFilterState(QuestionBankFilterState newFilterState) {
+    final currentState = state.value;
+    if (currentState != null) {
+      state = AsyncData(currentState.copyWith(filterState: newFilterState));
+    }
+  }
 
   /// Create questions
   Future<void> createQuestion(QuestionCreateRequestEntity request) async {
@@ -18,131 +23,59 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
         List<QuestionCreateRequestEntity>.from([request]),
       );
 
-      return QuestionBankState(
-        questions: result.successful,
-        currentBankType: state.value!.currentBankType,
-        searchQuery: state.value!.searchQuery,
-      );
+      return QuestionBankState(questions: result.successful);
     });
   }
 
-  /// Loads questions based on current filters.
-  Future<void> loadQuestions({
-    BankType? bankType,
-    String? search,
-    Grade? grade,
-    Subject? subject,
-    String? chapter,
-    bool refresh = false,
-  }) async {
+  /// Loads questions based on filter state.
+  Future<void> loadQuestionsWithFilter() async {
+    final filterParams = ref.read(questionBankFilterProvider).getFilterParams();
+
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
-      final currentState = state.value!;
-      final currentBankType = bankType ?? currentState.currentBankType;
+
+      final chapterParam = filterParams.chapterFilters.isNotEmpty
+          ? filterParams.chapterFilters.first
+          : null;
 
       final result = await repository.getQuestions(
-        bankType: currentBankType,
+        bankType: filterParams.bankType,
         page: 1,
         pageSize: 20,
-        search: search ?? currentState.searchQuery,
-        grade: grade?.apiValue ?? currentState.gradeFilter?.apiValue,
-        chapter: chapter ?? currentState.chapterFilter,
+        search: filterParams.searchQuery,
+        grade: filterParams.gradeFilter,
+        chapter: chapterParam,
       );
 
-      return QuestionBankState(
-        questions: result,
-        currentBankType: currentBankType,
-        searchQuery: search ?? currentState.searchQuery,
-        gradeFilter: grade ?? currentState.gradeFilter,
-        chapterFilter: chapter ?? currentState.chapterFilter,
-      );
+      return QuestionBankState(questions: result);
     });
   }
 
-  /// Switches between personal and public question banks.
-  Future<void> switchBankType(BankType bankType) async {
-    if (state.value?.currentBankType == bankType) return;
+  Future<void> loadQuestions() async {
+    final filterParams = ref.read(questionBankFilterProvider).getFilterParams();
+    state = const AsyncLoading();
 
-    final currentState = state.value!;
-    state = AsyncValue.data(
-      QuestionBankState(
-        questions: currentState.questions,
-        currentBankType: bankType,
-        searchQuery: currentState.searchQuery,
-        gradeFilter: currentState.gradeFilter,
-        chapterFilter: currentState.chapterFilter,
-      ),
-    );
-
-    await loadQuestions(bankType: bankType, refresh: true);
-  }
-
-  /// Performs search on current bank type.
-  Future<void> search(String query) async {
-    await loadQuestions(search: query, refresh: true);
-  }
-
-  /// Clears search filter.
-  Future<void> clearSearch() async {
-    await loadQuestions(search: '', refresh: true);
-  }
-
-  /// Sets grade filter and reloads questions.
-  Future<void> setGradeFilter(String? grade) async {
-    await loadQuestions(grade: Grade.fromApiValue(grade), refresh: true);
-  }
-
-  /// Sets chapter filter and reloads questions.
-  Future<void> setChapterFilter(String? chapter) async {
-    await loadQuestions(chapter: chapter, refresh: true);
-  }
-
-  /// Sets subject filter and reloads questions.
-  Future<void> setSubjectFilter(Subject? subject) async {
-    await loadQuestions(subject: subject, refresh: true);
-  }
-
-  /// Clears all filters (search, grade, chapter, subject).
-  Future<void> clearFilters() async {
-    await loadQuestions(
-      search: '',
-      grade: null,
-      subject: null,
-      chapter: null,
-      refresh: true,
-    );
-  }
-
-  /// Deletes a question.
-  Future<void> deleteQuestion(String id) async {
-    // Remove from local state
     state = await AsyncValue.guard(() async {
       final repository = ref.read(questionBankRepositoryProvider);
-      final currentState = state.value!;
+
       final result = await repository.getQuestions(
-        bankType: currentState.currentBankType,
-        page: 1,
-        pageSize: 20,
-        search: currentState.searchQuery,
-        grade: currentState.gradeFilter!.apiValue,
-        chapter: currentState.chapterFilter,
+        bankType: filterParams.bankType,
       );
 
-      return QuestionBankState(
-        questions: result,
-        currentBankType: currentState.currentBankType,
-        searchQuery: currentState.searchQuery,
-        gradeFilter: currentState.gradeFilter,
-        chapterFilter: currentState.chapterFilter,
-      );
+      return QuestionBankState(questions: result);
     });
   }
 
-  /// Refreshes the current view.
-  Future<void> refresh() async {
-    await loadQuestions(refresh: true);
+  Future<void> deleteQuestion(String id) async {
+    await AsyncValue.guard(() async {
+      final repository = ref.read(questionBankRepositoryProvider);
+      await repository.deleteQuestion(id);
+    });
+
+    // Refresh the current view
+    await loadQuestions();
   }
 
   Future<void> getQuestionById(String id) async {

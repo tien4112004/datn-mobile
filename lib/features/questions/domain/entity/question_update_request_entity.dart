@@ -8,7 +8,6 @@ class QuestionUpdateRequestEntity {
   final Difficulty? difficulty;
   final String? explanation;
   final String? titleImageUrl;
-  final int? points;
   final Map<String, dynamic>? data;
   final Grade? grade;
   final String? chapter;
@@ -20,7 +19,6 @@ class QuestionUpdateRequestEntity {
     this.difficulty,
     this.explanation,
     this.titleImageUrl,
-    this.points,
     this.data,
     this.grade,
     this.chapter,

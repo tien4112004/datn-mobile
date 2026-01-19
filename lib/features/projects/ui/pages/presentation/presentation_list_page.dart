@@ -2,17 +2,19 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:datn_mobile/features/projects/enum/sort_option.dart';
 import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_grid_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
-import 'package:datn_mobile/shared/widget/resource_list_header.dart';
+import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'dart:async';
 
 @RoutePage()
 class PresentationListPage extends ConsumerStatefulWidget {
@@ -24,36 +26,45 @@ class PresentationListPage extends ConsumerStatefulWidget {
 }
 
 class _PresentationListPageState extends ConsumerState<PresentationListPage> {
-  late String _sortOption;
-  late List<String> _sortOptions;
+  SortOption? _sortOption;
   String _searchQuery = '';
+  late TextEditingController _searchController;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _sortOption = '';
+    _sortOption = SortOption.nameAsc;
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        _searchQuery = query;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final pagingController = ref.watch(pagingControllerPod(_searchQuery));
+    final pagingController = ref.watch(
+      pagingControllerPod((_searchQuery, _sortOption)),
+    );
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.presentation.name),
     );
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    _sortOptions = [
-      t.projects.common_list.sort_date_modified,
-      t.projects.common_list.sort_date_created,
-      t.projects.common_list.sort_name_asc,
-      t.projects.common_list.sort_name_desc,
-    ];
-
-    if (_sortOption.isEmpty || !_sortOptions.contains(_sortOption)) {
-      _sortOption = t.projects.common_list.sort_date_modified;
-    }
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -61,7 +72,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 172,
+            expandedHeight: 230,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
@@ -96,35 +107,105 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                 bottom: 16,
               ),
               background: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 80, 16, 16),
-                child: ResourceListHeader(
-                  searchQuery: _searchQuery,
-                  onSearchChanged: (query) {
-                    setState(() {
-                      _searchQuery = query;
-                    });
-                  },
-                  selectedSort: _sortOption,
-                  sortOptions: _sortOptions,
-                  onSortChanged: (sort) {
-                    setState(() {
-                      _sortOption = sort;
-                    });
-                  },
-                  showViewToggle: true,
-                  isGridView: viewPreferenceAsync,
-                  onViewToggle: () {
-                    HapticFeedback.selectionClick();
-                    ref
-                        .read(
-                          viewPreferenceNotifierPod(
-                            ResourceType.presentation.name,
-                          ).notifier,
-                        )
-                        .toggle();
-                  },
-                  searchHint: t.projects.presentations.search_presentations,
-                  t: t,
+                padding: const EdgeInsets.fromLTRB(16, 80, 16, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Search field
+                    TextField(
+                      controller: _searchController,
+                      onChanged: _onSearchChanged,
+                      decoration: InputDecoration(
+                        hintText: t.projects.presentations.search_presentations,
+                        prefixIcon: const Icon(LucideIcons.search, size: 20),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(LucideIcons.x, size: 20),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {
+                                    _searchQuery = '';
+                                  });
+                                },
+                              )
+                            : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: colorScheme.outline),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: colorScheme.outlineVariant,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: colorScheme.surfaceContainerHighest,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Filters and view toggle row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GenericFiltersBar(
+                            filters: [
+                              FilterConfig<SortOption>(
+                                label: 'Sort',
+                                icon: LucideIcons.arrowUpDown,
+                                selectedValue: _sortOption,
+                                options: SortOption.values,
+                                displayNameBuilder: (option) =>
+                                    (option).displayName(t),
+                                iconBuilder: (option) => (option).icon,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _sortOption = value;
+                                  });
+                                },
+                                allLabel: 'Default Sort',
+                                allIcon: LucideIcons.list,
+                              ),
+                            ],
+                            onClearFilters: () {
+                              setState(() {
+                                _sortOption = null;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: Icon(
+                            viewPreferenceAsync
+                                ? LucideIcons.list
+                                : LucideIcons.layoutGrid,
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            HapticFeedback.selectionClick();
+                            ref
+                                .read(
+                                  viewPreferenceNotifierPod(
+                                    ResourceType.presentation.name,
+                                  ).notifier,
+                                )
+                                .toggle();
+                          },
+                          tooltip: viewPreferenceAsync
+                              ? 'List view'
+                              : 'Grid view',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

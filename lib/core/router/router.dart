@@ -79,11 +79,9 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
     AutoRoute(page: QuestionDetailRoute.page, path: '/questions/:questionId'),
     AutoRoute(
-      page: QuestionUpsertRoute.page,
+      page: QuestionUpdateRoute.page,
       path: '/questions/:questionId/edit',
     ),
-
-    // Question Showcase Route
-    AutoRoute(page: QuestionShowcaseRoute.page, path: '/question-showcase'),
+    AutoRoute(page: QuestionCreateRoute.page, path: '/questions/create'),
   ];
 }

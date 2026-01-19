@@ -3,7 +3,9 @@ import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_
 import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
+import 'package:datn_mobile/features/questions/states/question_bank_filter_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 part 'question_bank_state.dart';
 part 'question_bank_controller.dart';
@@ -13,3 +15,9 @@ final questionBankProvider =
     AsyncNotifierProvider<QuestionBankController, QuestionBankState>(() {
       return QuestionBankController();
     });
+
+final questionBankFilterProvider = StateProvider<QuestionBankFilterState>((
+  ref,
+) {
+  return const QuestionBankFilterState();
+});

@@ -53,7 +53,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
 
   void _navigateToEdit() {
     HapticFeedback.lightImpact();
-    context.router.push(QuestionUpsertRoute(questionId: widget.questionId));
+    context.router.push(QuestionUpdateRoute(questionId: widget.questionId));
   }
 
   @override

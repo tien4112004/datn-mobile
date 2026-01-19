@@ -16,7 +16,6 @@ class MatchingViewing extends StatelessWidget {
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
-      points: question.points,
       type: question.type,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

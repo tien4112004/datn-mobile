@@ -24,7 +24,12 @@ class PresentationServiceImpl implements PresentationService {
   Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
     int pageKey, {
     String? search,
+    SortOption? sort,
   }) {
-    return _repo.fetchPresentationMinimalsPaged(pageKey, search: search);
+    return _repo.fetchPresentationMinimalsPaged(
+      pageKey,
+      search: search,
+      sort: sort?.toApiValue() ?? 'desc',
+    );
   }
 }

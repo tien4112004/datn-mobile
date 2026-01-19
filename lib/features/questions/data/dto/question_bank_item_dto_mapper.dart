@@ -19,7 +19,6 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
           title: title,
           titleImageUrl: titleImageUrl,
           explanation: explanation,
-          points: points,
           data: _parseMultipleChoiceData(data),
         );
         break;
@@ -30,7 +29,6 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
           title: title,
           titleImageUrl: titleImageUrl,
           explanation: explanation,
-          points: points,
           data: _parseMatchingData(data),
         );
         break;
@@ -41,7 +39,6 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
           title: title,
           titleImageUrl: titleImageUrl,
           explanation: explanation,
-          points: points,
           data: _parseOpenEndedData(data),
         );
         break;
@@ -52,7 +49,6 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
           title: title,
           titleImageUrl: titleImageUrl,
           explanation: explanation,
-          points: points,
           data: _parseFillInBlankData(data),
         );
         break;

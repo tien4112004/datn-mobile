@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:datn_mobile/shared/widgets/image_input_field.dart';
@@ -9,42 +8,38 @@ class QuestionBasicInfoSection extends StatefulWidget {
   final String title;
   final QuestionType selectedType;
   final Difficulty selectedDifficulty;
-  final int points;
   final String? titleImageUrl;
   final String explanation;
-  final Grade? grade;
+  final Grade grade;
   final String? chapter;
-  final Subject? subject;
+  final Subject subject;
   final ValueChanged<String> onTitleChanged;
-  final ValueChanged<QuestionType> onTypeChanged;
+  final ValueChanged<QuestionType>? onTypeChanged;
   final ValueChanged<Difficulty> onDifficultyChanged;
-  final ValueChanged<int> onPointsChanged;
   final ValueChanged<String?> onTitleImageChanged;
   final ValueChanged<String> onExplanationChanged;
-  final ValueChanged<Grade?> onGradeChanged;
+  final ValueChanged<Grade>? onGradeChanged;
   final ValueChanged<String> onChapterChanged;
-  final ValueChanged<Subject?> onSubjectChanged;
+  final ValueChanged<Subject>? onSubjectChanged;
 
   const QuestionBasicInfoSection({
     super.key,
     required this.title,
     required this.selectedType,
     required this.selectedDifficulty,
-    required this.points,
     this.titleImageUrl,
     required this.explanation,
-    this.grade,
+    required this.grade,
     this.chapter,
-    this.subject,
+    required this.subject,
     required this.onTitleChanged,
-    required this.onTypeChanged,
+    this.onTypeChanged,
     required this.onDifficultyChanged,
-    required this.onPointsChanged,
     required this.onTitleImageChanged,
     required this.onExplanationChanged,
-    required this.onGradeChanged,
+    this.onGradeChanged,
     required this.onChapterChanged,
-    required this.onSubjectChanged,
+    this.onSubjectChanged,
   });
 
   @override
@@ -54,7 +49,6 @@ class QuestionBasicInfoSection extends StatefulWidget {
 
 class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
   late TextEditingController _titleController;
-  late TextEditingController _pointsController;
   late TextEditingController _explanationController;
   late TextEditingController _chapterController;
 
@@ -62,7 +56,6 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.title);
-    _pointsController = TextEditingController(text: widget.points.toString());
     _explanationController = TextEditingController(text: widget.explanation);
     _chapterController = TextEditingController(text: widget.chapter ?? '');
   }
@@ -73,12 +66,6 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
     if (widget.title != oldWidget.title &&
         widget.title != _titleController.text) {
       _titleController.text = widget.title;
-    }
-    if (widget.points != oldWidget.points) {
-      final pointsStr = widget.points.toString();
-      if (pointsStr != _pointsController.text) {
-        _pointsController.text = pointsStr;
-      }
     }
     if (widget.explanation != oldWidget.explanation &&
         widget.explanation != _explanationController.text) {
@@ -92,7 +79,6 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
   @override
   void dispose() {
     _titleController.dispose();
-    _pointsController.dispose();
     _explanationController.dispose();
     _chapterController.dispose();
     super.dispose();
@@ -151,11 +137,17 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  FlexDropdownField<QuestionType>(
-                    value: widget.selectedType,
-                    items: QuestionType.values,
-                    onChanged: widget.onTypeChanged,
-                    itemLabelBuilder: (type) => type.displayName,
+                  IgnorePointer(
+                    ignoring: widget.onTypeChanged == null,
+                    child: Opacity(
+                      opacity: widget.onTypeChanged == null ? 0.6 : 1.0,
+                      child: FlexDropdownField<QuestionType>(
+                        value: widget.selectedType,
+                        items: QuestionType.values,
+                        onChanged: widget.onTypeChanged ?? (_) {},
+                        itemLabelBuilder: (type) => type.displayName,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -188,37 +180,6 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
         ),
         const SizedBox(height: 16),
 
-        // Points field (optional)
-        TextFormField(
-          controller: _pointsController,
-          onChanged: (value) {
-            final parsedPoints = int.tryParse(value);
-            if (parsedPoints != null) {
-              widget.onPointsChanged(parsedPoints);
-            }
-          },
-          decoration: InputDecoration(
-            labelText: 'Points (Optional)',
-            hintText: '0',
-            prefixIcon: const Icon(Icons.star_outline),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            contentPadding: const EdgeInsets.all(16),
-            helperText: 'Leave empty or 0 for ungraded questions',
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          validator: (value) {
-            if (value != null && value.isNotEmpty) {
-              final points = int.tryParse(value);
-              if (points == null || points < 0) {
-                return 'Please enter a valid number';
-              }
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 16),
-
         // Grade, Chapter, and Subject fields
         Row(
           children: [
@@ -228,18 +189,24 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Grade',
+                    'Grade *',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  FlexDropdownField<Grade>(
-                    value: widget.grade ?? Grade.grade1,
-                    items: Grade.values,
-                    onChanged: widget.onGradeChanged,
-                    itemLabelBuilder: (grade) => grade.displayName,
+                  IgnorePointer(
+                    ignoring: widget.onGradeChanged == null,
+                    child: Opacity(
+                      opacity: widget.onGradeChanged == null ? 0.6 : 1.0,
+                      child: FlexDropdownField<Grade>(
+                        value: widget.grade,
+                        items: Grade.values,
+                        onChanged: widget.onGradeChanged ?? (_) {},
+                        itemLabelBuilder: (grade) => grade.displayName,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -252,18 +219,24 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Subject',
+                    'Subject *',
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurface,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  FlexDropdownField<Subject>(
-                    value: widget.subject ?? Subject.english,
-                    items: Subject.values,
-                    onChanged: widget.onSubjectChanged,
-                    itemLabelBuilder: (subject) => subject.displayName,
+                  IgnorePointer(
+                    ignoring: widget.onSubjectChanged == null,
+                    child: Opacity(
+                      opacity: widget.onSubjectChanged == null ? 0.6 : 1.0,
+                      child: FlexDropdownField<Subject>(
+                        value: widget.subject,
+                        items: Subject.values,
+                        onChanged: widget.onSubjectChanged ?? (_) {},
+                        itemLabelBuilder: (subject) => subject.displayName,
+                      ),
+                    ),
                   ),
                 ],
               ),

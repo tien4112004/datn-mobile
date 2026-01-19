@@ -45,14 +45,14 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
     final colorScheme = theme.colorScheme;
 
     _sortOptions = [
-      t.projects.common_list.sort_date_modified,
-      t.projects.common_list.sort_date_created,
       t.projects.common_list.sort_name_asc,
       t.projects.common_list.sort_name_desc,
+      t.projects.common_list.sort_date_created_asc,
+      t.projects.common_list.sort_date_created_desc,
     ];
 
     if (_sortOption.isEmpty || !_sortOptions.contains(_sortOption)) {
-      _sortOption = t.projects.common_list.sort_date_modified;
+      _sortOption = t.projects.common_list.sort_name_asc;
     }
 
     return Scaffold(

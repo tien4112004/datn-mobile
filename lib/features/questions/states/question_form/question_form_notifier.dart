@@ -21,7 +21,6 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     required QuestionType type,
     required Difficulty difficulty,
     String? titleImageUrl,
-    required int points,
     String? explanation,
     String? grade,
     String? chapter,
@@ -34,11 +33,12 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
       type: type,
       difficulty: difficulty,
       titleImageUrl: titleImageUrl,
-      points: points,
       explanation: explanation ?? '',
-      grade: grade != null ? Grade.fromApiValue(grade) : null,
+      grade: (grade != null ? Grade.fromApiValue(grade) : null) ?? Grade.grade1,
       chapter: chapter,
-      subject: subject != null ? Subject.fromApiValue(subject) : null,
+      subject:
+          (subject != null ? Subject.fromApiValue(subject) : null) ??
+          Subject.english,
       hasUnsavedChanges: false,
     );
 
@@ -134,7 +134,7 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     state = state.copyWith(explanation: explanation, hasUnsavedChanges: true);
   }
 
-  void updateGrade(Grade? grade) {
+  void updateGrade(Grade grade) {
     state = state.copyWith(grade: grade, hasUnsavedChanges: true);
   }
 
@@ -142,7 +142,7 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     state = state.copyWith(chapter: chapter, hasUnsavedChanges: true);
   }
 
-  void updateSubject(Subject? subject) {
+  void updateSubject(Subject subject) {
     state = state.copyWith(subject: subject, hasUnsavedChanges: true);
   }
 

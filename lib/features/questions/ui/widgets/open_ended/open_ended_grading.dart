@@ -22,31 +22,19 @@ class OpenEndedGrading extends StatefulWidget {
 }
 
 class _OpenEndedGradingState extends State<OpenEndedGrading> {
-  int? _currentScore;
-
   @override
   void initState() {
     super.initState();
-    _currentScore = widget.score;
-  }
-
-  void _setScore(int score) {
-    setState(() {
-      _currentScore = score;
-    });
-    widget.onScoreChanged?.call(score);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxPoints = widget.question.points ?? 10;
 
     return QuestionCardWrapper(
       title: widget.question.title,
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
-      points: widget.question.points,
       type: widget.question.type,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,29 +107,6 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              ...List.generate(maxPoints + 1, (index) {
-                final isSelected = _currentScore == index;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text('$index'),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      if (selected) _setScore(index);
-                    },
-                    selectedColor: Colors.green,
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                );
-              }),
-            ],
           ),
         ],
       ),

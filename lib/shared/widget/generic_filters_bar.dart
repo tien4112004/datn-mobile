@@ -1,16 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
 
-/// Configuration for a single filter
-class FilterConfig<T> {
+/// Base class for type-erased filter configuration
+abstract class BaseFilterConfig {
+  String get label;
+  IconData get icon;
+  bool get hasSelection;
+  String get displayLabel;
+  String get allLabel;
+  IconData get allIcon;
+
+  /// Build the options list for the picker
+  List<Widget> buildOptions(BuildContext context, VoidCallback onItemTapped);
+
+  /// Handle clearing the filter
+  void onClear();
+}
+
+/// Configuration for a single filter with type safety preserved
+class FilterConfig<T> implements BaseFilterConfig {
+  @override
   final String label;
+  @override
   final IconData icon;
   final T? selectedValue;
   final List<T> options;
-  final String Function(dynamic) displayNameBuilder;
-  final IconData Function(dynamic)? iconBuilder;
+  final String Function(T) displayNameBuilder;
+  final IconData Function(T)? iconBuilder;
   final ValueChanged<T?> onChanged;
+  @override
   final String allLabel;
+  @override
   final IconData allIcon;
 
   const FilterConfig({
@@ -25,12 +46,33 @@ class FilterConfig<T> {
     this.allIcon = LucideIcons.list,
   });
 
+  @override
   bool get hasSelection => selectedValue != null;
 
+  @override
   String get displayLabel {
     if (selectedValue == null) return allLabel;
-    return displayNameBuilder(selectedValue);
+    return displayNameBuilder(selectedValue as T);
   }
+
+  @override
+  List<Widget> buildOptions(BuildContext context, VoidCallback onItemTapped) {
+    return options.map<Widget>((option) {
+      final optionIcon = iconBuilder?.call(option) ?? icon;
+      return ListTile(
+        leading: Icon(optionIcon),
+        title: Text(displayNameBuilder(option)),
+        selected: selectedValue == option,
+        onTap: () {
+          Navigator.pop(context);
+          onChanged(option);
+        },
+      );
+    }).toList();
+  }
+
+  @override
+  void onClear() {}
 }
 
 /// Generic filters bar widget that supports multiple filter types
@@ -61,13 +103,15 @@ class FilterConfig<T> {
 /// )
 /// ```
 class GenericFiltersBar extends StatelessWidget {
-  final List<FilterConfig<dynamic>> filters;
+  final List<BaseFilterConfig> filters;
   final VoidCallback onClearFilters;
+  final bool isReadOnly;
 
   const GenericFiltersBar({
     super.key,
     required this.filters,
     required this.onClearFilters,
+    this.isReadOnly = false,
   });
 
   @override
@@ -109,10 +153,15 @@ class GenericFiltersBar extends StatelessWidget {
             ...filters.map((filter) {
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: _buildFilterChip(context: context, filter: filter),
+                child: FilterChipButton(
+                  filter: filter,
+                  onTap: () =>
+                      FilterChipButton.showFilterPicker(context, filter),
+                  isReadOnly: isReadOnly,
+                ),
               );
             }),
-            if (hasFilters)
+            if (hasFilters && !isReadOnly)
               TextButton.icon(
                 onPressed: onClearFilters,
                 icon: const Icon(LucideIcons.x, size: 14),
@@ -122,108 +171,6 @@ class GenericFiltersBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
               ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilterChip({
-    required BuildContext context,
-    required FilterConfig<dynamic> filter,
-  }) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isSelected = filter.hasSelection;
-
-    return InkWell(
-      onTap: () => _showFilterPicker(context, filter),
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colorScheme.primaryContainer
-              : colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected
-                ? colorScheme.primary
-                : colorScheme.outlineVariant,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              filter.icon,
-              size: 14,
-              color: isSelected
-                  ? colorScheme.onPrimaryContainer
-                  : colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              filter.displayLabel,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: isSelected
-                    ? colorScheme.onPrimaryContainer
-                    : colorScheme.onSurfaceVariant,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Icon(
-              LucideIcons.chevronDown,
-              size: 14,
-              color: isSelected
-                  ? colorScheme.onPrimaryContainer
-                  : colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showFilterPicker(BuildContext context, FilterConfig<dynamic> filter) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Filter by ${filter.label}',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-              ),
-            ),
-            ListTile(
-              leading: Icon(filter.allIcon),
-              title: Text(filter.allLabel),
-              selected: filter.selectedValue == null,
-              onTap: () {
-                filter.onChanged(null);
-                Navigator.pop(context);
-              },
-            ),
-            ...filter.options.map<Widget>((option) {
-              final icon = filter.iconBuilder?.call(option) ?? filter.icon;
-              return ListTile(
-                leading: Icon(icon),
-                title: Text(filter.displayNameBuilder(option)),
-                selected: filter.selectedValue == option,
-                onTap: () {
-                  filter.onChanged(option);
-                  Navigator.pop(context);
-                },
-              );
-            }),
           ],
         ),
       ),

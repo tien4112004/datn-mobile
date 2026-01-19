@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/projects/domain/entity/mindmap.dart';
 import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:datn_mobile/features/projects/enum/sort_option.dart';
 
 abstract class MindmapService {
   Future<List<MindmapMinimal>> fetchMindmaps();
@@ -8,7 +9,7 @@ abstract class MindmapService {
 
   Future<List<MindmapMinimal>> fetchMindmapMinimalsPaged(
     int pageKey, {
-    int pageSize = 10,
-    String sort = "desc",
+    String? search,
+    SortOption? sort,
   });
 }

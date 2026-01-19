@@ -112,6 +112,6 @@ class AbstractResourceTile extends ConsumerWidget {
 
   bool _isImageUrl(String url) {
     debugPrint('Checking if URL is image: $url');
-    return url.contains('.photos');
+    return url.contains('https://');
   }
 }

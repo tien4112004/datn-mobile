@@ -11,7 +11,6 @@ class QuestionUpdateRequestDto {
   final String? difficulty;
   final String? explanation;
   final String? titleImageUrl;
-  final int? points;
   final Map<String, dynamic>? data;
   final String? grade;
   final String? chapter;
@@ -23,7 +22,6 @@ class QuestionUpdateRequestDto {
     this.difficulty,
     this.explanation,
     this.titleImageUrl,
-    this.points,
     this.data,
     this.grade,
     this.chapter,

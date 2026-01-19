@@ -27,11 +27,13 @@ class MindmapRepositoryImpl implements MindmapRepository {
     int pageKey, {
     int pageSize = 10,
     String sort = "desc",
+    String? search,
   }) async {
     final dtoResponse = await _remoteSource.fetchMindmapMinimalsPaged(
       pageKey: pageKey,
       pageSize: pageSize,
       sort: sort,
+      search: search,
     );
 
     return dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [];

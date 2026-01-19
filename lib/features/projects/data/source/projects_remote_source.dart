@@ -32,33 +32,28 @@ abstract class ProjectsRemoteSource {
   );
 
   // /presentations?page=1&pageSize=20&sort=desc
-  @GET("/presentations?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  @GET("/presentations")
   Future<ServerResponseDto<List<PresentationMinimalDto>>>
   fetchPresentationMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
+    @Query("page") int pageKey = 1,
+    @Query("pageSize") int pageSize = 10,
+    @Query("sort") String sort = "desc",
+    @Query("search") String? search,
   });
 
   // Image endpoints
   @GET("/images")
-  Future<ServerResponseDto<List<ImageProjectMinimalDto>>> fetchImages();
+  Future<ServerResponseDto<List<ImageProjectMinimalDto>>> fetchImages({
+    @Query("page") int page = 1,
+    @Query("size") int size = 10,
+    @Query("search") String? search,
+  });
 
   @GET("/images/{id}")
-  Future<ServerResponseDto<ImageProjectDto>> fetchImageById(
-    @Path("id") String id,
-  );
+  Future<ServerResponseDto<ImageProjectDto>> fetchImageById(@Path("id") int id);
 
   @POST("/images")
   Future<ImageProjectDto> createImage(@Body() ImageProjectDto image);
-
-  @GET("/images?page={pageKey}&pageSize={pageSize}&sort={sort}")
-  Future<ServerResponseDto<List<ImageProjectMinimalDto>>>
-  fetchImageMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
-  });
 
   // Mindmap endpoints
   @GET("/mindmaps")
@@ -68,10 +63,11 @@ abstract class ProjectsRemoteSource {
   Future<ServerResponseDto<MindmapDto>> fetchMindmapById(@Path("id") String id);
 
   // /mindmaps?page=1&pageSize=20&sort=desc
-  @GET("/mindmaps?page={pageKey}&pageSize={pageSize}&sort={sort}")
+  @GET("/mindmaps")
   Future<ServerResponseDto<List<MindmapMinimalDto>>> fetchMindmapMinimalsPaged({
-    @Path("pageKey") int pageKey = 1,
-    @Path("pageSize") int pageSize = 10,
-    @Path("sort") String sort = "desc",
+    @Query("page") int pageKey = 1,
+    @Query("pageSize") int pageSize = 10,
+    @Query("sort") String sort = "desc",
+    @Query("search") String? search,
   });
 }

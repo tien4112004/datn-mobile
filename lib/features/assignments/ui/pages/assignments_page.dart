@@ -1,9 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_card.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/assignment_filters_bar.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/assignment_header.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
@@ -20,9 +19,6 @@ class AssignmentsPage extends ConsumerStatefulWidget {
 }
 
 class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
-  AssignmentStatus? _selectedStatus;
-  GradeLevel? _selectedGradeLevel;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -46,29 +42,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
       ),
       body: Column(
         children: [
-          ExamFiltersBar(
-            selectedStatus: _selectedStatus,
-            selectedGradeLevel: _selectedGradeLevel,
-            onStatusChanged: (status) {
-              setState(() => _selectedStatus = status);
-              ref
-                  .read(assignmentsControllerProvider.notifier)
-                  .filterByStatus(status);
-            },
-            onGradeLevelChanged: (gradeLevel) {
-              setState(() => _selectedGradeLevel = gradeLevel);
-              ref
-                  .read(assignmentsControllerProvider.notifier)
-                  .filterByGradeLevel(gradeLevel);
-            },
-            onClearFilters: () {
-              setState(() {
-                _selectedStatus = null;
-                _selectedGradeLevel = null;
-              });
-              ref.read(assignmentsControllerProvider.notifier).clearFilters();
-            },
-          ),
+          const AssignmentHeader(),
           Expanded(
             child: assignmentsAsync.when(
               data: (assignments) {

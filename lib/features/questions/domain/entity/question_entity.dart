@@ -8,7 +8,6 @@ abstract class BaseQuestion {
   final String title;
   final String? titleImageUrl;
   final String? explanation;
-  final int? points;
 
   const BaseQuestion({
     required this.id,
@@ -17,7 +16,6 @@ abstract class BaseQuestion {
     required this.title,
     this.titleImageUrl,
     this.explanation,
-    this.points,
   });
 }
 
@@ -31,7 +29,6 @@ class MultipleChoiceQuestion extends BaseQuestion {
     required super.title,
     super.titleImageUrl,
     super.explanation,
-    super.points,
     required this.data,
   }) : super(type: QuestionType.multipleChoice);
 
@@ -41,7 +38,6 @@ class MultipleChoiceQuestion extends BaseQuestion {
     String? title,
     String? titleImageUrl,
     String? explanation,
-    int? points,
     MultipleChoiceData? data,
   }) {
     return MultipleChoiceQuestion(
@@ -50,7 +46,6 @@ class MultipleChoiceQuestion extends BaseQuestion {
       title: title ?? this.title,
       titleImageUrl: titleImageUrl ?? this.titleImageUrl,
       explanation: explanation ?? this.explanation,
-      points: points ?? this.points,
       data: data ?? this.data,
     );
   }
@@ -66,7 +61,6 @@ class MatchingQuestion extends BaseQuestion {
     required super.title,
     super.titleImageUrl,
     super.explanation,
-    super.points,
     required this.data,
   }) : super(type: QuestionType.matching);
 
@@ -76,7 +70,6 @@ class MatchingQuestion extends BaseQuestion {
     String? title,
     String? titleImageUrl,
     String? explanation,
-    int? points,
     MatchingData? data,
   }) {
     return MatchingQuestion(
@@ -85,7 +78,6 @@ class MatchingQuestion extends BaseQuestion {
       title: title ?? this.title,
       titleImageUrl: titleImageUrl ?? this.titleImageUrl,
       explanation: explanation ?? this.explanation,
-      points: points ?? this.points,
       data: data ?? this.data,
     );
   }
@@ -101,7 +93,6 @@ class OpenEndedQuestion extends BaseQuestion {
     required super.title,
     super.titleImageUrl,
     super.explanation,
-    super.points,
     required this.data,
   }) : super(type: QuestionType.openEnded);
 
@@ -111,7 +102,6 @@ class OpenEndedQuestion extends BaseQuestion {
     String? title,
     String? titleImageUrl,
     String? explanation,
-    int? points,
     OpenEndedData? data,
   }) {
     return OpenEndedQuestion(
@@ -120,7 +110,6 @@ class OpenEndedQuestion extends BaseQuestion {
       title: title ?? this.title,
       titleImageUrl: titleImageUrl ?? this.titleImageUrl,
       explanation: explanation ?? this.explanation,
-      points: points ?? this.points,
       data: data ?? this.data,
     );
   }
@@ -136,7 +125,6 @@ class FillInBlankQuestion extends BaseQuestion {
     required super.title,
     super.titleImageUrl,
     super.explanation,
-    super.points,
     required this.data,
   }) : super(type: QuestionType.fillInBlank);
 
@@ -146,7 +134,6 @@ class FillInBlankQuestion extends BaseQuestion {
     String? title,
     String? titleImageUrl,
     String? explanation,
-    int? points,
     FillInBlankData? data,
   }) {
     return FillInBlankQuestion(
@@ -155,7 +142,6 @@ class FillInBlankQuestion extends BaseQuestion {
       title: title ?? this.title,
       titleImageUrl: titleImageUrl ?? this.titleImageUrl,
       explanation: explanation ?? this.explanation,
-      points: points ?? this.points,
       data: data ?? this.data,
     );
   }

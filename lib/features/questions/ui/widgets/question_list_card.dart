@@ -237,11 +237,12 @@ class QuestionListCard extends StatelessWidget {
               ),
 
               // Description (if available in future)
-              // TODO: Add description field to question entity
-              if (!isCompact) ...[
+              if (!isCompact &&
+                  question.explanation != null &&
+                  question.explanation!.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
-                  'This question covers the basic concepts and helps students understand the core principles.',
+                  question.explanation!,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     height: 1.4,
@@ -266,7 +267,7 @@ class QuestionListCard extends StatelessWidget {
                 ),
                 child: CompactMetadataRow(
                   difficulty: question.difficulty,
-                  usageCount: 12, // TODO: Add usage count to entity
+                  subject: item.subject,
                 ),
               ),
             ],

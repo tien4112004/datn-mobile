@@ -76,7 +76,6 @@ class _MatchingEditingState extends State<MatchingEditing> {
       title: widget.question.title,
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
-      points: widget.question.points,
       type: widget.question.type,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

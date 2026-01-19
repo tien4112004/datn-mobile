@@ -26,9 +26,7 @@ class ImageResultPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: _buildAppBar(context, t),
-      backgroundColor: context.isDarkMode
-          ? cs.surface
-          : const Color(0xFFF9FAFB),
+      backgroundColor: cs.surface,
       body: generateState.easyWhen(
         data: (state) {
           final image = state.generatedImage;
@@ -57,7 +55,8 @@ class ImageResultPage extends ConsumerWidget {
                 ImageQuickActions(
                   onCopyPrompt: () =>
                       _copyPromptToClipboard(context, ref, image.prompt, t),
-                  onShare: () => _shareImage(context, ref, image.url, t),
+                  onShare: () =>
+                      _shareImage(context, ref, image.url, t, image.prompt),
                   onDownload: () =>
                       _downloadImage(context, ref, image.url, image.prompt, t),
                 ),
@@ -145,17 +144,47 @@ class ImageResultPage extends ConsumerWidget {
     ).showSnackBar(SnackBar(content: Text(t.generate.imageResult.copyPrompt)));
   }
 
-  void _shareImage(
+  Future<void> _shareImage(
     BuildContext context,
     WidgetRef ref,
     String? url,
     Translations t,
-  ) {
+    String? prompt,
+  ) async {
     if (url == null || url.isEmpty) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(t.generate.imageResult.share)));
+    final shareService = ref.read(shareServiceProvider);
+
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                t.generate.imageResult.downloadImage,
+              ), // Reusing download message "Downloading..."
+            ],
+          ),
+          duration: const Duration(
+            seconds: 1,
+          ), // Short duration or hide manually
+        ),
+      );
+
+      await shareService.shareImage(url: url, prompt: prompt);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to share image: $e')));
+      }
+    }
   }
 
   void _downloadImage(

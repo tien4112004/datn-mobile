@@ -9,6 +9,6 @@ abstract class ImageRepository {
   Future<List<ImageProjectMinimal>> fetchImageMinimalsPaged(
     int pageKey, {
     int pageSize = 10,
-    String sort = "desc",
+    String? search,
   });
 }

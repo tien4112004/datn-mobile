@@ -44,16 +44,21 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   void initState() {
     super.initState();
     // Load question data on page init
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.read(questionBankProvider.notifier).getQuestionById(widget.questionId);
+  }
+
+  void _navigateToEdit() async {
+    HapticFeedback.lightImpact();
+    await context.router.push(
+      QuestionUpdateRoute(questionId: widget.questionId),
+    );
+
+    // Reload the question after returning from edit page
+    if (mounted) {
       ref
           .read(questionBankProvider.notifier)
           .getQuestionById(widget.questionId);
-    });
-  }
-
-  void _navigateToEdit() {
-    HapticFeedback.lightImpact();
-    context.router.push(QuestionUpsertRoute(questionId: widget.questionId));
+    }
   }
 
   @override
@@ -67,7 +72,11 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
       body: questionBankAsync.easyWhen(
         data: (questionBankState) {
           // Get the question from the state
+          debugPrint(
+            '[DEBUG] questionBankState.selectedQuestion ${questionBankState.selectedQuestion}',
+          );
           if (questionBankState.selectedQuestion == null) {
+            debugPrint('[DEBUG] Question not found, showing empty state');
             return _buildEmptyState(context);
           }
 
@@ -108,13 +117,9 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                   createdAt: questionItem.createdAt,
                   updatedAt: questionItem.updatedAt,
                   ownerId: questionItem.ownerId,
-                  grade: questionItem.grade == null
-                      ? "Grade 5"
-                      : questionItem.grade!.displayName,
+                  grade: questionItem.grade?.displayName,
                   chapter: questionItem.chapter,
-                  subject: questionItem.subject == null
-                      ? "Math"
-                      : questionItem.subject!.displayName,
+                  subject: questionItem.subject?.displayName,
                 ),
               ),
 

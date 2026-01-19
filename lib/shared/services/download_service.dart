@@ -59,10 +59,10 @@ class DownloadService {
     }
   }
 
-  @override
   Stream<DownloadProgress> downloadImageToGallery({
     required String url,
     required String prompt,
+    bool deleteOnComplete = true,
   }) async* {
     final controller = StreamController<DownloadProgress>();
 
@@ -93,24 +93,68 @@ class DownloadService {
       // Get temporary directory
       final tempDir = await getTemporaryDirectory();
       final filePath = '${tempDir.path}/$filename';
-
       // Download file with progress tracking
-      await _dio.download(
-        url,
-        filePath,
-        onReceiveProgress: (received, total) {
-          controller.add(DownloadProgress(received: received, total: total));
-        },
-      );
+      // Validate that the URL returns binary data, not JSON
+      try {
+        await _dio.download(
+          url,
+          filePath,
+          options: Options(
+            responseType: ResponseType.bytes,
+            receiveTimeout: const Duration(seconds: 30),
+            validateStatus: (status) => status != null && status < 500,
+          ),
+          onReceiveProgress: (received, total) {
+            controller.add(DownloadProgress(received: received, total: total));
+          },
+        );
+      } on DioException catch (e) {
+        // Check if the error is due to receiving JSON instead of binary
+        if (e.response != null) {
+          if (e.response?.data is Map) {
+            final errorData = e.response!.data as Map<String, dynamic>;
+            final errorMessage =
+                errorData['message'] ??
+                errorData['error'] ??
+                'Image URL returned JSON instead of binary data';
+            throw Exception('Failed to download image: $errorMessage');
+          }
+          // Check content type from headers
+          final contentType = e.response?.headers.value('content-type');
+          if (contentType != null && contentType.contains('application/json')) {
+            throw Exception(
+              'Invalid image URL: Server returned JSON (content-type: $contentType). '
+              'The URL may be an API endpoint rather than a direct image link.',
+            );
+          }
+        }
+        rethrow;
+      } on TypeError catch (e) {
+        // Catch the specific type cast error
+        if (e.toString().contains('ResponseBody')) {
+          throw Exception(
+            'Invalid image URL: Expected binary image data but received JSON. '
+            'Please verify the image URL is a direct link to an image file.',
+          );
+        }
+        rethrow;
+      }
 
       // Save to gallery
       await Gal.putImage(filePath);
 
-      // Clean up temporary file
-      try {
-        File(filePath).deleteSync();
-      } catch (_) {
-        // Ignore cleanup errors
+      // Emit done event with file path
+      controller.add(
+        DownloadProgress(received: 100, total: 100, filePath: filePath),
+      );
+
+      // Clean up temporary file if requested
+      if (deleteOnComplete) {
+        try {
+          File(filePath).deleteSync();
+        } catch (_) {
+          // Ignore cleanup errors
+        }
       }
 
       controller.close();
@@ -123,7 +167,6 @@ class DownloadService {
     yield* controller.stream;
   }
 
-  @override
   Stream<DownloadProgress> downloadDocument({
     required String url,
     required String fileName,
@@ -175,13 +218,50 @@ class DownloadService {
       final filePath = '$downloadPath/$finalFileName';
 
       // Download file with progress tracking
-      await _dio.download(
-        url,
-        filePath,
-        onReceiveProgress: (received, total) {
-          controller.add(DownloadProgress(received: received, total: total));
-        },
-      );
+      try {
+        await _dio.download(
+          url,
+          filePath,
+          options: Options(
+            responseType: ResponseType.bytes,
+            receiveTimeout: const Duration(seconds: 60),
+            validateStatus: (status) => status != null && status < 500,
+          ),
+          onReceiveProgress: (received, total) {
+            controller.add(DownloadProgress(received: received, total: total));
+          },
+        );
+      } on DioException catch (e) {
+        // Check if the error is due to receiving JSON instead of binary
+        if (e.response != null) {
+          if (e.response?.data is Map) {
+            final errorData = e.response!.data as Map<String, dynamic>;
+            final errorMessage =
+                errorData['message'] ??
+                errorData['error'] ??
+                'Document URL returned JSON instead of binary data';
+            throw Exception('Failed to download document: $errorMessage');
+          }
+          // Check content type from headers
+          final contentType = e.response?.headers.value('content-type');
+          if (contentType != null && contentType.contains('application/json')) {
+            throw Exception(
+              'Invalid document URL: Server returned JSON (content-type: $contentType). '
+              'The URL may be an API endpoint rather than a direct document link.',
+            );
+          }
+        }
+        rethrow;
+      } on TypeError catch (e) {
+        // Catch the specific type cast error
+        if (e.toString().contains('ResponseBody')) {
+          throw Exception(
+            'Invalid document URL: Expected binary document data but received JSON. '
+            'Please verify the document URL is a direct link to a file.',
+          );
+        }
+        rethrow;
+      }
 
       controller.close();
     } catch (e) {
@@ -193,7 +273,6 @@ class DownloadService {
     yield* controller.stream;
   }
 
-  @override
   Future<bool> checkStoragePermission() async {
     try {
       PermissionStatus status;

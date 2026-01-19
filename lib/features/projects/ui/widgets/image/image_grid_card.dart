@@ -24,7 +24,7 @@ class ImageGridCard extends ConsumerWidget {
       resourceType: ResourceType.image,
       onTap: onTap,
       onMoreOptions: onMoreOptions,
-      thumbnail: image.imageUrl,
+      thumbnail: image.url,
     );
   }
 }

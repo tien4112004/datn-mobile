@@ -7,7 +7,6 @@ class QuestionCreateRequestEntity {
   final Difficulty difficulty;
   final String? explanation;
   final String? titleImageUrl;
-  final int? points;
   final Map<String, dynamic> data;
   final Grade? grade;
   final String? chapter;
@@ -19,7 +18,6 @@ class QuestionCreateRequestEntity {
     required this.difficulty,
     this.explanation,
     this.titleImageUrl,
-    this.points,
     required this.data,
     this.grade,
     this.chapter,

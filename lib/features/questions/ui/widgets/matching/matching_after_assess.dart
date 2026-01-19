@@ -38,7 +38,6 @@ class MatchingAfterAssess extends StatelessWidget {
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
-      points: question.points,
       type: question.type,
       explanation: question.explanation,
       showExplanation: true,

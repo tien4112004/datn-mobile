@@ -24,21 +24,13 @@ class QuestionBankPage extends ConsumerStatefulWidget {
 }
 
 class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(questionBankProvider.notifier).loadQuestions();
+      ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
     });
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 
   @override
@@ -47,6 +39,8 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
     final questionBankControllerNotifier = ref.watch(
       questionBankProvider.notifier,
     );
+    final questionFilterState = ref.watch(questionBankFilterProvider);
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -56,7 +50,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 300,
+            expandedHeight: 280,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
@@ -78,63 +72,28 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 icon: const Icon(Icons.refresh_rounded),
                 tooltip: 'Refresh',
                 onPressed: () {
-                  questionBankControllerNotifier.refresh();
+                  questionBankControllerNotifier.loadQuestionsWithFilter();
                 },
               ),
             ],
             title: const Text('Question Bank'),
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: 16,
-              ),
-              background: QuestionBankHeader(
-                selectedType: questionBankControllerNotifier.currentBankType,
-                onTypeChanged: (type) {
-                  questionBankControllerNotifier.switchBankType(type);
-                },
-                searchController: _searchController,
-                selectedGrade: questionBankController.value?.gradeFilter,
-                selectedSubject: questionBankController.value?.subjectFilter,
-                onSearchSubmitted: (value) {
-                  questionBankControllerNotifier.search(value);
-                },
-                onSearchCleared: () {
-                  _searchController.clear();
-                  questionBankControllerNotifier.clearSearch();
-                },
-                onSearchChanged: () {
-                  setState(() {}); // Update to show/hide clear button
-                },
-                onGradeChanged: (value) {
-                  questionBankControllerNotifier.setGradeFilter(
-                    value?.apiValue,
-                  );
-                },
-                onSubjectChanged: (value) {
-                  questionBankControllerNotifier.setSubjectFilter(value);
-                },
-                onClearFilters: () {
-                  _searchController.clear();
-                  questionBankControllerNotifier.clearFilters();
-                  setState(() {});
-                },
-              ),
+              titlePadding: const EdgeInsets.only(bottom: 16),
+              background: QuestionBankHeader(),
             ),
           ),
         ],
         body: questionBankController.easyWhen(
           data: (questionBankState) => RefreshIndicator(
             onRefresh: () async {
-              await questionBankControllerNotifier.refresh();
+              await questionBankControllerNotifier.loadQuestionsWithFilter();
             },
             child: questionBankState.questions.isEmpty
-                ? _buildEmptyState(theme, questionBankState.currentBankType)
+                ? _buildEmptyState(theme, questionFilterState.bankType)
                 : QuestionBankList(
                     questions: questionBankState.questions,
                     isPersonal:
-                        questionBankState.currentBankType == BankType.personal,
+                        questionFilterState.bankType == BankType.personal,
                     isLoadingMore: questionBankState.isLoadingMore,
                     onView: (item) {
                       context.router.push(
@@ -143,7 +102,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                     },
                     onEdit: (item) {
                       context.router.push(
-                        QuestionUpsertRoute(questionId: item.id),
+                        QuestionUpdateRoute(questionId: item.id),
                       );
                     },
                     onDelete: (item) => _showDeleteConfirmation(item),
@@ -154,7 +113,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          context.router.push(QuestionUpsertRoute(questionId: null));
+          context.router.push(const QuestionCreateRoute());
         },
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -176,9 +135,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
       actionLabel: isPersonal ? 'Create Question' : null,
       onAction: isPersonal
           ? () {
-              ref.context.router.navigate(
-                QuestionUpsertRoute(questionId: null),
-              );
+              ref.context.router.navigate(const QuestionCreateRoute());
             }
           : null,
     );

@@ -1,23 +1,22 @@
 import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_project_minimal_dto.g.dart';
 
 @JsonSerializable()
 class ImageProjectMinimalDto {
-  String id;
-  String title;
-  String imageUrl;
-  DateTime createdAt;
-  DateTime updatedAt;
+  final int id;
+  final String originalFilename;
+  final String url;
+  final String? createdAt;
+  final String? updatedAt;
 
   ImageProjectMinimalDto({
     required this.id,
-    required this.title,
-    required this.imageUrl,
-    required this.createdAt,
-    required this.updatedAt,
+    required this.originalFilename,
+    required this.url,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory ImageProjectMinimalDto.fromJson(Map<String, dynamic> json) =>
@@ -28,20 +27,20 @@ class ImageProjectMinimalDto {
 
 extension ImageProjectMinimalMapper on ImageProjectMinimalDto {
   ImageProjectMinimal toEntity() => ImageProjectMinimal(
-    id: id,
-    title: title,
-    imageUrl: imageUrl,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
+    id: id.toString(),
+    title: originalFilename, // Map originalFilename to title for UI
+    url: url, // Map url to imageUrl for UI
+    createdAt: createdAt != null ? DateTime.parse(createdAt!) : null,
+    updatedAt: updatedAt != null ? DateTime.parse(updatedAt!) : null,
   );
 }
 
 extension ImageProjectMinimalEntityMapper on ImageProjectMinimal {
   ImageProjectMinimalDto toDto() => ImageProjectMinimalDto(
-    id: id,
-    title: title,
-    imageUrl: imageUrl,
-    createdAt: createdAt ?? DateFormatHelper.getNow(),
-    updatedAt: updatedAt ?? DateFormatHelper.getNow(),
+    id: int.parse(id),
+    originalFilename: title,
+    url: url,
+    createdAt: createdAt?.toIso8601String(),
+    updatedAt: updatedAt?.toIso8601String(),
   );
 }

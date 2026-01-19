@@ -37,12 +37,14 @@ class PresentationRepositoryImpl implements PresentationRepository {
     int pageKey, {
     int pageSize = 10,
     String sort = "desc",
+    String? search,
   }) {
     return _remoteSource
         .fetchPresentationMinimalsPaged(
           pageKey: pageKey,
           pageSize: pageSize,
           sort: sort,
+          search: search,
         )
         .then(
           (dtoResponse) =>

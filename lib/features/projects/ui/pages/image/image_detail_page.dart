@@ -1,10 +1,18 @@
 import 'package:auto_route/auto_route.dart';
-// import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-// import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-// import 'package:datn_mobile/shared/widget/custom_app_bar.dart';
+import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
+import 'package:datn_mobile/features/projects/providers/image_detail_provider.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_display_card.dart';
+import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick_actions.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/services/service_pod.dart';
+import 'package:datn_mobile/shared/utils/format_utils.dart';
+import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -18,137 +26,285 @@ class ImageDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = ref.watch(translationsPod);
+    final imageAsync = ref.watch(imageByIdProvider(imageId));
+    final cs = Theme.of(context).colorScheme;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      backgroundColor: cs.surface,
+      body: imageAsync.easyWhen(
+        data: (image) => SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Image Display Card
+              ImageDisplayCard(imageUrl: image.imageUrl),
+              const SizedBox(height: 28),
+
+              // File Information Card
+              _buildFileInformationCard(context, image),
+              const SizedBox(height: 24),
+
+              // Quick Actions
+              _buildQuickActions(context, ref, image),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+        errorWidget: (error, stackTrace) => EnhancedErrorState(
+          icon: LucideIcons.badgeAlert,
+          title: 'Error loading image',
+          message: error.toString(),
+          actionLabel: 'Retry',
+          onRetry: () => ref.invalidate(imageByIdProvider(imageId)),
+        ),
+        loadingWidget: () => const Center(child: CircularProgressIndicator()),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return AppBar(
+      title: Row(
         children: [
-          Icon(LucideIcons.construction, size: 64, color: Colors.grey.shade400),
-          const SizedBox(height: 16),
-          Text(
-            t.projects.images.underConstruction,
-            style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
+          Icon(LucideIcons.image, size: 24, color: cs.primary),
+          const SizedBox(width: 8),
+          const Text('Image Details'),
+        ],
+      ),
+      centerTitle: false,
+      elevation: 0,
+      backgroundColor: context.isDarkMode ? cs.surface : Colors.white,
+      leading: IconButton(
+        icon: const Icon(LucideIcons.arrowLeft),
+        onPressed: () => context.router.back(),
+      ),
+    );
+  }
+
+  Widget _buildFileInformationCard(BuildContext context, image) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.isDarkMode ? Colors.grey[800] : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.isDarkMode ? Colors.grey[700]! : Colors.grey[200]!,
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filename
+          _buildMetadataField(context, label: 'Filename', value: image.title),
+
+          if (image.mediaType != null || image.fileSize != null) ...[
+            const SizedBox(height: 16),
+          ],
+
+          // Type and Size in a row
+          if (image.mediaType != null || image.fileSize != null)
+            Row(
+              children: [
+                if (image.mediaType != null)
+                  Expanded(
+                    child: _buildMetadataField(
+                      context,
+                      label: 'Type',
+                      value: formatMediaType(image.mediaType!),
+                      isSmall: true,
+                    ),
+                  ),
+                if (image.mediaType != null && image.fileSize != null)
+                  const SizedBox(width: 16),
+                if (image.fileSize != null)
+                  Expanded(
+                    child: _buildMetadataField(
+                      context,
+                      label: 'Size',
+                      value: formatFileSize(image.fileSize!),
+                      isSmall: true,
+                    ),
+                  ),
+              ],
+            ),
+
+          const SizedBox(height: 16),
+
+          // Created and Updated dates
+          Row(
+            children: [
+              Expanded(
+                child: _buildMetadataField(
+                  context,
+                  label: 'Created',
+                  value: DateFormat('MMM d, yyyy').format(image.createdAt),
+                  isSmall: true,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildMetadataField(
+                  context,
+                  label: 'Updated',
+                  value: DateFormat('MMM d, yyyy').format(image.updatedAt),
+                  isSmall: true,
+                ),
+              ),
+            ],
+          ),
+
+          // Description (if available)
+          if (image.description != null && image.description!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            _buildMetadataField(
+              context,
+              label: 'Description',
+              value: image.description!,
+            ),
+          ],
+        ],
+      ),
     );
+  }
 
-    // final imageAsync = ref.watch(imageByIdProvider(imageId));
+  Widget _buildMetadataField(
+    BuildContext context, {
+    required String label,
+    required String value,
+    bool isSmall = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: isSmall ? 11 : 12,
+            fontWeight: FontWeight.w600,
+            color: context.tertiaryTextColor,
+            letterSpacing: 0.3,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: isSmall ? 13 : 14,
+            fontWeight: FontWeight.w500,
+            color: context.isDarkMode ? Colors.white : Colors.grey[800],
+            height: 1.4,
+          ),
+          maxLines: isSmall ? 1 : 3,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
 
-    // return imageAsync.easyWhen(
-    //   data: (image) => Scaffold(
-    //     appBar: CustomAppBar(
-    //       leading: IconButton(
-    //         icon: const Icon(LucideIcons.chevronLeft),
-    //         onPressed: () => context.router.maybePop(),
-    //       ),
-    //       title: image.title,
-    //     ),
-    //     body: SingleChildScrollView(
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           // Image display area
-    //           Container(
-    //             width: double.infinity,
-    //             height: 400,
-    //             color: Colors.grey.shade200,
-    //             child: Center(
-    //               child: Icon(
-    //                 LucideIcons.image,
-    //                 size: 100,
-    //                 color: Colors.grey.shade400,
-    //               ),
-    //             ),
-    //           ),
-    //           Padding(
-    //             padding: const EdgeInsets.all(16.0),
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 Text(
-    //                   image.title,
-    //                   style: const TextStyle(
-    //                     fontSize: 24,
-    //                     fontWeight: FontWeight.bold,
-    //                   ),
-    //                 ),
-    //                 const SizedBox(height: 16),
-    //                 if (image.description != null) ...[
-    //                   const Text(
-    //                     'Description',
-    //                     style: TextStyle(
-    //                       fontSize: 16,
-    //                       fontWeight: FontWeight.w600,
-    //                     ),
-    //                   ),
-    //                   const SizedBox(height: 8),
-    //                   Text(
-    //                     image.description ?? '',
-    //                     style: const TextStyle(fontSize: 14),
-    //                   ),
-    //                   const SizedBox(height: 16),
-    //                 ],
-    //                 const Divider(),
-    //                 const SizedBox(height: 16),
-    //                 Text(
-    //                   'Created: ${image.createdAt.toString()}',
-    //                   style: TextStyle(
-    //                     fontSize: 12,
-    //                     color: Colors.grey.shade600,
-    //                   ),
-    //                 ),
-    //                 const SizedBox(height: 8),
-    //                 Text(
-    //                   'Updated: ${image.updatedAt.toString()}',
-    //                   style: TextStyle(
-    //                     fontSize: 12,
-    //                     color: Colors.grey.shade600,
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    //   errorWidget: (error, stackTrace) => Scaffold(
-    //     appBar: AppBar(
-    //       leading: IconButton(
-    //         icon: const Icon(LucideIcons.chevronLeft),
-    //         onPressed: () => context.router.maybePop(),
-    //       ),
-    //     ),
-    //     body: Center(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           Icon(LucideIcons.info, size: 64, color: Colors.red.shade400),
-    //           const SizedBox(height: 16),
-    //           Text(
-    //             'Error loading image',
-    //             style: TextStyle(fontSize: 18, color: Colors.red.shade600),
-    //           ),
-    //           const SizedBox(height: 16),
-    //           ElevatedButton(
-    //             onPressed: () => ref.invalidate(imageByIdProvider(imageId)),
-    //             child: const Text('Retry'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    //   loadingWidget: () => Scaffold(
-    //     appBar: AppBar(
-    //       leading: IconButton(
-    //         icon: const Icon(LucideIcons.chevronLeft),
-    //         onPressed: () => context.router.maybePop(),
-    //       ),
-    //     ),
-    //     body: const Center(child: CircularProgressIndicator()),
-    //   ),
-    // );
+  Widget _buildQuickActions(
+    BuildContext context,
+    WidgetRef ref,
+    ImageProject image,
+  ) {
+    return ImageQuickActions(
+      onCopyPrompt: () => _copyImageUrl(context, image.imageUrl),
+      onShare: () => _shareImage(context, ref, image.imageUrl, image.title),
+      onDownload: () =>
+          _downloadImage(context, ref, image.imageUrl, image.title),
+    );
+  }
+
+  Future<void> _shareImage(
+    BuildContext context,
+    WidgetRef ref,
+    String? url,
+    String? title,
+  ) async {
+    if (url == null || url.isEmpty) return;
+
+    final shareService = ref.read(shareServiceProvider);
+    final t = ref.read(translationsPod);
+
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                t.generate.imageResult.downloadImage,
+              ), // Using "Downloading..." text
+            ],
+          ),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+
+      await shareService.shareImage(url: url, prompt: title);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to share image: $e')));
+      }
+    }
+  }
+
+  void _copyImageUrl(BuildContext context, String url) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Image URL copied to clipboard')),
+    );
+  }
+
+  void _downloadImage(
+    BuildContext context,
+    WidgetRef ref,
+    String url,
+    String filename,
+  ) {
+    final downloadService = ref.read(downloadServiceProvider);
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Downloading image...')));
+
+    downloadService
+        .downloadImageToGallery(url: url, prompt: filename)
+        .listen(
+          (progress) {
+            // Optional: Handle progress updates
+          },
+          onDone: () {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Image saved to gallery')),
+              );
+            }
+          },
+          onError: (error) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to save image: $error')),
+              );
+            }
+          },
+        );
   }
 }

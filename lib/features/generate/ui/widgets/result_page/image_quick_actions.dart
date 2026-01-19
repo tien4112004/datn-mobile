@@ -10,12 +10,18 @@ class ImageQuickActions extends ConsumerWidget {
   final VoidCallback? onCopyPrompt;
   final VoidCallback? onShare;
   final VoidCallback? onDownload;
+  final String? copyLabel;
+  final String? shareLabel;
+  final String? downloadLabel;
 
   const ImageQuickActions({
     super.key,
     this.onCopyPrompt,
     this.onShare,
     this.onDownload,
+    this.copyLabel,
+    this.shareLabel,
+    this.downloadLabel,
   });
 
   @override
@@ -24,10 +30,7 @@ class ImageQuickActions extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: context.isDarkMode ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -35,7 +38,7 @@ class ImageQuickActions extends ConsumerWidget {
           _buildQuickActionButton(
             context,
             icon: LucideIcons.copy,
-            label: t.generate.imageResult.copyPrompt,
+            label: copyLabel ?? t.generate.imageResult.copyPrompt,
             onPressed: onCopyPrompt,
           ),
 
@@ -43,7 +46,7 @@ class ImageQuickActions extends ConsumerWidget {
           _buildQuickActionButton(
             context,
             icon: LucideIcons.share,
-            label: t.generate.imageResult.share,
+            label: shareLabel ?? t.generate.imageResult.share,
             onPressed: onShare,
           ),
 
@@ -51,7 +54,7 @@ class ImageQuickActions extends ConsumerWidget {
           _buildQuickActionButton(
             context,
             icon: LucideIcons.download,
-            label: t.generate.imageResult.downloadImage,
+            label: downloadLabel ?? t.generate.imageResult.downloadImage,
             onPressed: onDownload,
           ),
         ],

@@ -62,6 +62,7 @@ dependencies:
   flutter_quill: ^11.5.0
   markdown_quill: ^4.3.0
   flex_dropdown: ^0.1.0
+  freezed: ^3.2.3
 
 dev_dependencies:
   flutter_test:

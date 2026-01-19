@@ -23,14 +23,13 @@ abstract class QuestionBankRemoteSource {
     @Query('page') int page = 1,
     @Query('pageSize') int pageSize = 10,
     @Query('search') String? search,
+    @Query('grade') String? grade,
+    @Query('chapter') String? chapter,
+    @Query('difficulty') String? difficulty,
+    @Query('subject') String? subject,
+    @Query('type') String? type,
     @Query('sortBy') String? sortBy,
     @Query('sortDirection') String? sortDirection,
-    // Not gonna allow to filter by grade and chapter
-    // Will enable it when API is ready
-    // @Query('grade')
-    String? grade,
-    // @Query('chapter')
-    String? chapter,
   });
 
   /// Get single question by ID.

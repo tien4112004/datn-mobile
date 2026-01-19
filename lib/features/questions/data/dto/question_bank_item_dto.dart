@@ -12,7 +12,6 @@ class QuestionBankItemDto {
   difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION, ADVANCED_APPLICATION
   final String? explanation;
   final String? titleImageUrl;
-  final int? points;
   final Map<String, dynamic> data;
   final String ownerId;
   final DateTime createdAt;
@@ -28,7 +27,6 @@ class QuestionBankItemDto {
     required this.difficulty,
     this.explanation,
     this.titleImageUrl,
-    this.points,
     required this.data,
     required this.ownerId,
     required this.createdAt,

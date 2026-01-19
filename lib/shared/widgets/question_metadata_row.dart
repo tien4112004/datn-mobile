@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/shared/widgets/question_badges.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Reusable metadata row component for displaying question information
 ///
@@ -79,13 +80,9 @@ class QuestionMetadataRow extends StatelessWidget {
 /// Compact version for footer displays
 class CompactMetadataRow extends StatelessWidget {
   final Difficulty difficulty;
-  final int? usageCount;
+  final Subject? subject;
 
-  const CompactMetadataRow({
-    super.key,
-    required this.difficulty,
-    this.usageCount,
-  });
+  const CompactMetadataRow({super.key, required this.difficulty, this.subject});
 
   @override
   Widget build(BuildContext context) {
@@ -97,17 +94,17 @@ class CompactMetadataRow extends StatelessWidget {
     return Row(
       children: [
         // Usage count
-        if (usageCount != null) ...[
+        if (subject != null) ...[
           Icon(
-            Icons.history_rounded,
+            LucideIcons.school,
             size: 14,
             color: colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 4),
           Text(
-            'Used $usageCount time${usageCount != 1 ? 's' : ''}',
+            ' ${subject?.displayName} ',
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
               fontSize: 12,
             ),
           ),

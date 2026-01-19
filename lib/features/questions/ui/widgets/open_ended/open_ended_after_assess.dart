@@ -20,14 +20,11 @@ class OpenEndedAfterAssess extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final maxPoints = question.points ?? 10;
-    final percentage = score != null ? (score! / maxPoints * 100).round() : 0;
 
     return QuestionCardWrapper(
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
-      points: question.points,
       type: question.type,
       explanation: question.explanation,
       showExplanation: true,
@@ -64,44 +61,6 @@ class OpenEndedAfterAssess extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
-              if (score != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: percentage >= 80
-                        ? Colors.green
-                        : percentage >= 60
-                        ? Colors.orange
-                        : Colors.red,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        percentage >= 80
-                            ? Icons.emoji_events
-                            : percentage >= 60
-                            ? Icons.thumb_up
-                            : Icons.error_outline,
-                        size: 18,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '$score/$maxPoints pts ($percentage%)',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
             ],
           ),
           const SizedBox(height: 16),

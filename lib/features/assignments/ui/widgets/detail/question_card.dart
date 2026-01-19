@@ -202,26 +202,6 @@ class _QuestionCardState extends State<QuestionCard>
                     maxLines: _isExpanded ? null : 2,
                     overflow: _isExpanded ? null : TextOverflow.ellipsis,
                   ),
-
-                  if (widget.question.points != null) ...[
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(
-                          LucideIcons.star,
-                          size: 16,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${widget.question.points} points',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
             ),

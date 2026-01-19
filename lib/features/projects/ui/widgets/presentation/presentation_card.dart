@@ -15,6 +15,7 @@ class PresentationCard extends ConsumerWidget {
       title: presentation.title,
       createdAt: presentation.createdAt,
       resourceType: ResourceType.presentation,
+      thumbnail: presentation.thumbnail,
     );
   }
 }

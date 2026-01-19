@@ -101,15 +101,6 @@ class QuestionInfoHeader extends StatelessWidget {
                   label: question.difficulty.displayName,
                   color: Difficulty.getDifficultyColor(question.difficulty),
                 ),
-
-                // Points Badge
-                if (question.points != null)
-                  _buildBadge(
-                    context: context,
-                    icon: LucideIcons.award,
-                    label: '${question.points} pts',
-                    color: colorScheme.tertiary,
-                  ),
               ],
             ),
           ),

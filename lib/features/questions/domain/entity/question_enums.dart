@@ -38,13 +38,13 @@ enum QuestionType {
   String get apiValue {
     switch (this) {
       case QuestionType.multipleChoice:
-        return 'multiple_choice';
+        return 'MULTIPLE_CHOICE';
       case QuestionType.matching:
-        return 'matching';
+        return 'MATCHING';
       case QuestionType.openEnded:
-        return 'open_ended';
+        return 'OPEN_ENDED';
       case QuestionType.fillInBlank:
-        return 'fill_in_blank';
+        return 'FILL_IN_BLANK';
     }
   }
 
@@ -280,7 +280,7 @@ enum Grade {
 
   static Grade? fromApiValue(String? value) {
     if (value == null) return null;
-    switch (value) {
+    switch (value.toUpperCase()) {
       case '1':
         return Grade.grade1;
       case '2':
@@ -317,11 +317,11 @@ enum Subject {
   String get apiValue {
     switch (this) {
       case Subject.english:
-        return 'ENGLISH';
+        return 'TA';
       case Subject.mathematics:
-        return 'MATHEMATICS';
+        return 'T';
       case Subject.literature:
-        return 'LITERATURE';
+        return 'V';
     }
   }
 

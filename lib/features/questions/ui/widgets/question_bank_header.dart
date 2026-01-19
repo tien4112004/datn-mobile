@@ -1,40 +1,84 @@
+import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/advanced_question_filter_dialog.dart';
+import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
+import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/bank_type_switcher.dart';
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Header widget for Question Bank page containing bank switcher and search
-class QuestionBankHeader extends StatelessWidget {
-  final BankType selectedType;
-  final ValueChanged<BankType> onTypeChanged;
-  final TextEditingController searchController;
-  final Grade? selectedGrade;
-  final Subject? selectedSubject;
-  final ValueChanged<String> onSearchSubmitted;
-  final VoidCallback onSearchCleared;
-  final VoidCallback onSearchChanged;
-  final ValueChanged<Grade?> onGradeChanged;
-  final ValueChanged<Subject?> onSubjectChanged;
-  final VoidCallback onClearFilters;
+/// Header widget for Question Bank page containing bank switcher, search, and filters
+class QuestionBankHeader extends ConsumerWidget {
+  final TextEditingController _searchController = TextEditingController(
+    text: "",
+  );
 
-  const QuestionBankHeader({
-    super.key,
-    required this.selectedType,
-    required this.onTypeChanged,
-    required this.searchController,
-    this.selectedGrade,
-    this.selectedSubject,
-    required this.onSearchSubmitted,
-    required this.onSearchCleared,
-    required this.onSearchChanged,
-    required this.onGradeChanged,
-    required this.onSubjectChanged,
-    required this.onClearFilters,
-  });
+  QuestionBankHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final filterState = ref.watch(questionBankFilterProvider);
+    final filterNotifier = ref.read(questionBankFilterProvider.notifier);
+    final questionbankController = ref.watch(questionBankProvider.notifier);
+
+    final filterConfigs = List<BaseFilterConfig>.of([
+      FilterConfig<Grade>(
+        label: 'Grade',
+        icon: LucideIcons.graduationCap,
+        options: Grade.values,
+        allLabel: 'All Grades',
+        allIcon: LucideIcons.list,
+        selectedValue: filterState.gradeFilter,
+        onChanged: (value) {
+          filterNotifier.state = filterState.copyWith(gradeFilter: value);
+          questionbankController.loadQuestionsWithFilter();
+        },
+        displayNameBuilder: (value) => value.displayName,
+      ),
+      FilterConfig<Subject>(
+        label: 'Subject',
+        icon: LucideIcons.bookOpen,
+        options: Subject.values,
+        allLabel: 'All Subjects',
+        allIcon: LucideIcons.list,
+        selectedValue: filterState.subjectFilter,
+        onChanged: (value) {
+          filterNotifier.state = filterState.copyWith(subjectFilter: value);
+          questionbankController.loadQuestionsWithFilter();
+        },
+        displayNameBuilder: (value) => value.displayName,
+      ),
+      FilterConfig<QuestionType>(
+        label: 'Type',
+        icon: LucideIcons.circleQuestionMark,
+        options: QuestionType.values,
+        allLabel: 'All Types',
+        allIcon: LucideIcons.list,
+        selectedValue: filterState.questionTypeFilter,
+        onChanged: (value) {
+          filterNotifier.state = filterState.copyWith(
+            questionTypeFilter: value,
+          );
+          questionbankController.loadQuestionsWithFilter();
+        },
+        displayNameBuilder: (value) => value.displayName,
+      ),
+      FilterConfig<Difficulty>(
+        label: 'Difficulty',
+        icon: LucideIcons.gauge,
+        options: Difficulty.values,
+        allLabel: 'All Difficulties',
+        allIcon: LucideIcons.list,
+        selectedValue: filterState.difficultyFilter,
+        onChanged: (value) {
+          filterNotifier.state = filterState.copyWith(difficultyFilter: value);
+          questionbankController.loadQuestionsWithFilter();
+        },
+        displayNameBuilder: (value) => value.displayName,
+      ),
+    ]);
 
     return Container(
       color: Colors.transparent,
@@ -42,27 +86,36 @@ class QuestionBankHeader extends StatelessWidget {
         left: 16,
         right: 16,
         top: 80, // Space for app bar + title
-        bottom: 16,
+        bottom: 0,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Bank type switcher
           BankTypeSwitcher(
-            selectedType: selectedType,
-            onTypeChanged: onTypeChanged,
+            selectedType: filterState.bankType,
+            onTypeChanged: (type) {
+              filterNotifier.state = filterState.copyWith(bankType: type);
+              questionbankController.loadQuestionsWithFilter();
+            },
           ),
           const SizedBox(height: 12),
           // Search bar
           TextField(
-            controller: searchController,
+            controller: _searchController,
             decoration: InputDecoration(
               hintText: 'Search questions...',
               prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: searchController.text.isNotEmpty
+              suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.clear_rounded),
-                      onPressed: onSearchCleared,
+                      onPressed: () {
+                        _searchController.clear();
+                        filterNotifier.state = filterState.copyWith(
+                          searchQuery: null,
+                        );
+                        questionbankController.loadQuestionsWithFilter();
+                      },
                     )
                   : null,
               border: OutlineInputBorder(
@@ -80,75 +133,52 @@ class QuestionBankHeader extends StatelessWidget {
               filled: true,
               fillColor: colorScheme.surfaceContainerHighest,
             ),
-            onSubmitted: onSearchSubmitted,
-            onChanged: (_) => onSearchChanged(),
+            onSubmitted: (query) {
+              filterNotifier.state = filterState.copyWith(
+                searchQuery: query.isEmpty ? null : query,
+              );
+              questionbankController.loadQuestionsWithFilter();
+            },
+            onChanged: (query) {
+              // Only update state, don't trigger search until user submits
+              filterNotifier.state = filterState.copyWith(
+                searchQuery: query.isEmpty ? null : query,
+              );
+            },
           ),
           const SizedBox(height: 12),
-          // Filter row for Grade and Subject
-          Row(
+          // Feature filters bar
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              // Grade dropdown filter
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        'Grade',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    FlexDropdownField<Grade>(
-                      value: selectedGrade ?? Grade.grade1,
-                      items: Grade.values,
-                      onChanged: onGradeChanged,
-                      itemLabelBuilder: (grade) => grade.displayName,
-                    ),
-                  ],
+              ...filterConfigs.map(
+                (filter) => FilterChipButton(
+                  filter: filter,
+                  onTap: () {
+                    FilterChipButton.showFilterPicker(context, filter);
+                  },
                 ),
               ),
-              const SizedBox(width: 8),
-              //Subject dropdown filter
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, bottom: 6),
-                      child: Text(
-                        'Subject',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                    FlexDropdownField<Subject>(
-                      value: selectedSubject ?? Subject.english,
-                      items: Subject.values,
-                      onChanged: onSubjectChanged,
-                      itemLabelBuilder: (subject) => subject.displayName,
-                    ),
-                  ],
+              // Advanced filter button
+              InkWell(
+                onTap: () => showAdvancedQuestionFilterDialog(
+                  context: context,
+                  ref: ref,
                 ),
-              ),
-              const SizedBox(width: 8),
-              // Clear filters button
-              IconButton(
-                icon: const Icon(Icons.filter_alt_off_outlined),
-                onPressed: onClearFilters,
-                tooltip: 'Clear Filters',
-                style: IconButton.styleFrom(
-                  backgroundColor: colorScheme.surfaceContainerHighest
-                      .withValues(alpha: 0.5),
-                  foregroundColor: colorScheme.onSurfaceVariant,
-                  padding: const EdgeInsets.all(14),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: colorScheme.secondary, width: 1),
+                  ),
+                  child: Icon(
+                    LucideIcons.slidersHorizontal,
+                    size: 16,
+                    color: colorScheme.onSecondaryContainer,
+                  ),
                 ),
               ),
             ],

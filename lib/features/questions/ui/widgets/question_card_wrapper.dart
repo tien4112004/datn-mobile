@@ -6,7 +6,6 @@ class QuestionCardWrapper extends StatelessWidget {
   final String title;
   final String? titleImageUrl;
   final Difficulty difficulty;
-  final int? points;
   final QuestionType type;
   final Widget child;
   final String? explanation;
@@ -17,7 +16,6 @@ class QuestionCardWrapper extends StatelessWidget {
     required this.title,
     this.titleImageUrl,
     required this.difficulty,
-    this.points,
     required this.type,
     required this.child,
     this.explanation,

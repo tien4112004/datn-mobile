@@ -18,13 +18,14 @@ class ImageTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint("[DEBUG] IMAGE URL: ${image.url.toString()}");
     return AbstractResourceTile(
       title: image.title,
       updatedAt: image.updatedAt,
       resourceType: ResourceType.image,
       onTap: onTap,
       onMoreOptions: onMoreOptions,
-      thumbnail: image.imageUrl, // Will use imageUrl instead in future
+      thumbnail: image.url, // Will use imageUrl instead in future
     );
   }
 }

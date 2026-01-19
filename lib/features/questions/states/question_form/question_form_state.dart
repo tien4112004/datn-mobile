@@ -16,9 +16,9 @@ class QuestionFormState {
   final String? titleImageUrl;
   final int points;
   final String explanation;
-  final Grade? grade;
+  final Grade grade;
   final String? chapter;
-  final Subject? subject;
+  final Subject subject;
 
   // Multiple Choice specific
   final List<MultipleChoiceOptionData> multipleChoiceOptions;
@@ -48,9 +48,9 @@ class QuestionFormState {
     this.titleImageUrl,
     this.points = 0,
     this.explanation = '',
-    this.grade,
+    this.grade = Grade.grade1,
     this.chapter,
-    this.subject,
+    this.subject = Subject.english,
     this.multipleChoiceOptions = const [],
     this.shuffleOptions = false,
     this.matchingPairs = const [],
@@ -99,6 +99,7 @@ class QuestionFormState {
       explanation: explanation ?? this.explanation,
       grade: grade ?? this.grade,
       chapter: chapter ?? this.chapter,
+      subject: subject ?? this.subject,
       multipleChoiceOptions:
           multipleChoiceOptions ?? this.multipleChoiceOptions,
       shuffleOptions: shuffleOptions ?? this.shuffleOptions,

@@ -17,7 +17,6 @@ class FillInBlankViewing extends StatelessWidget {
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
-      points: question.points ?? 0,
       type: question.type,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

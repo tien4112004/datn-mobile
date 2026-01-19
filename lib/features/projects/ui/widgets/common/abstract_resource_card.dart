@@ -1,5 +1,4 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
@@ -20,7 +19,7 @@ class AbstractDocumentCard extends ConsumerWidget {
 
   final String title;
   final String? description;
-  final Slide? thumbnail;
+  final String? thumbnail;
   final DateTime? createdAt;
   final VoidCallback? onTap;
   final ResourceType resourceType;
@@ -57,7 +56,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                   ),
                   child: thumbnail == null
                       ? DefaultThumbnail(resourceType: resourceType)
-                      : const Thumbnail(),
+                      : Thumbnail(imageUrl: thumbnail!),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

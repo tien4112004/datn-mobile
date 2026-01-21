@@ -76,9 +76,6 @@ enum QuestionType {
 }
 
 enum Difficulty {
-  easy,
-  medium,
-  hard,
   knowledge,
   comprehension,
   application,
@@ -86,12 +83,6 @@ enum Difficulty {
 
   String get displayName {
     switch (this) {
-      case Difficulty.easy:
-        return 'Easy';
-      case Difficulty.medium:
-        return 'Medium';
-      case Difficulty.hard:
-        return 'Hard';
       case Difficulty.knowledge:
         return 'Knowledge';
       case Difficulty.comprehension:
@@ -105,12 +96,6 @@ enum Difficulty {
 
   String get apiValue {
     switch (this) {
-      case Difficulty.easy:
-        return 'EASY';
-      case Difficulty.medium:
-        return 'MEDIUM';
-      case Difficulty.hard:
-        return 'HARD';
       case Difficulty.knowledge:
         return 'KNOWLEDGE';
       case Difficulty.comprehension:
@@ -124,12 +109,6 @@ enum Difficulty {
 
   static Difficulty fromApiValue(String value) {
     switch (value.toUpperCase()) {
-      case 'EASY':
-        return Difficulty.easy;
-      case 'MEDIUM':
-        return Difficulty.medium;
-      case 'HARD':
-        return Difficulty.hard;
       case 'KNOWLEDGE':
         return Difficulty.knowledge;
       case 'COMPREHENSION':
@@ -145,12 +124,6 @@ enum Difficulty {
 
   static IconData getDifficultyIcon(Difficulty difficulty) {
     switch (difficulty) {
-      case Difficulty.easy:
-        return LucideIcons.trendingDown;
-      case Difficulty.medium:
-        return LucideIcons.minus;
-      case Difficulty.hard:
-        return LucideIcons.trendingUp;
       case Difficulty.knowledge:
         return LucideIcons.book;
       case Difficulty.comprehension:
@@ -164,31 +137,19 @@ enum Difficulty {
 
   static Color getDifficultyColor(Difficulty difficulty) {
     switch (difficulty) {
-      case Difficulty.easy:
-        return Colors.green;
-      case Difficulty.medium:
-        return Colors.orange;
-      case Difficulty.hard:
-        return Colors.red;
       case Difficulty.knowledge:
-        return Colors.blue;
+        return Colors.green;
       case Difficulty.comprehension:
         return Colors.blue;
       case Difficulty.application:
-        return Colors.blue;
+        return Colors.orange;
       case Difficulty.advancedApplication:
-        return Colors.blue;
+        return Colors.red;
     }
   }
 
   static Difficulty fromName(String name) {
     switch (name.toUpperCase()) {
-      case 'EASY':
-        return Difficulty.easy;
-      case 'MEDIUM':
-        return Difficulty.medium;
-      case 'HARD':
-        return Difficulty.hard;
       case 'KNOWLEDGE':
         return Difficulty.knowledge;
       case 'COMPREHENSION':

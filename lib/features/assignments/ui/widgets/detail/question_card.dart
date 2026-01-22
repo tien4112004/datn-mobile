@@ -91,13 +91,13 @@ class _QuestionCardState extends State<QuestionCard>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _isExpanded
-              ? typeColor.withValues(alpha: 3)
-              : colorScheme.outlineVariant.withValues(alpha: 5),
+              ? typeColor.withValues(alpha: 0.3)
+              : colorScheme.outlineVariant.withValues(alpha: 0.5),
           width: _isExpanded ? 2 : 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 05),
+            color: colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -143,10 +143,10 @@ class _QuestionCardState extends State<QuestionCard>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: typeColor.withValues(alpha: 1),
+                color: typeColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: typeColor.withValues(alpha: 3),
+                  color: typeColor.withValues(alpha: 0.3),
                   width: 2,
                 ),
               ),
@@ -209,20 +209,9 @@ class _QuestionCardState extends State<QuestionCard>
             const SizedBox(width: 12),
 
             // Action Buttons Column
-            Column(
+            Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Expand/Collapse Button
-                RotationTransition(
-                  turns: _rotationAnimation,
-                  child: IconButton(
-                    icon: const Icon(LucideIcons.chevronDown, size: 20),
-                    onPressed: _toggleExpanded,
-                    tooltip: _isExpanded ? 'Collapse' : 'Expand',
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ),
-
                 // Edit Mode Actions
                 if (widget.isEditMode) ...[
                   IconButton(
@@ -246,6 +235,16 @@ class _QuestionCardState extends State<QuestionCard>
                     visualDensity: VisualDensity.compact,
                   ),
                 ],
+                // Expand/Collapse Button
+                RotationTransition(
+                  turns: _rotationAnimation,
+                  child: IconButton(
+                    icon: const Icon(LucideIcons.chevronDown, size: 20),
+                    onPressed: _toggleExpanded,
+                    tooltip: _isExpanded ? 'Collapse' : 'Expand',
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
               ],
             ),
           ],
@@ -262,7 +261,7 @@ class _QuestionCardState extends State<QuestionCard>
         children: [
           // Divider
           Divider(
-            color: colorScheme.outlineVariant.withValues(alpha: 5),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
             height: 1,
           ),
 
@@ -286,7 +285,7 @@ class _QuestionCardState extends State<QuestionCard>
                         LucideIcons.imageOff,
                         size: 48,
                         color: colorScheme.onSurfaceVariant.withValues(
-                          alpha: 5,
+                          alpha: 0.5,
                         ),
                       ),
                     ),
@@ -309,7 +308,7 @@ class _QuestionCardState extends State<QuestionCard>
                 color: colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: colorScheme.outlineVariant.withValues(alpha: 5),
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                 ),
               ),
               child: Row(
@@ -427,13 +426,13 @@ class _QuestionCardState extends State<QuestionCard>
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: option.isCorrect
-                  ? colorScheme.primaryContainer.withValues(alpha: 3)
+                  ? colorScheme.primaryContainer.withValues(alpha: 0.3)
                   : colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: option.isCorrect
                     ? colorScheme.primary
-                    : colorScheme.outlineVariant.withValues(alpha: 5),
+                    : colorScheme.outlineVariant.withValues(alpha: 0.5),
                 width: option.isCorrect ? 2 : 1,
               ),
             ),
@@ -451,7 +450,7 @@ class _QuestionCardState extends State<QuestionCard>
                     border: Border.all(
                       color: option.isCorrect
                           ? colorScheme.primary
-                          : colorScheme.outline.withValues(alpha: 3),
+                          : colorScheme.outline.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Center(
@@ -574,7 +573,7 @@ class _QuestionCardState extends State<QuestionCard>
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: colorScheme.outlineVariant.withValues(alpha: 5),
+                color: colorScheme.outlineVariant.withValues(alpha: 0.5),
               ),
             ),
             child: Row(
@@ -584,14 +583,16 @@ class _QuestionCardState extends State<QuestionCard>
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 3),
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: colorScheme.primary.withValues(alpha: 3),
+                        color: colorScheme.primary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
-                      pair.left,
+                      pair.left == null ? "Blank" : pair.left!,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -616,15 +617,15 @@ class _QuestionCardState extends State<QuestionCard>
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: colorScheme.secondaryContainer.withValues(
-                        alpha: 3,
+                        alpha: 0.3,
                       ),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: colorScheme.secondary.withValues(alpha: 3),
+                        color: colorScheme.secondary.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
-                      pair.right,
+                      pair.right == null ? "Blank" : pair.right!,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -669,7 +670,7 @@ class _QuestionCardState extends State<QuestionCard>
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 5),
+              color: colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
           ),
           child: Column(
@@ -756,7 +757,7 @@ class _QuestionCardState extends State<QuestionCard>
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.outlineVariant.withValues(alpha: 5),
+              color: colorScheme.outlineVariant.withValues(alpha: 0.5),
             ),
           ),
           child: Wrap(
@@ -780,7 +781,7 @@ class _QuestionCardState extends State<QuestionCard>
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 3),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: colorScheme.primary,
@@ -834,9 +835,9 @@ class _QuestionCardState extends State<QuestionCard>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

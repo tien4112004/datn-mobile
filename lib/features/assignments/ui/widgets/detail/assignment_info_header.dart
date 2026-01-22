@@ -104,7 +104,7 @@ class AssignmentInfoHeader extends StatelessWidget {
                     context,
                     icon: LucideIcons.bookOpen,
                     label: 'Subject',
-                    value: assignment.topic,
+                    value: assignment.subject.displayName,
                     color: colorScheme.primary,
                   ),
                 ),

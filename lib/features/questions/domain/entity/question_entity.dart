@@ -200,9 +200,9 @@ class MultipleChoiceData {
 /// Matching Pair
 class MatchingPair {
   final String id;
-  final String left;
+  final String? left;
   final String? leftImageUrl;
-  final String right;
+  final String? right;
   final String? rightImageUrl;
 
   const MatchingPair({

@@ -36,7 +36,7 @@ class ExamResponseDto {
 extension ExamResponseMapper on ExamResponseDto {
   AssignmentEntity toEntity({
     String? description,
-    required String topic,
+    required String subject,
     required GradeLevel gradeLevel,
     required Difficulty difficulty,
     int totalQuestions = 0,
@@ -46,7 +46,7 @@ extension ExamResponseMapper on ExamResponseDto {
     teacherId: teacherId,
     title: title,
     description: description,
-    topic: topic,
+    subject: Subject.fromApiValue(subject),
     gradeLevel: gradeLevel,
     status: AssignmentStatus.fromName(status),
     difficulty: difficulty,

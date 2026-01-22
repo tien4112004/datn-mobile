@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/assignment_info_header.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/bottom_action_dock.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/floating_action_menu.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_card.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_points_assignment_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/questions_section.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,15 +43,12 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
   bool _isEditMode = false;
   bool _isSaving = false;
 
-  // Mock questions for demonstration
-  // TODO: Replace with actual questions from assignment
-  final List<BaseQuestion> _mockQuestions = [];
-
-  void _showDeleteConfirmation(BuildContext context, int questionIndex) {
+  void _showDeleteConfirmation(BuildContext context, int questionIndex) async {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    showDialog(
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         icon: Icon(LucideIcons.circle, color: colorScheme.error, size: 32),
@@ -59,28 +58,34 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              setState(() {
-                _mockQuestions.removeAt(questionIndex);
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Question deleted'),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            },
+            onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
             child: const Text('Delete'),
           ),
         ],
       ),
     );
+
+    if (confirmed == true && mounted) {
+      await ref
+          .read(
+            detailAssignmentControllerProvider(widget.assignmentId).notifier,
+          )
+          .removeQuestion(questionIndex);
+
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Question deleted'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -90,6 +95,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
     final assignmentAsync = ref.watch(
       detailAssignmentControllerProvider(widget.assignmentId),
     );
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     return assignmentAsync.easyWhen(
       data: (assignment) {
@@ -157,7 +163,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
               ),
 
               // Questions List
-              if (_mockQuestions.isEmpty)
+              if (assignment.questions.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
                     margin: const EdgeInsets.all(16),
@@ -201,9 +207,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
               else
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
+                    final questionEntity = assignment.questions[index];
                     return QuestionCard(
-                      key: ValueKey(_mockQuestions[index].id),
-                      question: _mockQuestions[index],
+                      key: ValueKey(questionEntity.question.id),
+                      question: questionEntity.question,
                       questionNumber: index + 1,
                       isEditMode: _isEditMode,
                       onEdit: () {
@@ -216,11 +223,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                         );
                       },
                       onDelete: () {
-                        // TODO: Show delete confirmation dialog
                         _showDeleteConfirmation(context, index);
                       },
                     );
-                  }, childCount: _mockQuestions.length),
+                  }, childCount: assignment.questions.length),
                 ),
 
               // Assessment Matrix Dashboard
@@ -242,20 +248,55 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
           // Floating Action Menu (only in edit mode)
           floatingActionButton: _isEditMode
               ? FloatingActionMenu(
-                  onAddFromBank: () {
-                    // TODO: Navigate to question bank selection
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Navigate to Question Bank'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
+                  onAddFromBank: () async {
+                    // Capture context before async operations
+                    final navigator = context.router;
+
+                    // Navigate to question bank picker
+                    final selectedQuestions = await navigator
+                        .push<List<QuestionBankItemEntity>>(
+                          const QuestionBankPickerRoute(),
+                        );
+
+                    if (selectedQuestions != null && mounted) {
+                      // Capture context again for dialog (widget still mounted here)
+                      if (!context.mounted) return;
+
+                      // Show points assignment dialog
+                      final assignmentQuestions =
+                          await QuestionPointsAssignmentDialog.show(
+                            context,
+                            selectedQuestions,
+                          );
+
+                      if (assignmentQuestions != null && mounted) {
+                        // Add questions to assignment
+                        await ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .addQuestions(assignmentQuestions);
+
+                        if (mounted) {
+                          scaffoldMessenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Added ${assignmentQuestions.length} question(s)',
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      }
+                    }
                   },
                   onCreateNew: () {
-                    // TODO: Navigate to question creation
+                    // TODO: Navigate to question creation with assignment context
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Navigate to Create Question'),
+                        content: Text('Create new question (Coming soon)'),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );

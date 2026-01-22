@@ -52,7 +52,7 @@ class MatchingViewing extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  pair.left,
+                  pair.left == null ? "" : pair.left!,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
@@ -69,7 +69,7 @@ class MatchingViewing extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  pair.right,
+                  pair.right == null ? "" : pair.right!,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),

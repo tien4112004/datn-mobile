@@ -1,131 +1,83 @@
-import 'package:datn_mobile/features/assignments/data/source/assignment_mock_data_source.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_response.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:datn_mobile/features/assignments/data/source/assignment_remote_source.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/matrix_item_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/repository/assignment_repository.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
-/// Implementation of AssignmentRepository using mock data source.
+/// Implementation of AssignmentRepository using remote API source.
+/// Maps DTOs to domain entities according to ASSIGNMENT_API_DOCS.md
 class AssignmentRepositoryImpl implements AssignmentRepository {
-  final AssignmentMockDataSource _mockDataSource;
+  final AssignmentRemoteSource _remoteSource;
 
-  AssignmentRepositoryImpl(this._mockDataSource);
+  AssignmentRepositoryImpl(this._remoteSource);
 
   @override
-  Future<List<AssignmentEntity>> getAssignments({
+  Future<AssignmentListResult> getAssignments({
     int page = 1,
-    int limit = 20,
-    AssignmentStatus? status,
-    String? topic,
-    GradeLevel? gradeLevel,
+    int size = 10,
+    String? search,
   }) async {
-    return _mockDataSource.getAssignments(
-      page: page,
-      limit: limit,
-      status: status,
-      topic: topic,
-      gradeLevel: gradeLevel,
+    final response = await _remoteSource.getAssignments(page, size, search);
+
+    // Map response data to domain entities
+    final assignments =
+        response.data?.map((dto) => dto.toEntity()).toList() ?? [];
+
+    // Extract pagination info
+    final pagination = PaginationInfo(
+      currentPage: response.pagination?.page ?? page,
+      pageSize: response.pagination?.size ?? size,
+      totalItems: response.pagination?.totalElements ?? 0,
+      totalPages: response.pagination?.totalPages ?? 0,
+    );
+
+    return AssignmentListResult(
+      assignments: assignments,
+      pagination: pagination,
     );
   }
 
   @override
-  Future<AssignmentEntity> getAssignmentById(String assignmentId) async {
-    return _mockDataSource.getdAssignmentById(assignmentId);
+  Future<AssignmentEntity> getAssignmentById(String id) async {
+    final response = await _remoteSource.getAssignmentById(id);
+
+    if (response.data == null) {
+      throw Exception('Assignment not found');
+    }
+
+    return response.data!.toEntity();
   }
 
   @override
-  Future<AssignmentEntity> createAssignment({
-    required String title,
-    String? description,
-    required String topic,
-    required GradeLevel gradeLevel,
-    required Difficulty difficulty,
-    int? timeLimitMinutes,
-    bool shuffleQuestions = false,
-  }) async {
-    return _mockDataSource.createdAssignment(
-      title: title,
-      description: description,
-      topic: topic,
-      gradeLevel: gradeLevel,
-      difficulty: difficulty,
-      timeLimitMinutes: timeLimitMinutes,
-    );
+  Future<AssignmentEntity> createAssignment(
+    AssignmentCreateRequest request,
+  ) async {
+    final response = await _remoteSource.createAssignment(request);
+
+    if (response.data == null) {
+      throw Exception('Failed to create assignment');
+    }
+
+    return response.data!.toEntity();
   }
 
   @override
-  Future<AssignmentEntity> updateAssignment({
-    required String assignmentId,
-    String? title,
-    String? description,
-    int? timeLimitMinutes,
-    bool? shuffleQuestions,
-  }) async {
-    return _mockDataSource.updatedAssignment(
-      assignmentId: assignmentId,
-      title: title,
-      description: description,
-      timeLimitMinutes: timeLimitMinutes,
-    );
+  Future<AssignmentEntity> updateAssignment(
+    String id,
+    AssignmentUpdateRequest request,
+  ) async {
+    final response = await _remoteSource.updateAssignment(id, request);
+
+    if (response.data == null) {
+      throw Exception('Failed to update assignment');
+    }
+
+    return response.data!.toEntity();
   }
 
   @override
-  Future<void> deleteAssignment(String assignmentId) async {
-    return _mockDataSource.deletedAssignment(assignmentId);
-  }
-
-  @override
-  Future<void> archiveAssignment(String assignmentId) async {
-    return _mockDataSource.archivedAssignment(assignmentId);
-  }
-
-  @override
-  Future<AssignmentEntity> duplicateAssignment(String assignmentId) async {
-    return _mockDataSource.duplicatedAssignment(assignmentId);
-  }
-
-  @override
-  Stream<List<MatrixItemEntity>> generateMatrix({
-    required String topic,
-    required GradeLevel gradeLevel,
-    required Difficulty difficulty,
-    String? content,
-    required int totalQuestions,
-    required int totalPoints,
-    List<QuestionType>? questionTypes,
-  }) {
-    return _mockDataSource.generateMatrix(
-      topic: topic,
-      gradeLevel: gradeLevel,
-      difficulty: difficulty,
-      content: content,
-      totalQuestions: totalQuestions,
-      totalPoints: totalPoints,
-      questionTypes: questionTypes,
-    );
-  }
-
-  @override
-  Stream<GenerationProgress> generateQuestions({
-    required String assignmentId,
-    required List<MatrixItemEntity> matrix,
-  }) {
-    return _mockDataSource.generateQuestions(
-      assignmentId: assignmentId,
-      matrix: matrix,
-    );
-  }
-
-  @override
-  Future<List<int>> exportAssignmentPdf({
-    required String assignmentId,
-    bool includeAnswers = false,
-    bool includeExplanations = false,
-  }) async {
-    return _mockDataSource.exportAssignmentPdf(
-      assignmentId: assignmentId,
-      includeAnswers: includeAnswers,
-      includeExplanations: includeExplanations,
-    );
+  Future<void> deleteAssignment(String id) async {
+    await _remoteSource.deleteAssignment(id);
   }
 }

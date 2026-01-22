@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
+import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
 /// Domain entity for an exam.
@@ -8,7 +9,7 @@ class AssignmentEntity {
   final String teacherId;
   final String title;
   final String? description;
-  final String topic;
+  final Subject subject;
   final GradeLevel gradeLevel;
   final AssignmentStatus status;
   final Difficulty difficulty;
@@ -20,12 +21,15 @@ class AssignmentEntity {
   final DateTime createdAt;
   final DateTime? updatedAt;
 
+  /// Questions in this assignment with point values
+  final List<AssignmentQuestionEntity> questions;
+
   const AssignmentEntity({
     required this.assignmentId,
     required this.teacherId,
     required this.title,
     this.description,
-    required this.topic,
+    required this.subject,
     required this.gradeLevel,
     required this.status,
     required this.difficulty,
@@ -36,6 +40,7 @@ class AssignmentEntity {
     this.timeLimitMinutes,
     this.questionOrder,
     this.updatedAt,
+    this.questions = const [],
   });
 
   /// Check if the exam is editable (draft or error status).
@@ -53,7 +58,7 @@ class AssignmentEntity {
     String? teacherId,
     String? title,
     String? description,
-    String? topic,
+    Subject? subject,
     GradeLevel? gradeLevel,
     AssignmentStatus? status,
     Difficulty? difficulty,
@@ -64,13 +69,14 @@ class AssignmentEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? shuffleQuestions,
+    List<AssignmentQuestionEntity>? questions,
   }) {
     return AssignmentEntity(
       assignmentId: assignmentId ?? this.assignmentId,
       teacherId: teacherId ?? this.teacherId,
       title: title ?? this.title,
       description: description ?? this.description,
-      topic: topic ?? this.topic,
+      subject: subject ?? this.subject,
       gradeLevel: gradeLevel ?? this.gradeLevel,
       status: status ?? this.status,
       difficulty: difficulty ?? this.difficulty,
@@ -81,6 +87,7 @@ class AssignmentEntity {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       shuffleQuestions: shuffleQuestions ?? this.shuffleQuestions,
+      questions: questions ?? this.questions,
     );
   }
 }

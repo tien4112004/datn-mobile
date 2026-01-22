@@ -80,16 +80,6 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        // Backdrop overlay
-        if (_isExpanded)
-          GestureDetector(
-            onTap: _toggleMenu,
-            child: AnimatedOpacity(
-              opacity: _isExpanded ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 200),
-              child: Container(color: Colors.black.withValues(alpha: 3)),
-            ),
-          ),
         // Speed dial items
         Positioned(
           right: 16,
@@ -193,7 +183,6 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
           Material(
             elevation: 2,
             borderRadius: BorderRadius.circular(16),
-            color: color.withValues(alpha: 1),
             child: InkWell(
               onTap: onTap,
               borderRadius: BorderRadius.circular(16),
@@ -202,7 +191,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
                 height: 56,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: color.withValues(alpha: 3),
+                    color: color.withValues(alpha: 1),
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(16),

@@ -62,7 +62,7 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
       updatedAt: updatedAt,
       grade: Grade.fromApiValue(grade),
       chapter: chapter,
-      subject: Subject.fromApiValue(subject),
+      subject: Subject.fromApiValue(subject!),
     );
   }
 
@@ -107,9 +107,9 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
             ?.map(
               (p) => MatchingPair(
                 id: p['id'] as String,
-                left: p['left'] as String,
+                left: p['left'] as String?,
                 leftImageUrl: p['leftImageUrl'] as String?,
-                right: p['right'] as String,
+                right: p['right'] as String?,
                 rightImageUrl: p['rightImageUrl'] as String?,
               ),
             )

@@ -1,0 +1,143 @@
+import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
+import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/question_item_request.dart';
+
+/// Domain entity representing a question within an assignment context.
+///
+/// This entity wraps a [BaseQuestion] with assignment-specific metadata:
+/// - Points assigned for this question in this assignment
+/// - Origin tracking (created directly vs selected from bank)
+/// - Optional question bank ID for tracking source
+class AssignmentQuestionEntity {
+  /// Question bank ID if from bank, null if created directly
+  final String? questionBankId;
+
+  /// The actual question content (polymorphic)
+  final BaseQuestion question;
+
+  /// Points assigned for this question in this assignment
+  final double points;
+
+  /// Whether this question was created directly in assignment (true)
+  /// or selected from question bank (false)
+  final bool isNewQuestion;
+
+  const AssignmentQuestionEntity({
+    this.questionBankId,
+    required this.question,
+    required this.points,
+    required this.isNewQuestion,
+  });
+
+  /// Create a copy with updated fields
+  AssignmentQuestionEntity copyWith({
+    String? questionBankId,
+    BaseQuestion? question,
+    double? points,
+    bool? isNewQuestion,
+  }) {
+    return AssignmentQuestionEntity(
+      questionBankId: questionBankId ?? this.questionBankId,
+      question: question ?? this.question,
+      points: points ?? this.points,
+      isNewQuestion: isNewQuestion ?? this.isNewQuestion,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is AssignmentQuestionEntity &&
+        other.questionBankId == questionBankId &&
+        other.question == question &&
+        other.points == points &&
+        other.isNewQuestion == isNewQuestion;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(questionBankId, question, points, isNewQuestion);
+  }
+
+  @override
+  String toString() {
+    return 'AssignmentQuestionEntity(questionBankId: $questionBankId, '
+        'question: ${question.title}, points: $points, isNewQuestion: $isNewQuestion)';
+  }
+}
+
+/// Extension to convert AssignmentQuestionEntity to API request format
+extension AssignmentQuestionMapper on AssignmentQuestionEntity {
+  /// Convert to QuestionItemRequest for API submission
+  QuestionItemRequest toRequest() {
+    return QuestionItemRequest(
+      id: isNewQuestion ? null : questionBankId,
+      type: question.type.apiValue,
+      difficulty: question.difficulty.apiValue,
+      title: question.title,
+      titleImageUrl: question.titleImageUrl,
+      explanation: question.explanation,
+      point: points,
+      data: _questionToDataMap(question),
+    );
+  }
+
+  /// Convert BaseQuestion to Map based on type
+  static Map<String, dynamic> _questionToDataMap(BaseQuestion question) {
+    switch (question.type) {
+      case QuestionType.multipleChoice:
+        final mcQuestion = question as MultipleChoiceQuestion;
+        return {
+          'options': mcQuestion.data.options
+              .map(
+                (opt) => {
+                  'text': opt.text,
+                  'imageUrl': opt.imageUrl,
+                  'isCorrect': opt.isCorrect,
+                },
+              )
+              .toList(),
+          'shuffleOptions': mcQuestion.data.shuffleOptions,
+        };
+
+      case QuestionType.matching:
+        final matchingQuestion = question as MatchingQuestion;
+        return {
+          'pairs': matchingQuestion.data.pairs
+              .map(
+                (pair) => {
+                  'leftText': pair.left,
+                  'leftImageUrl': pair.leftImageUrl,
+                  'rightText': pair.right,
+                  'rightImageUrl': pair.rightImageUrl,
+                },
+              )
+              .toList(),
+          'shufflePairs': matchingQuestion.data.shufflePairs,
+        };
+
+      case QuestionType.openEnded:
+        final openEndedQuestion = question as OpenEndedQuestion;
+        return {
+          'expectedAnswer': openEndedQuestion.data.expectedAnswer,
+          'maxLength': openEndedQuestion.data.maxLength,
+        };
+
+      case QuestionType.fillInBlank:
+        final fillInBlankQuestion = question as FillInBlankQuestion;
+        return {
+          'segments': fillInBlankQuestion.data.segments
+              .map(
+                (seg) => {
+                  'type': seg.type == SegmentType.text ? 'TEXT' : 'BLANK',
+                  'content': seg.content,
+                  'acceptableAnswers': seg.acceptableAnswers,
+                },
+              )
+              .toList(),
+          'caseSensitive': fillInBlankQuestion.data.caseSensitive,
+        };
+    }
+  }
+}

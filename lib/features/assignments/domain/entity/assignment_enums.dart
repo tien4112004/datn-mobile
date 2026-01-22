@@ -1,3 +1,7 @@
+// Re-export Subject enum from question_enums for use in assignments
+export 'package:datn_mobile/features/questions/domain/entity/question_enums.dart'
+    show Subject;
+
 /// Exam status enumeration.
 enum AssignmentStatus {
   draft,

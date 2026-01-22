@@ -1,3 +1,5 @@
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
@@ -36,7 +38,9 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     _descriptionController = TextEditingController(
       text: widget.assignment?.description,
     );
-    _topicController = TextEditingController(text: widget.assignment?.topic);
+    _topicController = TextEditingController(
+      text: widget.assignment?.subject.name,
+    );
     _timeLimitController = TextEditingController(
       text: widget.assignment?.timeLimitMinutes?.toString(),
     );
@@ -92,8 +96,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       Expanded(
                         child: Text(
                           _isEditing
-                              ? 'Edit dAssignment'
-                              : 'Create New dAssignment',
+                              ? 'Edit Assignment'
+                              : 'Create New Assignment',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -290,25 +294,31 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
     try {
       if (_isEditing) {
+        final request = AssignmentUpdateRequest(
+          title: title,
+          description: description.isEmpty ? null : description,
+          duration: timeLimit,
+          subject: null, // Not editable in current form
+          grade: null, // Not editable in current form
+          questions: null, // Questions managed separately
+        );
+
         await ref
             .read(updateAssignmentControllerProvider.notifier)
-            .updateAssignment(
-              assignmentId: widget.assignment!.assignmentId,
-              title: title,
-              description: description.isEmpty ? null : description,
-              timeLimitMinutes: timeLimit,
-            );
+            .updateAssignment(widget.assignment!.assignmentId, request);
       } else {
+        final request = AssignmentCreateRequest(
+          title: title,
+          description: description.isEmpty ? null : description,
+          duration: timeLimit,
+          subject: topic, // API expects string value
+          grade: _selectedGradeLevel.name,
+          questions: [], // Empty initially, add questions later
+        );
+
         await ref
             .read(createAssignmentControllerProvider.notifier)
-            .createAssignment(
-              title: title,
-              description: description.isEmpty ? null : description,
-              topic: topic,
-              gradeLevel: _selectedGradeLevel,
-              difficulty: _selectedDifficulty,
-              timeLimitMinutes: timeLimit,
-            );
+            .createAssignment(request);
       }
 
       if (mounted) {

@@ -3,7 +3,6 @@ import 'package:datn_mobile/features/assignments/states/controller_provider.dart
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_card.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_header.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
@@ -26,55 +25,57 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     final assignmentsAsync = ref.watch(assignmentsControllerProvider);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        elevation: 0,
-        backgroundColor: colorScheme.surface,
-        title: 'Assignment Management',
-        actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.refreshCw),
-            onPressed: () {
-              ref.read(assignmentsControllerProvider.notifier).refresh();
-            },
-            tooltip: 'Refresh',
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const AssignmentHeader(),
-          Expanded(
-            child: assignmentsAsync.when(
-              data: (assignments) {
-                if (assignments.isEmpty) {
-                  return EnhancedEmptyState(
+      backgroundColor: colorScheme.surfaceContainerLowest,
+      body: assignmentsAsync.when(
+        data: (result) {
+          final assignments = result.assignments;
+
+          if (assignments.isEmpty) {
+            return CustomScrollView(
+              slivers: [
+                _buildSliverAppBar(context, colorScheme, theme),
+                SliverFillRemaining(
+                  child: EnhancedEmptyState(
                     icon: LucideIcons.fileText,
                     title: 'No assignments yet',
                     message: 'Create your first assignment to get started',
                     actionLabel: 'Create Exam',
                     onAction: () => _showCreateExamDialog(context),
-                  );
-                }
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await ref
-                        .read(assignmentsControllerProvider.notifier)
-                        .refresh();
-                  },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: assignments.length,
-                    itemBuilder: (context, index) {
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              await ref.read(assignmentsControllerProvider.notifier).refresh();
+            },
+            child: CustomScrollView(
+              slivers: [
+                _buildSliverAppBar(context, colorScheme, theme),
+                const SliverToBoxAdapter(child: AssignmentHeader()),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
                       final assignment = assignments[index];
                       return AssignmentCard(
                         assignment: assignment,
                         key: ValueKey(assignment.assignmentId),
                       );
-                    },
+                    }, childCount: assignments.length),
                   ),
-                );
-              },
-              loading: () => Center(
+                ),
+              ],
+            ),
+          );
+        },
+        loading: () => CustomScrollView(
+          slivers: [
+            _buildSliverAppBar(context, colorScheme, theme),
+            SliverFillRemaining(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,7 +90,14 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
                   ],
                 ),
               ),
-              error: (error, stack) => EnhancedErrorState(
+            ),
+          ],
+        ),
+        error: (error, stack) => CustomScrollView(
+          slivers: [
+            _buildSliverAppBar(context, colorScheme, theme),
+            SliverFillRemaining(
+              child: EnhancedErrorState(
                 icon: LucideIcons.circleX,
                 title: 'Failed to load assignments',
                 message: error.toString(),
@@ -99,8 +107,8 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
                 },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCreateExamDialog(context),
@@ -108,6 +116,37 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
         label: const Text('Create Exam'),
         elevation: 2,
       ),
+    );
+  }
+
+  /// Builds a Material 3 sliver app bar with floating behavior
+  SliverAppBar _buildSliverAppBar(
+    BuildContext context,
+    ColorScheme colorScheme,
+    ThemeData theme,
+  ) {
+    return SliverAppBar(
+      floating: true,
+      snap: true,
+      elevation: 0,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surfaceTint,
+      title: Text(
+        'Assignment Management',
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(LucideIcons.refreshCw),
+          onPressed: () {
+            ref.read(assignmentsControllerProvider.notifier).refresh();
+          },
+          tooltip: 'Refresh',
+        ),
+        const SizedBox(width: 8),
+      ],
     );
   }
 

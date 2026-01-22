@@ -325,8 +325,7 @@ enum Subject {
     }
   }
 
-  static Subject? fromApiValue(String? value) {
-    if (value == null) return null;
+  static Subject fromApiValue(String value) {
     switch (value.toUpperCase()) {
       case 'ENGLISH':
         return Subject.english;
@@ -335,7 +334,7 @@ enum Subject {
       case 'LITERATURE':
         return Subject.literature;
       default:
-        return null;
+        return Subject.english;
     }
   }
 }

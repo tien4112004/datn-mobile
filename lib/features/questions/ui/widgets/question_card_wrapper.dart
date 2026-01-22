@@ -1,3 +1,4 @@
+import 'package:datn_mobile/shared/widgets/question_badges.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 
@@ -42,21 +43,19 @@ class QuestionCardWrapper extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header with type and difficulty badges
-            // Wrap(
-            //   spacing: 8,
-            //   runSpacing: 8,
-            //   children: [
-            //     QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
-            //     DifficultyBadge(
-            //       difficulty: difficulty,
-            //       iconSize: 16,
-            //       fontSize: 12,
-            //     ),
-            //     if (points != null)
-            //       PointsBadge(points: points!, iconSize: 16, fontSize: 12),
-            //   ],
-            // ),
-            // const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
+                DifficultyBadge(
+                  difficulty: difficulty,
+                  iconSize: 16,
+                  fontSize: 12,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
 
             // Question title
             Text(

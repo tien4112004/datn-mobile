@@ -51,13 +51,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ImageDetailRoute.page, path: '/image/:imageId'),
     AutoRoute(page: SignInRoute.page, path: '/sign-in'),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
-    AutoRoute(
-      page: PresentationSearchRoute.page,
-      path: '/search/presentations',
-    ),
-    AutoRoute(page: MindmapSearchRoute.page, path: '/search/mindmaps'),
-    AutoRoute(page: ImageSearchRoute.page, path: '/search/images'),
-
     // Class Routes
     AutoRoute(page: ClassDetailRoute.page, path: '/classes/:classId'),
     AutoRoute(page: ClassEditRoute.page, path: '/classes/:classId/edit'),
@@ -76,12 +69,28 @@ class AppRouter extends RootStackRouter {
 
     // Exam Routes
     AutoRoute(page: AssignmentsRoute.page, path: '/assignments'),
+    AutoRoute(
+      page: AssignmentDetailRoute.page,
+      path: '/assignments/:assignmentId',
+    ),
     AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
+    AutoRoute(
+      page: QuestionBankPickerRoute.page,
+      path: '/questions-bank/picker',
+    ),
     AutoRoute(page: QuestionDetailRoute.page, path: '/questions/:questionId'),
     AutoRoute(
       page: QuestionUpdateRoute.page,
       path: '/questions/:questionId/edit',
     ),
     AutoRoute(page: QuestionCreateRoute.page, path: '/questions/create'),
+    AutoRoute(
+      page: AssignmentQuestionEditRoute.page,
+      path: '/assignments/questions/edit',
+    ),
+    AutoRoute(
+      page: AssignmentQuestionCreateRoute.page,
+      path: '/assignments/questions/create',
+    ),
   ];
 }

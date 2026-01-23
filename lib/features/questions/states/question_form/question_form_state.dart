@@ -1,5 +1,5 @@
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
@@ -16,7 +16,7 @@ class QuestionFormState {
   final String? titleImageUrl;
   final int points;
   final String explanation;
-  final Grade grade;
+  final GradeLevel grade;
   final String? chapter;
   final Subject subject;
 
@@ -48,7 +48,7 @@ class QuestionFormState {
     this.titleImageUrl,
     this.points = 0,
     this.explanation = '',
-    this.grade = Grade.grade1,
+    this.grade = GradeLevel.grade1,
     this.chapter,
     this.subject = Subject.english,
     this.multipleChoiceOptions = const [],
@@ -75,7 +75,7 @@ class QuestionFormState {
     String? titleImageUrl,
     int? points,
     String? explanation,
-    Grade? grade,
+    GradeLevel? grade,
     String? chapter,
     Subject? subject,
     List<MultipleChoiceOptionData>? multipleChoiceOptions,

@@ -1,14 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/assignment_info_header.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/bottom_action_dock.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/floating_action_menu.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_card.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_points_assignment_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/questions_section.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,10 +22,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Features:
 /// - Sticky app bar with edit mode toggle
 /// - Assignment info header with shuffle questions toggle
-/// - Questions list (expandable cards - TODO: implement)
-/// - Assessment matrix dashboard (TODO: implement)
+/// - Questions list with expandable cards
+/// - Assessment matrix dashboard with actual question distribution
 /// - Bottom action dock for save/cancel
-/// - Floating action button for adding questions
+/// - Floating action button for adding questions from bank or creating new
 @RoutePage()
 class AssignmentDetailPage extends ConsumerStatefulWidget {
   final String assignmentId;
@@ -42,6 +43,28 @@ class AssignmentDetailPage extends ConsumerStatefulWidget {
 class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
   bool _isEditMode = false;
   bool _isSaving = false;
+
+  /// Calculate assessment matrix from assignment questions.
+  AssessmentMatrix _calculateAssessmentMatrix(AssignmentEntity assignment) {
+    // Count actual questions by type and difficulty
+    final Map<String, int> actualMatrix = {};
+
+    for (final questionEntity in assignment.questions) {
+      final question = questionEntity.question;
+      final key = '${question.type.name}_${question.difficulty.name}';
+
+      actualMatrix[key] = (actualMatrix[key] ?? 0) + 1;
+    }
+
+    // For now, targetMatrix is empty since there's no UI to set targets yet
+    // In the future, this should come from assignment.targetMatrix or similar
+    final Map<String, int> targetMatrix = {};
+
+    return AssessmentMatrix(
+      targetMatrix: targetMatrix,
+      actualMatrix: actualMatrix,
+    );
+  }
 
   void _showDeleteConfirmation(BuildContext context, int questionIndex) async {
     final theme = Theme.of(context);
@@ -144,9 +167,14 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                   assignment: assignment,
                   isEditMode: _isEditMode,
                   onShuffleChanged: _isEditMode
-                      ? (value) {
-                          // TODO: Implement shuffle toggle
-                          // Update local state or call controller
+                      ? (value) async {
+                          await ref
+                              .read(
+                                detailAssignmentControllerProvider(
+                                  widget.assignmentId,
+                                ).notifier,
+                              )
+                              .updateShuffleQuestions(value);
                         }
                       : null,
                 ),
@@ -213,14 +241,55 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                       question: questionEntity.question,
                       questionNumber: index + 1,
                       isEditMode: _isEditMode,
-                      onEdit: () {
-                        // TODO: Navigate to question edit page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Edit question ${index + 1}'),
-                            behavior: SnackBarBehavior.floating,
+                      onEdit: () async {
+                        // Navigate to edit page using router
+                        final result = await context.router.push<dynamic>(
+                          AssignmentQuestionEditRoute(
+                            questionEntity: questionEntity,
+                            questionNumber: index + 1,
                           ),
                         );
+
+                        // Handle result
+                        if (result != null && mounted) {
+                          if (result == 'DELETE') {
+                            // Question was deleted in edit page
+                            await ref
+                                .read(
+                                  detailAssignmentControllerProvider(
+                                    widget.assignmentId,
+                                  ).notifier,
+                                )
+                                .removeQuestion(index);
+
+                            if (mounted) {
+                              scaffoldMessenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Question deleted'),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          } else if (result is AssignmentQuestionEntity) {
+                            // Question was updated
+                            await ref
+                                .read(
+                                  detailAssignmentControllerProvider(
+                                    widget.assignmentId,
+                                  ).notifier,
+                                )
+                                .updateQuestion(index, result);
+
+                            if (mounted) {
+                              scaffoldMessenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Question updated'),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          }
+                        }
                       },
                       onDelete: () {
                         _showDeleteConfirmation(context, index);
@@ -232,8 +301,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
               // Assessment Matrix Dashboard
               SliverToBoxAdapter(
                 child: AssessmentMatrixDashboard(
-                  matrix:
-                      AssessmentMatrix.empty(), // TODO: Pass actual matrix data
+                  matrix: _calculateAssessmentMatrix(assignment),
                   initiallyExpanded: false,
                 ),
               ),
@@ -252,54 +320,60 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                     // Capture context before async operations
                     final navigator = context.router;
 
-                    // Navigate to question bank picker
-                    final selectedQuestions = await navigator
-                        .push<List<QuestionBankItemEntity>>(
+                    // Navigate to question bank picker (now returns AssignmentQuestionEntity with points)
+                    final assignmentQuestions = await navigator
+                        .push<List<AssignmentQuestionEntity>>(
                           const QuestionBankPickerRoute(),
                         );
 
-                    if (selectedQuestions != null && mounted) {
-                      // Capture context again for dialog (widget still mounted here)
-                      if (!context.mounted) return;
+                    if (assignmentQuestions != null && mounted) {
+                      // Add questions to assignment
+                      await ref
+                          .read(
+                            detailAssignmentControllerProvider(
+                              widget.assignmentId,
+                            ).notifier,
+                          )
+                          .addQuestions(assignmentQuestions);
 
-                      // Show points assignment dialog
-                      final assignmentQuestions =
-                          await QuestionPointsAssignmentDialog.show(
-                            context,
-                            selectedQuestions,
-                          );
-
-                      if (assignmentQuestions != null && mounted) {
-                        // Add questions to assignment
-                        await ref
-                            .read(
-                              detailAssignmentControllerProvider(
-                                widget.assignmentId,
-                              ).notifier,
-                            )
-                            .addQuestions(assignmentQuestions);
-
-                        if (mounted) {
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Added ${assignmentQuestions.length} question(s)',
-                              ),
-                              behavior: SnackBarBehavior.floating,
+                      if (mounted) {
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Added ${assignmentQuestions.length} question(s)',
                             ),
-                          );
-                        }
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
                       }
                     }
                   },
-                  onCreateNew: () {
-                    // TODO: Navigate to question creation with assignment context
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Create new question (Coming soon)'),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
+                  onCreateNew: () async {
+                    // Navigate to question create page for assignment
+                    final result = await context.router
+                        .push<AssignmentQuestionEntity>(
+                          AssignmentQuestionCreateRoute(defaultPoints: 10.0),
+                        );
+
+                    if (result != null && mounted) {
+                      // Add the new question to assignment
+                      await ref
+                          .read(
+                            detailAssignmentControllerProvider(
+                              widget.assignmentId,
+                            ).notifier,
+                          )
+                          .addQuestions([result]);
+
+                      if (mounted) {
+                        scaffoldMessenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Question created and added'),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    }
                   },
                 )
               : null,
@@ -309,28 +383,80 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
               ? BottomActionDock(
                   onCancel: () {
                     setState(() => _isEditMode = false);
-                    // TODO: Discard changes
+                    // Refresh to discard any local optimistic changes
+                    ref
+                        .read(
+                          detailAssignmentControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .refresh();
                   },
                   onSave: () async {
                     setState(() => _isSaving = true);
-                    // TODO: Save assignment changes
-                    await Future.delayed(
-                      const Duration(seconds: 1),
-                    ); // Simulate save
-                    if (mounted) {
-                      setState(() {
-                        _isSaving = false;
-                        _isEditMode = false;
-                      });
 
-                      if (!context.mounted) return;
+                    try {
+                      // Get current assignment state to sync all fields
+                      final currentAssignment = assignment;
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Assignment saved successfully'),
-                          behavior: SnackBarBehavior.floating,
-                        ),
+                      // Create update request with all current values including questions
+                      final request = AssignmentUpdateRequest(
+                        title: currentAssignment.title,
+                        description: currentAssignment.description,
+                        duration: currentAssignment.timeLimitMinutes,
+                        subject: currentAssignment.subject.apiValue,
+                        grade: currentAssignment.gradeLevel.apiValue,
+                        questions: currentAssignment.questions
+                            .map((q) => q.toRequest())
+                            .toList(),
                       );
+
+                      // Sync to server
+                      await ref
+                          .read(updateAssignmentControllerProvider.notifier)
+                          .updateAssignment(widget.assignmentId, request);
+
+                      // Refresh to get latest server state
+                      await ref
+                          .read(
+                            detailAssignmentControllerProvider(
+                              widget.assignmentId,
+                            ).notifier,
+                          )
+                          .refresh();
+
+                      if (mounted) {
+                        setState(() {
+                          _isSaving = false;
+                          _isEditMode = false;
+                        });
+
+                        if (!context.mounted) return;
+
+                        scaffoldMessenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('Assignment saved successfully'),
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    } catch (error) {
+                      if (mounted) {
+                        setState(() => _isSaving = false);
+
+                        if (!context.mounted) return;
+
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text('Error saving assignment: $error'),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.error,
+                          ),
+                        );
+                      }
                     }
                   },
                   isSaving: _isSaving,

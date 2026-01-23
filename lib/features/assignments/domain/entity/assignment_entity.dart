@@ -1,6 +1,5 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 /// Domain entity for an exam.
 /// Pure business object without JSON annotations.

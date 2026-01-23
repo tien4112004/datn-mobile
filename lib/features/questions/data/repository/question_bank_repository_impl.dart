@@ -3,7 +3,7 @@ import 'package:datn_mobile/features/questions/data/dto/question_request_mapper.
 import 'package:datn_mobile/features/questions/data/source/question_bank_remote_source.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
 import 'package:datn_mobile/features/questions/domain/repository/question_bank_repository.dart';
 import 'package:flutter/material.dart';

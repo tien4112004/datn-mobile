@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/states/question_form/question_form_state.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
@@ -34,7 +34,9 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
       difficulty: difficulty,
       titleImageUrl: titleImageUrl,
       explanation: explanation ?? '',
-      grade: (grade != null ? Grade.fromApiValue(grade) : null) ?? Grade.grade1,
+      grade:
+          (grade != null ? GradeLevel.fromApiValue(grade) : null) ??
+          GradeLevel.grade1,
       chapter: chapter,
       subject:
           (subject != null ? Subject.fromApiValue(subject) : null) ??
@@ -134,7 +136,7 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
     state = state.copyWith(explanation: explanation, hasUnsavedChanges: true);
   }
 
-  void updateGrade(Grade grade) {
+  void updateGrade(GradeLevel grade) {
     state = state.copyWith(grade: grade, hasUnsavedChanges: true);
   }
 

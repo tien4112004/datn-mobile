@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 part 'question_response.g.dart';
 
@@ -59,7 +59,7 @@ extension QuestionResponseMapper on QuestionResponse {
 
   /// Parse the polymorphic data field into a BaseQuestion
   BaseQuestion _parseQuestionData() {
-    final questionType = QuestionType.fromName(type);
+    final questionType = QuestionType.fromApiValue(type);
     final questionDifficulty = difficulty != null
         ? Difficulty.fromApiValue(difficulty!)
         : Difficulty.knowledge;

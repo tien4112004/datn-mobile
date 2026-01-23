@@ -26,88 +26,67 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerLowest,
-      body: assignmentsAsync.when(
-        data: (result) {
-          final assignments = result.assignments;
-
-          if (assignments.isEmpty) {
-            return CustomScrollView(
-              slivers: [
-                _buildSliverAppBar(context, colorScheme, theme),
-                SliverFillRemaining(
-                  child: EnhancedEmptyState(
-                    icon: LucideIcons.fileText,
-                    title: 'No assignments yet',
-                    message: 'Create your first assignment to get started',
-                    actionLabel: 'Create Exam',
-                    onAction: () => _showCreateExamDialog(context),
-                  ),
-                ),
-              ],
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              await ref.read(assignmentsControllerProvider.notifier).refresh();
-            },
-            child: CustomScrollView(
-              slivers: [
-                _buildSliverAppBar(context, colorScheme, theme),
-                const SliverToBoxAdapter(child: AssignmentHeader()),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final assignment = assignments[index];
-                      return AssignmentCard(
-                        assignment: assignment,
-                        key: ValueKey(assignment.assignmentId),
-                      );
-                    }, childCount: assignments.length),
-                  ),
-                ),
-              ],
-            ),
-          );
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [_buildSliverAppBar(context, colorScheme, theme)];
         },
-        loading: () => CustomScrollView(
-          slivers: [
-            _buildSliverAppBar(context, colorScheme, theme),
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(color: colorScheme.primary),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Loading assignments...',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        error: (error, stack) => CustomScrollView(
-          slivers: [
-            _buildSliverAppBar(context, colorScheme, theme),
-            SliverFillRemaining(
-              child: EnhancedErrorState(
-                icon: LucideIcons.circleX,
-                title: 'Failed to load assignments',
-                message: error.toString(),
-                actionLabel: 'Retry',
-                onRetry: () {
-                  ref.read(assignmentsControllerProvider.notifier).refresh();
+        body: assignmentsAsync.when(
+          data: (result) {
+            final assignments = result.assignments;
+
+            if (assignments.isEmpty) {
+              return EnhancedEmptyState(
+                icon: LucideIcons.fileText,
+                title: 'No assignments yet',
+                message: 'Create your first assignment to get started',
+                actionLabel: 'Create Exam',
+                onAction: () => _showCreateExamDialog(context),
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                await ref
+                    .read(assignmentsControllerProvider.notifier)
+                    .refresh();
+              },
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                itemCount: assignments.length,
+                itemBuilder: (context, index) {
+                  final assignment = assignments[index];
+                  return AssignmentCard(
+                    assignment: assignment,
+                    key: ValueKey(assignment.assignmentId),
+                  );
                 },
               ),
+            );
+          },
+          loading: () => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading assignments...',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+          error: (error, stack) => EnhancedErrorState(
+            icon: LucideIcons.circleX,
+            title: 'Failed to load assignments',
+            message: error.toString(),
+            actionLabel: 'Retry',
+            onRetry: () {
+              ref.read(assignmentsControllerProvider.notifier).refresh();
+            },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -126,11 +105,11 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     ThemeData theme,
   ) {
     return SliverAppBar(
-      floating: true,
-      snap: true,
-      elevation: 0,
+      pinned: true,
+      floating: false,
+      expandedHeight: 100,
       backgroundColor: colorScheme.surface,
-      surfaceTintColor: colorScheme.surfaceTint,
+      surfaceTintColor: colorScheme.surface,
       title: Text(
         'Assignment Management',
         style: theme.textTheme.titleLarge?.copyWith(
@@ -147,6 +126,10 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
         ),
         const SizedBox(width: 8),
       ],
+      flexibleSpace: const FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(bottom: 16),
+        background: AssignmentHeader(),
+      ),
     );
   }
 

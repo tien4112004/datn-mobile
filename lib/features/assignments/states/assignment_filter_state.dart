@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 /// State class for assignment filters
 class AssignmentFilterState {

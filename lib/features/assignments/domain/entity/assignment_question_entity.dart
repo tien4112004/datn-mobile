@@ -1,5 +1,5 @@
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/assignments/data/dto/api/question_item_request.dart';
 
 /// Domain entity representing a question within an assignment context.
@@ -89,6 +89,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       case QuestionType.multipleChoice:
         final mcQuestion = question as MultipleChoiceQuestion;
         return {
+          'type': question
+              .type
+              .apiValue, // Required by backend for polymorphic deserialization
           'options': mcQuestion.data.options
               .map(
                 (opt) => {
@@ -104,6 +107,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       case QuestionType.matching:
         final matchingQuestion = question as MatchingQuestion;
         return {
+          'type': question
+              .type
+              .apiValue, // Required by backend for polymorphic deserialization
           'pairs': matchingQuestion.data.pairs
               .map(
                 (pair) => {
@@ -120,6 +126,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       case QuestionType.openEnded:
         final openEndedQuestion = question as OpenEndedQuestion;
         return {
+          'type': question
+              .type
+              .apiValue, // Required by backend for polymorphic deserialization
           'expectedAnswer': openEndedQuestion.data.expectedAnswer,
           'maxLength': openEndedQuestion.data.maxLength,
         };
@@ -127,6 +136,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       case QuestionType.fillInBlank:
         final fillInBlankQuestion = question as FillInBlankQuestion;
         return {
+          'type': question
+              .type
+              .apiValue, // Required by backend for polymorphic deserialization
           'segments': fillInBlankQuestion.data.segments
               .map(
                 (seg) => {

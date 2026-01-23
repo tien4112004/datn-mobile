@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/advanced_assignment_filter_dialog.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
@@ -52,16 +52,8 @@ class AssignmentHeader extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-            width: 1,
-          ),
-        ),
-      ),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 96, bottom: 0),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A stateful widget for chapter filtering that maintains local state
 /// until the user confirms their selection
 class ChapterFilterWidget extends ConsumerStatefulWidget {
-  final Grade? currentGrade;
+  final GradeLevel? currentGrade;
   final Subject? currentSubject;
   final List<String> initialSelectedChapters;
   final ValueChanged<List<String>> onChaptersChanged;

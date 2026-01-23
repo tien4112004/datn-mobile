@@ -1,7 +1,6 @@
 import 'package:datn_mobile/features/assignments/data/dto/api/question_response.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_response.g.dart';
@@ -54,10 +53,10 @@ extension AssignmentResponseMapper on AssignmentResponse {
     );
 
     // Infer grade level from grade string
-    GradeLevel gradeLevel = GradeLevel.k;
+    GradeLevel gradeLevel = GradeLevel.grade1;
     if (grade != null) {
       try {
-        gradeLevel = GradeLevel.fromName(grade!.toLowerCase());
+        gradeLevel = GradeLevel.fromApiValue(grade!.toLowerCase());
       } catch (_) {
         // Default to K if parsing fails
       }
@@ -67,6 +66,20 @@ extension AssignmentResponseMapper on AssignmentResponse {
     Subject? parsedSubject;
     if (subject.isNotEmpty) {
       parsedSubject = Subject.fromApiValue(subject);
+    }
+
+    // Build questionOrder from questions array
+    // Create one QuestionOrderItem per question in the order they appear
+    QuestionOrder? questionOrder;
+    if (questionEntities.isNotEmpty) {
+      final orderItems = questionEntities.map((qEntity) {
+        return QuestionOrderItem(
+          questionId: qEntity.question.id,
+          points: qEntity.points.toInt(),
+        );
+      }).toList();
+
+      questionOrder = QuestionOrder(items: orderItems);
     }
 
     return AssignmentEntity(
@@ -81,7 +94,7 @@ extension AssignmentResponseMapper on AssignmentResponse {
       totalQuestions: totalQuestions,
       totalPoints: totalPoints.toInt(),
       timeLimitMinutes: duration,
-      questionOrder: null, // TODO: Map from questions array
+      questionOrder: questionOrder,
       shuffleQuestions: false,
       createdAt: createdAt,
       updatedAt: updatedAt,

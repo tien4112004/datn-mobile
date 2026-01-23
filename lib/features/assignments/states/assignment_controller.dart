@@ -135,6 +135,24 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     await _syncQuestionsToServer(updatedQuestions);
   }
 
+  /// Update shuffle questions setting.
+  Future<void> updateShuffleQuestions(bool shuffle) async {
+    final currentAssignment = await future;
+
+    // Update local state optimistically
+    state = AsyncData(currentAssignment.copyWith(shuffleQuestions: shuffle));
+
+    // Sync to server (use UpdateAssignmentController for proper update)
+    final repository = ref.read(assignmentRepositoryProvider);
+    await repository.updateAssignment(
+      assignmentId,
+      const AssignmentUpdateRequest(
+        // Note: API might not support shuffle field yet
+        // This is a placeholder until API is updated
+      ),
+    );
+  }
+
   /// Sync questions to the server.
   Future<void> _syncQuestionsToServer(
     List<AssignmentQuestionEntity> questions,
@@ -150,22 +168,30 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
 }
 
 /// Controller for creating a new Assignment.
-class CreateAssignmentController extends AsyncNotifier<void> {
+class CreateAssignmentController extends AsyncNotifier<AssignmentEntity?> {
   @override
-  FutureOr<void> build() {
-    // Initial state - no operation
+  FutureOr<AssignmentEntity?> build() {
+    // Initial state - no assignment created yet
+    return null;
   }
 
   /// Creates a new assignment and refreshes the list.
-  Future<void> createAssignment(AssignmentCreateRequest request) async {
+  /// Returns the created assignment entity.
+  Future<AssignmentEntity> createAssignment(
+    AssignmentCreateRequest request,
+  ) async {
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(assignmentRepositoryProvider);
-      await repository.createAssignment(request);
-      // Refresh the assignments list
-      ref.invalidate(assignmentsControllerProvider);
-    });
+    final repository = ref.read(assignmentRepositoryProvider);
+    final createdAssignment = await repository.createAssignment(request);
+
+    // Update state with created assignment
+    state = AsyncData(createdAssignment);
+
+    // Refresh the assignments list
+    ref.invalidate(assignmentsControllerProvider);
+
+    return createdAssignment;
   }
 }
 

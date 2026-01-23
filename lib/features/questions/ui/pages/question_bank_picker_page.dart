@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_points_assignment_dialog.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_filter_state.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Multi-select functionality
 /// - Filter by type and difficulty
 /// - Search capability
-/// - Returns selected questions as QuestionBankItemEntity list
+/// - Points assignment dialog
+/// - Returns selected questions as AssignmentQuestionEntity list with assigned points
 @RoutePage()
 class QuestionBankPickerPage extends ConsumerStatefulWidget {
   const QuestionBankPickerPage({super.key});
@@ -25,7 +28,8 @@ class QuestionBankPickerPage extends ConsumerStatefulWidget {
 
 class _QuestionBankPickerPageState
     extends ConsumerState<QuestionBankPickerPage> {
-  final Set<String> _selectedQuestionIds = {};
+  // Store full question objects instead of just IDs
+  final Map<String, QuestionBankItemEntity> _selectedQuestions = {};
 
   @override
   void initState() {
@@ -53,30 +57,39 @@ class _QuestionBankPickerPageState
     ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
   }
 
-  void _toggleSelection(String questionId) {
+  void _toggleSelection(QuestionBankItemEntity bankItem) {
     setState(() {
-      if (_selectedQuestionIds.contains(questionId)) {
-        _selectedQuestionIds.remove(questionId);
+      if (_selectedQuestions.containsKey(bankItem.id)) {
+        _selectedQuestions.remove(bankItem.id);
       } else {
-        _selectedQuestionIds.add(questionId);
+        _selectedQuestions[bankItem.id] = bankItem;
       }
     });
   }
 
-  void _handleContinue(List<QuestionBankItemEntity> allQuestions) {
-    if (_selectedQuestionIds.isEmpty) {
+  Future<void> _handleContinue() async {
+    if (_selectedQuestions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select at least one question')),
       );
       return;
     }
 
-    final selectedQuestions = allQuestions
-        .where((q) => _selectedQuestionIds.contains(q.id))
-        .toList();
+    final selectedQuestions = _selectedQuestions.values.toList();
 
-    // Simply return the selected questions
-    context.router.maybePop<List<QuestionBankItemEntity>>(selectedQuestions);
+    // Show points assignment dialog
+    final assignmentQuestions = await QuestionPointsAssignmentDialog.show(
+      context,
+      selectedQuestions,
+    );
+
+    // Only pop if user confirmed (didn't cancel the dialog)
+    if (assignmentQuestions != null && mounted) {
+      if (!context.mounted) return;
+      context.router.maybePop<List<AssignmentQuestionEntity>>(
+        assignmentQuestions,
+      );
+    }
   }
 
   @override
@@ -87,189 +100,205 @@ class _QuestionBankPickerPageState
     final currentFilter = ref.watch(questionBankFilterProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Questions'),
-        actions: [
-          // Selected count badge
-          if (_selectedQuestionIds.isNotEmpty)
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  '${_selectedQuestionIds.length}',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onPrimaryContainer,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          // Search and filters
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: colorScheme.surface,
-            child: Column(
-              children: [
-                // Search bar
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search questions...',
-                    prefixIcon: const Icon(LucideIcons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          CustomScrollView(
+            slivers: [
+              // SliverAppBar with title and selected count
+              SliverAppBar(
+                floating: true,
+                pinned: true,
+                title: const Text('Select Questions'),
+                actions: [
+                  // Selected count badge
+                  if (_selectedQuestions.isNotEmpty)
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          '${_selectedQuestions.length}',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  onChanged: (value) {
-                    _updateFilters(searchQuery: value.isEmpty ? null : value);
-                  },
-                ),
-                const SizedBox(height: 12),
+                ],
+              ),
 
-                // Filter chips
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+              // Search and filters section
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: colorScheme.surface,
+                  child: Column(
                     children: [
-                      // Type filters
-                      ...QuestionType.values.map((type) {
-                        final isSelected =
-                            currentFilter.questionTypeFilter == type;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(type.displayName),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              _updateFilters(
-                                questionType: selected ? type : null,
-                              );
-                            },
+                      // Search bar
+                      TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search questions...',
+                          prefixIcon: const Icon(LucideIcons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      }),
+                        ),
+                        onChanged: (value) {
+                          _updateFilters(
+                            searchQuery: value.isEmpty ? null : value,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
 
-                      const SizedBox(width: 8),
+                      // Filter chips with Wrap
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          // Type filters
+                          ...QuestionType.values.map((type) {
+                            final isSelected =
+                                currentFilter.questionTypeFilter == type;
+                            return FilterChip(
+                              label: Text(type.displayName),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                _updateFilters(
+                                  questionType: selected ? type : null,
+                                );
+                              },
+                            );
+                          }),
 
-                      // Difficulty filters
-                      ...[
-                        Difficulty.knowledge,
-                        Difficulty.comprehension,
-                        Difficulty.application,
-                      ].map((difficulty) {
-                        final isSelected =
-                            currentFilter.difficultyFilter == difficulty;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: FilterChip(
-                            label: Text(difficulty.displayName),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              _updateFilters(
-                                difficulty: selected ? difficulty : null,
-                              );
-                            },
-                          ),
-                        );
-                      }),
+                          // Difficulty filters
+                          ...[
+                            Difficulty.knowledge,
+                            Difficulty.comprehension,
+                            Difficulty.application,
+                          ].map((difficulty) {
+                            final isSelected =
+                                currentFilter.difficultyFilter == difficulty;
+                            return FilterChip(
+                              label: Text(difficulty.displayName),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                _updateFilters(
+                                  difficulty: selected ? difficulty : null,
+                                );
+                              },
+                            );
+                          }),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          // Questions list
-          Expanded(
-            child: questionBankState.when(
-              data: (state) {
-                final questions = state.questions;
-                if (questions.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          LucideIcons.inbox,
-                          size: 64,
-                          color: colorScheme.onSurfaceVariant,
+              // Questions list
+              questionBankState.when(
+                data: (state) {
+                  final questions = state.questions;
+                  if (questions.isEmpty) {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              LucideIcons.inbox,
+                              size: 64,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No questions found',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No questions found',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                      ),
+                    );
+                  }
+                  return SliverPadding(
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      16,
+                      16,
+                      _selectedQuestions.isNotEmpty ? 96 : 16,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final bankItem = questions[index];
+                        final isSelected = _selectedQuestions.containsKey(
+                          bankItem.id,
+                        );
+
+                        return _QuestionSelectionCard(
+                          bankItem: bankItem,
+                          isSelected: isSelected,
+                          onToggle: () => _toggleSelection(bankItem),
+                        );
+                      }, childCount: questions.length),
                     ),
                   );
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: questions.length,
-                  itemBuilder: (context, index) {
-                    final bankItem = questions[index];
-                    final isSelected = _selectedQuestionIds.contains(
-                      bankItem.id,
-                    );
-
-                    return _QuestionSelectionCard(
-                      bankItem: bankItem,
-                      isSelected: isSelected,
-                      onToggle: () => _toggleSelection(bankItem.id),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error: $error')),
-            ),
+                },
+                loading: () => const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                error: (error, stack) => SliverFillRemaining(
+                  child: Center(child: Text('Error: $error')),
+                ),
+              ),
+            ],
           ),
 
           // Bottom action bar
-          if (_selectedQuestionIds.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                boxShadow: [
-                  BoxShadow(
-                    color: colorScheme.shadow.withValues(alpha: 0.1),
-                    offset: const Offset(0, -4),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: SafeArea(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '${_selectedQuestionIds.length} question(s) selected',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    FilledButton(
-                      onPressed: () => _handleContinue(
-                        questionBankState.value?.questions ?? [],
-                      ),
-                      child: const Text('Continue'),
+          if (_selectedQuestions.isNotEmpty)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.shadow.withValues(alpha: 0.1),
+                      offset: const Offset(0, -4),
+                      blurRadius: 8,
                     ),
                   ],
+                ),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${_selectedQuestions.length} question(s) selected',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      FilledButton(
+                        onPressed: _handleContinue,
+                        child: const Text('Continue'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -1,6 +1,6 @@
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
 
 /// Repository interface for question bank operations.

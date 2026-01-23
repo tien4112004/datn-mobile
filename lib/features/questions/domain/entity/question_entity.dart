@@ -1,4 +1,4 @@
-import 'question_enums.dart';
+import '../../../../shared/models/cms_enums.dart';
 
 /// Base question entity
 abstract class BaseQuestion {

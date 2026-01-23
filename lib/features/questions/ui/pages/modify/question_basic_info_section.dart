@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
@@ -10,7 +10,7 @@ class QuestionBasicInfoSection extends StatefulWidget {
   final Difficulty selectedDifficulty;
   final String? titleImageUrl;
   final String explanation;
-  final Grade grade;
+  final GradeLevel grade;
   final String? chapter;
   final Subject subject;
   final ValueChanged<String> onTitleChanged;
@@ -18,7 +18,7 @@ class QuestionBasicInfoSection extends StatefulWidget {
   final ValueChanged<Difficulty> onDifficultyChanged;
   final ValueChanged<String?> onTitleImageChanged;
   final ValueChanged<String> onExplanationChanged;
-  final ValueChanged<Grade>? onGradeChanged;
+  final ValueChanged<GradeLevel>? onGradeChanged;
   final ValueChanged<String> onChapterChanged;
   final ValueChanged<Subject>? onSubjectChanged;
 
@@ -200,9 +200,9 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
                     ignoring: widget.onGradeChanged == null,
                     child: Opacity(
                       opacity: widget.onGradeChanged == null ? 0.6 : 1.0,
-                      child: FlexDropdownField<Grade>(
+                      child: FlexDropdownField<GradeLevel>(
                         value: widget.grade,
-                        items: Grade.values,
+                        items: GradeLevel.values,
                         onChanged: widget.onGradeChanged ?? (_) {},
                         itemLabelBuilder: (grade) => grade.displayName,
                       ),

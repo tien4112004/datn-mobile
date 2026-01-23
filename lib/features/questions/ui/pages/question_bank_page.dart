@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
@@ -76,7 +76,12 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 },
               ),
             ],
-            title: const Text('Question Bank'),
+            title: Text(
+              'Question Bank',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(bottom: 16),
               background: QuestionBankHeader(),

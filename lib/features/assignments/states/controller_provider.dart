@@ -49,7 +49,7 @@ final detailAssignmentControllerProvider =
 
 /// Provider for creating a new exam.
 final createAssignmentControllerProvider =
-    AsyncNotifierProvider<CreateAssignmentController, void>(
+    AsyncNotifierProvider<CreateAssignmentController, AssignmentEntity?>(
       () => CreateAssignmentController(),
     );
 

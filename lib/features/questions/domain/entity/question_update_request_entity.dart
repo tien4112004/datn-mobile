@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 /// Domain entity for updating a question.
 /// All fields are optional, only provide what needs updating.
@@ -9,7 +9,7 @@ class QuestionUpdateRequestEntity {
   final String? explanation;
   final String? titleImageUrl;
   final Map<String, dynamic>? data;
-  final Grade? grade;
+  final GradeLevel? grade;
   final String? chapter;
   final Subject? subject;
 

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/state/base_filter_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -13,7 +13,7 @@ abstract class QuestionBankFilterState
   const factory QuestionBankFilterState({
     @Default(BankType.personal) BankType bankType,
     String? searchQuery,
-    Grade? gradeFilter,
+    GradeLevel? gradeFilter,
     Subject? subjectFilter,
     @Default([]) List<String> chapterFilters,
     QuestionType? questionTypeFilter,

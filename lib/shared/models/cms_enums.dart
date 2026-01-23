@@ -20,7 +20,7 @@ enum QuestionType {
     }
   }
 
-  static QuestionType fromName(String questionType) {
+  static QuestionType fromApiValue(String questionType) {
     switch (questionType.toUpperCase()) {
       case 'MULTIPLE_CHOICE':
         return QuestionType.multipleChoice;
@@ -241,7 +241,7 @@ enum BankType {
 }
 
 /// Grade levels for questions (1-5)
-enum Grade {
+enum GradeLevel {
   grade1,
   grade2,
   grade3,
@@ -250,49 +250,48 @@ enum Grade {
 
   String get displayName {
     switch (this) {
-      case Grade.grade1:
+      case GradeLevel.grade1:
         return 'Grade 1';
-      case Grade.grade2:
+      case GradeLevel.grade2:
         return 'Grade 2';
-      case Grade.grade3:
+      case GradeLevel.grade3:
         return 'Grade 3';
-      case Grade.grade4:
+      case GradeLevel.grade4:
         return 'Grade 4';
-      case Grade.grade5:
+      case GradeLevel.grade5:
         return 'Grade 5';
     }
   }
 
   String get apiValue {
     switch (this) {
-      case Grade.grade1:
+      case GradeLevel.grade1:
         return '1';
-      case Grade.grade2:
+      case GradeLevel.grade2:
         return '2';
-      case Grade.grade3:
+      case GradeLevel.grade3:
         return '3';
-      case Grade.grade4:
+      case GradeLevel.grade4:
         return '4';
-      case Grade.grade5:
+      case GradeLevel.grade5:
         return '5';
     }
   }
 
-  static Grade? fromApiValue(String? value) {
-    if (value == null) return null;
+  static GradeLevel fromApiValue(String value) {
     switch (value.toUpperCase()) {
       case '1':
-        return Grade.grade1;
+        return GradeLevel.grade1;
       case '2':
-        return Grade.grade2;
+        return GradeLevel.grade2;
       case '3':
-        return Grade.grade3;
+        return GradeLevel.grade3;
       case '4':
-        return Grade.grade4;
+        return GradeLevel.grade4;
       case '5':
-        return Grade.grade5;
+        return GradeLevel.grade5;
       default:
-        return null;
+        return GradeLevel.grade1;
     }
   }
 }
@@ -335,6 +334,101 @@ enum Subject {
         return Subject.literature;
       default:
         return Subject.english;
+    }
+  }
+}
+
+/// Exam status enumeration.
+enum AssignmentStatus {
+  draft,
+  generating,
+  completed,
+  error,
+  archived;
+
+  String get displayName {
+    switch (this) {
+      case AssignmentStatus.draft:
+        return 'Draft';
+      case AssignmentStatus.generating:
+        return 'Generating';
+      case AssignmentStatus.completed:
+        return 'Completed';
+      case AssignmentStatus.error:
+        return 'Error';
+      case AssignmentStatus.archived:
+        return 'Archived';
+    }
+  }
+
+  static AssignmentStatus fromApiValue(String value) {
+    return AssignmentStatus.values.firstWhere(
+      (e) => e.name.toUpperCase() == value.toUpperCase(),
+      orElse: () => AssignmentStatus.draft,
+    );
+  }
+
+  static IconData getStatusIcon(AssignmentStatus status) {
+    switch (status) {
+      case AssignmentStatus.draft:
+        return LucideIcons.file;
+      case AssignmentStatus.generating:
+        return LucideIcons.loader;
+      case AssignmentStatus.completed:
+        return LucideIcons.circleCheck;
+      case AssignmentStatus.error:
+        return LucideIcons.circleX;
+      case AssignmentStatus.archived:
+        return LucideIcons.archive;
+    }
+  }
+}
+
+/// Context type enumeration for questions requiring context.
+enum ContextType {
+  readingPassage,
+  image,
+  audio,
+  video;
+
+  String get displayName {
+    switch (this) {
+      case ContextType.readingPassage:
+        return 'Reading Passage';
+      case ContextType.image:
+        return 'Image';
+      case ContextType.audio:
+        return 'Audio';
+      case ContextType.video:
+        return 'Video';
+    }
+  }
+
+  String get apiValue {
+    switch (this) {
+      case ContextType.readingPassage:
+        return 'reading_passage';
+      case ContextType.image:
+        return 'image';
+      case ContextType.audio:
+        return 'audio';
+      case ContextType.video:
+        return 'video';
+    }
+  }
+
+  static ContextType fromApiValue(String value) {
+    switch (value.toLowerCase()) {
+      case 'reading_passage':
+        return ContextType.readingPassage;
+      case 'image':
+        return ContextType.image;
+      case 'audio':
+        return ContextType.audio;
+      case 'video':
+        return ContextType.video;
+      default:
+        return ContextType.readingPassage;
     }
   }
 }

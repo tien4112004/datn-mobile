@@ -1,6 +1,6 @@
 import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 
 /// Extension for mapping QuestionBankItemDto to domain entity.
@@ -60,7 +60,7 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
       ownerId: ownerId,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      grade: Grade.fromApiValue(grade),
+      grade: GradeLevel.fromApiValue(grade),
       chapter: chapter,
       subject: Subject.fromApiValue(subject!),
     );

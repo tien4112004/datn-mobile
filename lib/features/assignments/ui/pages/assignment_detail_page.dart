@@ -4,28 +4,28 @@ import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/detail/assignment_info_header.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/bottom_action_dock.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/floating_action_menu.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_card.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/detail/questions_section.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/detail/tabs/matrix_tab.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Comprehensive Assignment Detail & Edit Page.
+/// Comprehensive Assignment Detail & Edit Page with Tabbed Layout.
 /// Follows Material Design 3 guidelines with clean component separation.
 ///
 /// Features:
+/// - Three tabs: Metadata, Questions, Matrix
 /// - Sticky app bar with edit mode toggle
-/// - Assignment info header with shuffle questions toggle
-/// - Questions list with expandable cards
-/// - Assessment matrix dashboard with actual question distribution
-/// - Bottom action dock for save/cancel
-/// - Floating action button for adding questions from bank or creating new
+/// - Tab-specific content organization
+/// - Bottom action dock for save/cancel (edit mode)
+/// - Floating action button for adding questions (Questions tab only, edit mode)
+/// - Smooth tab transitions with haptic feedback
 @RoutePage()
 class AssignmentDetailPage extends ConsumerStatefulWidget {
   final String assignmentId;
@@ -40,9 +40,36 @@ class AssignmentDetailPage extends ConsumerStatefulWidget {
       _AssignmentDetailPageState();
 }
 
-class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
+class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
+    with SingleTickerProviderStateMixin {
   bool _isEditMode = false;
   bool _isSaving = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 1, // Start on Questions tab
+    );
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        HapticFeedback.selectionClick();
+      }
+      // Rebuild for FAB visibility update when tab changes
+      if (!_tabController.indexIsChanging) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   /// Calculate assessment matrix from assignment questions.
   AssessmentMatrix _calculateAssessmentMatrix(AssignmentEntity assignment) {
@@ -124,46 +151,50 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
       data: (assignment) {
         return Scaffold(
           backgroundColor: colorScheme.surfaceContainerLowest,
-          body: CustomScrollView(
-            slivers: [
-              // Sticky App Bar
-              SliverAppBar(
-                pinned: true,
-                elevation: 0,
-                backgroundColor: colorScheme.surface,
-                surfaceTintColor: colorScheme.surfaceTint,
-                leading: IconButton(
-                  icon: const Icon(LucideIcons.arrowLeft),
-                  onPressed: () => context.router.maybePop(),
-                ),
-                title: Text(
-                  'Assignment Details',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                // Sticky App Bar
+                SliverAppBar(
+                  pinned: true,
+                  elevation: 0,
+                  backgroundColor: colorScheme.surface,
+                  surfaceTintColor: colorScheme.surfaceTint,
+                  leading: IconButton(
+                    icon: const Icon(LucideIcons.arrowLeft),
+                    onPressed: () => context.router.maybePop(),
                   ),
-                ),
-                actions: [
-                  // Edit Mode Toggle
-                  IconButton(
-                    icon: Icon(
-                      _isEditMode ? LucideIcons.eye : LucideIcons.pencil,
-                      size: 20,
+                  title: Text(
+                    'Assignment Details',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                    onPressed: () {
-                      if (!_isSaving) {
-                        HapticFeedback.lightImpact();
-                        setState(() => _isEditMode = !_isEditMode);
-                      }
-                    },
-                    tooltip: _isEditMode ? 'View Mode' : 'Edit Mode',
                   ),
-                  const SizedBox(width: 8),
-                ],
-              ),
-
-              // Assignment Info Header
-              SliverToBoxAdapter(
-                child: AssignmentInfoHeader(
+                  actions: [
+                    // Edit Mode Toggle
+                    IconButton(
+                      icon: Icon(
+                        _isEditMode ? LucideIcons.eye : LucideIcons.pencil,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        if (!_isSaving) {
+                          HapticFeedback.lightImpact();
+                          setState(() => _isEditMode = !_isEditMode);
+                        }
+                      },
+                      tooltip: _isEditMode ? 'View Mode' : 'Edit Mode',
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                // Metadata Tab
+                MetadataTab(
                   assignment: assignment,
                   isEditMode: _isEditMode,
                   onShuffleChanged: _isEditMode
@@ -178,143 +209,77 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                         }
                       : null,
                 ),
-              ),
+                // Questions Tab
+                QuestionsTab(
+                  assignment: assignment,
+                  isEditMode: _isEditMode,
+                  onSwitchMode: () =>
+                      setState(() => _isEditMode = !_isEditMode),
+                  onEdit: (questionEntity, index) async {
+                    // Navigate to edit page using router
+                    final result = await context.router.push<dynamic>(
+                      AssignmentQuestionEditRoute(
+                        questionEntity: questionEntity,
+                        questionNumber: index + 1,
+                      ),
+                    );
 
-              // Questions Section Header
-              SliverToBoxAdapter(
-                child: QuestionsSection(
-                  questionCount: assignment.totalQuestions,
-                  onGenerate: () {
-                    // TODO: Navigate to matrix generation flow
+                    // Handle result
+                    if (result != null && mounted) {
+                      if (result == 'DELETE') {
+                        // Question was deleted in edit page
+                        await ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .removeQuestion(index);
+
+                        if (mounted) {
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              content: Text('Question deleted'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      } else if (result is AssignmentQuestionEntity) {
+                        // Question was updated
+                        await ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .updateQuestion(index, result);
+
+                        if (mounted) {
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(
+                              content: Text('Question updated'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  onDelete: (index) {
+                    _showDeleteConfirmation(context, index);
                   },
                 ),
-              ),
-
-              // Questions List
-              if (assignment.questions.isEmpty)
-                SliverToBoxAdapter(
-                  child: Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: colorScheme.outlineVariant.withValues(alpha: 5),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(
-                          LucideIcons.inbox,
-                          size: 48,
-                          color: colorScheme.onSurfaceVariant.withValues(
-                            alpha: 5,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'No questions yet',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Add questions to get started',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant.withValues(
-                              alpha: 7,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final questionEntity = assignment.questions[index];
-                    return QuestionCard(
-                      key: ValueKey(questionEntity.question.id),
-                      question: questionEntity.question,
-                      questionNumber: index + 1,
-                      isEditMode: _isEditMode,
-                      onEdit: () async {
-                        // Navigate to edit page using router
-                        final result = await context.router.push<dynamic>(
-                          AssignmentQuestionEditRoute(
-                            questionEntity: questionEntity,
-                            questionNumber: index + 1,
-                          ),
-                        );
-
-                        // Handle result
-                        if (result != null && mounted) {
-                          if (result == 'DELETE') {
-                            // Question was deleted in edit page
-                            await ref
-                                .read(
-                                  detailAssignmentControllerProvider(
-                                    widget.assignmentId,
-                                  ).notifier,
-                                )
-                                .removeQuestion(index);
-
-                            if (mounted) {
-                              scaffoldMessenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text('Question deleted'),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          } else if (result is AssignmentQuestionEntity) {
-                            // Question was updated
-                            await ref
-                                .read(
-                                  detailAssignmentControllerProvider(
-                                    widget.assignmentId,
-                                  ).notifier,
-                                )
-                                .updateQuestion(index, result);
-
-                            if (mounted) {
-                              scaffoldMessenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text('Question updated'),
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          }
-                        }
-                      },
-                      onDelete: () {
-                        _showDeleteConfirmation(context, index);
-                      },
-                    );
-                  }, childCount: assignment.questions.length),
-                ),
-
-              // Assessment Matrix Dashboard
-              SliverToBoxAdapter(
-                child: AssessmentMatrixDashboard(
+                // Matrix Tab
+                MatrixTab(
                   matrix: _calculateAssessmentMatrix(assignment),
-                  initiallyExpanded: false,
+                  isEditMode: _isEditMode,
                 ),
-              ),
-
-              // Bottom padding
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 100), // Space for bottom dock
-              ),
-            ],
+              ],
+            ),
           ),
 
-          // Floating Action Menu (only in edit mode)
-          floatingActionButton: _isEditMode
+          // Floating Action Menu (only in edit mode and Questions tab)
+          floatingActionButton: _isEditMode && _tabController.index == 1
               ? FloatingActionMenu(
                   onAddFromBank: () async {
                     // Capture context before async operations
@@ -378,9 +343,13 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                 )
               : null,
 
-          // Bottom Action Dock (only in edit mode)
-          bottomNavigationBar: _isEditMode
-              ? BottomActionDock(
+          // Bottom Navigation Bar with TabBar and conditional BottomActionDock
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Bottom Action Dock (only in edit mode)
+              if (_isEditMode)
+                BottomActionDock(
                   onCancel: () {
                     setState(() => _isEditMode = false);
                     // Refresh to discard any local optimistic changes
@@ -460,8 +429,45 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage> {
                     }
                   },
                   isSaving: _isSaving,
-                )
-              : null,
+                ),
+              // TabBar (always visible)
+              Container(
+                color: colorScheme.surface,
+                child: SafeArea(
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: colorScheme.primary,
+                    labelColor: colorScheme.primary,
+                    unselectedLabelColor: colorScheme.onSurfaceVariant,
+                    labelStyle: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                    unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.normal,
+                    ),
+                    tabs: const [
+                      Tab(
+                        text: 'INFO',
+                        icon: Icon(LucideIcons.info, size: 20),
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                      ),
+                      Tab(
+                        text: 'QUESTIONS',
+                        icon: Icon(LucideIcons.listOrdered, size: 20),
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                      ),
+                      Tab(
+                        text: 'MATRIX',
+                        icon: Icon(LucideIcons.grid3x3, size: 20),
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

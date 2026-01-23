@@ -30,16 +30,28 @@ class _QuestionBankPickerPageState
     extends ConsumerState<QuestionBankPickerPage> {
   // Store full question objects instead of just IDs
   final Map<String, QuestionBankItemEntity> _selectedQuestions = {};
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     // Set initial filter to personal bank
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentFilter = ref.read(questionBankFilterProvider);
+      if (currentFilter.searchQuery != null) {
+        _searchController.text = currentFilter.searchQuery!;
+      }
+
       ref.read(questionBankFilterProvider.notifier).state =
           const QuestionBankFilterState(bankType: BankType.personal);
       ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _updateFilters({
@@ -144,25 +156,63 @@ class _QuestionBankPickerPageState
                     children: [
                       // Search bar
                       TextField(
+                        controller: _searchController,
                         decoration: InputDecoration(
                           hintText: 'Search questions...',
-                          prefixIcon: const Icon(LucideIcons.search),
+                          prefixIcon: Icon(
+                            LucideIcons.search,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          suffixIcon: _searchController.text.isNotEmpty
+                              ? IconButton(
+                                  icon: Icon(
+                                    LucideIcons.x,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    _updateFilters(searchQuery: null);
+                                    setState(() {});
+                                  },
+                                )
+                              : null,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: colorScheme.outline),
                           ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: colorScheme.outlineVariant,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                              color: colorScheme.primary,
+                              width: 2,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: colorScheme.surfaceContainerHighest,
                         ),
                         onChanged: (value) {
-                          _updateFilters(
-                            searchQuery: value.isEmpty ? null : value,
-                          );
+                          setState(() {}); // Rebuild to show/hide clear button
                         },
+                        onSubmitted: (value) {
+                          final query = value.trim().isEmpty
+                              ? null
+                              : value.trim();
+                          _updateFilters(searchQuery: query);
+                        },
+                        textInputAction: TextInputAction.search,
                       ),
                       const SizedBox(height: 12),
 
                       // Filter chips with Wrap
                       Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
+                        spacing: 4,
+                        runSpacing: 4,
                         children: [
                           // Type filters
                           ...QuestionType.values.map((type) {
@@ -234,9 +284,9 @@ class _QuestionBankPickerPageState
                   return SliverPadding(
                     padding: EdgeInsets.fromLTRB(
                       16,
+                      8,
                       16,
-                      16,
-                      _selectedQuestions.isNotEmpty ? 96 : 16,
+                      _selectedQuestions.isNotEmpty ? 96 : 8,
                     ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {

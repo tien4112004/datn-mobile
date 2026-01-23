@@ -52,7 +52,6 @@ extension ExamSummaryMapper on ExamSummaryDto {
     subject: Subject.fromApiValue(subject),
     gradeLevel: GradeLevel.fromApiValue(gradeLevel),
     status: AssignmentStatus.fromApiValue(status),
-    difficulty: difficulty,
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

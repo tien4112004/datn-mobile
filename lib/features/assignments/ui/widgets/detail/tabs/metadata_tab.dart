@@ -28,9 +28,8 @@ class MetadataTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Large title header (like "Demo 123" in reference)
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
               child: Row(
                 children: [
                   Container(
@@ -81,47 +80,51 @@ class MetadataTab extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            // Colorful stat cards (like in reference design)
+            // Assignment Information
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildColorfulStatCard(
-                      context,
-                      icon: LucideIcons.bookOpen,
-                      label: 'SUBJECT',
-                      value: assignment.subject.displayName,
-                      backgroundColor: const Color(0xFFDEEBFF),
-                      iconColor: const Color(0xFF0052CC),
-                      valueColor: const Color(0xFF0052CC),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildColorfulStatCard(
-                      context,
-                      icon: LucideIcons.graduationCap,
-                      label: 'LEVEL',
-                      value: assignment.gradeLevel.displayName,
-                      backgroundColor: const Color(0xFFF3E5F5),
-                      iconColor: const Color(0xFF7B1FA2),
-                      valueColor: const Color(0xFF7B1FA2),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildColorfulStatCard(
-                      context,
-                      icon: LucideIcons.listChecks,
-                      label: 'ITEMS',
-                      value: '${assignment.totalQuestions}',
-                      backgroundColor: const Color(0xFFE8F5E9),
-                      iconColor: const Color(0xFF2E7D32),
-                      valueColor: const Color(0xFF2E7D32),
-                    ),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 3,
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        indent: 62,
+                        height: 1,
+                        color: colorScheme.outlineVariant,
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      final metrics = [
+                        (
+                          icon: LucideIcons.bookOpen,
+                          label: 'Subject',
+                          value: assignment.subject.displayName,
+                        ),
+                        (
+                          icon: LucideIcons.graduationCap,
+                          label: 'Grade Level',
+                          value: assignment.gradeLevel.displayName,
+                        ),
+                        (
+                          icon: LucideIcons.listChecks,
+                          label: 'Total Questions',
+                          value: '${assignment.totalQuestions}',
+                        ),
+                      ];
+
+                      final metric = metrics[index];
+                      return _buildMetricRow(
+                        context,
+                        icon: metric.icon,
+                        label: metric.label,
+                        value: metric.value,
+                        theme: theme,
+                        colorScheme: colorScheme,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -134,10 +137,17 @@ class MetadataTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Icon(
-                    LucideIcons.fileText,
-                    size: 20,
-                    color: Colors.orange.shade700,
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDEEBFF),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      LucideIcons.fileText,
+                      color: Color(0xFF0052CC),
+                      size: 24,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -157,11 +167,11 @@ class MetadataTab extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.orange.shade700.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.orange.shade700.withValues(alpha: 0.3),
+                  color: colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
                   ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: colorScheme.outlineVariant),
                 ),
                 child: Text(
                   (assignment.description == null ||
@@ -238,46 +248,41 @@ class MetadataTab extends StatelessWidget {
     );
   }
 
-  Widget _buildColorfulStatCard(
+  Widget _buildMetricRow(
     BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
-    required Color backgroundColor,
-    required Color iconColor,
-    required Color valueColor,
+    required ThemeData theme,
+    required ColorScheme colorScheme,
   }) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
+      child: Row(
         children: [
-          Icon(icon, size: 28, color: iconColor),
-          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
           Text(
             value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: valueColor,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: valueColor.withValues(alpha: 0.7),
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
+              color: colorScheme.onSurface,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),

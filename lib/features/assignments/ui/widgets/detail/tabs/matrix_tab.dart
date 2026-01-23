@@ -76,7 +76,7 @@ class MatrixTab extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Summary Statistics with colorful cards
+            // Summary Statistics
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -84,7 +84,18 @@ class MatrixTab extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(LucideIcons.chartLine, size: 20),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFDEEBFF),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          LucideIcons.chartLine,
+                          color: Color(0xFF0052CC),
+                          size: 24,
+                        ),
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Summary Statistics',
@@ -95,59 +106,52 @@ class MatrixTab extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  // 2x2 Grid of colorful stat cards
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildSummaryCard(
-                          context,
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 4,
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        indent: 62,
+                        height: 1,
+                        color: colorScheme.outlineVariant,
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      final metrics = [
+                        (
                           icon: LucideIcons.target,
-                          label: 'TARGET',
+                          label: 'Target Count',
                           value: '${stats.totalTarget}',
-                          backgroundColor: const Color(0xFFDEEBFF),
-                          valueColor: const Color(0xFF0052CC),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildSummaryCard(
-                          context,
+                        (
                           icon: LucideIcons.check,
-                          label: 'ACTUAL',
+                          label: 'Actual Count',
                           value: '${stats.totalActual}',
-                          backgroundColor: const Color(0xFFFFF4E5),
-                          valueColor: const Color(0xFFFF8B00),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildSummaryCard(
-                          context,
+                        (
                           icon: LucideIcons.percent,
-                          label: 'COMPLETE',
+                          label: 'Completion',
                           value:
-                              '${stats.completionPercentage.toStringAsFixed(0)}%',
-                          backgroundColor: const Color(0xFFFFEBEE),
-                          valueColor: const Color(0xFFC62828),
+                              '${stats.completionPercentage.toStringAsFixed(1)}%',
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildSummaryCard(
-                          context,
+                        (
                           icon: LucideIcons.circleCheck,
-                          label: 'MATCHED',
-                          value: '${stats.matchedCells}/${stats.totalCells}',
-                          backgroundColor: const Color(0xFFE8F5E9),
-                          valueColor: const Color(0xFF2E7D32),
+                          label: 'Matches Found',
+                          value: '${stats.matchedCells} / ${stats.totalCells}',
                         ),
-                      ),
-                    ],
+                      ];
+
+                      final metric = metrics[index];
+                      return _buildMetricRow(
+                        context,
+                        icon: metric.icon,
+                        label: metric.label,
+                        value: metric.value,
+                        theme: theme,
+                        colorScheme: colorScheme,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -380,41 +384,40 @@ class MatrixTab extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCard(
+  Widget _buildMetricRow(
     BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
-    required Color backgroundColor,
-    required Color valueColor,
+    required ThemeData theme,
+    required ColorScheme colorScheme,
   }) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16),
+      child: Row(
         children: [
-          Icon(icon, size: 24, color: valueColor),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: valueColor.withValues(alpha: 0.7),
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
           Text(
             value,
             style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: valueColor,
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
             ),
           ),
         ],

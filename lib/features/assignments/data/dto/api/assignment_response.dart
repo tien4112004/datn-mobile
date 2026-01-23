@@ -90,7 +90,6 @@ extension AssignmentResponseMapper on AssignmentResponse {
       subject: parsedSubject ?? Subject.mathematics, // Default to mathematics
       gradeLevel: gradeLevel,
       status: AssignmentStatus.completed, // Default status
-      difficulty: Difficulty.knowledge, // Default difficulty
       totalQuestions: totalQuestions,
       totalPoints: totalPoints.toInt(),
       timeLimitMinutes: duration,

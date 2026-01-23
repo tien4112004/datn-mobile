@@ -62,6 +62,20 @@ void showAdvancedAssignmentFilterDialog({
             },
             displayNameBuilder: (value) => value.displayName,
           ),
+          FilterConfig<Subject>(
+            label: 'Subject',
+            icon: LucideIcons.bookOpen,
+            options: Subject.values,
+            allLabel: 'All Subjects',
+            allIcon: LucideIcons.list,
+            selectedValue: draftState.subjectFilter,
+            onChanged: (value) {
+              setState(() {
+                draftState = draftState.copyWith(subjectFilter: value);
+              });
+            },
+            displayNameBuilder: (value) => value.displayName,
+          ),
         ]);
 
         return Column(

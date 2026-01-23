@@ -11,7 +11,6 @@ class AssignmentEntity {
   final Subject subject;
   final GradeLevel gradeLevel;
   final AssignmentStatus status;
-  final Difficulty difficulty;
   final int totalQuestions;
   final int totalPoints;
   final int? timeLimitMinutes;
@@ -31,7 +30,6 @@ class AssignmentEntity {
     required this.subject,
     required this.gradeLevel,
     required this.status,
-    required this.difficulty,
     required this.totalQuestions,
     required this.totalPoints,
     required this.shuffleQuestions,
@@ -60,7 +58,6 @@ class AssignmentEntity {
     Subject? subject,
     GradeLevel? gradeLevel,
     AssignmentStatus? status,
-    Difficulty? difficulty,
     int? totalQuestions,
     int? totalPoints,
     int? timeLimitMinutes,
@@ -78,7 +75,6 @@ class AssignmentEntity {
       subject: subject ?? this.subject,
       gradeLevel: gradeLevel ?? this.gradeLevel,
       status: status ?? this.status,
-      difficulty: difficulty ?? this.difficulty,
       totalQuestions: totalQuestions ?? this.totalQuestions,
       totalPoints: totalPoints ?? this.totalPoints,
       timeLimitMinutes: timeLimitMinutes ?? this.timeLimitMinutes,

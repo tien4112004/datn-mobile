@@ -107,7 +107,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: 100,
+      expandedHeight: 200,
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(

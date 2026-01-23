@@ -69,7 +69,6 @@ extension AssignmentDetailMapper on AssignmentDetailDto {
     subject: Subject.fromApiValue(subject),
     gradeLevel: GradeLevel.fromApiValue(gradeLevel),
     status: AssignmentStatus.fromApiValue(status),
-    difficulty: Difficulty.fromApiValue(difficulty),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

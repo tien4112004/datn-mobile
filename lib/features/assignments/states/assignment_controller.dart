@@ -1,9 +1,8 @@
 part of 'controller_provider.dart';
 
-/// Controller for managing the assignment list state with pagination.
+/// Controller for managing the assignment list state with pagination and filtering.
 class AssignmentsController extends AsyncNotifier<AssignmentListResult> {
   int _currentPage = 1;
-  String? _searchQuery;
 
   @override
   Future<AssignmentListResult> build() async {
@@ -11,11 +10,20 @@ class AssignmentsController extends AsyncNotifier<AssignmentListResult> {
   }
 
   Future<AssignmentListResult> _fetchAssignments() async {
+    // Read filter state from provider
+    final filterState = ref.read(assignmentFilterProvider);
+    final filterParams = filterState.getFilterParams();
+
     final repository = ref.read(assignmentRepositoryProvider);
     return repository.getAssignments(
       page: _currentPage,
       size: 20,
-      search: _searchQuery,
+      search: filterParams.search,
+      // TODO: Pass other filter params when API supports them
+      // status: filterParams.status,
+      // gradeLevel: filterParams.gradeLevel,
+      // subject: filterParams.subject,
+      // difficulty: filterParams.difficulty,
     );
   }
 
@@ -25,11 +33,20 @@ class AssignmentsController extends AsyncNotifier<AssignmentListResult> {
     state = await AsyncValue.guard(_fetchAssignments);
   }
 
-  /// Sets the search query and refreshes
-  Future<void> setSearch(String? query) async {
-    _searchQuery = query;
-    _currentPage = 1; // Reset to first page on new search
+  /// Loads assignments with current filter state.
+  /// Called after filter changes.
+  Future<void> loadAssignmentsWithFilter() async {
+    _currentPage = 1; // Reset to first page when filters change
     await refresh();
+  }
+
+  /// Sets the search query via filter state and refreshes
+  Future<void> setSearch(String? query) async {
+    final currentFilter = ref.read(assignmentFilterProvider);
+    ref.read(assignmentFilterProvider.notifier).state = currentFilter.copyWith(
+      searchQuery: query,
+    );
+    await loadAssignmentsWithFilter();
   }
 
   /// Loads the next page of assignments

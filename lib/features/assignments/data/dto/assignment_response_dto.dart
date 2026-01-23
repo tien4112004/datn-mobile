@@ -48,7 +48,6 @@ extension ExamResponseMapper on ExamResponseDto {
     subject: Subject.fromApiValue(subject),
     gradeLevel: gradeLevel,
     status: AssignmentStatus.fromApiValue(status),
-    difficulty: difficulty,
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     createdAt: createdAt,

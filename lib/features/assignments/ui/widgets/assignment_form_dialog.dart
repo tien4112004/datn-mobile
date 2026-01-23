@@ -29,7 +29,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
   Subject _selectedSubject = Subject.mathematics;
   GradeLevel _selectedGradeLevel = GradeLevel.grade1;
-  Difficulty _selectedDifficulty = Difficulty.medium;
 
   bool get _isEditing => widget.assignment != null;
 
@@ -47,7 +46,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     if (widget.assignment != null) {
       _selectedSubject = widget.assignment!.subject;
       _selectedGradeLevel = widget.assignment!.gradeLevel;
-      _selectedDifficulty = widget.assignment!.difficulty;
     }
   }
 
@@ -65,6 +63,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     final colorScheme = theme.colorScheme;
 
     return Dialog(
+      backgroundColor: colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
@@ -146,11 +145,9 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                         value: _selectedSubject,
                         items: Subject.values,
                         itemLabelBuilder: (subject) => subject.displayName,
-                        onChanged: _isEditing
-                            ? (_) {}
-                            : (value) {
-                                setState(() => _selectedSubject = value);
-                              },
+                        onChanged: (value) {
+                          setState(() => _selectedSubject = value);
+                        },
                       ),
                     ],
                   ),
@@ -185,37 +182,9 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                         value: _selectedGradeLevel,
                         items: GradeLevel.values,
                         itemLabelBuilder: (grade) => grade.displayName,
-                        onChanged: _isEditing
-                            ? (_) {}
-                            : (value) {
-                                setState(() => _selectedGradeLevel = value);
-                              },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12, bottom: 8),
-                        child: Text(
-                          'Difficulty *',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                      FlexDropdownField<Difficulty>(
-                        value: _selectedDifficulty,
-                        items: Difficulty.values,
-                        itemLabelBuilder: (difficulty) =>
-                            difficulty.displayName,
-                        onChanged: _isEditing
-                            ? (_) {}
-                            : (value) {
-                                setState(() => _selectedDifficulty = value);
-                              },
+                        onChanged: (value) {
+                          setState(() => _selectedGradeLevel = value);
+                        },
                       ),
                     ],
                   ),
@@ -288,8 +257,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
           title: title,
           description: description.isEmpty ? null : description,
           duration: timeLimit,
-          subject: null, // Not editable in current form
-          grade: null, // Not editable in current form
+          subject: _selectedSubject.apiValue,
+          grade: _selectedGradeLevel.apiValue,
           questions: null, // Questions managed separately
         );
 

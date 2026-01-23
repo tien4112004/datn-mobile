@@ -38,7 +38,9 @@ class FlexDropdownField<T> extends StatelessWidget {
               child: Material(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: Colors.black12),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 child: InkWell(
                   onTap: openMenu,

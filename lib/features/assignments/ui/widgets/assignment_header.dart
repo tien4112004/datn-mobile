@@ -1,5 +1,4 @@
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/advanced_assignment_filter_dialog.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
@@ -7,13 +6,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Header widget for Assignments page containing filters
-class AssignmentHeader extends ConsumerWidget {
+/// Header widget for Assignments page containing search bar and all filters inline
+class AssignmentHeader extends ConsumerStatefulWidget {
   const AssignmentHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
+  ConsumerState<AssignmentHeader> createState() => _AssignmentHeaderState();
+}
+
+class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize search controller with current filter state
+    final currentFilter = ref.read(assignmentFilterProvider);
+    if (currentFilter.searchQuery != null) {
+      _searchController.text = currentFilter.searchQuery!;
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final filterState = ref.watch(assignmentFilterProvider);
     final filterNotifier = ref.read(assignmentFilterProvider.notifier);
     final assignmentsController = ref.read(
@@ -30,7 +53,7 @@ class AssignmentHeader extends ConsumerWidget {
         selectedValue: filterState.statusFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(statusFilter: value);
-          assignmentsController.refresh();
+          assignmentsController.loadAssignmentsWithFilter();
         },
         displayNameBuilder: (value) => value.displayName,
         iconBuilder: (status) => _getStatusIcon(status),
@@ -44,7 +67,20 @@ class AssignmentHeader extends ConsumerWidget {
         selectedValue: filterState.gradeLevelFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(gradeLevelFilter: value);
-          assignmentsController.refresh();
+          assignmentsController.loadAssignmentsWithFilter();
+        },
+        displayNameBuilder: (value) => value.displayName,
+      ),
+      FilterConfig<Subject>(
+        label: 'Subject',
+        icon: LucideIcons.bookOpen,
+        options: Subject.values,
+        allLabel: 'All Subjects',
+        allIcon: LucideIcons.list,
+        selectedValue: filterState.subjectFilter,
+        onChanged: (value) {
+          filterNotifier.state = filterState.copyWith(subjectFilter: value);
+          assignmentsController.loadAssignmentsWithFilter();
         },
         displayNameBuilder: (value) => value.displayName,
       ),
@@ -54,36 +90,76 @@ class AssignmentHeader extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.only(left: 16, right: 16, top: 96, bottom: 0),
       decoration: const BoxDecoration(color: Colors.transparent),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...filterConfigs.map(
-            (filter) => FilterChipButton(
-              filter: filter,
-              onTap: () {
-                FilterChipButton.showFilterPicker(context, filter);
-              },
+          // Search Bar
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search assignments...',
+              prefixIcon: Icon(
+                LucideIcons.search,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(
+                        LucideIcons.x,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      onPressed: () {
+                        _searchController.clear();
+                        filterNotifier.state = filterState.copyWith(
+                          searchQuery: null,
+                        );
+                        assignmentsController.loadAssignmentsWithFilter();
+                        setState(() {});
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.outlineVariant),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: colorScheme.primary, width: 2),
+              ),
+              filled: true,
+              fillColor: colorScheme.surfaceContainerHighest,
             ),
+            onChanged: (value) {
+              setState(() {}); // Rebuild to show/hide clear button
+            },
+            onSubmitted: (value) {
+              final query = value.trim().isEmpty ? null : value.trim();
+              filterNotifier.state = filterState.copyWith(searchQuery: query);
+              assignmentsController.loadAssignmentsWithFilter();
+            },
+            textInputAction: TextInputAction.search,
           ),
-          // Advanced filter button
-          InkWell(
-            onTap: () =>
-                showAdvancedAssignmentFilterDialog(context: context, ref: ref),
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colorScheme.secondary, width: 1),
-              ),
-              child: Icon(
-                LucideIcons.slidersHorizontal,
-                size: 16,
-                color: colorScheme.onSecondaryContainer,
-              ),
-            ),
+
+          const SizedBox(height: 12),
+
+          // Filter Chips
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: filterConfigs
+                .map(
+                  (filter) => FilterChipButton(
+                    filter: filter,
+                    onTap: () {
+                      FilterChipButton.showFilterPicker(context, filter);
+                    },
+                  ),
+                )
+                .toList(),
           ),
         ],
       ),

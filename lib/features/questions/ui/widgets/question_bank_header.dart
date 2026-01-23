@@ -105,10 +105,10 @@ class QuestionBankHeader extends ConsumerWidget {
             controller: _searchController,
             decoration: InputDecoration(
               hintText: 'Search questions...',
-              prefixIcon: const Icon(Icons.search_rounded),
+              prefixIcon: const Icon(LucideIcons.search),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear_rounded),
+                      icon: const Icon(LucideIcons.x),
                       onPressed: () {
                         _searchController.clear();
                         filterNotifier.state = filterState.copyWith(

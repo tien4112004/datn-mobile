@@ -1,6 +1,5 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/matrix_item_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'matrix_item_dto.g.dart';
@@ -41,13 +40,13 @@ class MatrixItemDto {
 extension MatrixItemMapper on MatrixItemDto {
   MatrixItemEntity toEntity() => MatrixItemEntity(
     topic: topic,
-    questionType: QuestionType.fromName(questionType),
+    questionType: QuestionType.fromApiValue(questionType),
     count: count,
     pointsEach: pointsEach,
-    difficulty: Difficulty.fromName(difficulty),
+    difficulty: Difficulty.fromApiValue(difficulty),
     requiresContext: requiresContext,
     contextType: contextType != null
-        ? ContextType.fromName(contextType!)
+        ? ContextType.fromApiValue(contextType!)
         : null,
   );
 

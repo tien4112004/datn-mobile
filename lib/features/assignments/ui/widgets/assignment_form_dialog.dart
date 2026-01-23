@@ -1,7 +1,11 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,11 +25,10 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _topicController;
   late final TextEditingController _timeLimitController;
 
-  GradeLevel _selectedGradeLevel = GradeLevel.k;
-  Difficulty _selectedDifficulty = Difficulty.medium;
+  Subject _selectedSubject = Subject.mathematics;
+  GradeLevel _selectedGradeLevel = GradeLevel.grade1;
 
   bool get _isEditing => widget.assignment != null;
 
@@ -36,14 +39,13 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     _descriptionController = TextEditingController(
       text: widget.assignment?.description,
     );
-    _topicController = TextEditingController(text: widget.assignment?.topic);
     _timeLimitController = TextEditingController(
       text: widget.assignment?.timeLimitMinutes?.toString(),
     );
 
     if (widget.assignment != null) {
+      _selectedSubject = widget.assignment!.subject;
       _selectedGradeLevel = widget.assignment!.gradeLevel;
-      _selectedDifficulty = widget.assignment!.difficulty;
     }
   }
 
@@ -51,7 +53,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _topicController.dispose();
     _timeLimitController.dispose();
     super.dispose();
   }
@@ -62,6 +63,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     final colorScheme = theme.colorScheme;
 
     return Dialog(
+      backgroundColor: colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 500),
@@ -92,8 +94,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       Expanded(
                         child: Text(
                           _isEditing
-                              ? 'Edit dAssignment'
-                              : 'Create New dAssignment',
+                              ? 'Edit Assignment'
+                              : 'Create New Assignment',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -127,24 +129,27 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     textCapitalization: TextCapitalization.words,
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _topicController,
-                    decoration: InputDecoration(
-                      labelText: 'Topic *',
-                      hintText: 'e.g., Mathematics, Science',
-                      prefixIcon: const Icon(LucideIcons.bookOpen),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, bottom: 8),
+                        child: Text(
+                          'Subject *',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
                       ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter topic';
-                      }
-                      return null;
-                    },
-                    textCapitalization: TextCapitalization.words,
-                    enabled: !_isEditing,
+                      FlexDropdownField<Subject>(
+                        value: _selectedSubject,
+                        items: Subject.values,
+                        itemLabelBuilder: (subject) => subject.displayName,
+                        onChanged: (value) {
+                          setState(() => _selectedSubject = value);
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -161,68 +166,27 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     textCapitalization: TextCapitalization.sentences,
                   ),
                   const SizedBox(height: 16),
-                  DropdownButtonFormField<GradeLevel>(
-                    initialValue: _selectedGradeLevel,
-                    decoration: InputDecoration(
-                      labelText: 'Grade Level *',
-                      prefixIcon: const Icon(LucideIcons.graduationCap),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    items: GradeLevel.values
-                        .map(
-                          (grade) => DropdownMenuItem(
-                            value: grade,
-                            child: Text(grade.displayName),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, bottom: 8),
+                        child: Text(
+                          'Grade Level *',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
                           ),
-                        )
-                        .toList(),
-                    onChanged: _isEditing
-                        ? null
-                        : (value) {
-                            if (value != null) {
-                              setState(() => _selectedGradeLevel = value);
-                            }
-                          },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<Difficulty>(
-                    initialValue: _selectedDifficulty,
-                    decoration: InputDecoration(
-                      labelText: 'Difficulty *',
-                      prefixIcon: const Icon(LucideIcons.trendingUp),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    items: Difficulty.values
-                        .map(
-                          (difficulty) => DropdownMenuItem(
-                            value: difficulty,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Difficulty.getDifficultyIcon(difficulty),
-                                  size: 18,
-                                  color: Difficulty.getDifficultyColor(
-                                    difficulty,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(difficulty.displayName),
-                              ],
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: _isEditing
-                        ? null
-                        : (value) {
-                            if (value != null) {
-                              setState(() => _selectedDifficulty = value);
-                            }
-                          },
+                      FlexDropdownField<GradeLevel>(
+                        value: _selectedGradeLevel,
+                        items: GradeLevel.values,
+                        itemLabelBuilder: (grade) => grade.displayName,
+                        onChanged: (value) {
+                          setState(() => _selectedGradeLevel = value);
+                        },
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -282,7 +246,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
-    final topic = _topicController.text.trim();
     final timeLimitText = _timeLimitController.text.trim();
     final timeLimit = timeLimitText.isNotEmpty
         ? int.tryParse(timeLimitText)
@@ -290,38 +253,61 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
     try {
       if (_isEditing) {
+        final request = AssignmentUpdateRequest(
+          title: title,
+          description: description.isEmpty ? null : description,
+          duration: timeLimit,
+          subject: _selectedSubject.apiValue,
+          grade: _selectedGradeLevel.apiValue,
+          questions: null, // Questions managed separately
+        );
+
         await ref
             .read(updateAssignmentControllerProvider.notifier)
-            .updateAssignment(
-              assignmentId: widget.assignment!.assignmentId,
-              title: title,
-              description: description.isEmpty ? null : description,
-              timeLimitMinutes: timeLimit,
-            );
-      } else {
-        await ref
-            .read(createAssignmentControllerProvider.notifier)
-            .createAssignment(
-              title: title,
-              description: description.isEmpty ? null : description,
-              topic: topic,
-              gradeLevel: _selectedGradeLevel,
-              difficulty: _selectedDifficulty,
-              timeLimitMinutes: timeLimit,
-            );
-      }
+            .updateAssignment(widget.assignment!.assignmentId, request);
 
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              _isEditing
-                  ? 'Assignment updated successfully'
-                  : 'Assignment created successfully',
-            ),
-          ),
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Assignment updated successfully')),
+          );
+        }
+      } else {
+        final request = AssignmentCreateRequest(
+          title: title,
+          description: description.isEmpty ? null : description,
+          duration: timeLimit,
+          subject: _selectedSubject.apiValue,
+          grade: _selectedGradeLevel.apiValue,
+          questions: [], // Empty initially, add questions later
         );
+
+        // Create assignment and get the created entity
+        final createdAssignment = await ref
+            .read(createAssignmentControllerProvider.notifier)
+            .createAssignment(request);
+
+        if (mounted) {
+          // Close the dialog
+          Navigator.pop(context);
+
+          // Navigate to assignment detail page in edit mode
+          if (!context.mounted) return;
+
+          context.router.push(
+            AssignmentDetailRoute(assignmentId: createdAssignment.assignmentId),
+          );
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Assignment created! Add questions to complete setup.',
+              ),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {

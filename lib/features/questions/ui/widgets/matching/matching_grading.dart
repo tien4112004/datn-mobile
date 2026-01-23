@@ -202,7 +202,7 @@ class MatchingGrading extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  pair.left,
+                  pair.left == null ? 'Not Answered' : pair.left!,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -284,7 +284,7 @@ class MatchingGrading extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        pair.right,
+                        pair.right == null ? 'Not Answered' : pair.right!,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: Colors.green.shade900,

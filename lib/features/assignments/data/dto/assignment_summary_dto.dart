@@ -1,6 +1,5 @@
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_summary_dto.g.dart';
@@ -12,7 +11,7 @@ class ExamSummaryDto {
   @JsonKey(name: 'assignment_id')
   final String assignmentId;
   final String title;
-  final String topic;
+  final String subject;
   @JsonKey(name: 'grade_level')
   final String gradeLevel;
   final String status;
@@ -24,7 +23,7 @@ class ExamSummaryDto {
   ExamSummaryDto({
     required this.assignmentId,
     required this.title,
-    required this.topic,
+    required this.subject,
     required this.gradeLevel,
     required this.status,
     required this.totalQuestions,
@@ -50,10 +49,9 @@ extension ExamSummaryMapper on ExamSummaryDto {
     teacherId: teacherId,
     title: title,
     description: description,
-    topic: topic,
-    gradeLevel: GradeLevel.fromName(gradeLevel),
-    status: AssignmentStatus.fromName(status),
-    difficulty: difficulty,
+    subject: Subject.fromApiValue(subject),
+    gradeLevel: GradeLevel.fromApiValue(gradeLevel),
+    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

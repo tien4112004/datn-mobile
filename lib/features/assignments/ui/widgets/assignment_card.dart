@@ -3,7 +3,6 @@ import 'package:datn_mobile/features/assignments/states/controller_provider.dart
 import 'package:datn_mobile/features/assignments/ui/pages/assignment_detail_page.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/status_badge.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -19,110 +18,168 @@ class AssignmentCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-          width: 1,
-        ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          // Soft outer shadow (claymorphism effect)
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.08),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+          // Subtle inner highlight
+          BoxShadow(
+            color: colorScheme.surface.withValues(alpha: 0.9),
+            offset: const Offset(0, -1),
+            blurRadius: 2,
+            spreadRadius: 0,
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: () => _navigateToDetail(context),
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      assignment.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurface,
+      child: Material(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: () => _navigateToDetail(context),
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header: Title and Status
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        assignment.title,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: colorScheme.onSurface,
+                          letterSpacing: -0.5,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  StatusBadge(status: assignment.status),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 16,
-                runSpacing: 8,
-                children: [
-                  _buildInfoChip(
-                    context,
-                    icon: LucideIcons.bookOpen,
-                    label: assignment.topic,
-                    color: colorScheme.primary,
-                  ),
-                  _buildInfoChip(
-                    context,
-                    icon: LucideIcons.graduationCap,
-                    label: assignment.gradeLevel.displayName,
-                    color: colorScheme.tertiary,
-                  ),
-                  _buildInfoChip(
-                    context,
-                    icon: Difficulty.getDifficultyIcon(assignment.difficulty),
-                    label: assignment.difficulty.displayName,
-                    color: Difficulty.getDifficultyColor(assignment.difficulty),
+                    const SizedBox(width: 12),
+                    StatusBadge(status: assignment.status),
+                  ],
+                ),
+
+                if (assignment.description != null &&
+                    assignment.description!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    assignment.description!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _buildStatItem(
-                    context,
-                    icon: LucideIcons.info,
-                    label: '${assignment.totalQuestions} questions',
-                  ),
-                  const SizedBox(width: 16),
-                  _buildStatItem(
-                    context,
-                    icon: LucideIcons.award,
-                    label: '${assignment.totalPoints} points',
-                  ),
-                  if (assignment.timeLimitMinutes != null) ...[
-                    const SizedBox(width: 16),
-                    _buildStatItem(
+
+                const SizedBox(height: 16),
+
+                // Info Chips Row
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildInfoChip(
                       context,
-                      icon: LucideIcons.clock,
-                      label: '${assignment.timeLimitMinutes} min',
+                      icon: LucideIcons.bookOpen,
+                      label: assignment.subject.displayName,
+                      color: colorScheme.primary,
+                    ),
+                    _buildInfoChip(
+                      context,
+                      icon: LucideIcons.graduationCap,
+                      label: assignment.gradeLevel.displayName,
+                      color: colorScheme.tertiary,
                     ),
                   ],
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(
-                    LucideIcons.calendar,
-                    size: 14,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Created ${_formatDate(assignment.createdAt)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                ),
+
+                const SizedBox(height: 16),
+
+                // Stats Row with enhanced visual hierarchy
+                Row(
+                  children: [
+                    _buildStatItem(
+                      context,
+                      icon: LucideIcons.listChecks,
+                      label: '${assignment.totalQuestions}',
+                      sublabel: 'questions',
                     ),
-                  ),
-                  const Spacer(),
-                  _buildActionButtons(context, ref, colorScheme),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 20),
+                    _buildStatItem(
+                      context,
+                      icon: LucideIcons.award,
+                      label: '${assignment.totalPoints}',
+                      sublabel: 'points',
+                    ),
+                    if (assignment.timeLimitMinutes != null) ...[
+                      const SizedBox(width: 20),
+                      _buildStatItem(
+                        context,
+                        icon: LucideIcons.clock,
+                        label: '${assignment.timeLimitMinutes}',
+                        sublabel: 'min',
+                      ),
+                    ],
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Divider
+                Divider(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  height: 1,
+                ),
+
+                const SizedBox(height: 12),
+
+                // Footer: Timestamp and Actions
+                Row(
+                  children: [
+                    Icon(
+                      LucideIcons.calendar,
+                      size: 16,
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Created ${_formatDate(assignment.createdAt)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.8,
+                        ),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Spacer(),
+                    _buildActionButtons(context, ref, colorScheme),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -137,21 +194,23 @@ class AssignmentCard extends ConsumerWidget {
   }) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
           Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
               color: color,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
             ),
           ),
         ],
@@ -163,19 +222,43 @@ class AssignmentCard extends ConsumerWidget {
     BuildContext context, {
     required IconData icon,
     required String label,
+    required String sublabel,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface,
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: colorScheme.primaryContainer.withValues(alpha: 0.4),
+            borderRadius: BorderRadius.circular(10),
           ),
+          child: Icon(icon, size: 18, color: colorScheme.primary),
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w700,
+                height: 1.2,
+              ),
+            ),
+            Text(
+              sublabel,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 11,
+                height: 1,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -196,24 +279,12 @@ class AssignmentCard extends ConsumerWidget {
             tooltip: 'Edit',
             visualDensity: VisualDensity.compact,
           ),
-        IconButton(
-          onPressed: () => _duplicateAssignment(context, ref),
-          icon: const Icon(LucideIcons.copy, size: 18),
-          tooltip: 'Duplicate',
-          visualDensity: VisualDensity.compact,
-        ),
+        // Duplicate and Archive features not supported by current API
         if (assignment.isDeletable)
           IconButton(
             onPressed: () => _deleteAssignment(context, ref),
             icon: Icon(LucideIcons.trash2, size: 18, color: colorScheme.error),
             tooltip: 'Delete',
-            visualDensity: VisualDensity.compact,
-          )
-        else
-          IconButton(
-            onPressed: () => _archiveAssignment(context, ref),
-            icon: const Icon(LucideIcons.archive, size: 18),
-            tooltip: 'Archive',
             visualDensity: VisualDensity.compact,
           ),
       ],
@@ -251,38 +322,6 @@ class AssignmentCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _duplicateAssignment(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Duplicate Assignment'),
-        content: Text('Create a copy of "${assignment.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Duplicate'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && context.mounted) {
-      await ref
-          .read(duplicateAssignmentControllerProvider.notifier)
-          .duplicateAssignment(assignment.assignmentId);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Assignment duplicated successfully')),
-        );
-      }
-    }
-  }
-
   Future<void> _deleteAssignment(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -313,38 +352,6 @@ class AssignmentCard extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Assignment deleted successfully')),
-        );
-      }
-    }
-  }
-
-  Future<void> _archiveAssignment(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Archive Assignment'),
-        content: Text('Archive "${assignment.title}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Archive'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true && context.mounted) {
-      await ref
-          .read(archiveAssignmentControllerProvider.notifier)
-          .archiveAssignment(assignment.assignmentId);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Assignment archived successfully')),
         );
       }
     }

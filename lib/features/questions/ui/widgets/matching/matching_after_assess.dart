@@ -221,7 +221,7 @@ class MatchingAfterAssess extends StatelessWidget {
               children: [
                 // Left item
                 Text(
-                  pair.left,
+                  pair.left == null ? "" : pair.left!,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -290,7 +290,7 @@ class MatchingAfterAssess extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                pair.right,
+                                pair.right == null ? "" : pair.right!,
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.green.shade900,

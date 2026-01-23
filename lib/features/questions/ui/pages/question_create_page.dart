@@ -4,7 +4,7 @@ import 'package:datn_mobile/features/questions/states/question_bank_provider.dar
 import 'package:datn_mobile/features/questions/states/question_form/question_form_provider.dart';
 import 'package:datn_mobile/features/questions/states/question_form/question_form_state.dart';
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/question_basic_info_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';

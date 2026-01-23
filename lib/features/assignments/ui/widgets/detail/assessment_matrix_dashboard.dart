@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -34,20 +34,13 @@ class AssessmentMatrixDashboard extends StatelessWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Theme(
         data: theme.copyWith(
           dividerColor: Colors.transparent,
-          splashColor: colorScheme.primary.withValues(alpha: 05),
+          splashColor: colorScheme.primary.withValues(alpha: 0.5),
         ),
         child: ExpansionTile(
           initiallyExpanded: initiallyExpanded,
@@ -112,7 +105,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
       child: Column(
@@ -123,7 +116,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
           // Divider
           Divider(
             height: 1,
-            color: colorScheme.outlineVariant.withValues(alpha: 5),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
 
           // Data Rows
@@ -134,7 +127,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
                 if (type != QuestionType.values.last)
                   Divider(
                     height: 1,
-                    color: colorScheme.outlineVariant.withValues(alpha: 3),
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
                   ),
               ],
             );
@@ -305,19 +298,19 @@ class AssessmentMatrixDashboard extends StatelessWidget {
 
     if (target == 0 && actual == 0) {
       // Empty cell
-      backgroundColor = colorScheme.surfaceContainerHigh.withValues(alpha: 3);
-      textColor = colorScheme.onSurfaceVariant.withValues(alpha: 5);
+      backgroundColor = colorScheme.surfaceContainerHigh.withValues(alpha: 0.3);
+      textColor = colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
     } else if (actual == target) {
       // Perfect match
-      backgroundColor = Colors.green.withValues(alpha: 2);
+      backgroundColor = Colors.green.withValues(alpha: 0.2);
       textColor = Colors.green.shade700;
     } else if (actual > target) {
       // Over target
-      backgroundColor = Colors.orange.withValues(alpha: 2);
+      backgroundColor = Colors.orange.withValues(alpha: 0.2);
       textColor = Colors.orange.shade700;
     } else if (actual < target) {
       // Under target
-      backgroundColor = Colors.red.withValues(alpha: 2);
+      backgroundColor = Colors.red.withValues(alpha: 0.2);
       textColor = Colors.red.shade700;
     } else {
       backgroundColor = colorScheme.surfaceContainerHigh;
@@ -329,7 +322,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: textColor.withValues(alpha: 3)),
+        border: Border.all(color: textColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -345,7 +338,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
             Text(
               '/$target',
               style: theme.textTheme.labelSmall?.copyWith(
-                color: textColor.withValues(alpha: 7),
+                color: textColor.withValues(alpha: 0.7),
                 fontSize: 10,
               ),
             ),
@@ -379,7 +372,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: textColor.withValues(alpha: 3)),
+        border: Border.all(color: textColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -395,7 +388,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
             Text(
               '/$targetTotal',
               style: theme.textTheme.labelSmall?.copyWith(
-                color: textColor.withValues(alpha: 7),
+                color: textColor.withValues(alpha: 0.7),
                 fontSize: 10,
               ),
             ),
@@ -418,7 +411,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 5),
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
       child: Column(
@@ -493,9 +486,9 @@ class AssessmentMatrixDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -508,7 +501,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: color.withValues(alpha: 8),
+                  color: color.withValues(alpha: 0.8),
                 ),
               ),
               Text(

@@ -28,8 +28,11 @@ class _MatchingDoingState extends State<MatchingDoing> {
   void initState() {
     super.initState();
     _selectedAnswers = Map.from(widget.answers ?? {});
-    _rightItems = widget.question.data.pairs.map((pair) => pair.right).toList()
-      ..shuffle();
+    _rightItems =
+        widget.question.data.pairs
+            .map((pair) => pair.right == null ? "" : pair.right!)
+            .toList()
+          ..shuffle();
   }
 
   void _selectMatch(String leftItem, String? rightItem) {
@@ -73,7 +76,8 @@ class _MatchingDoingState extends State<MatchingDoing> {
 
   Widget _buildMatchingPair(MatchingPair pair, ThemeData theme) {
     const placeholder = 'Select match...';
-    final currentValue = _selectedAnswers[pair.left] ?? placeholder;
+    final currentValue =
+        _selectedAnswers[pair.left == null ? "" : pair.left!] ?? placeholder;
     final dropdownItems = [placeholder, ..._rightItems];
 
     return Container(
@@ -94,7 +98,7 @@ class _MatchingDoingState extends State<MatchingDoing> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    pair.left,
+                    pair.left == null ? "" : pair.left!,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -109,9 +113,9 @@ class _MatchingDoingState extends State<MatchingDoing> {
             items: dropdownItems,
             onChanged: (value) {
               if (value != placeholder) {
-                _selectMatch(pair.left, value);
+                _selectMatch(pair.left == null ? "" : pair.left!, value);
               } else {
-                _selectMatch(pair.left, null);
+                _selectMatch(pair.left == null ? "" : pair.left!, null);
               }
             },
           ),

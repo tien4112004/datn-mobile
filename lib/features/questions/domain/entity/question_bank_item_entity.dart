@@ -1,21 +1,21 @@
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 /// Entity representing a question in the question bank with API metadata.
 class QuestionBankItemEntity {
   final String id;
   final BaseQuestion question;
-  final String ownerId;
+  final String? ownerId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final Grade? grade;
+  final GradeLevel? grade;
   final String? chapter;
   final Subject? subject;
 
   const QuestionBankItemEntity({
     required this.id,
     required this.question,
-    required this.ownerId,
+    this.ownerId,
     required this.createdAt,
     required this.updatedAt,
     this.grade,
@@ -29,7 +29,7 @@ class QuestionBankItemEntity {
     String? ownerId,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Grade? grade,
+    GradeLevel? grade,
     String? chapter,
     Subject? subject,
   }) {

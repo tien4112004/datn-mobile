@@ -3,7 +3,6 @@ import 'package:datn_mobile/features/assignments/states/controller_provider.dart
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_card.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_header.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
@@ -26,87 +25,110 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     final assignmentsAsync = ref.watch(assignmentsControllerProvider);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        elevation: 0,
-        backgroundColor: colorScheme.surface,
-        title: 'Assignment Management',
-        actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.refreshCw),
-            onPressed: () {
-              ref.read(assignmentsControllerProvider.notifier).refresh();
-            },
-            tooltip: 'Refresh',
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const AssignmentHeader(),
-          Expanded(
-            child: assignmentsAsync.when(
-              data: (assignments) {
-                if (assignments.isEmpty) {
-                  return EnhancedEmptyState(
-                    icon: LucideIcons.fileText,
-                    title: 'No assignments yet',
-                    message: 'Create your first assignment to get started',
-                    actionLabel: 'Create Exam',
-                    onAction: () => _showCreateExamDialog(context),
-                  );
-                }
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await ref
-                        .read(assignmentsControllerProvider.notifier)
-                        .refresh();
-                  },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: assignments.length,
-                    itemBuilder: (context, index) {
-                      final assignment = assignments[index];
-                      return AssignmentCard(
-                        assignment: assignment,
-                        key: ValueKey(assignment.assignmentId),
-                      );
-                    },
-                  ),
-                );
+      backgroundColor: colorScheme.surfaceContainerLowest,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [_buildSliverAppBar(context, colorScheme, theme)];
+        },
+        body: assignmentsAsync.when(
+          data: (result) {
+            final assignments = result.assignments;
+
+            if (assignments.isEmpty) {
+              return EnhancedEmptyState(
+                icon: LucideIcons.fileText,
+                title: 'No assignments yet',
+                message: 'Create your first assignment to get started',
+                actionLabel: 'Create Exam',
+                onAction: () => _showCreateExamDialog(context),
+              );
+            }
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                await ref
+                    .read(assignmentsControllerProvider.notifier)
+                    .refresh();
               },
-              loading: () => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(color: colorScheme.primary),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Loading assignments...',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              error: (error, stack) => EnhancedErrorState(
-                icon: LucideIcons.circleX,
-                title: 'Failed to load assignments',
-                message: error.toString(),
-                actionLabel: 'Retry',
-                onRetry: () {
-                  ref.read(assignmentsControllerProvider.notifier).refresh();
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                itemCount: assignments.length,
+                itemBuilder: (context, index) {
+                  final assignment = assignments[index];
+                  return AssignmentCard(
+                    assignment: assignment,
+                    key: ValueKey(assignment.assignmentId),
+                  );
                 },
               ),
+            );
+          },
+          loading: () => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: colorScheme.primary),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading assignments...',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+          error: (error, stack) => EnhancedErrorState(
+            icon: LucideIcons.circleX,
+            title: 'Failed to load assignments',
+            message: error.toString(),
+            actionLabel: 'Retry',
+            onRetry: () {
+              ref.read(assignmentsControllerProvider.notifier).refresh();
+            },
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCreateExamDialog(context),
         icon: const Icon(LucideIcons.plus),
         label: const Text('Create Exam'),
         elevation: 2,
+      ),
+    );
+  }
+
+  /// Builds a Material 3 sliver app bar with floating behavior
+  SliverAppBar _buildSliverAppBar(
+    BuildContext context,
+    ColorScheme colorScheme,
+    ThemeData theme,
+  ) {
+    return SliverAppBar(
+      pinned: true,
+      floating: false,
+      expandedHeight: 200,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surface,
+      title: Text(
+        'Assignment Management',
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(LucideIcons.refreshCw),
+          onPressed: () {
+            ref.read(assignmentsControllerProvider.notifier).refresh();
+          },
+          tooltip: 'Refresh',
+        ),
+        const SizedBox(width: 8),
+      ],
+      flexibleSpace: const FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(bottom: 16),
+        background: AssignmentHeader(),
       ),
     );
   }

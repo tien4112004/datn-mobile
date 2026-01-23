@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_filter_state.dart';
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/chapter_filter_widget.dart';
@@ -35,10 +35,10 @@ void showAdvancedQuestionFilterDialog({
       builder: (context, setState) {
         // Create filter configs with draft state
         final filterConfigs = List<BaseFilterConfig>.of([
-          FilterConfig<Grade>(
+          FilterConfig<GradeLevel>(
             label: 'Grade',
             icon: LucideIcons.graduationCap,
-            options: Grade.values,
+            options: GradeLevel.values,
             allLabel: 'All Grades',
             allIcon: LucideIcons.list,
             selectedValue: draftState.gradeFilter,

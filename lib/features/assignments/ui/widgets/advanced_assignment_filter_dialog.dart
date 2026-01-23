@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
 import 'package:datn_mobile/features/assignments/states/assignment_filter_state.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/widget/advanced_filter_dialog.dart';
 import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
@@ -46,7 +46,7 @@ void showAdvancedAssignmentFilterDialog({
               });
             },
             displayNameBuilder: (value) => value.displayName,
-            iconBuilder: (status) => _getStatusIcon(status),
+            iconBuilder: (status) => AssignmentStatus.getStatusIcon(status),
           ),
           FilterConfig<GradeLevel>(
             label: 'Grade Level',
@@ -58,6 +58,20 @@ void showAdvancedAssignmentFilterDialog({
             onChanged: (value) {
               setState(() {
                 draftState = draftState.copyWith(gradeLevelFilter: value);
+              });
+            },
+            displayNameBuilder: (value) => value.displayName,
+          ),
+          FilterConfig<Subject>(
+            label: 'Subject',
+            icon: LucideIcons.bookOpen,
+            options: Subject.values,
+            allLabel: 'All Subjects',
+            allIcon: LucideIcons.list,
+            selectedValue: draftState.subjectFilter,
+            onChanged: (value) {
+              setState(() {
+                draftState = draftState.copyWith(subjectFilter: value);
               });
             },
             displayNameBuilder: (value) => value.displayName,
@@ -138,20 +152,4 @@ Widget _buildFiltersSection(
       ),
     ],
   );
-}
-
-/// Get icon for assignment status
-IconData _getStatusIcon(AssignmentStatus status) {
-  switch (status) {
-    case AssignmentStatus.draft:
-      return LucideIcons.file;
-    case AssignmentStatus.generating:
-      return LucideIcons.loader;
-    case AssignmentStatus.completed:
-      return LucideIcons.circleCheck;
-    case AssignmentStatus.error:
-      return LucideIcons.circleX;
-    case AssignmentStatus.archived:
-      return LucideIcons.archive;
-  }
 }

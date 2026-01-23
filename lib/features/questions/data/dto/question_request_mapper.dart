@@ -2,7 +2,7 @@ import 'package:datn_mobile/features/questions/data/dto/question_create_request_
 import 'package:datn_mobile/features/questions/data/dto/question_update_request_dto.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 
 /// Extensions to convert between domain entities and DTOs for question requests.
 

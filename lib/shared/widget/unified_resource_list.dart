@@ -33,6 +33,8 @@ class UnifiedResourceList<T> extends StatelessWidget {
   final bool isGridView;
   final Widget Function(T item) gridCardBuilder;
   final Widget Function(T item) listTileBuilder;
+  final Widget Function(BuildContext context)? skeletonGridBuilder;
+  final Widget Function(BuildContext context)? skeletonListBuilder;
   final IconData emptyIcon;
   final String emptyTitle;
   final String emptyMessage;
@@ -45,6 +47,8 @@ class UnifiedResourceList<T> extends StatelessWidget {
     required this.isGridView,
     required this.gridCardBuilder,
     required this.listTileBuilder,
+    this.skeletonGridBuilder,
+    this.skeletonListBuilder,
     required this.emptyIcon,
     required this.emptyTitle,
     required this.emptyMessage,
@@ -84,6 +88,12 @@ class UnifiedResourceList<T> extends StatelessWidget {
       ),
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: (context, item, index) => gridCardBuilder(item),
+        firstPageProgressIndicatorBuilder: (context) {
+          if (skeletonGridBuilder != null) {
+            return skeletonGridBuilder!(context);
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
         noMoreItemsIndicatorBuilder: (context) => Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
@@ -130,6 +140,22 @@ class UnifiedResourceList<T> extends StatelessWidget {
       ),
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: (context, item, index) => listTileBuilder(item),
+        firstPageProgressIndicatorBuilder: (context) {
+          if (skeletonListBuilder != null) {
+            return ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: 6, // Show 6 skeletons
+              separatorBuilder: (context, index) => const SizedBox(
+                child: Divider(
+                  height: 1,
+                  color: Color.fromRGBO(189, 189, 189, 1),
+                ),
+              ),
+              itemBuilder: (context, index) => skeletonListBuilder!(context),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
         noMoreItemsIndicatorBuilder: (context) => Padding(
           padding: const EdgeInsets.all(0),
           child: Center(

@@ -1,6 +1,5 @@
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_response_dto.g.dart';
@@ -36,7 +35,7 @@ class ExamResponseDto {
 extension ExamResponseMapper on ExamResponseDto {
   AssignmentEntity toEntity({
     String? description,
-    required String topic,
+    required String subject,
     required GradeLevel gradeLevel,
     required Difficulty difficulty,
     int totalQuestions = 0,
@@ -46,10 +45,9 @@ extension ExamResponseMapper on ExamResponseDto {
     teacherId: teacherId,
     title: title,
     description: description,
-    topic: topic,
+    subject: Subject.fromApiValue(subject),
     gradeLevel: gradeLevel,
-    status: AssignmentStatus.fromName(status),
-    difficulty: difficulty,
+    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     createdAt: createdAt,

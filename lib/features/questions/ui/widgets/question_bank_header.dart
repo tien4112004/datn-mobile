@@ -3,7 +3,7 @@ import 'package:datn_mobile/features/questions/ui/widgets/advanced_question_filt
 import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/bank_type_switcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -24,10 +24,10 @@ class QuestionBankHeader extends ConsumerWidget {
     final questionbankController = ref.watch(questionBankProvider.notifier);
 
     final filterConfigs = List<BaseFilterConfig>.of([
-      FilterConfig<Grade>(
+      FilterConfig<GradeLevel>(
         label: 'Grade',
         icon: LucideIcons.graduationCap,
-        options: Grade.values,
+        options: GradeLevel.values,
         allLabel: 'All Grades',
         allIcon: LucideIcons.list,
         selectedValue: filterState.gradeFilter,
@@ -105,10 +105,10 @@ class QuestionBankHeader extends ConsumerWidget {
             controller: _searchController,
             decoration: InputDecoration(
               hintText: 'Search questions...',
-              prefixIcon: const Icon(Icons.search_rounded),
+              prefixIcon: const Icon(LucideIcons.search),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear_rounded),
+                      icon: const Icon(LucideIcons.x),
                       onPressed: () {
                         _searchController.clear();
                         filterNotifier.state = filterState.copyWith(

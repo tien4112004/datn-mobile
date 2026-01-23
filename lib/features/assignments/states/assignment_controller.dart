@@ -1,22 +1,29 @@
 part of 'controller_provider.dart';
 
-/// Controller for managing the assignment list state.
-class AssignmentsController extends AsyncNotifier<List<AssignmentEntity>> {
-  AssignmentStatus? _statusFilter;
-  String? _topicFilter;
-  GradeLevel? _gradeLevelFilter;
+/// Controller for managing the assignment list state with pagination and filtering.
+class AssignmentsController extends AsyncNotifier<AssignmentListResult> {
+  int _currentPage = 1;
 
   @override
-  Future<List<AssignmentEntity>> build() async {
+  Future<AssignmentListResult> build() async {
     return _fetchAssignments();
   }
 
-  Future<List<AssignmentEntity>> _fetchAssignments() async {
+  Future<AssignmentListResult> _fetchAssignments() async {
+    // Read filter state from provider
+    final filterState = ref.read(assignmentFilterProvider);
+    final filterParams = filterState.getFilterParams();
+
     final repository = ref.read(assignmentRepositoryProvider);
     return repository.getAssignments(
-      status: _statusFilter,
-      topic: _topicFilter,
-      gradeLevel: _gradeLevelFilter,
+      page: _currentPage,
+      size: 20,
+      search: filterParams.search,
+      // TODO: Pass other filter params when API supports them
+      // status: filterParams.status,
+      // gradeLevel: filterParams.gradeLevel,
+      // subject: filterParams.subject,
+      // difficulty: filterParams.difficulty,
     );
   }
 
@@ -26,29 +33,34 @@ class AssignmentsController extends AsyncNotifier<List<AssignmentEntity>> {
     state = await AsyncValue.guard(_fetchAssignments);
   }
 
-  /// Filters assignments by status.
-  Future<void> filterByStatus(AssignmentStatus? status) async {
-    _statusFilter = status;
+  /// Loads assignments with current filter state.
+  /// Called after filter changes.
+  Future<void> loadAssignmentsWithFilter() async {
+    _currentPage = 1; // Reset to first page when filters change
     await refresh();
   }
 
-  /// Filters assignments by topic.
-  Future<void> filterByTopic(String? topic) async {
-    _topicFilter = topic;
-    await refresh();
+  /// Sets the search query via filter state and refreshes
+  Future<void> setSearch(String? query) async {
+    final currentFilter = ref.read(assignmentFilterProvider);
+    ref.read(assignmentFilterProvider.notifier).state = currentFilter.copyWith(
+      searchQuery: query,
+    );
+    await loadAssignmentsWithFilter();
   }
 
-  /// Filters assignments by grade level.
-  Future<void> filterByGradeLevel(GradeLevel? gradeLevel) async {
-    _gradeLevelFilter = gradeLevel;
-    await refresh();
+  /// Loads the next page of assignments
+  Future<void> loadNextPage() async {
+    final currentState = state.value!;
+    if (_currentPage < currentState.pagination.totalPages) {
+      _currentPage++;
+      await refresh();
+    }
   }
 
-  /// Clears all filters.
-  Future<void> clearFilters() async {
-    _statusFilter = null;
-    _topicFilter = null;
-    _gradeLevelFilter = null;
+  /// Loads a specific page
+  Future<void> loadPage(int page) async {
+    _currentPage = page;
     await refresh();
   }
 }
@@ -74,39 +86,129 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() => _fetchAssignment(assignmentId));
   }
+
+  /// Add questions to the assignment.
+  Future<void> addQuestions(List<AssignmentQuestionEntity> questions) async {
+    final currentAssignment = await future;
+    final updatedQuestions = [...currentAssignment.questions, ...questions];
+
+    // Update local state optimistically
+    state = AsyncData(
+      currentAssignment.copyWith(
+        questions: updatedQuestions,
+        totalQuestions: updatedQuestions.length,
+        totalPoints: updatedQuestions
+            .fold<double>(0, (sum, q) => sum + q.points)
+            .toInt(),
+      ),
+    );
+
+    // Sync to server
+    await _syncQuestionsToServer(updatedQuestions);
+  }
+
+  /// Update a specific question (points or content).
+  Future<void> updateQuestion(
+    int index,
+    AssignmentQuestionEntity updated,
+  ) async {
+    final currentAssignment = await future;
+    final updatedQuestions = [...currentAssignment.questions];
+
+    if (index < 0 || index >= updatedQuestions.length) {
+      throw Exception('Invalid question index');
+    }
+
+    updatedQuestions[index] = updated;
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        questions: updatedQuestions,
+        totalQuestions: updatedQuestions.length,
+        totalPoints: updatedQuestions
+            .fold<double>(0, (sum, q) => sum + q.points)
+            .toInt(),
+      ),
+    );
+
+    await _syncQuestionsToServer(updatedQuestions);
+  }
+
+  /// Remove a question from the assignment.
+  Future<void> removeQuestion(int index) async {
+    final currentAssignment = await future;
+    final updatedQuestions = [...currentAssignment.questions]..removeAt(index);
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        questions: updatedQuestions,
+        totalQuestions: updatedQuestions.length,
+        totalPoints: updatedQuestions
+            .fold<double>(0, (sum, q) => sum + q.points)
+            .toInt(),
+      ),
+    );
+
+    await _syncQuestionsToServer(updatedQuestions);
+  }
+
+  /// Update shuffle questions setting.
+  Future<void> updateShuffleQuestions(bool shuffle) async {
+    final currentAssignment = await future;
+
+    // Update local state optimistically
+    state = AsyncData(currentAssignment.copyWith(shuffleQuestions: shuffle));
+
+    // Sync to server (use UpdateAssignmentController for proper update)
+    final repository = ref.read(assignmentRepositoryProvider);
+    await repository.updateAssignment(
+      assignmentId,
+      const AssignmentUpdateRequest(
+        // Note: API might not support shuffle field yet
+        // This is a placeholder until API is updated
+      ),
+    );
+  }
+
+  /// Sync questions to the server.
+  Future<void> _syncQuestionsToServer(
+    List<AssignmentQuestionEntity> questions,
+  ) async {
+    final repository = ref.read(assignmentRepositoryProvider);
+
+    final request = AssignmentUpdateRequest(
+      questions: questions.map((q) => q.toRequest()).toList(),
+    );
+
+    await repository.updateAssignment(assignmentId, request);
+  }
 }
 
 /// Controller for creating a new Assignment.
-class CreateAssignmentController extends AsyncNotifier<void> {
+class CreateAssignmentController extends AsyncNotifier<AssignmentEntity?> {
   @override
-  FutureOr<void> build() {
-    // Initial state - no operation
+  FutureOr<AssignmentEntity?> build() {
+    // Initial state - no assignment created yet
+    return null;
   }
 
   /// Creates a new assignment and refreshes the list.
-  Future<void> createAssignment({
-    required String title,
-    String? description,
-    required String topic,
-    required GradeLevel gradeLevel,
-    required Difficulty difficulty,
-    int? timeLimitMinutes,
-  }) async {
+  /// Returns the created assignment entity.
+  Future<AssignmentEntity> createAssignment(
+    AssignmentCreateRequest request,
+  ) async {
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(assignmentRepositoryProvider);
-      await repository.createAssignment(
-        title: title,
-        description: description,
-        topic: topic,
-        gradeLevel: gradeLevel,
-        difficulty: difficulty,
-        timeLimitMinutes: timeLimitMinutes,
-      );
-      // Refresh the assignments list
-      ref.invalidate(assignmentsControllerProvider);
-    });
+    final repository = ref.read(assignmentRepositoryProvider);
+    final createdAssignment = await repository.createAssignment(request);
+
+    // Update state with created assignment
+    state = AsyncData(createdAssignment);
+
+    // Refresh the assignments list
+    ref.invalidate(assignmentsControllerProvider);
+
+    return createdAssignment;
   }
 }
 
@@ -118,25 +220,18 @@ class UpdateAssignmentController extends AsyncNotifier<void> {
   }
 
   /// Updates an assignment and refreshes the list.
-  Future<void> updateAssignment({
-    required String assignmentId,
-    String? title,
-    String? description,
-    int? timeLimitMinutes,
-  }) async {
+  Future<void> updateAssignment(
+    String id,
+    AssignmentUpdateRequest request,
+  ) async {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
       final repository = ref.read(assignmentRepositoryProvider);
-      await repository.updateAssignment(
-        assignmentId: assignmentId,
-        title: title,
-        description: description,
-        timeLimitMinutes: timeLimitMinutes,
-      );
+      await repository.updateAssignment(id, request);
       // Refresh the assignments list and detail
       ref.invalidate(assignmentsControllerProvider);
-      ref.invalidate(detailAssignmentControllerProvider(assignmentId));
+      ref.invalidate(detailAssignmentControllerProvider(id));
     });
   }
 }
@@ -158,96 +253,5 @@ class DeleteAssignmentController extends AsyncNotifier<void> {
       // Refresh the assignments list
       ref.invalidate(assignmentsControllerProvider);
     });
-  }
-}
-
-/// Controller for archiving an assignment.
-class ArchiveAssignmentController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // Initial state - no operation
-  }
-
-  /// Archives an assignment and refreshes the list.
-  Future<void> archiveAssignment(String assignmentId) async {
-    state = const AsyncLoading();
-
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(assignmentRepositoryProvider);
-      await repository.archiveAssignment(assignmentId);
-      // Refresh the assignments list and detail
-      ref.invalidate(assignmentsControllerProvider);
-      ref.invalidate(detailAssignmentControllerProvider(assignmentId));
-    });
-  }
-}
-
-/// Controller for duplicating an assignment.
-class DuplicateAssignmentController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // Initial state - no operation
-  }
-
-  /// Duplicates an assignment and refreshes the list.
-  Future<void> duplicateAssignment(String assignmentId) async {
-    state = const AsyncLoading();
-
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(assignmentRepositoryProvider);
-      await repository.duplicateAssignment(assignmentId);
-      // Refresh the assignments list
-      ref.invalidate(assignmentsControllerProvider);
-    });
-  }
-}
-
-/// Controller for generating assignment matrix.
-class GenerateMatrixController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // Initial state - no operation
-  }
-
-  /// Generates assignment matrix using AI.
-  Stream<List<MatrixItemEntity>> generateMatrix({
-    required String topic,
-    required GradeLevel gradeLevel,
-    required Difficulty difficulty,
-    String? content,
-    required int totalQuestions,
-    required int totalPoints,
-    List<QuestionType>? questionTypes,
-  }) {
-    final repository = ref.read(assignmentRepositoryProvider);
-    return repository.generateMatrix(
-      topic: topic,
-      gradeLevel: gradeLevel,
-      difficulty: difficulty,
-      content: content,
-      totalQuestions: totalQuestions,
-      totalPoints: totalPoints,
-      questionTypes: questionTypes,
-    );
-  }
-}
-
-/// Controller for generating questions.
-class GenerateQuestionsController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // Initial state - no operation
-  }
-
-  /// Generates questions based on approved matrix.
-  Stream<GenerationProgress> generateQuestions({
-    required String assignmentId,
-    required List<MatrixItemEntity> matrix,
-  }) {
-    final repository = ref.read(assignmentRepositoryProvider);
-    return repository.generateQuestions(
-      assignmentId: assignmentId,
-      matrix: matrix,
-    );
   }
 }

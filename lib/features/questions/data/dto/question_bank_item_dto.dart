@@ -13,10 +13,10 @@ class QuestionBankItemDto {
   final String? explanation;
   final String? titleImageUrl;
   final Map<String, dynamic> data;
-  final String ownerId;
+  final String? ownerId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String? grade;
+  final String grade;
   final String? chapter;
   final String? subject;
 
@@ -28,10 +28,10 @@ class QuestionBankItemDto {
     this.explanation,
     this.titleImageUrl,
     required this.data,
-    required this.ownerId,
+    this.ownerId,
     required this.createdAt,
     required this.updatedAt,
-    this.grade,
+    required this.grade,
     this.chapter,
     this.subject,
   });

@@ -1,7 +1,6 @@
 import 'package:datn_mobile/features/assignments/data/dto/question_order_dto.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_detail_dto.g.dart';
@@ -16,7 +15,7 @@ class AssignmentDetailDto {
   final String teacherId;
   final String title;
   final String? description;
-  final String topic;
+  final String subject;
   @JsonKey(name: 'grade_level')
   final String gradeLevel;
   final String status;
@@ -41,7 +40,7 @@ class AssignmentDetailDto {
     required this.teacherId,
     required this.title,
     this.description,
-    required this.topic,
+    required this.subject,
     required this.gradeLevel,
     required this.status,
     required this.difficulty,
@@ -67,10 +66,9 @@ extension AssignmentDetailMapper on AssignmentDetailDto {
     teacherId: teacherId,
     title: title,
     description: description,
-    topic: topic,
-    gradeLevel: GradeLevel.fromName(gradeLevel),
-    status: AssignmentStatus.fromName(status),
-    difficulty: Difficulty.fromName(difficulty),
+    subject: Subject.fromApiValue(subject),
+    gradeLevel: GradeLevel.fromApiValue(gradeLevel),
+    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

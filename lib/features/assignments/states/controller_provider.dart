@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
 import 'package:datn_mobile/features/assignments/data/repository/assignment_repository_impl.dart';
-import 'package:datn_mobile/features/assignments/data/source/assignment_mock_data_source.dart';
+import 'package:datn_mobile/features/assignments/data/source/assignment_remote_source.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_enums.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/matrix_item_entity.dart';
+import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/repository/assignment_repository.dart';
 import 'package:datn_mobile/features/assignments/states/assignment_filter_state.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_enums.dart';
+import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
@@ -18,22 +19,20 @@ final assignmentFilterProvider = StateProvider<AssignmentFilterState>((ref) {
   return const AssignmentFilterState();
 });
 
-/// Provider for the assignment mock data source.
-final assignmentMockDataSourceProvider = Provider<AssignmentMockDataSource>((
-  ref,
-) {
-  return AssignmentMockDataSource();
+/// Provider for the assignment data source.
+final assignmentRemoteSourceProvider = Provider<AssignmentRemoteSource>((ref) {
+  return AssignmentRemoteSource(ref.watch(dioPod));
 });
 
 /// Provider for the assignment repository.
 final assignmentRepositoryProvider = Provider<AssignmentRepository>((ref) {
-  final dataSource = ref.watch(assignmentMockDataSourceProvider);
+  final dataSource = ref.watch(assignmentRemoteSourceProvider);
   return AssignmentRepositoryImpl(dataSource);
 });
 
 /// Provider for assignments list controller.
 final assignmentsControllerProvider =
-    AsyncNotifierProvider<AssignmentsController, List<AssignmentEntity>>(
+    AsyncNotifierProvider<AssignmentsController, AssignmentListResult>(
       () => AssignmentsController(),
     );
 
@@ -50,7 +49,7 @@ final detailAssignmentControllerProvider =
 
 /// Provider for creating a new exam.
 final createAssignmentControllerProvider =
-    AsyncNotifierProvider<CreateAssignmentController, void>(
+    AsyncNotifierProvider<CreateAssignmentController, AssignmentEntity?>(
       () => CreateAssignmentController(),
     );
 
@@ -64,28 +63,4 @@ final updateAssignmentControllerProvider =
 final deleteAssignmentControllerProvider =
     AsyncNotifierProvider<DeleteAssignmentController, void>(
       () => DeleteAssignmentController(),
-    );
-
-/// Provider for archiving an assignment.
-final archiveAssignmentControllerProvider =
-    AsyncNotifierProvider<ArchiveAssignmentController, void>(
-      () => ArchiveAssignmentController(),
-    );
-
-/// Provider for duplicating an assignment.
-final duplicateAssignmentControllerProvider =
-    AsyncNotifierProvider<DuplicateAssignmentController, void>(
-      () => DuplicateAssignmentController(),
-    );
-
-/// Provider for generating assignment matrix.
-final generateMatrixControllerProvider =
-    AsyncNotifierProvider<GenerateMatrixController, void>(
-      () => GenerateMatrixController(),
-    );
-
-/// Provider for generating questions.
-final generateQuestionsControllerProvider =
-    AsyncNotifierProvider<GenerateQuestionsController, void>(
-      () => GenerateQuestionsController(),
     );

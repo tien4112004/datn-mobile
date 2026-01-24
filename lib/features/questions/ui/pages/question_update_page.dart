@@ -7,7 +7,9 @@ import 'package:datn_mobile/features/questions/states/question_form/question_for
 import 'package:datn_mobile/features/questions/ui/widgets/chapter_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/question_basic_info_section.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/modify/question_meta_row.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/modify/question_title_input.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/modify/question_advanced_options.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/open_ended_section.dart';
@@ -293,52 +295,73 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
         body: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             children: [
-              // Basic information section
-              QuestionBasicInfoSection(
-                key: ValueKey(formState.questionId),
-                title: formState.title,
-                selectedType: formState.type,
-                selectedDifficulty: formState.difficulty,
-                titleImageUrl: formState.titleImageUrl,
-                explanation: formState.explanation,
+              QuestionMetaRow(
                 grade: formState.grade,
-                chapter: formState.chapter,
                 subject: formState.subject,
-                onTitleChanged: (value) {
-                  ref.read(questionFormProvider.notifier).updateTitle(value);
-                },
-                // Don't allow changing question type when editing
-                onTypeChanged: null,
-                onDifficultyChanged: (difficulty) {
-                  ref
-                      .read(questionFormProvider.notifier)
-                      .updateDifficulty(difficulty);
-                },
-                onTitleImageChanged: (url) {
-                  ref
-                      .read(questionFormProvider.notifier)
-                      .updateTitleImageUrl(url);
-                },
-                onExplanationChanged: (value) {
-                  ref
-                      .read(questionFormProvider.notifier)
-                      .updateExplanation(value);
-                },
-                // Don't allow changing grade when editing
+                difficulty: formState.difficulty,
+                canEdit: false,
                 onGradeChanged: null,
-                onChapterChanged: (value) {
-                  ref.read(questionFormProvider.notifier).updateChapter(value);
-                },
-                // Don't allow changing subject when editing
                 onSubjectChanged: null,
+                onDifficultyChanged: (value) => ref
+                    .read(questionFormProvider.notifier)
+                    .updateDifficulty(value),
+              ),
+              const SizedBox(height: 16),
+
+              QuestionTitleInput(
+                title: formState.title,
+                onTitleChanged: (value) =>
+                    ref.read(questionFormProvider.notifier).updateTitle(value),
+                titleImageUrl: formState.titleImageUrl,
+                onTitleImageChanged: (value) => ref
+                    .read(questionFormProvider.notifier)
+                    .updateTitleImageUrl(value),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Type: ",
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      formState.type.displayName,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              _buildTypeSpecificSection(formState),
+              const SizedBox(height: 24),
+
+              QuestionAdvancedOptions(
+                chapter: formState.chapter,
+                explanation: formState.explanation,
+                onExplanationChanged: (value) => ref
+                    .read(questionFormProvider.notifier)
+                    .updateExplanation(value),
                 onChapterButtonPressed: _handleChapterSelection,
               ),
-              const SizedBox(height: 32),
-
-              // Type-specific section
-              _buildTypeSpecificSection(formState),
 
               const SizedBox(height: 32),
 

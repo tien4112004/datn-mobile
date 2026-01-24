@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
+import 'package:datn_mobile/shared/widgets/question_badges.dart';
 
-/// Question Title Section - Displays the question title with enhanced typography
-///
-/// Features:
-/// - Uppercase section label with increased letter spacing
-/// - Large, bold title typography (displaySmall w800)
-/// - Proper visual hierarchy with Material 3 styling
 class QuestionTitleSection extends StatelessWidget {
   final BaseQuestion question;
+  final String? grade;
+  final String? subject;
 
-  const QuestionTitleSection({super.key, required this.question});
+  const QuestionTitleSection({
+    super.key,
+    required this.question,
+    this.grade,
+    this.subject,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class QuestionTitleSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
+
           // Question Title - Large, Bold
           Text(
             question.title,
@@ -40,9 +43,61 @@ class QuestionTitleSection extends StatelessWidget {
               letterSpacing: -0.5,
               height: 1.1,
               color: colorScheme.onSurface,
+              fontSize: 28,
             ),
           ),
+          const SizedBox(height: 16),
+
+          // Chips Row (Grade, Subject, Type)
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              // Type Badge
+              QuestionTypeBadge(
+                type: question.type,
+                iconSize: 16,
+                fontSize: 12,
+              ),
+
+              // Difficulty Badge
+              DifficultyBadge(
+                difficulty: question.difficulty,
+                iconSize: 16,
+                fontSize: 12,
+              ),
+
+              // Grade Badge
+              if (grade != null) _buildMetaChip(context, grade!),
+
+              // Subject Badge
+              if (subject != null) _buildMetaChip(context, subject!),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMetaChip(BuildContext context, String label) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+        ),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSurfaceVariant,
+          fontSize: 12,
+        ),
       ),
     );
   }

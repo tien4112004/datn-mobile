@@ -100,6 +100,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
               imageUrl: _options[index].imageUrl,
               isCorrect: _options[index].isCorrect,
               canRemove: _options.length > 2,
+              isMultipleSelect: false,
               onRemove: () => _removeOption(index),
               onTextChanged: (value) => _updateOption(index, text: value),
               onImageUrlChanged: (value) => _updateOption(

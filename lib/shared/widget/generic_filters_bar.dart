@@ -108,17 +108,60 @@ class GenericFiltersBar extends StatelessWidget {
   final List<BaseFilterConfig> filters;
   final VoidCallback onClearFilters;
   final bool isReadOnly;
+  final bool useWrap;
+  final List<Widget> trailing;
 
   const GenericFiltersBar({
     super.key,
     required this.filters,
     required this.onClearFilters,
     this.isReadOnly = false,
+    this.useWrap = false,
+    this.trailing = const [],
   });
 
   @override
   Widget build(BuildContext context) {
     final hasFilters = filters.any((filter) => filter.hasSelection);
+
+    final children = [
+      ...filters.map((filter) {
+        final chip = FilterChipButton(
+          filter: filter,
+          onTap: () => FilterChipButton.showFilterPicker(context, filter),
+          isReadOnly: isReadOnly,
+        );
+
+        if (useWrap) return chip;
+
+        return Padding(padding: const EdgeInsets.only(right: 8), child: chip);
+      }),
+      ...trailing,
+      if (hasFilters && !isReadOnly)
+        TextButton.icon(
+          onPressed: onClearFilters,
+          icon: const Icon(LucideIcons.x, size: 14),
+          label: const Text('Clear'),
+          style: TextButton.styleFrom(
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            foregroundColor: Theme.of(context).colorScheme.error,
+          ),
+        ),
+    ];
+
+    if (useWrap) {
+      return Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(color: Colors.transparent),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: children,
+        ),
+      );
+    }
 
     return Container(
       width: double.infinity,
@@ -126,31 +169,7 @@ class GenericFiltersBar extends StatelessWidget {
       decoration: const BoxDecoration(color: Colors.transparent),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            ...filters.map((filter) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChipButton(
-                  filter: filter,
-                  onTap: () =>
-                      FilterChipButton.showFilterPicker(context, filter),
-                  isReadOnly: isReadOnly,
-                ),
-              );
-            }),
-            if (hasFilters && !isReadOnly)
-              TextButton.icon(
-                onPressed: onClearFilters,
-                icon: const Icon(LucideIcons.x, size: 14),
-                label: const Text('Clear'),
-                style: TextButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                ),
-              ),
-          ],
-        ),
+        child: Row(children: children),
       ),
     );
   }

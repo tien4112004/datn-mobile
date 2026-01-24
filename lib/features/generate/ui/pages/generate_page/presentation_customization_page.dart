@@ -4,7 +4,6 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -76,7 +75,7 @@ class _PresentationCustomizationPageState
 
   @override
   Widget build(BuildContext context) {
-    final t = ref.watch(translationsPod);
+    // final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
     final formState = ref.watch(presentationFormControllerProvider);
@@ -84,82 +83,78 @@ class _PresentationCustomizationPageState
       presentationGenerateControllerProvider,
     );
 
-    // Listen for generation completion (both outline regeneration and presentation)
-    ref.listen(presentationGenerateControllerProvider, (previous, next) {
-      next.when(
-        data: (state) {
-          ref.read(loadingOverlayPod.notifier).state = false;
-          final wasLoading =
-              previous?.maybeWhen(loading: () => true, orElse: () => false) ??
-              false;
+    // // Listen for generation completion (both outline regeneration and presentation)
+    // ref.listen(presentationGenerateControllerProvider, (previous, next) {
+    //   next.when(
+    //     data: (state) {
+    //       final wasLoading =
+    //           previous?.maybeWhen(loading: () => true, orElse: () => false) ??
+    //           false;
 
-          // Only process if transitioning from loading to data state
-          if (!wasLoading) return;
+    //       // Only process if transitioning from loading to data state
+    //       if (!wasLoading) return;
 
-          // Handle outline regeneration - check if outline response just came in
-          final previousState = previous?.maybeWhen(
-            data: (s) => s,
-            orElse: () => null,
-          );
+    //       // Handle outline regeneration - check if outline response just came in
+    //       final previousState = previous?.maybeWhen(
+    //         data: (s) => s,
+    //         orElse: () => null,
+    //       );
 
-          if (state.outlineResponse != null &&
-              (previousState?.outlineResponse == null)) {
-            // Update the form state with new outline
-            ref
-                .read(presentationFormControllerProvider.notifier)
-                .setOutline(state.outlineResponse!);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  t
-                      .generate
-                      .presentationCustomization
-                      .outlineRegeneratedSuccess,
-                ),
-                backgroundColor: Colors.green,
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          }
+    //       if (state.outlineResponse != null &&
+    //           (previousState?.outlineResponse == null)) {
+    //         // Update the form state with new outline
+    //         ref
+    //             .read(presentationFormControllerProvider.notifier)
+    //             .setOutline(state.outlineResponse!);
+    //         ScaffoldMessenger.of(context).showSnackBar(
+    //           SnackBar(
+    //             content: Text(
+    //               t
+    //                   .generate
+    //                   .presentationCustomization
+    //                   .outlineRegeneratedSuccess,
+    //             ),
+    //             backgroundColor: Colors.green,
+    //             duration: const Duration(seconds: 2),
+    //           ),
+    //         );
+    //       }
 
-          // Handle presentation generation
-          if (state.presentationResponse != null &&
-              (previousState?.presentationResponse == null)) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  t
-                      .generate
-                      .presentationCustomization
-                      .presentationSubmittedSuccess,
-                ),
-                backgroundColor: Colors.green,
-                duration: const Duration(seconds: 3),
-              ),
-            );
-            // Navigate to home or presentation detail page
-            context.router.popUntilRoot();
-          }
-        },
-        loading: () {
-          ref.read(loadingOverlayPod.notifier).state = true;
-        },
-        error: (error, stackTrace) {
-          ref.read(loadingOverlayPod.notifier).state = false;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                t.generate.presentationCustomization.error(
-                  error: error.toString(),
-                ),
-              ),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 5),
-            ),
-          );
-        },
-      );
-    });
+    //       // Handle presentation generation
+    //       if (state.presentationResponse != null &&
+    //           (previousState?.presentationResponse == null)) {
+    //         ScaffoldMessenger.of(context).showSnackBar(
+    //           SnackBar(
+    //             content: Text(
+    //               t
+    //                   .generate
+    //                   .presentationCustomization
+    //                   .presentationSubmittedSuccess,
+    //             ),
+    //             backgroundColor: Colors.green,
+    //             duration: const Duration(seconds: 3),
+    //           ),
+    //         );
+    //         // Navigate to home or presentation detail page
+    //         context.router.popUntilRoot();
+    //       }
+    //     },
+    //     loading: () {},
+    //     error: (error, stackTrace) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(
+    //           content: Text(
+    //             t.generate.presentationCustomization.error(
+    //               error: error.toString(),
+    //             ),
+    //           ),
+    //           backgroundColor: Colors.red,
+    //           duration: const Duration(seconds: 5),
+    //         ),
+    //       );
+    //     },
+    //   );
+    // });
 
     return Scaffold(
       backgroundColor: isDark ? cs.surface : const Color(0xFFF9FAFB),
@@ -306,12 +301,14 @@ class _PresentationCustomizationPageState
   }
 
   void _handleGenerate() {
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
-    final request = formController.toPresentationRequest();
-    ref
-        .read(presentationGenerateControllerProvider.notifier)
-        .generatePresentation(request);
+    // final formController = ref.read(
+    //   presentationFormControllerProvider.notifier,
+    // );
+    // final request = formController.toPresentationRequest(ref);
+    // ref
+    //     .read(presentationGenerateControllerProvider.notifier)
+    //     .generatePresentation(request);
+
+    // context.router.push(const PresentationGenerationWebViewRoute());
   }
 }

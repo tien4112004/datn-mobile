@@ -5,7 +5,8 @@ part 'user_profile.g.dart';
 
 @JsonSerializable()
 class UserProfile {
-  final String email;
+  final String id;
+  final String? email;
   final String firstName;
   final String lastName;
   final DateTime? dateOfBirth;
@@ -16,17 +17,19 @@ class UserProfile {
   final UserRole? role;
 
   UserProfile({
-    required this.email,
-    required this.firstName,
+    required this.id,
     required this.lastName,
-    this.dateOfBirth,
+    required this.firstName,
     required this.phoneNumber,
+    this.email,
+    this.dateOfBirth,
     this.role,
   });
 
   String get fullName => '$firstName $lastName';
 
   UserProfile copyWith({
+    String? id,
     String? email,
     String? firstName,
     String? lastName,
@@ -35,6 +38,7 @@ class UserProfile {
     UserRole? role,
   }) {
     return UserProfile(
+      id: id ?? this.id,
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

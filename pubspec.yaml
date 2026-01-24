@@ -58,6 +58,7 @@ dependencies:
   cached_network_image: ^3.4.1
   uuid: ^4.1.0
   shared_preferences: ^2.2.0
+  jwt_decoder: ^2.0.1
   timeago: ^3.7.0
   flutter_quill: ^11.5.0
   markdown_quill: ^4.3.0

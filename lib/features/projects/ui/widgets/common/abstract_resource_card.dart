@@ -53,6 +53,10 @@ class AbstractDocumentCard extends ConsumerWidget {
                   decoration: BoxDecoration(
                     borderRadius: Themes.boxRadius,
                     color: resourceType.color.withValues(alpha: 0.1),
+                    border: Border.all(
+                      color: resourceType.color.withValues(alpha: 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: thumbnail == null
                       ? DefaultThumbnail(resourceType: resourceType)
@@ -64,10 +68,11 @@ class AbstractDocumentCard extends ConsumerWidget {
                     // Title
                     Text(
                       title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: Themes.fontSize.s16,
                         fontWeight: FontWeight.bold,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     SizedBox(height: Themes.padding.p4),

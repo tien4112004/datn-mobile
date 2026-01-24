@@ -6,6 +6,7 @@ import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO: Make this take a list resources as a Dynamic list
 class ProjectsRow extends ConsumerWidget {
   const ProjectsRow({this.title, super.key, required this.onProjectSelected});
 
@@ -29,7 +30,7 @@ class ProjectsRow extends ConsumerWidget {
             ),
           ),
         ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 160, maxHeight: 220),
+          constraints: const BoxConstraints(minHeight: 160),
           child: presentationsAsync.easyWhen(
             data: (presentationListState) => SingleChildScrollView(
               scrollDirection: Axis.horizontal,

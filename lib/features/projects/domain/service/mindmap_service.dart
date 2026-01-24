@@ -8,7 +8,8 @@ abstract class MindmapService {
   Future<Mindmap> fetchMindmapById(String id);
 
   Future<List<MindmapMinimal>> fetchMindmapMinimalsPaged(
-    int pageKey, {
+    int pageKey,
+    int pageSize, {
     String? search,
     SortOption? sort,
   });

@@ -37,9 +37,14 @@ class AppRouter extends RootStackRouter {
       page: PresentationCustomizationRoute.page,
       path: '/presentation/customize',
     ),
+    AutoRoute(
+      page: PresentationGenerationWebViewRoute.page,
+      path: '/presentation/generate/view',
+    ),
     AutoRoute(page: OutlineEditorRoute.page, path: '/outline-editor'),
     AutoRoute(page: MindmapGenerateRoute.page, path: '/mindmap'),
     AutoRoute(page: MindmapResultRoute.page, path: '/mindmap/result'),
+    AutoRoute(page: MindmapDetailRoute.page, path: '/mindmap/:mindmapId'),
     AutoRoute(page: ImageGenerateRoute.page, path: '/image'),
     AutoRoute(page: ImageResultRoute.page, path: '/image/result'),
 
@@ -51,7 +56,11 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ImageDetailRoute.page, path: '/image/:imageId'),
     AutoRoute(page: SignInRoute.page, path: '/sign-in'),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
-    // Class Routes
+    AutoRoute(
+      page: PersonalInformationRoute.page,
+      path: '/personal-information',
+      guards: [RouteGuard(secureStorage)],
+    ), // Class Routes
     AutoRoute(page: ClassDetailRoute.page, path: '/classes/:classId'),
     AutoRoute(page: ClassEditRoute.page, path: '/classes/:classId/edit'),
 

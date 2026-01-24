@@ -21,11 +21,6 @@ part 'presentation_repository_impl.dart';
 part 'mindmap_repository_impl.dart';
 part 'image_repository_impl.dart';
 
-// Uncomment the following line to use the real implementation
-// final presentationRepositoryProvider = Provider<PresentationRepository>(
-//   (ref) => PresentationRepositoryImpl(ref.read(projectsRemoteSourceProvider)),
-// );
-
 // Use the mock implementation for testing or development
 final presentationRepositoryProvider = Provider<PresentationRepository>(
   (ref) => PresentationRepositoryImpl(ref.read(projectsRemoteSourceProvider)),

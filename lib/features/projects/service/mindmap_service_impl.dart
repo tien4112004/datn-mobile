@@ -17,7 +17,8 @@ class MindmapServiceImpl implements MindmapService {
 
   @override
   Future<List<MindmapMinimal>> fetchMindmapMinimalsPaged(
-    int pageKey, {
+    int pageKey,
+    int pageSize, {
     String? search,
     SortOption? sort,
   }) {

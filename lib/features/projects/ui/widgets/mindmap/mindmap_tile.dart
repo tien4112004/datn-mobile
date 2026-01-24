@@ -20,11 +20,11 @@ class MindmapTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return AbstractResourceTile(
       title: mindmap.title,
-      description: mindmap.description,
       updatedAt: mindmap.updatedAt,
       resourceType: ResourceType.mindmap,
       onTap: onTap,
       onMoreOptions: onMoreOptions,
+      thumbnail: mindmap.thumbnail,
     );
   }
 }

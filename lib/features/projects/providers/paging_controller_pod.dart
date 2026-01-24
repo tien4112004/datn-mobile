@@ -70,9 +70,26 @@ final mindmapPagingControllerPod = Provider.autoDispose
             .read(mindmapServiceProvider)
             .fetchMindmapMinimalsPaged(
               pageKey,
+              10,
               search: searchQuery,
               sort: sort,
             ),
+      );
+      return pagingController;
+    });
+
+final mindmapsPagingControllerPod =
+    Provider.autoDispose<PagingController<int, MindmapMinimal>>((ref) {
+      late final pagingController = PagingController<int, MindmapMinimal>(
+        getNextPageKey: (state) {
+          if (state.lastPageIsEmpty) {
+            return null;
+          }
+          return state.nextIntPageKey;
+        },
+        fetchPage: (pageKey) => ref
+            .read(mindmapServiceProvider)
+            .fetchMindmapMinimalsPaged(pageKey, 10),
       );
       return pagingController;
     });

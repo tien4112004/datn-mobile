@@ -5,7 +5,7 @@ part 'user_profile_response.g.dart';
 @JsonSerializable()
 class UserProfileResponse {
   final String id;
-  final String email;
+  final String? email;
   final String firstName;
   final String lastName;
   final DateTime? dateOfBirth;
@@ -16,14 +16,14 @@ class UserProfileResponse {
   DateTime? updatedAt;
 
   UserProfileResponse({
-    required this.id,
-    required this.email,
-    required this.firstName,
-    required this.lastName,
-    this.role,
     this.dateOfBirth,
     this.phoneNumber,
     this.avatarUrl,
+    this.email,
+    this.role,
+    required this.id,
+    required this.firstName,
+    required this.lastName,
   });
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) =>

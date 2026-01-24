@@ -4,18 +4,18 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/widgets/authenticated_webview.dart';
+import 'package:datn_mobile/core/config/config.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// datn-fe-presentation web app.
 ///
-/// This widget uses InAppWebView to display the complete presentation editor
-/// in read-only mode for mobile devices. It includes a visual indicator
-/// that editing is not allowed on mobile.
+/// This widget uses AuthenticatedWebView to display the complete presentation editor
+/// in read-only mode for mobile devices with automatic authentication.
 ///
 /// Handles loading and error states internally.
-class PresentationDetail extends StatefulWidget {
+class PresentationDetail extends ConsumerStatefulWidget {
   const PresentationDetail({
     super.key,
     required this.presentationAsync,
@@ -28,10 +28,10 @@ class PresentationDetail extends StatefulWidget {
   final VoidCallback? onRetry;
 
   @override
-  State<PresentationDetail> createState() => _PresentationDetailState();
+  ConsumerState<PresentationDetail> createState() => _PresentationDetailState();
 }
 
-class _PresentationDetailState extends State<PresentationDetail> {
+class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   InAppWebViewController? _webViewController;
   bool _isWebViewLoading = true;
 
@@ -148,17 +148,10 @@ class _PresentationDetailState extends State<PresentationDetail> {
   }
 
   Widget _buildWebView(Presentation presentation) {
-    // Load with presentation ID in the URL
-    final url =
-        '${dotenv.env['PRESENTATION_BASEURL'] ?? 'https://datn-fe-presentation.vercel.app'}/mobile';
+    final url = '${Config.presentationBaseUrl}/mobile';
 
-    return InAppWebView(
-      initialUrlRequest: URLRequest(url: WebUri(url)),
-      initialSettings: InAppWebViewSettings(
-        transparentBackground: false,
-        javaScriptEnabled: true,
-        useHybridComposition: true,
-      ),
+    return AuthenticatedWebView(
+      webViewUrl: url,
       onWebViewCreated: (controller) {
         _webViewController = controller;
       },
@@ -169,7 +162,9 @@ class _PresentationDetailState extends State<PresentationDetail> {
       },
       onReceivedError: (controller, request, error) {
         debugPrint('WebView error: $error');
-        setState(() => _isWebViewLoading = false);
+        if (mounted) {
+          setState(() => _isWebViewLoading = false);
+        }
       },
     );
   }

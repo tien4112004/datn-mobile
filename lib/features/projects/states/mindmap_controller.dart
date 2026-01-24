@@ -14,7 +14,9 @@ class MindmapsController extends AsyncNotifier<MindmapListState> {
   @override
   Future<MindmapListState> build() async {
     try {
-      final response = await ref.read(mindmapServiceProvider).fetchMindmaps();
+      final response = await ref
+          .read(mindmapServiceProvider)
+          .fetchMindmapMinimalsPaged(1, 10);
 
       return MindmapListState(response, true, false, null);
     } catch (e) {
@@ -26,7 +28,9 @@ class MindmapsController extends AsyncNotifier<MindmapListState> {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      final response = await ref.read(mindmapServiceProvider).fetchMindmaps();
+      final response = await ref
+          .read(mindmapServiceProvider)
+          .fetchMindmapMinimalsPaged(1, 10);
       return MindmapListState(response, true, false, null);
     });
   }

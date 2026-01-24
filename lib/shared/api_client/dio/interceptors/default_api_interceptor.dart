@@ -1,7 +1,6 @@
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:dio/dio.dart';
 import 'package:datn_mobile/shared/api_client/dio/default_api_error_handler.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // coverage:ignore-file
@@ -15,16 +14,6 @@ class DefaultAPIInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // Log headers in debug mode
-    debugPrint(
-      'Request Headers: ${options.headers['Cookie'] == null ? 'No Cookie Header' : 'Has Cookie Header'}',
-    );
-    debugPrint(
-      'Request Headers: ${options.headers['Authorization'] == null ? 'No Authorization Header' : 'Has Authorization Header'}',
-    );
-
-    debugPrint('Request URL: ${options.uri}');
-
     handler.next(options);
   }
 

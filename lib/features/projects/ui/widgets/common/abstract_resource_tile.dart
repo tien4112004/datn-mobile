@@ -28,6 +28,7 @@ class AbstractResourceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint('Building AbstractResourceTile for $title');
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
@@ -37,26 +38,31 @@ class AbstractResourceTile extends ConsumerWidget {
         child: Row(
           children: [
             // Thumbnail
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                constraints: const BoxConstraints(minWidth: 100, minHeight: 64),
-                color: resourceType.color.withValues(alpha: 0.1),
+            Container(
+              constraints: const BoxConstraints(
+                minWidth: 100,
+                minHeight: 64,
+                maxWidth: 120,
+                maxHeight: 80,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: resourceType.color.withValues(alpha: 0.2),
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                clipBehavior: Clip.hardEdge,
                 child: Center(
                   child: thumbnail == null
                       ? DefaultThumbnail(resourceType: resourceType)
-                      : _isImageUrl(thumbnail!)
-                      ? Image.network(
+                      : Image.network(
                           thumbnail!,
-                          fit: BoxFit.contain,
-                          width: 100,
-                          height: 56,
-                          cacheWidth: 100,
-                        )
-                      : Icon(
-                          resourceType.icon,
-                          size: 40,
-                          color: resourceType.color,
+                          fit: BoxFit.fitHeight,
+                          cacheWidth: 200,
                         ),
                 ),
               ),
@@ -76,7 +82,7 @@ class AbstractResourceTile extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   if (description != null) ...[
                     Text(
                       description!,
@@ -87,7 +93,7 @@ class AbstractResourceTile extends ConsumerWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                   ],
                   Text(
                     DateFormatHelper.formatRelativeDate(
@@ -108,10 +114,5 @@ class AbstractResourceTile extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  bool _isImageUrl(String url) {
-    debugPrint('Checking if URL is image: $url');
-    return url.contains('https://');
   }
 }

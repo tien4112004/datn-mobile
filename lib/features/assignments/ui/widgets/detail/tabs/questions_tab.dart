@@ -32,26 +32,11 @@ class QuestionsTab extends StatelessWidget {
       color: colorScheme.surfaceContainerLowest,
       child: CustomScrollView(
         slivers: [
-          // Clean header with icon badge (like in reference)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
               child: Row(
                 children: [
-                  // Icon badge with light blue background
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEEBFF),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      LucideIcons.listOrdered,
-                      color: Color(0xFF0052CC),
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -28,20 +28,6 @@ class MatrixTab extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
               child: Row(
                 children: [
-                  // Icon badge with light blue background
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEEBFF),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      LucideIcons.grid3x3,
-                      color: Color(0xFF0052CC),
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,19 +70,7 @@ class MatrixTab extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFDEEBFF),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          LucideIcons.chartLine,
-                          color: Color(0xFF0052CC),
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
+                      // Removed decorative icon container
                       Text(
                         'Summary Statistics',
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -112,7 +86,7 @@ class MatrixTab extends StatelessWidget {
                     itemCount: 4,
                     separatorBuilder: (context, index) {
                       return Divider(
-                        indent: 62,
+                        indent: 0,
                         height: 1,
                         color: colorScheme.outlineVariant,
                       );
@@ -396,27 +370,19 @@ class MatrixTab extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                 color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Text(
             value,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
           ),
@@ -435,8 +401,6 @@ class MatrixTab extends StatelessWidget {
         return 'APP';
       case Difficulty.advancedApplication:
         return 'ADV';
-      default:
-        return difficulty.displayName;
     }
   }
 

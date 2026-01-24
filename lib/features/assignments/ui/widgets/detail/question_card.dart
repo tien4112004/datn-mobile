@@ -213,28 +213,51 @@ class _QuestionCardState extends State<QuestionCard>
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Edit Mode Actions
-                if (widget.isEditMode) ...[
-                  IconButton(
-                    icon: Icon(
-                      LucideIcons.pencil,
-                      size: 18,
-                      color: colorScheme.primary,
-                    ),
-                    onPressed: widget.onEdit,
-                    tooltip: 'Edit',
-                    visualDensity: VisualDensity.compact,
+                if (widget.isEditMode)
+                  PopupMenuButton<String>(
+                    icon: const Icon(LucideIcons.ellipsisVertical, size: 20),
+                    tooltip: 'Options',
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        widget.onEdit?.call();
+                      } else if (value == 'delete') {
+                        widget.onDelete?.call();
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.pencil,
+                              size: 18,
+                              color: colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('Edit'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.trash2,
+                              size: 18,
+                              color: colorScheme.error,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Delete',
+                              style: TextStyle(color: colorScheme.error),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(
-                      LucideIcons.trash2,
-                      size: 18,
-                      color: colorScheme.error,
-                    ),
-                    onPressed: widget.onDelete,
-                    tooltip: 'Delete',
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
                 // Expand/Collapse Button
                 RotationTransition(
                   turns: _rotationAnimation,

@@ -3,6 +3,7 @@ import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto.d
 import 'package:datn_mobile/features/questions/data/dto/question_batch_response_dto.dart';
 import 'package:datn_mobile/features/questions/data/dto/question_create_request_dto.dart';
 import 'package:datn_mobile/features/questions/data/dto/question_update_request_dto.dart';
+import 'package:datn_mobile/features/questions/data/dto/chapter_response_dto.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
@@ -54,4 +55,11 @@ abstract class QuestionBankRemoteSource {
   /// Delete question.
   @DELETE('/question-bank/{id}')
   Future<void> deleteQuestion(@Path('id') String id);
+
+  /// Get list of chapters based on grade and subject.
+  @GET('/chapters')
+  Future<ServerResponseDto<List<ChapterResponseDto>>> getChapters({
+    @Query('grade') String? grade,
+    @Query('subject') String? subject,
+  });
 }

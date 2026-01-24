@@ -50,74 +50,162 @@ class QuestionListCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header: badges and more menu
-              Row(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Type badge
-                  QuestionTypeBadge(
-                    type: question.type,
-                    iconSize: 12,
-                    fontSize: 10,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Type badge
+                      QuestionTypeBadge(
+                        type: question.type,
+                        iconSize: 12,
+                        fontSize: 10,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+
+                      // Grade badge (if available)
+                      if (item.grade != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.secondaryContainer.withValues(
+                              alpha: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: colorScheme.secondary.withValues(
+                                alpha: 0.3,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            item.grade!.displayName,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSecondaryContainer,
+                            ),
+                          ),
+                        ),
+                      if (item.grade != null) const SizedBox(width: 8),
+
+                      // Subject badge (if available)
+                      if (item.subject != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.tertiaryContainer.withValues(
+                              alpha: 0.5,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: colorScheme.tertiary.withValues(
+                                alpha: 0.3,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            item.subject!.displayName,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onTertiaryContainer,
+                            ),
+                          ),
+                        ),
+                      if (item.subject != null) const SizedBox(width: 8),
+
+                      const Spacer(),
+
+                      // More menu (actions)
+                      if (showActions)
+                        PopupMenuButton<String>(
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: colorScheme.onSurfaceVariant,
+                            size: 20,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          onSelected: (value) {
+                            switch (value) {
+                              case 'view':
+                                onView?.call();
+                                break;
+                              case 'edit':
+                                onEdit?.call();
+                                break;
+                              case 'delete':
+                                onDelete?.call();
+                                break;
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 'view',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.visibility_outlined,
+                                    size: 18,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text('View'),
+                                ],
+                              ),
+                            ),
+                            if (onEdit != null)
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.edit_outlined,
+                                      size: 18,
+                                      color: colorScheme.onSurface,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text('Edit'),
+                                  ],
+                                ),
+                              ),
+                            if (onDelete != null)
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_outline,
+                                      size: 18,
+                                      color: colorScheme.error,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        color: colorScheme.error,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-
-                  // Grade badge (if available)
-                  if (item.grade != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondaryContainer.withValues(
-                          alpha: 0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: colorScheme.secondary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        item.grade!.displayName,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSecondaryContainer,
-                        ),
-                      ),
-                    ),
-                  if (item.grade != null) const SizedBox(width: 8),
-
-                  // Subject badge (if available)
-                  if (item.subject != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.tertiaryContainer.withValues(
-                          alpha: 0.5,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: colorScheme.tertiary.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        item.subject!.displayName,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onTertiaryContainer,
-                        ),
-                      ),
-                    ),
-                  if (item.subject != null) const SizedBox(width: 8),
 
                   // Chapter badge (if available)
                   if (item.chapter != null && item.chapter!.isNotEmpty)
@@ -143,82 +231,6 @@ class QuestionListCard extends StatelessWidget {
                           color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    ),
-                  const Spacer(),
-
-                  // More menu (actions)
-                  if (showActions)
-                    PopupMenuButton<String>(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: colorScheme.onSurfaceVariant,
-                        size: 20,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 'view':
-                            onView?.call();
-                            break;
-                          case 'edit':
-                            onEdit?.call();
-                            break;
-                          case 'delete':
-                            onDelete?.call();
-                            break;
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'view',
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.visibility_outlined,
-                                size: 18,
-                                color: colorScheme.onSurface,
-                              ),
-                              const SizedBox(width: 12),
-                              const Text('View'),
-                            ],
-                          ),
-                        ),
-                        if (onEdit != null)
-                          PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.edit_outlined,
-                                  size: 18,
-                                  color: colorScheme.onSurface,
-                                ),
-                                const SizedBox(width: 12),
-                                const Text('Edit'),
-                              ],
-                            ),
-                          ),
-                        if (onDelete != null)
-                          PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.delete_outline,
-                                  size: 18,
-                                  color: colorScheme.error,
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Delete',
-                                  style: TextStyle(color: colorScheme.error),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
                     ),
                 ],
               ),

@@ -135,8 +135,8 @@ class UnifiedResourceList<T> extends StatelessWidget {
       state: state,
       fetchNextPage: fetchNextPage,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      separatorBuilder: (context, index) => const SizedBox(
-        child: Divider(height: 1, color: Color.fromRGBO(189, 189, 189, 1)),
+      separatorBuilder: (context, index) => SizedBox(
+        child: Divider(indent: 154, height: 1, color: Colors.grey.shade400),
       ),
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: (context, item, index) => listTileBuilder(item),

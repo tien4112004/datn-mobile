@@ -72,7 +72,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 230,
+            expandedHeight: 200,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,

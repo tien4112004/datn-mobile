@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
 import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
+import 'package:datn_mobile/features/projects/domain/entity/recent_document.dart';
 import 'package:datn_mobile/features/projects/enum/sort_option.dart';
 import 'package:datn_mobile/features/projects/service/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,6 +91,22 @@ final mindmapsPagingControllerPod =
         fetchPage: (pageKey) => ref
             .read(mindmapServiceProvider)
             .fetchMindmapMinimalsPaged(pageKey, 10),
+      );
+      return pagingController;
+    });
+
+final recentDocumentsPagingControllerPod =
+    Provider.autoDispose<PagingController<int, RecentDocument>>((ref) {
+      late final pagingController = PagingController<int, RecentDocument>(
+        getNextPageKey: (state) {
+          if (state.lastPageIsEmpty) {
+            return null;
+          }
+          return state.nextIntPageKey;
+        },
+        fetchPage: (pageKey) => ref
+            .read(recentDocumentServiceProvider)
+            .fetchRecentDocuments(page: pageKey, pageSize: 10),
       );
       return pagingController;
     });

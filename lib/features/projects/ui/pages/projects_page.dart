@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/projects_row.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/recent_documents_row.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_types_list.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
@@ -71,13 +71,7 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
         context.router.push(const QuestionBankRoute());
       case ResourceType.assignment:
         context.router.push(const AssignmentsRoute());
-      default:
-        break;
     }
-  }
-
-  void _onProjectSelected(String projectId) {
-    // context.router.push(ProjectDetailRoute(projectId: projectId));
   }
 
   @override
@@ -89,10 +83,7 @@ class _ProjectsViewState extends ConsumerState<_ProjectsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ProjectsRow(
-            onProjectSelected: _onProjectSelected,
-            title: t.projects.recently_works,
-          ),
+          RecentDocumentsRow(title: t.projects.recently_works),
           Text(
             t.projects.categories,
             textAlign: TextAlign.start,

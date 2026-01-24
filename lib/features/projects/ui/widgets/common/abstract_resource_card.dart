@@ -45,23 +45,24 @@ class AbstractDocumentCard extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                Container(
-                  constraints: const BoxConstraints(
-                    minHeight: 82,
-                    maxHeight: 112,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: Themes.boxRadius,
-                    color: resourceType.color.withValues(alpha: 0.1),
-                    border: Border.all(
-                      color: resourceType.color.withValues(alpha: 0.2),
-                      width: 1,
+                // Thumbnail
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: Themes.boxRadius,
+                      color: resourceType.color.withValues(alpha: 0.1),
+                      border: Border.all(
+                        color: resourceType.color.withValues(alpha: 0.2),
+                        width: 1,
+                      ),
                     ),
+                    child: thumbnail == null
+                        ? DefaultThumbnail(resourceType: resourceType)
+                        : Thumbnail(imageUrl: thumbnail!),
                   ),
-                  child: thumbnail == null
-                      ? DefaultThumbnail(resourceType: resourceType)
-                      : Thumbnail(imageUrl: thumbnail!),
                 ),
+                SizedBox(height: Themes.padding.p8),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -85,6 +86,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                         ),
                       ),
                     ],
+                    // Created at
                     if (createdAt != null) ...[
                       Text(
                         t.projects.edited(
@@ -99,6 +101,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                         ),
                       ),
                     ],
+                    // Type
                     Text(
                       t.projects.type(type: resourceType.getValue()),
                       style: TextStyle(

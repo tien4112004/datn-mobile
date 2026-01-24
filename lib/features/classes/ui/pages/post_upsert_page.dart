@@ -1,17 +1,24 @@
+import 'package:datn_mobile/features/classes/domain/entity/attachment_metadata.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_actions_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_editor_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_segmented_control.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/attachment_preview_list.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector_sheet.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:datn_mobile/shared/services/media_service_provider.dart';
 import 'package:datn_mobile/shared/widgets/richtext_toolbar.dart';
 import 'package:markdown_quill/markdown_quill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'dart:io';
 
 /// Material 3 post creation/editing page with rich text editor
 class PostUpsertPage extends ConsumerStatefulWidget {
@@ -31,8 +38,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   PostType _selectedType = PostType.general;
   bool _allowComments = true;
   DateTime? _scheduledDate;
-  final List<String> _attachments = [];
+  final List<AttachmentMetadata> _attachmentMetadata = [];
+  final List<LinkedResourceEntity> _linkedResources = [];
   bool _isLoading = true;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -54,13 +63,22 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
             // Initialize form with post data
             _selectedType = post.type;
             _allowComments = post.allowComments;
-            _attachments.addAll(post.attachments);
+            _linkedResources.addAll(post.linkedResources);
+            // Convert attachment URLs to metadata (without file size info for existing)
+            _attachmentMetadata.addAll(
+              post.attachments.map(
+                (url) => AttachmentMetadata(
+                  cdnUrl: url,
+                  fileName: url.split('/').last,
+                  mediaType: 'image',
+                ),
+              ),
+            );
 
             // Dispose old controller before creating new one
             _quillController.dispose();
 
             // Initialize with post content as plain text
-            // TODO: Proper markdown to delta conversion can be added later
             _quillController = quill.QuillController.basic();
             _quillController.document.insert(0, post.content);
 
@@ -107,6 +125,9 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
       final converter = DeltaToMarkdown();
       final markdown = converter.convert(delta);
 
+      // Extract CDN URLs from metadata
+      final attachmentUrls = _attachmentMetadata.map((m) => m.cdnUrl).toList();
+
       if (widget.postId != null) {
         // Update existing post
         await ref
@@ -117,7 +138,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
-              attachments: _attachments.isEmpty ? null : _attachments,
+              attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
+              linkedResources: _linkedResources.isEmpty
+                  ? null
+                  : _linkedResources,
             );
 
         if (mounted) {
@@ -133,7 +157,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
-              attachments: _attachments.isEmpty ? null : _attachments,
+              attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
+              linkedResources: _linkedResources.isEmpty
+                  ? null
+                  : _linkedResources,
             );
 
         if (mounted) {
@@ -192,8 +219,90 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _pickAttachment() async {
-    if (mounted) {
-      _showSnackBar('Attachment picker coming soon', isError: false);
+    if (_attachmentMetadata.length >= 10) {
+      _showSnackBar('Maximum 10 attachments allowed');
+      return;
+    }
+
+    try {
+      final picker = ImagePicker();
+      final pickedFiles = await picker.pickMultiImage(
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      );
+
+      if (pickedFiles.isEmpty || !mounted) return;
+
+      setState(() => _isUploading = true);
+
+      final mediaService = ref.read(mediaServiceProvider);
+
+      for (final file in pickedFiles) {
+        if (_attachmentMetadata.length >= 10) {
+          _showSnackBar('Maximum 10 attachments reached');
+          break;
+        }
+
+        try {
+          // Get file info
+          final fileInfo = File(file.path);
+          final fileSize = await fileInfo.length();
+          final fileName = file.name;
+
+          // Upload file
+          final response = await mediaService.uploadMedia(filePath: file.path);
+
+          if (mounted) {
+            setState(() {
+              _attachmentMetadata.add(
+                AttachmentMetadata(
+                  cdnUrl: response.cdnUrl,
+                  fileName: fileName,
+                  fileSize: fileSize,
+                  extension: response.extension,
+                  mediaType: response.mediaType,
+                ),
+              );
+            });
+          }
+        } catch (e) {
+          if (mounted) {
+            _showSnackBar('Failed to upload ${file.name}: $e');
+          }
+        }
+      }
+
+      if (mounted) {
+        setState(() => _isUploading = false);
+        _showSnackBar('Uploaded ${pickedFiles.length} file(s)', isError: false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isUploading = false);
+        _showSnackBar('Failed to pick files: $e');
+      }
+    }
+  }
+
+  void _removeAttachment(int index) {
+    setState(() => _attachmentMetadata.removeAt(index));
+  }
+
+  Future<void> _pickLinkedResource() async {
+    final result = await showModalBottomSheet<List<LinkedResourceEntity>>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) =>
+          ResourceSelectorSheet(alreadySelected: _linkedResources),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        _linkedResources.clear();
+        _linkedResources.addAll(result);
+      });
+      _showSnackBar('Linked ${result.length} resource(s)', isError: false);
     }
   }
 
@@ -205,7 +314,8 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
         ? updatePostControllerProvider
         : createPostControllerProvider;
     final controllerState = ref.watch(controllerProvider);
-    final isSubmitting = controllerState.isLoading || _isLoading;
+    final isSubmitting =
+        controllerState.isLoading || _isLoading || _isUploading;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -316,14 +426,27 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   // Attachments & Actions Section
                   PostActionsSection(
                     selectedType: _selectedType,
-                    attachmentsCount: _attachments.length,
+                    attachmentsCount: _attachmentMetadata.length,
+                    linkedResourcesCount: _linkedResources.length,
                     scheduledDate: _scheduledDate,
                     isLoading: isSubmitting,
+                    isUploading: _isUploading,
                     onPickAttachment: _pickAttachment,
+                    onPickLinkedResource: _pickLinkedResource,
                     onSelectDate: _selectDate,
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Attachment Preview List (if attachments exist)
+                  if (_attachmentMetadata.isNotEmpty)
+                    AttachmentPreviewList(
+                      attachments: _attachmentMetadata,
+                      onRemove: _removeAttachment,
+                    ),
+
+                  if (_attachmentMetadata.isNotEmpty)
+                    const SizedBox(height: 16),
 
                   // Rich Text Editor
                   PostEditorSection(

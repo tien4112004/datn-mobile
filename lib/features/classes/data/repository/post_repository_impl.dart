@@ -2,9 +2,11 @@ import 'package:datn_mobile/features/classes/data/dto/pin_post_request_dto.dart'
 import 'package:datn_mobile/features/classes/data/dto/post_create_request_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_response_dto.dart';
 import 'package:datn_mobile/features/classes/data/dto/post_update_request_dto.dart';
+import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
 import 'package:datn_mobile/features/classes/data/source/post_remote_data_source.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/domain/repository/post_repository.dart';
 
 /// Implementation of PostRepository that uses remote data source
@@ -38,7 +40,7 @@ class PostRepositoryImpl implements PostRepository {
     required String content,
     required PostType type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     bool? allowComments,
   }) async {
@@ -46,7 +48,7 @@ class PostRepositoryImpl implements PostRepository {
       content: content,
       type: type.apiValue,
       attachments: attachments,
-      linkedResourceIds: linkedResourceIds,
+      linkedResources: linkedResources?.map((e) => e.toDto()).toList(),
       linkedLessonId: linkedLessonId,
       allowComments: allowComments,
     );
@@ -66,7 +68,7 @@ class PostRepositoryImpl implements PostRepository {
     String? content,
     PostType? type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     bool? isPinned,
     bool? allowComments,
@@ -75,7 +77,7 @@ class PostRepositoryImpl implements PostRepository {
       content: content,
       type: type?.apiValue,
       attachments: attachments,
-      linkedResourceIds: linkedResourceIds,
+      linkedResources: linkedResources?.map((e) => e.toDto()).toList(),
       linkedLessonId: linkedLessonId,
       isPinned: isPinned,
       allowComments: allowComments,

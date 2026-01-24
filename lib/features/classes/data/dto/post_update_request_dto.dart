@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_update_request_dto.g.dart';
 
@@ -8,7 +9,7 @@ class PostUpdateRequestDto {
   final String? content;
   final String? type;
   final List<String>? attachments;
-  final List<String>? linkedResourceIds;
+  final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
   final bool? isPinned;
   final bool? allowComments;
@@ -17,7 +18,7 @@ class PostUpdateRequestDto {
     this.content,
     this.type,
     this.attachments,
-    this.linkedResourceIds,
+    this.linkedResources,
     this.linkedLessonId,
     this.isPinned,
     this.allowComments,

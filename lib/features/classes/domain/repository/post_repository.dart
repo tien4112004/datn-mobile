@@ -1,5 +1,6 @@
 import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 
 /// Repository interface for post-related operations.
 /// This defines the contract without implementation details.
@@ -19,7 +20,7 @@ abstract class PostRepository {
     required String content,
     required PostType type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     bool? allowComments,
   });
@@ -33,7 +34,7 @@ abstract class PostRepository {
     String? content,
     PostType? type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     bool? isPinned,
     bool? allowComments,

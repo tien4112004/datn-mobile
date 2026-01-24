@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/providers/post_paging_controller_pod.dart';
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,7 @@ class UpdatePostController extends AsyncNotifier<void> {
     String? content,
     PostType? type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     bool? isPinned,
     bool? allowComments,
@@ -33,7 +34,7 @@ class UpdatePostController extends AsyncNotifier<void> {
         content: content,
         type: type,
         attachments: attachments,
-        linkedResourceIds: linkedResourceIds,
+        linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
         isPinned: isPinned,
         allowComments: allowComments,

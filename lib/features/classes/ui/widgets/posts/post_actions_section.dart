@@ -6,18 +6,24 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 class PostActionsSection extends StatelessWidget {
   final PostType selectedType;
   final int attachmentsCount;
+  final int linkedResourcesCount;
   final DateTime? scheduledDate;
   final bool isLoading;
+  final bool isUploading;
   final VoidCallback onPickAttachment;
+  final VoidCallback onPickLinkedResource;
   final VoidCallback onSelectDate;
 
   const PostActionsSection({
     super.key,
     required this.selectedType,
     required this.attachmentsCount,
+    this.linkedResourcesCount = 0,
     required this.scheduledDate,
     required this.isLoading,
+    this.isUploading = false,
     required this.onPickAttachment,
+    required this.onPickLinkedResource,
     required this.onSelectDate,
   });
 
@@ -28,24 +34,141 @@ class PostActionsSection extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      child: Column(
         children: [
-          // Attachments button
-          Expanded(
-            flex: attachmentsCount > 0 ? 7 : 1,
-            child: OutlinedButton(
-              onPressed: isLoading ? null : onPickAttachment,
+          // First Row - Attachments and Link Resource
+          Row(
+            children: [
+              // Attachments button
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: (isLoading || isUploading)
+                      ? null
+                      : onPickAttachment,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    side: BorderSide(
+                      color: attachmentsCount > 0
+                          ? colorScheme.primary.withValues(alpha: 0.3)
+                          : colorScheme.outlineVariant,
+                    ),
+                    backgroundColor: attachmentsCount > 0
+                        ? colorScheme.primaryContainer.withValues(alpha: 0.2)
+                        : colorScheme.surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (isUploading)
+                        SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: colorScheme.primary,
+                          ),
+                        )
+                      else
+                        Icon(
+                          LucideIcons.paperclip,
+                          size: 18,
+                          color: attachmentsCount > 0
+                              ? colorScheme.primary
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                      const SizedBox(width: 8),
+                      Text(
+                        isUploading
+                            ? 'Uploading...'
+                            : (attachmentsCount > 0
+                                  ? 'Add More ($attachmentsCount)'
+                                  : 'Add Attachments'),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: attachmentsCount > 0
+                              ? colorScheme.primary
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              // Link Resource button
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: isLoading ? null : onPickLinkedResource,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
+                    side: BorderSide(
+                      color: linkedResourcesCount > 0
+                          ? colorScheme.secondary.withValues(alpha: 0.3)
+                          : colorScheme.outlineVariant,
+                    ),
+                    backgroundColor: linkedResourcesCount > 0
+                        ? colorScheme.secondaryContainer.withValues(alpha: 0.2)
+                        : colorScheme.surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        LucideIcons.link,
+                        size: 18,
+                        color: linkedResourcesCount > 0
+                            ? colorScheme.secondary
+                            : colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        linkedResourcesCount > 0
+                            ? 'Linked ($linkedResourcesCount)'
+                            : 'Link Resource',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: linkedResourcesCount > 0
+                              ? colorScheme.secondary
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Event date button (only for events)
+          if (selectedType == PostType.scheduleEvent) ...[
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: isLoading ? null : onSelectDate,
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,
                 ),
                 side: BorderSide(
-                  color: attachmentsCount > 0
-                      ? colorScheme.primary.withValues(alpha: 0.3)
+                  color: scheduledDate != null
+                      ? colorScheme.primary
                       : colorScheme.outlineVariant,
                 ),
-                backgroundColor: attachmentsCount > 0
+                backgroundColor: scheduledDate != null
                     ? colorScheme.primaryContainer.withValues(alpha: 0.2)
                     : colorScheme.surface,
                 shape: RoundedRectangleBorder(
@@ -56,102 +179,23 @@ class PostActionsSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    LucideIcons.paperclip,
+                    LucideIcons.calendar,
                     size: 18,
-                    color: attachmentsCount > 0
+                    color: scheduledDate != null
                         ? colorScheme.primary
                         : colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Add Attachments',
+                    scheduledDate == null
+                        ? 'Select Event Date'
+                        : '${scheduledDate!.month}/${scheduledDate!.day}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w500,
-                      color: attachmentsCount > 0 ? colorScheme.primary : null,
+                      color: scheduledDate != null ? colorScheme.primary : null,
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-
-          // Attachment counter (if attachments exist)
-          if (attachmentsCount > 0) ...[
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer,
-                border: Border.all(
-                  color: colorScheme.primary.withValues(alpha: 0.3),
-                ),
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(LucideIcons.image, size: 16, color: colorScheme.primary),
-                  const SizedBox(width: 6),
-                  Text(
-                    '$attachmentsCount/10',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-
-          // Event date button (only for events and if no attachments counter shown)
-          if (selectedType == PostType.scheduleEvent &&
-              attachmentsCount == 0) ...[
-            const SizedBox(width: 12),
-            Expanded(
-              child: OutlinedButton(
-                onPressed: isLoading ? null : onSelectDate,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
-                  ),
-                  side: BorderSide(
-                    color: scheduledDate != null
-                        ? colorScheme.primary
-                        : colorScheme.outlineVariant,
-                  ),
-                  backgroundColor: scheduledDate != null
-                      ? colorScheme.primaryContainer.withValues(alpha: 0.2)
-                      : colorScheme.surface,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.calendar,
-                      size: 18,
-                      color: scheduledDate != null
-                          ? colorScheme.primary
-                          : colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      scheduledDate == null
-                          ? 'Event Date'
-                          : '${scheduledDate!.month}/${scheduledDate!.day}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: scheduledDate != null
-                            ? colorScheme.primary
-                            : null,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],

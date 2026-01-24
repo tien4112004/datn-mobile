@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_create_request_dto.g.dart';
 
@@ -8,7 +9,7 @@ class PostCreateRequestDto {
   final String content;
   final String type;
   final List<String>? attachments;
-  final List<String>? linkedResourceIds;
+  final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
   final bool? allowComments;
 
@@ -16,7 +17,7 @@ class PostCreateRequestDto {
     required this.content,
     required this.type,
     this.attachments,
-    this.linkedResourceIds,
+    this.linkedResources,
     this.linkedLessonId,
     this.allowComments,
   });

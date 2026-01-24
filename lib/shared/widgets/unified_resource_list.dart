@@ -98,7 +98,7 @@ class UnifiedResourceList<T> extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 0.85,
+        childAspectRatio: 0.95,
       ),
       itemCount: items.length,
       itemBuilder: (context, index) => gridCardBuilder(items[index]),

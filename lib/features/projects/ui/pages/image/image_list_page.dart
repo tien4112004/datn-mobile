@@ -3,11 +3,13 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/enum/sort_option.dart';
-import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/states/image_provider.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/image/image_grid_card.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/image/image_tile.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_transform.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,6 @@ class ImageListPage extends ConsumerStatefulWidget {
 
 class _ImageListPageState extends ConsumerState<ImageListPage> {
   SortOption? _sortOption;
-  String _searchQuery = '';
   late TextEditingController _searchController;
   Timer? _debounce;
 
@@ -34,6 +35,10 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
     super.initState();
     _sortOption = SortOption.nameAsc;
     _searchController = TextEditingController();
+    // Load initial data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(imageProvider.notifier).loadImagesWithFilter();
+    });
   }
 
   @override
@@ -46,16 +51,18 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      setState(() {
-        _searchQuery = query;
-      });
+      // Update filter and reload
+      ref.read(imageFilterProvider.notifier).state = ImageFilterState(
+        searchQuery: query,
+      );
+      ref.read(imageProvider.notifier).loadImagesWithFilter();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final pagingController = ref.watch(imagePagingControllerPod(_searchQuery));
+    final imageState = ref.watch(imageProvider);
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.image.name),
     );
@@ -91,7 +98,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                 tooltip: 'Refresh',
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  pagingController.refresh();
+                  ref.read(imageProvider.notifier).loadImagesWithFilter();
                 },
               ),
             ],
@@ -119,9 +126,12 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                                 icon: const Icon(LucideIcons.x, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
-                                  setState(() {
-                                    _searchQuery = '';
-                                  });
+                                  // Update filter and reload
+                                  ref.read(imageFilterProvider.notifier).state =
+                                      const ImageFilterState(searchQuery: '');
+                                  ref
+                                      .read(imageProvider.notifier)
+                                      .loadImagesWithFilter();
                                 },
                               )
                             : null,
@@ -208,7 +218,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
           ),
         ],
         body: UnifiedResourceList<ImageProjectMinimal>(
-          pagingController: pagingController,
+          asyncItems: imageState.mapData((state) => state.images),
           isGridView: viewPreferenceAsync,
           gridCardBuilder: (item) => ImageGridCard(
             image: item,
@@ -230,12 +240,13 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
               _showMoreOptions(context, item);
             },
           ),
+          skeletonGridBuilder: () => const ProjectGridSkeletonLoader(),
+          skeletonListBuilder: () => const ProjectListSkeletonLoader(),
           emptyIcon: LucideIcons.image,
           emptyTitle: t.projects.no_images,
           emptyMessage: 'Create your first image to get started',
-          noMoreItemsText: t.projects.no_images,
           onRefresh: () {
-            pagingController.refresh();
+            ref.read(imageProvider.notifier).loadImagesWithFilter();
           },
         ),
       ),

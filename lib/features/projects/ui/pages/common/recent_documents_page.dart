@@ -1,59 +1,72 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/domain/entity/recent_document.dart';
-import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/states/recent_documents_provider.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/recent_document_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 @RoutePage()
-class RecentDocumentsPage extends ConsumerWidget {
+class RecentDocumentsPage extends ConsumerStatefulWidget {
   const RecentDocumentsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RecentDocumentsPage> createState() =>
+      _RecentDocumentsPageState();
+}
+
+class _RecentDocumentsPageState extends ConsumerState<RecentDocumentsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Load initial data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(recentDocumentsProvider.notifier).loadRecentDocuments();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final pagingController = ref.watch(recentDocumentsPagingControllerPod);
+    final recentDocumentsState = ref.watch(recentDocumentsProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: t.projects.recently_works),
-      body: Padding(
-        padding: EdgeInsets.all(Themes.padding.p16),
-        child: PagedGridView<int, RecentDocument>(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.75,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          builderDelegate: PagedChildBuilderDelegate<RecentDocument>(
-            itemBuilder: (context, recentDocument, index) =>
-                RecentDocumentCard(recentDocument: recentDocument),
-            firstPageErrorIndicatorBuilder: (context) => Center(
-              child: Text(
-                'Error loading recent documents',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: Themes.fontSize.s16,
+      body: recentDocumentsState.easyWhen(
+        data: (state) => state.documents.isEmpty
+            ? EnhancedEmptyState(
+                icon: Icons.history,
+                title: t.projects.no_recent_works,
+                message: 'Your recent work will appear here',
+              )
+            : RefreshIndicator(
+                onRefresh: () async {
+                  ref
+                      .read(recentDocumentsProvider.notifier)
+                      .loadRecentDocuments();
+                },
+                child: GridView.builder(
+                  padding: EdgeInsets.all(Themes.padding.p16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: state.documents.length,
+                  itemBuilder: (context, index) => RecentDocumentCard(
+                    recentDocument: state.documents[index],
+                  ),
                 ),
               ),
-            ),
-            noItemsFoundIndicatorBuilder: (context) => Center(
-              child: Text(
-                t.projects.no_recent_works,
-                style: TextStyle(
-                  fontSize: Themes.fontSize.s16,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ),
-          state: pagingController.value,
-          fetchNextPage: pagingController.fetchNextPage,
-        ),
+        loadingWidget: () => const ProjectGridSkeletonLoader(),
+        onRetry: () {
+          ref.read(recentDocumentsProvider.notifier).loadRecentDocuments();
+        },
       ),
     );
   }

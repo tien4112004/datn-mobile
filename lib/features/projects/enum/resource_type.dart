@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 enum ResourceType {
-  document(
-    label: "document",
-    icon: LucideIcons.fileText,
-    color: Colors.blue,
+  assignment(
+    label: 'assignment',
+    icon: LucideIcons.clipboardList,
+    color: Colors.indigo,
     modelType: ModelType.text,
   ),
   image(
@@ -16,28 +16,22 @@ enum ResourceType {
     color: Colors.green,
     modelType: ModelType.image,
   ),
-  presentation(
-    label: 'presentation',
-    icon: LucideIcons.presentation,
-    color: Colors.orange,
-    modelType: ModelType.text,
-  ),
   mindmap(
     label: 'mindmap',
     icon: LucideIcons.brainCircuit,
     color: Colors.purple,
     modelType: ModelType.text,
   ),
+  presentation(
+    label: 'presentation',
+    icon: LucideIcons.presentation,
+    color: Colors.orange,
+    modelType: ModelType.text,
+  ),
   question(
     label: 'question',
     icon: LucideIcons.fileQuestionMark,
     color: Colors.teal,
-    modelType: ModelType.text,
-  ),
-  assignment(
-    label: 'assignment',
-    icon: LucideIcons.clipboardList,
-    color: Colors.indigo,
     modelType: ModelType.text,
   );
 
@@ -75,18 +69,16 @@ enum ResourceType {
 
   String getLabel(Translations t) {
     switch (this) {
-      case ResourceType.document:
-        return t.generate.resourceTypes.document;
-      case ResourceType.image:
-        return t.generate.resourceTypes.image;
-      case ResourceType.presentation:
-        return t.generate.resourceTypes.presentation;
-      case ResourceType.mindmap:
-        return t.generate.resourceTypes.mindmap;
-      case ResourceType.question:
-        return 'Questions Bank';
       case ResourceType.assignment:
         return 'Assignments';
+      case ResourceType.image:
+        return t.generate.resourceTypes.image;
+      case ResourceType.mindmap:
+        return t.generate.resourceTypes.mindmap;
+      case ResourceType.presentation:
+        return t.generate.resourceTypes.presentation;
+      case ResourceType.question:
+        return 'Questions Bank';
     }
   }
 

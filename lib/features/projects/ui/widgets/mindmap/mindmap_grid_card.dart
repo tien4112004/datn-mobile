@@ -21,6 +21,7 @@ class MindmapGridCard extends ConsumerWidget {
     return ResourceGridCard(
       title: mindmap.title,
       description: mindmap.description,
+      thumbnail: mindmap.thumbnail,
       updatedAt: mindmap.updatedAt,
       resourceType: ResourceType.mindmap,
       onTap: onTap,

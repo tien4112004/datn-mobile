@@ -1,4 +1,3 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
@@ -28,105 +27,120 @@ class ResourceGridCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: Themes.boxRadius,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: Themes.boxRadius,
-          border: Border.all(color: Colors.grey.shade200),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          width: 1,
         ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Thumbnail
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  color: resourceType.color.withValues(alpha: 0.1),
-                  child: Center(
-                    child: thumbnail == null
-                        ? DefaultThumbnail(resourceType: resourceType)
-                        : _isImageUrl(thumbnail!)
-                        ? Image.network(
-                            thumbnail!,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          )
-                        : Icon(
-                            resourceType.icon,
-                            size: 48,
-                            color: resourceType.color,
-                          ),
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: resourceType.color.withValues(alpha: 0.08),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
                   ),
                 ),
+                child: thumbnail == null
+                    ? DefaultThumbnail(resourceType: resourceType)
+                    : Thumbnail(imageUrl: thumbnail!),
               ),
             ),
             // Content
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (onMoreOptions != null) ...[
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: onMoreOptions,
+                                child: Icon(
+                                  LucideIcons.ellipsisVertical,
+                                  size: 18,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ),
-                      if (onMoreOptions != null)
-                        GestureDetector(
-                          onTap: onMoreOptions,
-                          child: const Icon(
-                            LucideIcons.ellipsisVertical,
-                            size: 16,
+                        const SizedBox(height: 8),
+                        if (description != null)
+                          Text(
+                            description!.isEmpty
+                                ? 'No description provided'
+                                : description!,
+                            style: description!.isEmpty
+                                ? theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.5),
+                                    height: 1.3,
+                                    fontStyle: FontStyle.italic,
+                                  )
+                                : theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    height: 1.3,
+                                  ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  if (description != null) ...[
+                      ],
+                    ),
                     Text(
-                      description!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
+                      DateFormatHelper.formatRelativeDate(
+                        ref: ref,
+                        updatedAt ?? DateFormatHelper.getNow(),
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.7,
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 4),
                   ],
-                  Text(
-                    DateFormatHelper.formatRelativeDate(
-                      ref: ref,
-                      updatedAt ?? DateFormatHelper.getNow(),
-                    ),
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                  ),
-                ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  bool _isImageUrl(String url) {
-    return url.contains('https://');
   }
 }

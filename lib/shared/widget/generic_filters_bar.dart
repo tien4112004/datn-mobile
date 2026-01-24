@@ -118,22 +118,12 @@ class GenericFiltersBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final hasFilters = filters.any((filter) => filter.hasSelection);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          bottom: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-            width: 1,
-          ),
-        ),
-      ),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(

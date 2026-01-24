@@ -3,11 +3,13 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/enum/sort_option.dart';
-import 'package:datn_mobile/features/projects/providers/paging_controller_pod.dart';
+import 'package:datn_mobile/features/projects/states/presentation_provider.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/presentation/presentation_grid_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/pods/view_preference_pod.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_transform.dart';
 import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
 import 'package:datn_mobile/shared/widget/unified_resource_list.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,10 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
     super.initState();
     _sortOption = SortOption.nameAsc;
     _searchController = TextEditingController();
+    // Load initial data
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(presentationProvider.notifier).loadPresentationsWithFilter();
+    });
   }
 
   @override
@@ -51,15 +57,17 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
       setState(() {
         _searchQuery = query;
       });
+      // Update filter and reload
+      ref.read(presentationFilterProvider.notifier).state =
+          PresentationFilterState(searchQuery: query, sortOption: _sortOption);
+      ref.read(presentationProvider.notifier).loadPresentationsWithFilter();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final pagingController = ref.watch(
-      pagingControllerPod((_searchQuery, _sortOption)),
-    );
+    final presentationState = ref.watch(presentationProvider);
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.presentation.name),
     );
@@ -72,7 +80,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 230,
+            expandedHeight: 200,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
@@ -95,7 +103,9 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                 tooltip: 'Refresh',
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  pagingController.refresh();
+                  ref
+                      .read(presentationProvider.notifier)
+                      .loadPresentationsWithFilter();
                 },
               ),
             ],
@@ -169,6 +179,16 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                   setState(() {
                                     _sortOption = value;
                                   });
+                                  // Update filter and reload
+                                  ref
+                                      .read(presentationFilterProvider.notifier)
+                                      .state = PresentationFilterState(
+                                    searchQuery: _searchQuery,
+                                    sortOption: value,
+                                  );
+                                  ref
+                                      .read(presentationProvider.notifier)
+                                      .loadPresentationsWithFilter();
                                 },
                                 allLabel: 'Default Sort',
                                 allIcon: LucideIcons.list,
@@ -212,7 +232,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
           ),
         ],
         body: UnifiedResourceList<PresentationMinimal>(
-          pagingController: pagingController,
+          asyncItems: presentationState.mapData((state) => state.presentations),
           isGridView: viewPreferenceAsync,
           gridCardBuilder: (item) => PresentationGridCard(
             presentation: item,
@@ -238,12 +258,15 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
               _showMoreOptions(context, item);
             },
           ),
+          skeletonGridBuilder: () => const ProjectGridSkeletonLoader(),
+          skeletonListBuilder: () => const ProjectListSkeletonLoader(),
           emptyIcon: LucideIcons.presentation,
           emptyTitle: t.projects.no_presentations,
           emptyMessage: 'Create your first presentation to get started',
-          noMoreItemsText: 'No more presentations',
           onRefresh: () {
-            pagingController.refresh();
+            ref
+                .read(presentationProvider.notifier)
+                .loadPresentationsWithFilter();
           },
         ),
       ),

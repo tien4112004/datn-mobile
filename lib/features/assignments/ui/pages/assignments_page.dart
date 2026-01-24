@@ -3,8 +3,9 @@ import 'package:datn_mobile/features/assignments/states/controller_provider.dart
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_card.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/assignment_header.dart';
+import 'package:datn_mobile/features/assignments/ui/widgets/assignment_loading.dart';
+import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
-import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -30,7 +31,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [_buildSliverAppBar(context, colorScheme, theme)];
         },
-        body: assignmentsAsync.when(
+        body: assignmentsAsync.easyWhen(
           data: (result) {
             final assignments = result.assignments;
 
@@ -63,30 +64,10 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
               ),
             );
           },
-          loading: () => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(color: colorScheme.primary),
-                const SizedBox(height: 16),
-                Text(
-                  'Loading assignments...',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          error: (error, stack) => EnhancedErrorState(
-            icon: LucideIcons.circleX,
-            title: 'Failed to load assignments',
-            message: error.toString(),
-            actionLabel: 'Retry',
-            onRetry: () {
-              ref.read(assignmentsControllerProvider.notifier).refresh();
-            },
-          ),
+          loadingWidget: () => const AssignmentLoading(),
+          onRetry: () {
+            ref.read(assignmentsControllerProvider.notifier).refresh();
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -107,7 +88,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: 200,
+      expandedHeight: 180,
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(

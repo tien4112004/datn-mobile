@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/projects/data/dto/mindmap_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/mindmap_minimal_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/presentation_dto.dart';
 import 'package:datn_mobile/features/projects/data/dto/presentation_minimal_dto.dart';
+import 'package:datn_mobile/features/projects/data/dto/recent_document_dto.dart';
 import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
@@ -69,5 +70,12 @@ abstract class ProjectsRemoteSource {
     @Query("pageSize") int pageSize = 10,
     @Query("sort") String sort = "desc",
     @Query("search") String? search,
+  });
+
+  // Recent documents endpoints
+  @GET("/recent-documents")
+  Future<ServerResponseDto<List<RecentDocumentDto>>> fetchRecentDocuments({
+    @Query("page") int page = 1,
+    @Query("pageSize") int pageSize = 10,
   });
 }

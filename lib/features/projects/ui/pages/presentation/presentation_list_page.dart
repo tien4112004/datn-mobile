@@ -36,7 +36,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.nameAsc;
+    _sortOption = SortOption.dateCreatedDesc;
     _searchController = TextEditingController();
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {

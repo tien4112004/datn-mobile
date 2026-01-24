@@ -85,18 +85,18 @@ class AbstractResourceTile extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  if (description != null) ...[
-                    Text(
-                      description!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                  ],
+                  // if (description != null) ...[
+                  //   Text(
+                  //     description!,
+                  //     style: TextStyle(
+                  //       fontSize: 14,
+                  //       color: Colors.grey.shade600,
+                  //     ),
+                  //     maxLines: 1,
+                  //     overflow: TextOverflow.ellipsis,
+                  //   ),
+                  //   const SizedBox(height: 6),
+                  // ],
                   Text(
                     DateFormatHelper.formatRelativeDate(
                       ref: ref,

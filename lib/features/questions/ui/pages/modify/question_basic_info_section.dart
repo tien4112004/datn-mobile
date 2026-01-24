@@ -21,6 +21,7 @@ class QuestionBasicInfoSection extends StatefulWidget {
   final ValueChanged<GradeLevel>? onGradeChanged;
   final ValueChanged<String> onChapterChanged;
   final ValueChanged<Subject>? onSubjectChanged;
+  final VoidCallback? onChapterButtonPressed;
 
   const QuestionBasicInfoSection({
     super.key,
@@ -40,6 +41,7 @@ class QuestionBasicInfoSection extends StatefulWidget {
     this.onGradeChanged,
     required this.onChapterChanged,
     this.onSubjectChanged,
+    this.onChapterButtonPressed,
   });
 
   @override
@@ -50,14 +52,12 @@ class QuestionBasicInfoSection extends StatefulWidget {
 class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
   late TextEditingController _titleController;
   late TextEditingController _explanationController;
-  late TextEditingController _chapterController;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.title);
     _explanationController = TextEditingController(text: widget.explanation);
-    _chapterController = TextEditingController(text: widget.chapter ?? '');
   }
 
   @override
@@ -71,16 +71,12 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
         widget.explanation != _explanationController.text) {
       _explanationController.text = widget.explanation;
     }
-    if (widget.chapter != oldWidget.chapter) {
-      _chapterController.text = widget.chapter ?? '';
-    }
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _explanationController.dispose();
-    _chapterController.dispose();
     super.dispose();
   }
 
@@ -245,17 +241,8 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
         ),
         const SizedBox(height: 16),
 
-        // Chapter field (text input)
-        TextFormField(
-          controller: _chapterController,
-          onChanged: widget.onChapterChanged,
-          decoration: InputDecoration(
-            labelText: 'Chapter (Optional)',
-            hintText: 'e.g., Chapter 5',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            contentPadding: const EdgeInsets.all(16),
-          ),
-        ),
+        // Chapter field (button to open dialog)
+        _buildChapterButton(context),
         const SizedBox(height: 16),
 
         // Title image (optional) - upload or URL
@@ -283,6 +270,65 @@ class _QuestionBasicInfoSectionState extends State<QuestionBasicInfoSection> {
           ),
           maxLines: 4,
         ),
+      ],
+    );
+  }
+
+  Widget _buildChapterButton(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final hasChapter = widget.chapter != null && widget.chapter!.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Chapter (Optional)',
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: widget.onChapterButtonPressed,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(color: colorScheme.outline, width: 1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    hasChapter ? widget.chapter! : 'Select Chapter',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: hasChapter
+                          ? colorScheme.onSurface
+                          : colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (!hasChapter)
+          Padding(
+            padding: const EdgeInsets.only(left: 16, top: 8),
+            child: Text(
+              'Tap to select a chapter for this question',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
       ],
     );
   }

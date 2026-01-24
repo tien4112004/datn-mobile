@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:datn_mobile/features/questions/states/chapter_provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A stateful widget for chapter filtering that maintains local state
@@ -102,15 +103,13 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
       );
     }
 
-    // TODO: Fetch chapters based on grade and subject
-    // For now, showing placeholder chapters
-    final sampleChapters = [
-      'Chapter 1',
-      'Chapter 2',
-      'Chapter 3',
-      'Chapter 4',
-      'Chapter 5',
-    ];
+    // Fetch chapters based on grade and subject
+    final chaptersAsync = ref.watch(
+      chaptersProvider((
+        grade: widget.currentGrade,
+        subject: widget.currentSubject,
+      )),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,26 +128,96 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
           ),
         ),
         const SizedBox(height: 16),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: sampleChapters.map((chapter) {
-            final isSelected = _localSelectedChapters.contains(chapter);
-            return FilterChip(
-              label: Text(chapter),
-              selected: isSelected,
-              showCheckmark: true,
-              onSelected: (selected) => _toggleChapter(chapter),
-              selectedColor: colorScheme.primaryContainer,
-              checkmarkColor: colorScheme.onPrimaryContainer,
-              side: BorderSide(
-                color: isSelected
-                    ? colorScheme.primary
-                    : colorScheme.outlineVariant,
-                width: 1,
-              ),
+        chaptersAsync.when(
+          data: (chapters) {
+            if (chapters.isEmpty) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: colorScheme.outlineVariant),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.info,
+                      size: 20,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'No chapters available for the selected grade and subject',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: chapters.map((chapter) {
+                final isSelected = _localSelectedChapters.contains(chapter.id);
+                return FilterChip(
+                  label: Text(chapter.name),
+                  selected: isSelected,
+                  showCheckmark: true,
+                  onSelected: (selected) => _toggleChapter(chapter.id),
+                  selectedColor: colorScheme.primaryContainer,
+                  checkmarkColor: colorScheme.onPrimaryContainer,
+                  side: BorderSide(
+                    color: isSelected
+                        ? colorScheme.primary
+                        : colorScheme.outlineVariant,
+                    width: 1,
+                  ),
+                );
+              }).toList(),
             );
-          }).toList(),
+          },
+          loading: () => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: colorScheme.primary,
+              ),
+            ),
+          ),
+          error: (error, stack) => Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colorScheme.errorContainer.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: colorScheme.error.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  LucideIcons.circleAlert,
+                  size: 20,
+                  color: colorScheme.error,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Failed to load chapters. Please try again.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

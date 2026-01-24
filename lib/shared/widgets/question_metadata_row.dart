@@ -96,7 +96,7 @@ class CompactMetadataRow extends StatelessWidget {
         // Usage count
         if (subject != null) ...[
           Icon(
-            LucideIcons.school,
+            LucideIcons.bookOpen,
             size: 14,
             color: colorScheme.onSurfaceVariant,
           ),

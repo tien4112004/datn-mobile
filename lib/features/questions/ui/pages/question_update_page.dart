@@ -4,6 +4,7 @@ import 'package:datn_mobile/features/questions/domain/entity/question_update_req
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/states/question_form/question_form_provider.dart';
 import 'package:datn_mobile/features/questions/states/question_form/question_form_state.dart';
+import 'package:datn_mobile/features/questions/ui/widgets/chapter_selection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/question_basic_info_section.dart';
@@ -59,7 +60,6 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     // Get the loaded question - read the state again after the async operation
     final questionBankState = ref.read(questionBankProvider);
     questionBankState.whenData((state) {
-      debugPrint('Question bank state: $state');
       if (state.selectedQuestion != null) {
         final questionItem = state.selectedQuestion!;
         final question = questionItem.question;
@@ -199,6 +199,41 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     );
   }
 
+  Future<void> _handleChapterSelection() async {
+    final formState = ref.read(questionFormProvider);
+
+    // Parse grade and subject from string to enum
+    GradeLevel? grade;
+    Subject? subject;
+
+    try {
+      grade = GradeLevel.values.firstWhere(
+        (g) => g.apiValue == formState.grade.apiValue,
+      );
+    } catch (e) {
+      // Grade not found
+    }
+
+    try {
+      subject = Subject.values.firstWhere(
+        (s) => s.apiValue == formState.subject.apiValue,
+      );
+    } catch (e) {
+      // Subject not found
+    }
+
+    final selectedChapter = await ChapterSelectionDialog.show(
+      context,
+      grade: grade,
+      subject: subject,
+      currentChapterId: formState.chapter,
+    );
+
+    if (selectedChapter != null) {
+      ref.read(questionFormProvider.notifier).updateChapter(selectedChapter);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -298,6 +333,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
                 },
                 // Don't allow changing subject when editing
                 onSubjectChanged: null,
+                onChapterButtonPressed: _handleChapterSelection,
               ),
               const SizedBox(height: 32),
 

@@ -534,8 +534,6 @@ class AssessmentMatrixDashboard extends StatelessWidget {
         return 'App';
       case Difficulty.advancedApplication:
         return 'Adv';
-      default:
-        return difficulty.displayName;
     }
   }
 
@@ -553,6 +551,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
   }
 }
 
+// TODO: Refactor this class. Since this AssesmentMatrix is currently dont match the design, we need to do some adjustments.
 /// Assessment matrix data model.
 class AssessmentMatrix {
   final Map<String, int> _targetMatrix;

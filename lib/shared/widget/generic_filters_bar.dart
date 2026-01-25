@@ -146,6 +146,9 @@ class GenericFiltersBar extends StatelessWidget {
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             foregroundColor: Theme.of(context).colorScheme.error,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
     ];

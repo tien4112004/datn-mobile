@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,5 +1,5 @@
 import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+import 'package:datn_mobile/shared/widgets/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

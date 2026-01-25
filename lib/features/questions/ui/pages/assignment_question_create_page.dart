@@ -8,7 +8,7 @@ import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_sec
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/open_ended_section.dart';
-import 'package:datn_mobile/shared/widget/unsaved_changes_dialog.dart';
+import 'package:datn_mobile/shared/widgets/unsaved_changes_dialog.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

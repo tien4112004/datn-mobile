@@ -15,8 +15,8 @@ import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.
 import 'package:datn_mobile/features/questions/ui/pages/modify/open_ended_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_section.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
-import 'package:datn_mobile/shared/widget/unsaved_changes_dialog.dart';
-import 'package:datn_mobile/shared/widget/form_action_buttons.dart';
+import 'package:datn_mobile/shared/widgets/unsaved_changes_dialog.dart';
+import 'package:datn_mobile/shared/widgets/form_action_buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Page for creating or editing a question

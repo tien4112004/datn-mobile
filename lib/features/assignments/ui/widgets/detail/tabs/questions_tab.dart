@@ -1,7 +1,7 @@
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:datn_mobile/features/assignments/ui/widgets/detail/question_card.dart';
-import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

@@ -1,7 +1,7 @@
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/advanced_question_filter_dialog.dart';
 
-import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+import 'package:datn_mobile/shared/widgets/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';

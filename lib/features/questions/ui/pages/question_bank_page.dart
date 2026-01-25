@@ -10,7 +10,7 @@ import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_
 import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_bank_list.dart';
-import 'package:datn_mobile/shared/widget/enhanced_empty_state.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Question Bank management page for teachers.

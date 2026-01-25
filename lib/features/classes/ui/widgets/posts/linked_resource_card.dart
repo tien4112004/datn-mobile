@@ -7,7 +7,7 @@ import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart
 import 'package:datn_mobile/features/classes/ui/widgets/posts/assignment_preview_card.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/skeleton_card.dart';
+import 'package:datn_mobile/shared/widgets/skeleton_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

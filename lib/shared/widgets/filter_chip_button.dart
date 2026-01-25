@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+import 'package:datn_mobile/shared/widgets/generic_filters_bar.dart';
 
 /// A clickable filter chip that displays a filter's current state
 ///

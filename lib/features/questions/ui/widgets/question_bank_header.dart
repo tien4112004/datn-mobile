@@ -1,8 +1,9 @@
 import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/advanced_question_filter_dialog.dart';
-import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
-import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+
+import 'package:datn_mobile/shared/widgets/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/bank_type_switcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,8 @@ class QuestionBankHeader extends ConsumerWidget {
     final filterState = ref.watch(questionBankFilterProvider);
     final filterNotifier = ref.read(questionBankFilterProvider.notifier);
     final questionbankController = ref.watch(questionBankProvider.notifier);
+
+    debugPrint(filterState.hasActiveFilters.toString());
 
     final filterConfigs = List<BaseFilterConfig>.of([
       FilterConfig<GradeLevel>(
@@ -148,19 +151,15 @@ class QuestionBankHeader extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           // Feature filters bar
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ...filterConfigs.map(
-                (filter) => FilterChipButton(
-                  filter: filter,
-                  onTap: () {
-                    FilterChipButton.showFilterPicker(context, filter);
-                  },
-                ),
-              ),
-              // Advanced filter button
+          GenericFiltersBar(
+            filters: filterConfigs,
+            onClearFilters: () {
+              HapticFeedback.lightImpact();
+              filterNotifier.state = filterState.clearFilters();
+              questionbankController.loadQuestionsWithFilter();
+            },
+            useWrap: true,
+            trailing: [
               InkWell(
                 onTap: () => showAdvancedQuestionFilterDialog(
                   context: context,

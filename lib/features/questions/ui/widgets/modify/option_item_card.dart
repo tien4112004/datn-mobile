@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/shared/widgets/image_input_field.dart';
 
-/// Card widget for displaying and editing a multiple choice option
+/// Row widget for displaying and editing a multiple choice option
 class OptionItemCard extends StatelessWidget {
   final int index;
   final String text;
@@ -12,6 +12,8 @@ class OptionItemCard extends StatelessWidget {
   final ValueChanged<String?> onImageUrlChanged;
   final ValueChanged<bool> onCorrectChanged;
   final bool canRemove;
+  final bool
+  isMultipleSelect; // To decide between Radio style or Checkbox style
 
   const OptionItemCard({
     super.key,
@@ -24,6 +26,7 @@ class OptionItemCard extends StatelessWidget {
     required this.onImageUrlChanged,
     required this.onCorrectChanged,
     this.canRemove = true,
+    this.isMultipleSelect = false,
   });
 
   @override
@@ -31,117 +34,159 @@ class OptionItemCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: isCorrect
-              ? colorScheme.primary.withValues(alpha: 0.5)
-              : colorScheme.outlineVariant,
-          width: isCorrect ? 2 : 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header row with option label and remove button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Align to top if multi-line text
+        children: [
+          InkWell(
+            onTap: () => onCorrectChanged(!isCorrect),
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                isMultipleSelect
+                    ? (isCorrect
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank)
+                    : (isCorrect
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked),
+                color: isCorrect
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        'Option ${index + 1}',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.w600,
-                        ),
+                TextFormField(
+                  initialValue: text,
+                  decoration: InputDecoration(
+                    hintText: 'Option ${index + 1}',
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.5,
                       ),
                     ),
-                    if (isCorrect) ...[
-                      const SizedBox(width: 8),
-                      Icon(
-                        Icons.check_circle,
-                        size: 20,
-                        color: colorScheme.primary,
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 0,
+                      vertical: 8,
+                    ),
+                    isDense: true,
+                  ),
+                  style: theme.textTheme.bodyMedium,
+                  minLines: 1,
+                  maxLines: 3,
+                  onChanged: onTextChanged,
+                ),
+                if (imageUrl != null) ...[
+                  const SizedBox(height: 4),
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          imageUrl!,
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: Icon(Icons.broken_image),
+                              ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: () => onImageUrlChanged(null),
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
-                  ],
-                ),
-                if (canRemove)
-                  IconButton(
-                    icon: Icon(Icons.delete_outline, color: colorScheme.error),
-                    iconSize: 20,
-                    onPressed: onRemove,
-                    tooltip: 'Remove option',
                   ),
+                  const SizedBox(height: 4),
+                ],
               ],
             ),
-            const SizedBox(height: 12),
+          ),
 
-            // Option text field
-            TextFormField(
-              initialValue: text,
-              decoration: InputDecoration(
-                labelText: 'Option Text *',
-                hintText: 'Enter option text',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (imageUrl == null)
+                IconButton(
+                  icon: Icon(
+                    Icons.image_outlined,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  onPressed: () {
+                    // Simple image picker dialog for option
+                    _showImagePickerDialog(context);
+                  },
+                  tooltip: 'Add Image',
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
+                  iconSize: 20,
                 ),
-                contentPadding: const EdgeInsets.all(12),
-              ),
-              maxLines: 2,
-              onChanged: onTextChanged,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Option text is required';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 12),
+              if (canRemove)
+                IconButton(
+                  icon: Icon(Icons.close, color: colorScheme.onSurfaceVariant),
+                  onPressed: onRemove,
+                  tooltip: 'Remove',
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.all(8),
+                  iconSize: 20,
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-            // Image field (optional) - supports upload, camera, and URL
+  void _showImagePickerDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Option Image",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 16),
             ImageInputField(
               initialValue: imageUrl,
-              label: 'Option Image',
-              hint: 'Upload, take photo, or enter URL',
-              isRequired: false,
-              onChanged: onImageUrlChanged,
-            ),
-            const SizedBox(height: 12),
-
-            // Correct answer checkbox
-            CheckboxListTile(
-              value: isCorrect,
-              onChanged: (value) => onCorrectChanged(value ?? false),
-              title: Text(
-                'Correct Answer',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                'Mark this option as the correct answer',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (val) {
+                onImageUrlChanged(val);
+                Navigator.pop(context);
+              },
+              label: "Option ${index + 1} Image",
             ),
           ],
         ),

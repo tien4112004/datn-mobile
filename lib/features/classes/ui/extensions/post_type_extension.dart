@@ -7,21 +7,17 @@ extension PostTypeUIExtension on PostType {
     switch (this) {
       case PostType.general:
         return LucideIcons.messageCircle;
-      case PostType.announcement:
-        return LucideIcons.megaphone;
-      case PostType.scheduleEvent:
-        return LucideIcons.calendar;
+      case PostType.exercise:
+        return LucideIcons.clipboardList;
     }
   }
 
   String get createPageLabel {
     switch (this) {
       case PostType.general:
-        return 'General Post';
-      case PostType.announcement:
-        return 'Announcement';
-      case PostType.scheduleEvent:
-        return 'Event';
+        return 'Post';
+      case PostType.exercise:
+        return 'Exercise';
     }
   }
 }

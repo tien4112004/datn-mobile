@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_card_wrapper.dart';

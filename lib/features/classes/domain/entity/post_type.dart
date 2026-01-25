@@ -1,47 +1,38 @@
 /// Enum representing different types of posts in a class.
 enum PostType {
-  /// Important announcements from teachers
-  announcement,
+  /// General posts and updates with content, attachments, and linked resources
+  general,
 
-  /// Scheduled events or deadlines
-  scheduleEvent,
-
-  /// General posts and updates
-  general;
+  /// Exercise posts for linking assignments
+  exercise;
 
   /// Converts enum to API string format
   String get apiValue {
     switch (this) {
-      case PostType.announcement:
-        return 'announcement';
-      case PostType.scheduleEvent:
-        return 'schedule_event';
       case PostType.general:
         return 'general';
+      case PostType.exercise:
+        return 'exercise';
     }
   }
 
   /// Returns user-facing display name
   String get displayName {
     switch (this) {
-      case PostType.announcement:
-        return 'Announcement';
-      case PostType.scheduleEvent:
-        return 'Event';
       case PostType.general:
         return 'Post';
+      case PostType.exercise:
+        return 'Exercise';
     }
   }
 
   /// Converts API string to PostType enum
   static PostType fromName(String value) {
     switch (value) {
-      case 'announcement':
-        return PostType.announcement;
-      case 'schedule_event':
-        return PostType.scheduleEvent;
       case 'general':
         return PostType.general;
+      case 'exercise':
+        return PostType.exercise;
       default:
         return PostType.general;
     }

@@ -3,9 +3,10 @@ import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dial
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Metadata tab with clean, modern design matching the Info tab reference.
-/// Features: Large title, colored stat cards, instructions section.
-class MetadataTab extends StatelessWidget {
+import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class MetadataTab extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
   final ValueChanged<bool>? onShuffleChanged;
@@ -18,7 +19,7 @@ class MetadataTab extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -32,19 +33,6 @@ class MetadataTab extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
               child: Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEEBFF),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      LucideIcons.fileQuestionMark,
-                      color: Color(0xFF0052CC),
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +47,7 @@ class MetadataTab extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Created on ${_formatDate(assignment.createdAt)}',
+                          'Created on ${DateFormatHelper.formatMediumDate(assignment.createdAt, ref: ref)}',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -91,7 +79,7 @@ class MetadataTab extends StatelessWidget {
                     itemCount: 3,
                     separatorBuilder: (context, index) {
                       return Divider(
-                        indent: 62,
+                        indent: 0,
                         height: 1,
                         color: colorScheme.outlineVariant,
                       );
@@ -137,19 +125,6 @@ class MetadataTab extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEEBFF),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      LucideIcons.fileText,
-                      color: Color(0xFF0052CC),
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
                   Text(
                     'Description',
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -260,52 +235,25 @@ class MetadataTab extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                 color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Text(
             value,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
             ),
           ),
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return 'Unknown date';
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 
   void _showEditDialog(BuildContext context) {

@@ -1,24 +1,19 @@
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Options section for post creation (allow comments, scheduled date)
+/// Options section for post creation (allow comments)
 class PostOptionsSection extends ConsumerWidget {
   final bool allowComments;
   final PostType selectedType;
-  final DateTime? scheduledDate;
   final ValueChanged<bool>? onAllowCommentsChanged;
-  final VoidCallback onRemoveScheduledDate;
 
   const PostOptionsSection({
     super.key,
     required this.allowComments,
     required this.selectedType,
-    required this.scheduledDate,
     required this.onAllowCommentsChanged,
-    required this.onRemoveScheduledDate,
   });
 
   @override
@@ -122,64 +117,6 @@ class PostOptionsSection extends ConsumerWidget {
                     ),
                   ],
                 ),
-
-                // Scheduled Date Display
-                if (scheduledDate != null) ...[
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEEF2FF), // indigo-50
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: const Color(0xFFC7D2FE), // indigo-200
-                      ),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          LucideIcons.clock,
-                          size: 18,
-                          color: Color(0xFF6366F1), // indigo-500
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'SCHEDULED FOR',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: const Color(0xFF4F46E5), // indigo-600
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                DateFormatHelper.formatRelativeDate(
-                                  ref: ref,
-                                  scheduledDate!,
-                                ),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: onRemoveScheduledDate,
-                          icon: const Icon(LucideIcons.x, size: 16),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          visualDensity: VisualDensity.compact,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

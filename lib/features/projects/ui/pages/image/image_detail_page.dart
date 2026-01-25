@@ -8,7 +8,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/result_page/image_quick
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/services/service_pod.dart';
 import 'package:datn_mobile/shared/utils/format_utils.dart';
-import 'package:datn_mobile/shared/widget/enhanced_error_state.dart';
+import 'package:datn_mobile/shared/widgets/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -7,7 +7,9 @@ import 'package:datn_mobile/features/classes/ui/widgets/posts/post_content.dart'
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_footer.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_header.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_pin_indicator.dart';
-import 'package:datn_mobile/shared/widget/themed_card.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/post_attachments_display.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/linked_resources_display.dart';
+import 'package:datn_mobile/shared/widgets/themed_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -125,6 +127,18 @@ class _PostCardState extends ConsumerState<PostCard> {
 
                     // Post content
                     PostContent(content: widget.post.content),
+
+                    // Attachments (if any)
+                    if (widget.post.attachments.isNotEmpty)
+                      PostAttachmentsDisplay(
+                        attachments: widget.post.attachments,
+                      ),
+
+                    // Linked Resources (if any)
+                    if (widget.post.linkedResources.isNotEmpty)
+                      LinkedResourcesDisplay(
+                        linkedResources: widget.post.linkedResources,
+                      ),
 
                     // Footer section
                     PostFooter(

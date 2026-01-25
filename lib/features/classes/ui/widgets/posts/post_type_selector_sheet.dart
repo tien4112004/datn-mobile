@@ -50,7 +50,7 @@ class PostTypeSelectorSheet extends StatelessWidget {
           PostTypeOption(
             icon: PostType.general.icon,
             label: PostType.general.createPageLabel,
-            description: 'Share updates and information',
+            description: 'Share updates with attachments and resources',
             isSelected: selectedType == PostType.general,
             onTap: () {
               onTypeSelected(PostType.general);
@@ -59,23 +59,12 @@ class PostTypeSelectorSheet extends StatelessWidget {
             },
           ),
           PostTypeOption(
-            icon: PostType.announcement.icon,
-            label: PostType.announcement.createPageLabel,
-            description: 'Important class updates',
-            isSelected: selectedType == PostType.announcement,
+            icon: PostType.exercise.icon,
+            label: PostType.exercise.createPageLabel,
+            description: 'Link assignments for students',
+            isSelected: selectedType == PostType.exercise,
             onTap: () {
-              onTypeSelected(PostType.announcement);
-              Navigator.pop(context);
-              HapticFeedback.selectionClick();
-            },
-          ),
-          PostTypeOption(
-            icon: PostType.scheduleEvent.icon,
-            label: PostType.scheduleEvent.createPageLabel,
-            description: 'Create an event with date',
-            isSelected: selectedType == PostType.scheduleEvent,
-            onTap: () {
-              onTypeSelected(PostType.scheduleEvent);
+              onTypeSelected(PostType.exercise);
               Navigator.pop(context);
               HapticFeedback.selectionClick();
             },

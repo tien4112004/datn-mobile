@@ -1,17 +1,24 @@
+import 'package:datn_mobile/features/classes/domain/entity/attachment_metadata.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_actions_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_editor_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_section.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_segmented_control.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/attachment_preview_list.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector_sheet.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/assignment_selector_sheet.dart';
+import 'package:datn_mobile/shared/services/media_service_provider.dart';
 import 'package:datn_mobile/shared/widgets/richtext_toolbar.dart';
 import 'package:markdown_quill/markdown_quill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'dart:io';
 
 /// Material 3 post creation/editing page with rich text editor
 class PostUpsertPage extends ConsumerStatefulWidget {
@@ -30,9 +37,11 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
   PostType _selectedType = PostType.general;
   bool _allowComments = true;
-  DateTime? _scheduledDate;
-  final List<String> _attachments = [];
+  DateTime? _dueDate; // For exercise type posts
+  final List<AttachmentMetadata> _attachmentMetadata = [];
+  final List<LinkedResourceEntity> _linkedResources = [];
   bool _isLoading = true;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -54,13 +63,23 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
             // Initialize form with post data
             _selectedType = post.type;
             _allowComments = post.allowComments;
-            _attachments.addAll(post.attachments);
+            _dueDate = post.dueDate;
+            _linkedResources.addAll(post.linkedResources);
+            // Convert attachment URLs to metadata (without file size info for existing)
+            _attachmentMetadata.addAll(
+              post.attachments.map(
+                (url) => AttachmentMetadata(
+                  cdnUrl: url,
+                  fileName: url.split('/').last,
+                  mediaType: 'image',
+                ),
+              ),
+            );
 
             // Dispose old controller before creating new one
             _quillController.dispose();
 
             // Initialize with post content as plain text
-            // TODO: Proper markdown to delta conversion can be added later
             _quillController = quill.QuillController.basic();
             _quillController.document.insert(0, post.content);
 
@@ -107,6 +126,9 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
       final converter = DeltaToMarkdown();
       final markdown = converter.convert(delta);
 
+      // Extract CDN URLs from metadata
+      final attachmentUrls = _attachmentMetadata.map((m) => m.cdnUrl).toList();
+
       if (widget.postId != null) {
         // Update existing post
         await ref
@@ -117,7 +139,11 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
-              attachments: _attachments.isEmpty ? null : _attachments,
+              dueDate: _dueDate,
+              attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
+              linkedResources: _linkedResources.isEmpty
+                  ? null
+                  : _linkedResources,
             );
 
         if (mounted) {
@@ -133,7 +159,11 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
-              attachments: _attachments.isEmpty ? null : _attachments,
+              dueDate: _dueDate,
+              attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
+              linkedResources: _linkedResources.isEmpty
+                  ? null
+                  : _linkedResources,
             );
 
         if (mounted) {
@@ -162,38 +192,128 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
     );
   }
 
-  Future<void> _selectDate() async {
-    final now = DateFormatHelper.getNow();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _scheduledDate ?? now,
-      firstDate: now,
-      lastDate: DateTime(now.year + 1),
-    );
+  Future<void> _pickAttachment() async {
+    if (_attachmentMetadata.length >= 10) {
+      _showSnackBar('Maximum 10 attachments allowed');
+      return;
+    }
 
-    if (picked != null && mounted) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(_scheduledDate ?? now),
+    try {
+      final picker = ImagePicker();
+      final pickedFiles = await picker.pickMultiImage(
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
       );
 
-      if (time != null && mounted) {
-        setState(() {
-          _scheduledDate = DateTime(
-            picked.year,
-            picked.month,
-            picked.day,
-            time.hour,
-            time.minute,
-          );
-        });
+      if (pickedFiles.isEmpty || !mounted) return;
+
+      setState(() => _isUploading = true);
+
+      final mediaService = ref.read(mediaServiceProvider);
+
+      for (final file in pickedFiles) {
+        if (_attachmentMetadata.length >= 10) {
+          _showSnackBar('Maximum 10 attachments reached');
+          break;
+        }
+
+        try {
+          // Get file info
+          final fileInfo = File(file.path);
+          final fileSize = await fileInfo.length();
+          final fileName = file.name;
+
+          // Upload file
+          final response = await mediaService.uploadMedia(filePath: file.path);
+
+          if (mounted) {
+            setState(() {
+              _attachmentMetadata.add(
+                AttachmentMetadata(
+                  cdnUrl: response.cdnUrl,
+                  fileName: fileName,
+                  fileSize: fileSize,
+                  extension: response.extension,
+                  mediaType: response.mediaType,
+                ),
+              );
+            });
+          }
+        } catch (e) {
+          if (mounted) {
+            _showSnackBar('Failed to upload ${file.name}: $e');
+          }
+        }
+      }
+
+      if (mounted) {
+        setState(() => _isUploading = false);
+        _showSnackBar('Uploaded ${pickedFiles.length} file(s)', isError: false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isUploading = false);
+        _showSnackBar('Failed to pick files: $e');
       }
     }
   }
 
-  Future<void> _pickAttachment() async {
-    if (mounted) {
-      _showSnackBar('Attachment picker coming soon', isError: false);
+  void _removeAttachment(int index) {
+    setState(() => _attachmentMetadata.removeAt(index));
+  }
+
+  Future<void> _pickLinkedResource() async {
+    final List<LinkedResourceEntity>? result;
+
+    // Use dedicated assignment sheet for Exercise posts
+    if (_selectedType == PostType.exercise) {
+      result = await showModalBottomSheet<List<LinkedResourceEntity>>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            AssignmentSelectorSheet(alreadySelected: _linkedResources),
+      );
+    } else {
+      // Use general resource selector for other post types
+      result = await showModalBottomSheet<List<LinkedResourceEntity>>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            ResourceSelectorSheet(alreadySelected: _linkedResources),
+      );
+    }
+
+    if (result != null && mounted) {
+      setState(() {
+        _linkedResources.clear();
+        _linkedResources.addAll(result!);
+      });
+
+      final resourceLabel = _selectedType == PostType.exercise
+          ? 'assignment'
+          : 'resource';
+      _showSnackBar(
+        'Linked ${result.length} $resourceLabel${result.length > 1 ? 's' : ''}',
+        isError: false,
+      );
+    }
+  }
+
+  Future<void> _pickDueDate() async {
+    final now = DateTime.now();
+    final initialDate = _dueDate ?? now.add(const Duration(days: 7));
+
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: 'Select Due Date',
+    );
+
+    if (pickedDate != null && mounted) {
+      setState(() => _dueDate = pickedDate);
     }
   }
 
@@ -205,7 +325,8 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
         ? updatePostControllerProvider
         : createPostControllerProvider;
     final controllerState = ref.watch(controllerProvider);
-    final isSubmitting = controllerState.isLoading || _isLoading;
+    final isSubmitting =
+        controllerState.isLoading || _isLoading || _isUploading;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -222,25 +343,6 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
           ),
         ),
         actions: [
-          // Schedule button (only for events)
-          if (_selectedType == PostType.scheduleEvent)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: isSubmitting ? null : _selectDate,
-                icon: const Icon(LucideIcons.calendar),
-                tooltip: 'Schedule Post',
-                style: IconButton.styleFrom(
-                  backgroundColor: _scheduledDate != null
-                      ? colorScheme.primaryContainer
-                      : colorScheme.surfaceContainerHighest,
-                  foregroundColor: _scheduledDate != null
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-
           // Submit button
           Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -264,6 +366,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               style: FilledButton.styleFrom(
                 elevation: 0,
                 visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
               ),
             ),
           ),
@@ -281,15 +387,44 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   // Post Type Segmented Control
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: PostTypeSegmentedControl(
-                      selectedType: _selectedType,
-                      onTypeChanged: isSubmitting
-                          ? (_) {}
-                          : (type) {
-                              HapticFeedback.selectionClick();
-                              setState(() => _selectedType = type);
-                            },
-                      enabled: !isSubmitting,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PostTypeSegmentedControl(
+                          selectedType: _selectedType,
+                          onTypeChanged: isSubmitting
+                              ? (_) {}
+                              : (type) {
+                                  HapticFeedback.selectionClick();
+                                  setState(() => _selectedType = type);
+                                },
+                          // Disable type changes when editing existing posts
+                          enabled: !isSubmitting && widget.postId == null,
+                        ),
+                        // Info message when editing
+                        if (widget.postId != null) ...[
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(
+                                LucideIcons.info,
+                                size: 14,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Post type cannot be changed when editing',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
                     ),
                   ),
 
@@ -299,31 +434,44 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   PostOptionsSection(
                     allowComments: _allowComments,
                     selectedType: _selectedType,
-                    scheduledDate: _scheduledDate,
                     onAllowCommentsChanged: isSubmitting
                         ? null
                         : (value) {
                             HapticFeedback.selectionClick();
                             setState(() => _allowComments = value);
                           },
-                    onRemoveScheduledDate: () {
-                      setState(() => _scheduledDate = null);
-                    },
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Due Date Section (Exercise type only)
+                  if (_selectedType == PostType.exercise) ...[
+                    _buildDueDateSection(theme, colorScheme, isSubmitting),
+                    const SizedBox(height: 16),
+                  ],
 
                   // Attachments & Actions Section
                   PostActionsSection(
                     selectedType: _selectedType,
-                    attachmentsCount: _attachments.length,
-                    scheduledDate: _scheduledDate,
+                    attachmentsCount: _attachmentMetadata.length,
+                    linkedResourcesCount: _linkedResources.length,
                     isLoading: isSubmitting,
+                    isUploading: _isUploading,
                     onPickAttachment: _pickAttachment,
-                    onSelectDate: _selectDate,
+                    onPickLinkedResource: _pickLinkedResource,
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Attachment Preview List (if attachments exist)
+                  if (_attachmentMetadata.isNotEmpty)
+                    AttachmentPreviewList(
+                      attachments: _attachmentMetadata,
+                      onRemove: _removeAttachment,
+                    ),
+
+                  if (_attachmentMetadata.isNotEmpty)
+                    const SizedBox(height: 16),
 
                   // Rich Text Editor
                   PostEditorSection(
@@ -352,6 +500,86 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  /// Builds the due date selection section for exercise posts
+  Widget _buildDueDateSection(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDisabled,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Material(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: isDisabled ? null : _pickDueDate,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Calendar Icon
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    LucideIcons.calendar,
+                    size: 20,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Date Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Due Date',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _dueDate != null
+                            ? '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}'
+                            : 'Tap to set due date',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: _dueDate != null
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.6,
+                                ),
+                          fontWeight: _dueDate != null
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Arrow Icon
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

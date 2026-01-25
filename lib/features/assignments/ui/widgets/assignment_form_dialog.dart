@@ -5,7 +5,7 @@ import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_
 import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,19 +78,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          _isEditing ? LucideIcons.pencil : LucideIcons.plus,
-                          color: colorScheme.onPrimaryContainer,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
                       Expanded(
                         child: Text(
                           _isEditing
@@ -115,7 +102,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     decoration: InputDecoration(
                       labelText: 'Assignment Title *',
                       hintText: 'e.g., Mathematics Final Assignment - Grade 1',
-                      prefixIcon: const Icon(LucideIcons.fileText),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -157,7 +143,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     decoration: InputDecoration(
                       labelText: 'Description',
                       hintText: 'Brief description of the assignment',
-                      prefixIcon: const Icon(LucideIcons.fileText),
+                      alignLabelWithHint: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -194,7 +180,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     decoration: InputDecoration(
                       labelText: 'Time Limit (minutes)',
                       hintText: 'e.g., 60',
-                      prefixIcon: const Icon(LucideIcons.clock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

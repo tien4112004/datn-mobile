@@ -38,6 +38,12 @@ class CustomSearchBar extends StatelessWidget {
   /// Optional callback when search field is tapped
   final VoidCallback? onTap;
 
+  /// Optional callback when search is submitted (Enter key pressed)
+  final ValueChanged<String>? onSubmitted;
+
+  /// Optional initial value for the search field
+  final String? initialValue;
+
   const CustomSearchBar({
     super.key,
     required this.hintText,
@@ -45,6 +51,8 @@ class CustomSearchBar extends StatelessWidget {
     this.onClearTap,
     this.onChanged,
     this.onTap,
+    this.onSubmitted,
+    this.initialValue,
     required this.enabled,
     required this.autoFocus,
   });
@@ -54,6 +62,11 @@ class CustomSearchBar extends StatelessWidget {
     return SearchAnchor(
       enabled: enabled,
       builder: (BuildContext context, SearchController controller) {
+        // Set initial value if provided
+        if (initialValue != null && controller.text.isEmpty) {
+          controller.text = initialValue!;
+        }
+
         return SearchBar(
           autoFocus: autoFocus,
           constraints: BoxConstraints(
@@ -76,6 +89,7 @@ class CustomSearchBar extends StatelessWidget {
           ),
           onTap: onTap,
           onChanged: onChanged,
+          onSubmitted: onSubmitted,
           leading: const Icon(LucideIcons.search, size: 24),
           trailing: controller.text.isNotEmpty
               ? [

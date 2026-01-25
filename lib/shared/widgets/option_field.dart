@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 
 /// Base class for all option field types

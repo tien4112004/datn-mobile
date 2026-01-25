@@ -1,4 +1,3 @@
-import 'package:datn_mobile/features/projects/data/dto/slide_dto.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -9,22 +8,16 @@ part 'presentation_dto.g.dart';
 class PresentationDto {
   String id;
   String title;
-  Object metaData;
-  List<SlideDto> slides;
   DateTime createdAt;
   DateTime updatedAt;
-  bool isParsed;
-  Map<String, double> viewport;
+  String? thumbnail;
 
   PresentationDto({
     required this.id,
     required this.title,
-    required this.metaData,
-    required this.slides,
     required this.createdAt,
     required this.updatedAt,
-    required this.isParsed,
-    required this.viewport,
+    required this.thumbnail,
   });
 
   factory PresentationDto.fromJson(Map<String, dynamic> json) =>
@@ -39,11 +32,8 @@ extension PresentationMapper on PresentationDto {
     title: title,
     createdAt: createdAt,
     updatedAt: updatedAt,
-    isParsed: isParsed,
-    slides: slides.map((e) => e.toEntity()).toList(),
-    metaData: metaData,
+    thumbnail: thumbnail,
     deletedAt: DateTime.fromMillisecondsSinceEpoch(0),
-    viewport: viewport,
   );
 }
 
@@ -51,11 +41,8 @@ extension PresentationEntityMapper on Presentation {
   PresentationDto toDto() => PresentationDto(
     id: id,
     title: title,
-    metaData: {},
-    slides: [],
     createdAt: DateFormatHelper.getNow(),
     updatedAt: DateFormatHelper.getNow(),
-    isParsed: false,
-    viewport: {'width': 1000, 'height': 562.5},
+    thumbnail: thumbnail,
   );
 }

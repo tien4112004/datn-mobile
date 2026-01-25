@@ -1,4 +1,5 @@
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 
 /// Domain entity representing a class post.
 /// This is a pure domain model without any JSON serialization logic.
@@ -11,8 +12,9 @@ class PostEntity {
   final String content;
   final PostType type;
   final List<String> attachments;
-  final List<String> linkedResourceIds;
+  final List<LinkedResourceEntity> linkedResources;
   final String? linkedLessonId;
+  final DateTime? dueDate; // For exercise type posts
   final bool isPinned;
   final bool allowComments;
   final int commentCount;
@@ -28,8 +30,9 @@ class PostEntity {
     required this.content,
     required this.type,
     required this.attachments,
-    required this.linkedResourceIds,
+    required this.linkedResources,
     this.linkedLessonId,
+    this.dueDate,
     required this.isPinned,
     required this.allowComments,
     required this.commentCount,
@@ -47,8 +50,9 @@ class PostEntity {
     String? content,
     PostType? type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? isPinned,
     bool? allowComments,
     int? commentCount,
@@ -64,8 +68,9 @@ class PostEntity {
       content: content ?? this.content,
       type: type ?? this.type,
       attachments: attachments ?? this.attachments,
-      linkedResourceIds: linkedResourceIds ?? this.linkedResourceIds,
+      linkedResources: linkedResources ?? this.linkedResources,
       linkedLessonId: linkedLessonId ?? this.linkedLessonId,
+      dueDate: dueDate ?? this.dueDate,
       isPinned: isPinned ?? this.isPinned,
       allowComments: allowComments ?? this.allowComments,
       commentCount: commentCount ?? this.commentCount,

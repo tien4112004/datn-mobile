@@ -40,22 +40,6 @@ class PostTypeChip extends StatelessWidget {
 
   _ChipConfig _getConfig(PostType type, ColorScheme colorScheme) {
     switch (type) {
-      case PostType.announcement:
-        return _ChipConfig(
-          icon: LucideIcons.megaphone,
-          backgroundColor: colorScheme.errorContainer.withValues(alpha: 0.3),
-          borderColor: colorScheme.error.withValues(alpha: 0.3),
-          iconColor: colorScheme.error,
-          textColor: colorScheme.onErrorContainer,
-        );
-      case PostType.scheduleEvent:
-        return _ChipConfig(
-          icon: LucideIcons.calendar,
-          backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
-          borderColor: colorScheme.primary.withValues(alpha: 0.3),
-          iconColor: colorScheme.primary,
-          textColor: colorScheme.onPrimaryContainer,
-        );
       case PostType.general:
         return _ChipConfig(
           icon: LucideIcons.messageCircle,
@@ -63,6 +47,14 @@ class PostTypeChip extends StatelessWidget {
           borderColor: colorScheme.outlineVariant,
           iconColor: colorScheme.onSurfaceVariant,
           textColor: colorScheme.onSurfaceVariant,
+        );
+      case PostType.exercise:
+        return _ChipConfig(
+          icon: LucideIcons.clipboardList,
+          backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
+          borderColor: colorScheme.primary.withValues(alpha: 0.3),
+          iconColor: colorScheme.primary,
+          textColor: colorScheme.onPrimaryContainer,
         );
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/states/posts_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,8 +18,9 @@ class CreatePostController extends AsyncNotifier<void> {
     required String content,
     required PostType type,
     List<String>? attachments,
-    List<String>? linkedResourceIds,
+    List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? allowComments,
   }) async {
     state = const AsyncLoading();
@@ -30,8 +32,9 @@ class CreatePostController extends AsyncNotifier<void> {
         content: content,
         type: type,
         attachments: attachments,
-        linkedResourceIds: linkedResourceIds,
+        linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
+        dueDate: dueDate,
         allowComments: allowComments,
       );
 

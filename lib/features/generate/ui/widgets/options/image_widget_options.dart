@@ -8,7 +8,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sh
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widget/flex_dropdown_field.dart';
+import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

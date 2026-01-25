@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
 import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_response_dto.g.dart';
 
@@ -36,8 +37,9 @@ class PostResponseDto {
   final String content;
   final String type;
   final List<String>? attachments;
-  final List<String>? linkedResourceIds;
+  final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
+  final DateTime? dueDate;
   final bool isPinned;
   final bool allowComments;
   final int commentCount;
@@ -51,8 +53,9 @@ class PostResponseDto {
     required this.content,
     required this.type,
     this.attachments,
-    this.linkedResourceIds,
+    this.linkedResources,
     this.linkedLessonId,
+    this.dueDate,
     required this.isPinned,
     required this.allowComments,
     required this.commentCount,
@@ -77,8 +80,10 @@ extension PostResponseMapper on PostResponseDto {
     content: content,
     type: PostType.fromName(type),
     attachments: attachments ?? [],
-    linkedResourceIds: linkedResourceIds ?? [],
+    linkedResources:
+        linkedResources?.map((dto) => dto.toEntity()).toList() ?? [],
     linkedLessonId: linkedLessonId,
+    dueDate: dueDate,
     isPinned: isPinned,
     allowComments: allowComments,
     commentCount: commentCount,

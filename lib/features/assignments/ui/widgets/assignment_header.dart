@@ -1,8 +1,9 @@
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/shared/widget/filter_chip_button.dart';
-import 'package:datn_mobile/shared/widget/generic_filters_bar.dart';
+import 'package:datn_mobile/shared/widgets/generic_filters_bar.dart';
+import 'package:datn_mobile/shared/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -15,28 +16,8 @@ class AssignmentHeader extends ConsumerStatefulWidget {
 }
 
 class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize search controller with current filter state
-    final currentFilter = ref.read(assignmentFilterProvider);
-    if (currentFilter.searchQuery != null) {
-      _searchController.text = currentFilter.searchQuery!;
-    }
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final filterState = ref.watch(assignmentFilterProvider);
     final filterNotifier = ref.read(assignmentFilterProvider.notifier);
     final assignmentsController = ref.read(
@@ -94,72 +75,31 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Search Bar
-          TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Search assignments...',
-              prefixIcon: Icon(
-                LucideIcons.search,
-                color: colorScheme.onSurfaceVariant,
-              ),
-              suffixIcon: _searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(
-                        LucideIcons.x,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      onPressed: () {
-                        _searchController.clear();
-                        filterNotifier.state = filterState.copyWith(
-                          searchQuery: null,
-                        );
-                        assignmentsController.loadAssignmentsWithFilter();
-                        setState(() {});
-                      },
-                    )
-                  : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: colorScheme.outline),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: colorScheme.outlineVariant),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: colorScheme.primary, width: 2),
-              ),
-              filled: true,
-              fillColor: colorScheme.surfaceContainerHighest,
-            ),
-            onChanged: (value) {
-              setState(() {}); // Rebuild to show/hide clear button
-            },
+          CustomSearchBar(
+            enabled: true,
+            autoFocus: false,
+            hintText: 'Search assignments...',
+            initialValue: filterState.searchQuery,
             onSubmitted: (value) {
               final query = value.trim().isEmpty ? null : value.trim();
               filterNotifier.state = filterState.copyWith(searchQuery: query);
               assignmentsController.loadAssignmentsWithFilter();
             },
-            textInputAction: TextInputAction.search,
+            onClearTap: () {
+              filterNotifier.state = filterState.copyWith(searchQuery: null);
+              assignmentsController.loadAssignmentsWithFilter();
+            },
           ),
 
           const SizedBox(height: 12),
-
-          // Filter Chips
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: filterConfigs
-                .map(
-                  (filter) => FilterChipButton(
-                    filter: filter,
-                    onTap: () {
-                      FilterChipButton.showFilterPicker(context, filter);
-                    },
-                  ),
-                )
-                .toList(),
+          GenericFiltersBar(
+            filters: filterConfigs,
+            onClearFilters: () {
+              HapticFeedback.lightImpact();
+              filterNotifier.state = filterState.clearFilters();
+              assignmentsController.loadAssignmentsWithFilter();
+            },
+            useWrap: true,
           ),
         ],
       ),

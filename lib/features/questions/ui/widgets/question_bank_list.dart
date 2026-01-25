@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:datn_mobile/features/questions/ui/widgets/question_list_card.dart';
-import 'package:datn_mobile/shared/widget/animated_list_item.dart';
+import 'package:datn_mobile/shared/widgets/animated_list_item.dart';
 
 /// List widget for Question Bank with pull-to-refresh and animations
 class QuestionBankList extends StatelessWidget {

@@ -8,8 +8,7 @@ import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_sec
 import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
 import 'package:datn_mobile/features/questions/ui/pages/modify/open_ended_section.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/question_basic_info_section.dart';
-import 'package:datn_mobile/shared/widget/unsaved_changes_dialog.dart';
+import 'package:datn_mobile/shared/widgets/unsaved_changes_dialog.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -338,51 +337,51 @@ class _AssignmentQuestionCreatePageState
                 ),
                 const SizedBox(height: 16),
 
-                // Basic Information Section
-                QuestionBasicInfoSection(
-                  title: formState.title,
-                  selectedType: formState.type,
-                  selectedDifficulty: formState.difficulty,
-                  titleImageUrl: formState.titleImageUrl,
-                  explanation: formState.explanation,
-                  grade: formState.grade,
-                  chapter: formState.chapter,
-                  subject: formState.subject,
-                  onTitleChanged: (value) {
-                    ref.read(questionFormProvider.notifier).updateTitle(value);
-                  },
-                  onTypeChanged: (type) {
-                    ref.read(questionFormProvider.notifier).updateType(type);
-                  },
-                  onDifficultyChanged: (difficulty) {
-                    ref
-                        .read(questionFormProvider.notifier)
-                        .updateDifficulty(difficulty);
-                  },
-                  onTitleImageChanged: (url) {
-                    ref
-                        .read(questionFormProvider.notifier)
-                        .updateTitleImageUrl(url);
-                  },
-                  onExplanationChanged: (value) {
-                    ref
-                        .read(questionFormProvider.notifier)
-                        .updateExplanation(value);
-                  },
-                  onGradeChanged: (value) {
-                    ref.read(questionFormProvider.notifier).updateGrade(value);
-                  },
-                  onChapterChanged: (value) {
-                    ref
-                        .read(questionFormProvider.notifier)
-                        .updateChapter(value);
-                  },
-                  onSubjectChanged: (value) {
-                    ref
-                        .read(questionFormProvider.notifier)
-                        .updateSubject(value);
-                  },
-                ),
+                // // Basic Information Section
+                // QuestionBasicInfoSection(
+                //   title: formState.title,
+                //   selectedType: formState.type,
+                //   selectedDifficulty: formState.difficulty,
+                //   titleImageUrl: formState.titleImageUrl,
+                //   explanation: formState.explanation,
+                //   grade: formState.grade,
+                //   chapter: formState.chapter,
+                //   subject: formState.subject,
+                //   onTitleChanged: (value) {
+                //     ref.read(questionFormProvider.notifier).updateTitle(value);
+                //   },
+                //   onTypeChanged: (type) {
+                //     ref.read(questionFormProvider.notifier).updateType(type);
+                //   },
+                //   onDifficultyChanged: (difficulty) {
+                //     ref
+                //         .read(questionFormProvider.notifier)
+                //         .updateDifficulty(difficulty);
+                //   },
+                //   onTitleImageChanged: (url) {
+                //     ref
+                //         .read(questionFormProvider.notifier)
+                //         .updateTitleImageUrl(url);
+                //   },
+                //   onExplanationChanged: (value) {
+                //     ref
+                //         .read(questionFormProvider.notifier)
+                //         .updateExplanation(value);
+                //   },
+                //   onGradeChanged: (value) {
+                //     ref.read(questionFormProvider.notifier).updateGrade(value);
+                //   },
+                //   onChapterChanged: (value) {
+                //     ref
+                //         .read(questionFormProvider.notifier)
+                //         .updateChapter(value);
+                //   },
+                //   onSubjectChanged: (value) {
+                //     ref
+                //         .read(questionFormProvider.notifier)
+                //         .updateSubject(value);
+                //   },
+                // ),
                 const SizedBox(height: 16),
 
                 // Type-specific sections

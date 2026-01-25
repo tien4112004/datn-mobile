@@ -1,5 +1,5 @@
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-import 'package:datn_mobile/features/classes/states/selection_state.dart';
+import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/resource_tile.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';

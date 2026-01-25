@@ -27,6 +27,7 @@ class PostActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final isExercise = selectedType == PostType.exercise;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -35,71 +36,72 @@ class PostActionsSection extends StatelessWidget {
           // First Row - Attachments and Link Resource
           Row(
             children: [
-              // Attachments button
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: (isLoading || isUploading)
-                      ? null
-                      : onPickAttachment,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
-                    ),
-                    side: BorderSide(
-                      color: attachmentsCount > 0
-                          ? colorScheme.primary.withValues(alpha: 0.3)
-                          : colorScheme.outlineVariant,
-                    ),
-                    backgroundColor: attachmentsCount > 0
-                        ? colorScheme.primaryContainer.withValues(alpha: 0.2)
-                        : colorScheme.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isUploading)
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colorScheme.primary,
-                          ),
-                        )
-                      else
-                        Icon(
-                          LucideIcons.paperclip,
-                          size: 18,
-                          color: attachmentsCount > 0
-                              ? colorScheme.primary
-                              : colorScheme.onSurfaceVariant,
-                        ),
-                      const SizedBox(width: 8),
-                      Text(
-                        isUploading
-                            ? 'Uploading...'
-                            : (attachmentsCount > 0
-                                  ? 'Add More ($attachmentsCount)'
-                                  : 'Add Attachments'),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: attachmentsCount > 0
-                              ? colorScheme.primary
-                              : null,
-                        ),
+              // Attachments button (hidden for Exercise type)
+              if (!isExercise)
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: (isLoading || isUploading)
+                        ? null
+                        : onPickAttachment,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
                       ),
-                    ],
+                      side: BorderSide(
+                        color: attachmentsCount > 0
+                            ? colorScheme.primary.withValues(alpha: 0.3)
+                            : colorScheme.outlineVariant,
+                      ),
+                      backgroundColor: attachmentsCount > 0
+                          ? colorScheme.primaryContainer.withValues(alpha: 0.2)
+                          : colorScheme.surface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (isUploading)
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: colorScheme.primary,
+                            ),
+                          )
+                        else
+                          Icon(
+                            LucideIcons.paperclip,
+                            size: 18,
+                            color: attachmentsCount > 0
+                                ? colorScheme.primary
+                                : colorScheme.onSurfaceVariant,
+                          ),
+                        const SizedBox(width: 8),
+                        Text(
+                          isUploading
+                              ? 'Uploading...'
+                              : (attachmentsCount > 0
+                                    ? 'Add More ($attachmentsCount)'
+                                    : 'Add Attachments'),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: attachmentsCount > 0
+                                ? colorScheme.primary
+                                : null,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(width: 12),
+              if (!isExercise) const SizedBox(width: 12),
 
-              // Link Resource button
+              // Link Resource button (for Exercise: Assignment only)
               Expanded(
                 child: OutlinedButton(
                   onPressed: isLoading ? null : onPickLinkedResource,
@@ -124,7 +126,7 @@ class PostActionsSection extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        LucideIcons.link,
+                        isExercise ? LucideIcons.fileText : LucideIcons.link,
                         size: 18,
                         color: linkedResourcesCount > 0
                             ? colorScheme.secondary
@@ -132,9 +134,13 @@ class PostActionsSection extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        linkedResourcesCount > 0
-                            ? 'Linked ($linkedResourcesCount)'
-                            : 'Link Resource',
+                        isExercise
+                            ? (linkedResourcesCount > 0
+                                  ? 'Assignment ($linkedResourcesCount)'
+                                  : 'Attach Assignment')
+                            : (linkedResourcesCount > 0
+                                  ? 'Linked ($linkedResourcesCount)'
+                                  : 'Link Resource'),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                           color: linkedResourcesCount > 0

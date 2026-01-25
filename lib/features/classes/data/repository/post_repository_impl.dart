@@ -42,6 +42,7 @@ class PostRepositoryImpl implements PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? allowComments,
   }) async {
     final request = PostCreateRequestDto(
@@ -50,6 +51,7 @@ class PostRepositoryImpl implements PostRepository {
       attachments: attachments,
       linkedResources: linkedResources?.map((e) => e.toDto()).toList(),
       linkedLessonId: linkedLessonId,
+      dueDate: dueDate,
       allowComments: allowComments,
     );
     final response = await _remoteDataSource.createPost(classId, request);
@@ -70,6 +72,7 @@ class PostRepositoryImpl implements PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? isPinned,
     bool? allowComments,
   }) async {
@@ -79,6 +82,7 @@ class PostRepositoryImpl implements PostRepository {
       attachments: attachments,
       linkedResources: linkedResources?.map((e) => e.toDto()).toList(),
       linkedLessonId: linkedLessonId,
+      dueDate: dueDate,
       isPinned: isPinned,
       allowComments: allowComments,
     );

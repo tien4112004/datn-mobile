@@ -11,6 +11,7 @@ class PostUpdateRequestDto {
   final List<String>? attachments;
   final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
+  final DateTime? dueDate;
   final bool? isPinned;
   final bool? allowComments;
 
@@ -20,6 +21,7 @@ class PostUpdateRequestDto {
     this.attachments,
     this.linkedResources,
     this.linkedLessonId,
+    this.dueDate,
     this.isPinned,
     this.allowComments,
   });

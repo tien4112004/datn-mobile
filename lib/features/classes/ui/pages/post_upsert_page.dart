@@ -8,6 +8,7 @@ import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_secti
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_segmented_control.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/attachment_preview_list.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector_sheet.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/assignment_selector_sheet.dart';
 import 'package:datn_mobile/shared/services/media_service_provider.dart';
 import 'package:datn_mobile/shared/widgets/richtext_toolbar.dart';
 import 'package:markdown_quill/markdown_quill.dart';
@@ -36,6 +37,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
   PostType _selectedType = PostType.general;
   bool _allowComments = true;
+  DateTime? _dueDate; // For exercise type posts
   final List<AttachmentMetadata> _attachmentMetadata = [];
   final List<LinkedResourceEntity> _linkedResources = [];
   bool _isLoading = true;
@@ -61,6 +63,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
             // Initialize form with post data
             _selectedType = post.type;
             _allowComments = post.allowComments;
+            _dueDate = post.dueDate;
             _linkedResources.addAll(post.linkedResources);
             // Convert attachment URLs to metadata (without file size info for existing)
             _attachmentMetadata.addAll(
@@ -136,6 +139,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
+              dueDate: _dueDate,
               attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
               linkedResources: _linkedResources.isEmpty
                   ? null
@@ -155,6 +159,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               content: markdown,
               type: _selectedType,
               allowComments: _allowComments,
+              dueDate: _dueDate,
               attachments: attachmentUrls.isEmpty ? null : attachmentUrls,
               linkedResources: _linkedResources.isEmpty
                   ? null
@@ -259,19 +264,56 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _pickLinkedResource() async {
-    final result = await showModalBottomSheet<List<LinkedResourceEntity>>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) =>
-          ResourceSelectorSheet(alreadySelected: _linkedResources),
-    );
+    final List<LinkedResourceEntity>? result;
+
+    // Use dedicated assignment sheet for Exercise posts
+    if (_selectedType == PostType.exercise) {
+      result = await showModalBottomSheet<List<LinkedResourceEntity>>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            AssignmentSelectorSheet(alreadySelected: _linkedResources),
+      );
+    } else {
+      // Use general resource selector for other post types
+      result = await showModalBottomSheet<List<LinkedResourceEntity>>(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) =>
+            ResourceSelectorSheet(alreadySelected: _linkedResources),
+      );
+    }
 
     if (result != null && mounted) {
       setState(() {
         _linkedResources.clear();
-        _linkedResources.addAll(result);
+        _linkedResources.addAll(result!);
       });
-      _showSnackBar('Linked ${result.length} resource(s)', isError: false);
+
+      final resourceLabel = _selectedType == PostType.exercise
+          ? 'assignment'
+          : 'resource';
+      _showSnackBar(
+        'Linked ${result.length} $resourceLabel${result.length > 1 ? 's' : ''}',
+        isError: false,
+      );
+    }
+  }
+
+  Future<void> _pickDueDate() async {
+    final now = DateTime.now();
+    final initialDate = _dueDate ?? now.add(const Duration(days: 7));
+
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: 'Select Due Date',
+    );
+
+    if (pickedDate != null && mounted) {
+      setState(() => _dueDate = pickedDate);
     }
   }
 
@@ -324,6 +366,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
               style: FilledButton.styleFrom(
                 elevation: 0,
                 visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
               ),
             ),
           ),
@@ -341,15 +387,44 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   // Post Type Segmented Control
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: PostTypeSegmentedControl(
-                      selectedType: _selectedType,
-                      onTypeChanged: isSubmitting
-                          ? (_) {}
-                          : (type) {
-                              HapticFeedback.selectionClick();
-                              setState(() => _selectedType = type);
-                            },
-                      enabled: !isSubmitting,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PostTypeSegmentedControl(
+                          selectedType: _selectedType,
+                          onTypeChanged: isSubmitting
+                              ? (_) {}
+                              : (type) {
+                                  HapticFeedback.selectionClick();
+                                  setState(() => _selectedType = type);
+                                },
+                          // Disable type changes when editing existing posts
+                          enabled: !isSubmitting && widget.postId == null,
+                        ),
+                        // Info message when editing
+                        if (widget.postId != null) ...[
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(
+                                LucideIcons.info,
+                                size: 14,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Post type cannot be changed when editing',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
                     ),
                   ),
 
@@ -368,6 +443,12 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Due Date Section (Exercise type only)
+                  if (_selectedType == PostType.exercise) ...[
+                    _buildDueDateSection(theme, colorScheme, isSubmitting),
+                    const SizedBox(height: 16),
+                  ],
 
                   // Attachments & Actions Section
                   PostActionsSection(
@@ -419,6 +500,86 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  /// Builds the due date selection section for exercise posts
+  Widget _buildDueDateSection(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDisabled,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Material(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: isDisabled ? null : _pickDueDate,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Calendar Icon
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    LucideIcons.calendar,
+                    size: 20,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Date Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Due Date',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _dueDate != null
+                            ? '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}'
+                            : 'Tap to set due date',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: _dueDate != null
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.6,
+                                ),
+                          fontWeight: _dueDate != null
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Arrow Icon
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/resource_picker_step.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/permission_config_step.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/sheet_header.dart';
-import 'package:datn_mobile/features/classes/states/selection_state.dart';
+import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,8 +19,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// - Semantic color usage
 class ResourceSelectorSheet extends ConsumerStatefulWidget {
   final List<LinkedResourceEntity> alreadySelected;
+  final bool assignmentOnly; // True for Exercise posts
 
-  const ResourceSelectorSheet({super.key, this.alreadySelected = const []});
+  const ResourceSelectorSheet({
+    super.key,
+    this.alreadySelected = const [],
+    this.assignmentOnly = false,
+  });
 
   @override
   ConsumerState<ResourceSelectorSheet> createState() =>
@@ -183,6 +188,7 @@ class _ResourceSelectorSheetState extends ConsumerState<ResourceSelectorSheet>
                     ? ResourcePickerStep(
                         selectedResources: _selectedResources,
                         onToggleSelection: _toggleSelection,
+                        assignmentOnly: widget.assignmentOnly,
                       )
                     : PermissionConfigStep(
                         selectedResources: _selectedResources,

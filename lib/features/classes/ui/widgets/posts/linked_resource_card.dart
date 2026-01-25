@@ -4,6 +4,7 @@ import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/classes/providers/linked_resource_fetcher_provider.dart';
 import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
+import 'package:datn_mobile/features/classes/ui/widgets/posts/assignment_preview_card.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:datn_mobile/shared/widget/skeleton_card.dart';
@@ -35,6 +36,9 @@ class LinkedResourceCard extends ConsumerWidget {
         break;
       case 'image':
         context.router.push(ImageDetailRoute(imageId: id));
+        break;
+      case 'assignment':
+        context.router.push(AssignmentDetailRoute(assignmentId: id));
         break;
     }
   }
@@ -108,6 +112,14 @@ class LinkedResourceCard extends ConsumerWidget {
   Widget _buildResourceCard(BuildContext context, preview) {
     if (!preview.isValid) {
       return _buildErrorCard(context, 'Invalid resource');
+    }
+
+    // Use specialized card for assignments
+    if (preview.type == 'assignment') {
+      return AssignmentPreviewCard(
+        preview: preview,
+        onTap: () => _navigateToDetail(context, preview.type, preview.id),
+      );
     }
 
     final theme = Theme.of(context);

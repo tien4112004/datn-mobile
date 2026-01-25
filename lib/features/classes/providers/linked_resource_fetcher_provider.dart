@@ -1,6 +1,7 @@
 import 'package:datn_mobile/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/projects/service/service_provider.dart';
+import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,6 +44,25 @@ final linkedResourceFetcherProvider =
               type: 'mindmap',
               thumbnail: mindmap.thumbnail,
               updatedAt: mindmap.updatedAt,
+            );
+
+          case 'assignment':
+            debugPrint('📝 [Assignment] Fetching ID: ${resource.id}');
+            final assignment = await ref
+                .read(assignmentRepositoryProvider)
+                .getAssignmentById(resource.id);
+
+            debugPrint('✅ [Assignment] Success: ${assignment.title}');
+            return LinkedResourcePreview(
+              id: assignment.assignmentId,
+              title: assignment.title,
+              type: 'assignment',
+              updatedAt: assignment.updatedAt,
+              subject: assignment.subject.displayName,
+              gradeLevel: assignment.gradeLevel.displayName,
+              totalQuestions: assignment.totalQuestions,
+              totalPoints: assignment.totalPoints,
+              status: assignment.status.displayName,
             );
 
           default:

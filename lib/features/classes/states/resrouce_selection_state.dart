@@ -1,6 +1,6 @@
 import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
 
-enum ResourceTab { presentation, mindmap }
+enum ResourceTab { presentation, mindmap, assignment }
 
 enum SelectionStep { pickResources, configurePermissions }
 

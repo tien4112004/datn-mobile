@@ -11,6 +11,7 @@ class PostCreateRequestDto {
   final List<String>? attachments;
   final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
+  final DateTime? dueDate;
   final bool? allowComments;
 
   const PostCreateRequestDto({
@@ -19,6 +20,7 @@ class PostCreateRequestDto {
     this.attachments,
     this.linkedResources,
     this.linkedLessonId,
+    this.dueDate,
     this.allowComments,
   });
 

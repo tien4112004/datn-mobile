@@ -2,9 +2,16 @@
 class LinkedResourcePreview {
   final String id;
   final String title;
-  final String type; // 'presentation', 'mindmap', 'image', etc.
+  final String type; // 'presentation', 'mindmap', 'image', 'assignment', etc.
   final String? thumbnail;
   final DateTime? updatedAt;
+
+  // Assignment-specific metadata
+  final String? subject;
+  final String? gradeLevel;
+  final int? totalQuestions;
+  final int? totalPoints;
+  final String? status;
 
   const LinkedResourcePreview({
     required this.id,
@@ -12,6 +19,11 @@ class LinkedResourcePreview {
     required this.type,
     this.thumbnail,
     this.updatedAt,
+    this.subject,
+    this.gradeLevel,
+    this.totalQuestions,
+    this.totalPoints,
+    this.status,
   });
 
   factory LinkedResourcePreview.placeholder(String id) {

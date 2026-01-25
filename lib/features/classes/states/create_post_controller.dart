@@ -20,6 +20,7 @@ class CreatePostController extends AsyncNotifier<void> {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? allowComments,
   }) async {
     state = const AsyncLoading();
@@ -33,6 +34,7 @@ class CreatePostController extends AsyncNotifier<void> {
         attachments: attachments,
         linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
+        dueDate: dueDate,
         allowComments: allowComments,
       );
 

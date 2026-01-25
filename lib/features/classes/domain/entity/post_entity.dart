@@ -14,6 +14,7 @@ class PostEntity {
   final List<String> attachments;
   final List<LinkedResourceEntity> linkedResources;
   final String? linkedLessonId;
+  final DateTime? dueDate; // For exercise type posts
   final bool isPinned;
   final bool allowComments;
   final int commentCount;
@@ -31,6 +32,7 @@ class PostEntity {
     required this.attachments,
     required this.linkedResources,
     this.linkedLessonId,
+    this.dueDate,
     required this.isPinned,
     required this.allowComments,
     required this.commentCount,
@@ -50,6 +52,7 @@ class PostEntity {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? isPinned,
     bool? allowComments,
     int? commentCount,
@@ -67,6 +70,7 @@ class PostEntity {
       attachments: attachments ?? this.attachments,
       linkedResources: linkedResources ?? this.linkedResources,
       linkedLessonId: linkedLessonId ?? this.linkedLessonId,
+      dueDate: dueDate ?? this.dueDate,
       isPinned: isPinned ?? this.isPinned,
       allowComments: allowComments ?? this.allowComments,
       commentCount: commentCount ?? this.commentCount,

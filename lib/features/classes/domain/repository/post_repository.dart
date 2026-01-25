@@ -22,6 +22,7 @@ abstract class PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? allowComments,
   });
 
@@ -36,6 +37,7 @@ abstract class PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? isPinned,
     bool? allowComments,
   });

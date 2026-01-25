@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/states/selection_state.dart';
+import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/resource_tab_bar.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/presentations_list.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/mindmaps_list.dart';
@@ -16,11 +16,13 @@ class ResourcePickerStep extends StatefulWidget {
     required String type,
   })
   onToggleSelection;
+  final bool assignmentOnly;
 
   const ResourcePickerStep({
     super.key,
     required this.selectedResources,
     required this.onToggleSelection,
+    this.assignmentOnly = false,
   });
 
   @override

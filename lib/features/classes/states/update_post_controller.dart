@@ -22,6 +22,7 @@ class UpdatePostController extends AsyncNotifier<void> {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    DateTime? dueDate,
     bool? isPinned,
     bool? allowComments,
   }) async {
@@ -36,6 +37,7 @@ class UpdatePostController extends AsyncNotifier<void> {
         attachments: attachments,
         linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
+        dueDate: dueDate,
         isPinned: isPinned,
         allowComments: allowComments,
       );

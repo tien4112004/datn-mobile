@@ -2,29 +2,25 @@ import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Actions section for attachments and event date selection
+/// Actions section for attachments and linked resources
 class PostActionsSection extends StatelessWidget {
   final PostType selectedType;
   final int attachmentsCount;
   final int linkedResourcesCount;
-  final DateTime? scheduledDate;
   final bool isLoading;
   final bool isUploading;
   final VoidCallback onPickAttachment;
   final VoidCallback onPickLinkedResource;
-  final VoidCallback onSelectDate;
 
   const PostActionsSection({
     super.key,
     required this.selectedType,
     required this.attachmentsCount,
     this.linkedResourcesCount = 0,
-    required this.scheduledDate,
     required this.isLoading,
     this.isUploading = false,
     required this.onPickAttachment,
     required this.onPickLinkedResource,
-    required this.onSelectDate,
   });
 
   @override
@@ -152,53 +148,6 @@ class PostActionsSection extends StatelessWidget {
               ),
             ],
           ),
-
-          // Event date button (only for events)
-          if (selectedType == PostType.scheduleEvent) ...[
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: isLoading ? null : onSelectDate,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
-                ),
-                side: BorderSide(
-                  color: scheduledDate != null
-                      ? colorScheme.primary
-                      : colorScheme.outlineVariant,
-                ),
-                backgroundColor: scheduledDate != null
-                    ? colorScheme.primaryContainer.withValues(alpha: 0.2)
-                    : colorScheme.surface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.calendar,
-                    size: 18,
-                    color: scheduledDate != null
-                        ? colorScheme.primary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    scheduledDate == null
-                        ? 'Select Event Date'
-                        : '${scheduledDate!.month}/${scheduledDate!.day}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: scheduledDate != null ? colorScheme.primary : null,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ],
       ),
     );

@@ -41,25 +41,15 @@ class LinkedResourceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint(
-      '🎴 [LinkedResourceCard] Rendering: ${resource.type} - ${resource.id} - Permission: ${resource.permissionLevel}',
-    );
-
     final resourceAsync = ref.watch(linkedResourceFetcherProvider(resource));
 
     return resourceAsync.easyWhen(
       skipLoadingOnRefresh: false,
       loadingWidget: () => _buildLoadingCard(context),
       errorWidget: (error, stack) {
-        debugPrint(
-          '🎴 [LinkedResourceCard] Error state for ${resource.id}: $error',
-        );
         return _buildErrorCard(context, error);
       },
       data: (preview) {
-        debugPrint(
-          '🎴 [LinkedResourceCard] Data loaded: ${preview.title} (valid: ${preview.isValid})',
-        );
         return _buildResourceCard(context, preview);
       },
     );

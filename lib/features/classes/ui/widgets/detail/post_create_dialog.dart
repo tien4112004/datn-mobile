@@ -89,14 +89,9 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
                     icon: Icon(LucideIcons.messageCircle, size: 16),
                   ),
                   ButtonSegment(
-                    value: PostType.announcement,
-                    label: Text('Announce'),
-                    icon: Icon(LucideIcons.megaphone, size: 16),
-                  ),
-                  ButtonSegment(
-                    value: PostType.scheduleEvent,
-                    label: Text('Event'),
-                    icon: Icon(LucideIcons.calendar, size: 16),
+                    value: PostType.exercise,
+                    label: Text('Exercise'),
+                    icon: Icon(LucideIcons.clipboardList, size: 16),
                   ),
                 ],
                 selected: {_selectedType},

@@ -8,7 +8,6 @@ import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_secti
 import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_segmented_control.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/attachment_preview_list.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector_sheet.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:datn_mobile/shared/services/media_service_provider.dart';
 import 'package:datn_mobile/shared/widgets/richtext_toolbar.dart';
 import 'package:markdown_quill/markdown_quill.dart';
@@ -37,7 +36,6 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
   PostType _selectedType = PostType.general;
   bool _allowComments = true;
-  DateTime? _scheduledDate;
   final List<AttachmentMetadata> _attachmentMetadata = [];
   final List<LinkedResourceEntity> _linkedResources = [];
   bool _isLoading = true;
@@ -189,35 +187,6 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
     );
   }
 
-  Future<void> _selectDate() async {
-    final now = DateFormatHelper.getNow();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _scheduledDate ?? now,
-      firstDate: now,
-      lastDate: DateTime(now.year + 1),
-    );
-
-    if (picked != null && mounted) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(_scheduledDate ?? now),
-      );
-
-      if (time != null && mounted) {
-        setState(() {
-          _scheduledDate = DateTime(
-            picked.year,
-            picked.month,
-            picked.day,
-            time.hour,
-            time.minute,
-          );
-        });
-      }
-    }
-  }
-
   Future<void> _pickAttachment() async {
     if (_attachmentMetadata.length >= 10) {
       _showSnackBar('Maximum 10 attachments allowed');
@@ -332,25 +301,6 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
           ),
         ),
         actions: [
-          // Schedule button (only for events)
-          if (_selectedType == PostType.scheduleEvent)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: isSubmitting ? null : _selectDate,
-                icon: const Icon(LucideIcons.calendar),
-                tooltip: 'Schedule Post',
-                style: IconButton.styleFrom(
-                  backgroundColor: _scheduledDate != null
-                      ? colorScheme.primaryContainer
-                      : colorScheme.surfaceContainerHighest,
-                  foregroundColor: _scheduledDate != null
-                      ? colorScheme.primary
-                      : colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-
           // Submit button
           Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -409,16 +359,12 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   PostOptionsSection(
                     allowComments: _allowComments,
                     selectedType: _selectedType,
-                    scheduledDate: _scheduledDate,
                     onAllowCommentsChanged: isSubmitting
                         ? null
                         : (value) {
                             HapticFeedback.selectionClick();
                             setState(() => _allowComments = value);
                           },
-                    onRemoveScheduledDate: () {
-                      setState(() => _scheduledDate = null);
-                    },
                   ),
 
                   const SizedBox(height: 16),
@@ -428,12 +374,10 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                     selectedType: _selectedType,
                     attachmentsCount: _attachmentMetadata.length,
                     linkedResourcesCount: _linkedResources.length,
-                    scheduledDate: _scheduledDate,
                     isLoading: isSubmitting,
                     isUploading: _isUploading,
                     onPickAttachment: _pickAttachment,
                     onPickLinkedResource: _pickLinkedResource,
-                    onSelectDate: _selectDate,
                   ),
 
                   const SizedBox(height: 16),

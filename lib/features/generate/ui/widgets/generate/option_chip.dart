@@ -8,12 +8,14 @@ class OptionChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final String? logoPath;
 
   const OptionChip({
     super.key,
     required this.icon,
     required this.label,
     required this.onTap,
+    this.logoPath,
   });
 
   @override
@@ -27,7 +29,14 @@ class OptionChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+            if (logoPath != null)
+              Image.asset(logoPath!, width: 18, height: 18)
+            else
+              Icon(
+                icon,
+                size: 18,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             const SizedBox(width: 8),
             Text(
               label,

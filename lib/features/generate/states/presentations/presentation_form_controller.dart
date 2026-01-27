@@ -7,7 +7,28 @@ part of '../controller_provider.dart';
 class PresentationFormController extends Notifier<PresentationFormState> {
   @override
   PresentationFormState build() {
-    return const PresentationFormState();
+    // Load persisted preferences
+    final prefs = ref.read(generationPreferencesServiceProvider);
+
+    // Load language
+    final savedLanguage = prefs.getPresentationLanguage();
+
+    // Load text model (outline model)
+    final savedTextModelId = prefs.getPresentationTextModelId();
+    if (savedTextModelId != null) {
+      ref.listen(modelsControllerPod(ModelType.text), (_, next) {
+        next.whenData((state) {
+          final model = state.availableModels
+              .where((m) => m.id == savedTextModelId)
+              .firstOrNull;
+          if (model != null) {
+            updateOutlineModel(model);
+          }
+        });
+      });
+    }
+
+    return PresentationFormState(language: savedLanguage ?? 'English');
   }
 
   // Step 1 updates
@@ -21,10 +42,16 @@ class PresentationFormController extends Notifier<PresentationFormState> {
 
   void updateLanguage(String language) {
     state = state.copyWith(language: language);
+    ref
+        .read(generationPreferencesServiceProvider)
+        .savePresentationLanguage(language);
   }
 
   void updateOutlineModel(AIModel model) {
     state = state.copyWith(outlineModel: model);
+    ref
+        .read(generationPreferencesServiceProvider)
+        .savePresentationTextModelId(model.id);
   }
 
   // Step 2 updates
@@ -34,14 +61,28 @@ class PresentationFormController extends Notifier<PresentationFormState> {
 
   void updateThemeId(String themeId) {
     state = state.copyWith(themeId: themeId);
+    ref
+        .read(generationPreferencesServiceProvider)
+        .savePresentationThemeId(themeId);
   }
 
   void updateImageModel(AIModel model) {
     state = state.copyWith(imageModel: model);
+    ref
+        .read(generationPreferencesServiceProvider)
+        .savePresentationImageModelId(model.id);
   }
 
   void updateAvoidContent(String content) {
     state = state.copyWith(avoidContent: content);
+  }
+
+  void updateGrade(String? grade) {
+    state = state.copyWith(grade: grade, clearGrade: grade == null);
+  }
+
+  void updateSubject(String? subject) {
+    state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
   // Outline management
@@ -54,7 +95,15 @@ class PresentationFormController extends Notifier<PresentationFormState> {
   }
 
   void reset() {
-    state = const PresentationFormState();
+    // Preserve preference-related fields, only clear user-input fields
+    state = PresentationFormState(
+      language: state.language,
+      outlineModel: state.outlineModel,
+      imageModel: state.imageModel,
+      themeId: state.themeId,
+      theme: state.theme,
+      // User-input fields use defaults: topic='', slideCount=5, outline='', currentStep=1, etc.
+    );
   }
 
   // Create outline data for Step 1
@@ -72,53 +121,74 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       language: state.language,
       model: outlineModel.name,
       provider: outlineModel.provider,
+      grade: state.grade,
+      subject: state.subject,
     );
   }
 
   // Create presentation request for Step 2
-  PresentationGenerateRequest toPresentationRequest(WidgetRef ref) {
+  PresentationGenerateRequest toPresentationRequest() {
     final outlineModel = state.outlineModel;
     final imageModel = state.imageModel;
+    final themeId = state.themeId;
+
+    if (themeId == null) {
+      throw const FormatException('Please select a presentation theme');
+    }
+
+    if (imageModel == null) {
+      throw const FormatException('Please select an image model');
+    }
 
     // Get the full theme object from the provider
-    final themesAsync = ref.read(slideThemesProvider);
+    final themesValue = ref.read(slideThemesProvider);
     Map<String, dynamic>? themeObject;
 
-    themesAsync.whenData((themes) {
-      if (state.themeId != null) {
-        final selectedTheme = themes.firstWhere(
-          (t) => t.id == state.themeId,
-          orElse: () => themes.first,
-        );
-        themeObject = selectedTheme.toJson();
-      } else {
-        themeObject = themes.first.toJson();
+    final themes = themesValue.asData?.value;
+    if (themes != null && themes.isNotEmpty) {
+      final selectedTheme = themes.firstWhere(
+        (t) => t.id == themeId,
+        orElse: () => themes.first,
+      );
+      themeObject = selectedTheme.toJson();
+    } else {
+      // Fallback only if themes are not loaded content, but ideally this should also be validated
+      throw const FormatException('Themes not loaded. Please try again.');
+    }
+
+    // Save preferences
+    try {
+      final prefsService = ref.read(generationPreferencesServiceProvider);
+      prefsService.savePresentationThemeId(themeId);
+      prefsService.savePresentationImageModelId(imageModel.id);
+      prefsService.savePresentationLanguage(state.language);
+      if (outlineModel != null) {
+        prefsService.savePresentationTextModelId(outlineModel.id);
       }
-    });
+    } catch (e) {
+      // Ignore errors during preference saving, as it shouldn't block generation
+    }
 
     final presentationData = {
-      'theme': themeObject ?? {'id': state.themeId ?? 'modern'},
+      'theme': themeObject,
       'viewport': SlideViewport.standard.toJson(),
     };
 
     final othersData = {
       'contentLength': state.avoidContent.isNotEmpty ? state.avoidContent : '',
-      'imageModel': imageModel != null
-          ? {'name': imageModel.name, 'provider': imageModel.provider}
-          : {
-              'name': 'google/gemini-2.5-flash-image-preview',
-              'provider': 'openRouter',
-            },
+      'imageModel': {'name': imageModel.name, 'provider': imageModel.provider},
     };
 
     return PresentationGenerateRequest(
-      model: outlineModel?.name ?? 'gpt-4o',
-      provider: outlineModel?.provider ?? 'openai',
+      model: outlineModel?.name ?? ModelInfo.defaultTextModelName,
+      provider: outlineModel?.provider ?? ModelInfo.defaultTextModelProvider,
       language: state.language,
       slideCount: state.slideCount,
       outline: state.outline,
       presentation: presentationData,
       others: othersData,
+      grade: state.grade,
+      subject: state.subject,
     );
   }
 }

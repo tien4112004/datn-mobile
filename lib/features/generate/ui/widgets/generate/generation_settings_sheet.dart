@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dar
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/utils/provider_logo_utils.dart';
 import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -115,19 +116,36 @@ class GenerationSettingsSheet extends ConsumerWidget {
               if (models.isEmpty) {
                 return Text(t.generate.mindmapGenerate.noModelsAvailable);
               }
-              final displayNames = models.map((m) => m.displayName).toList();
-              final currentValue =
-                  formState.outlineModel?.displayName ??
-                  models.first.displayName;
+
               return StatefulBuilder(
                 builder: (context, setSheetState) {
-                  return FlexDropdownField<String>(
-                    value: currentValue,
-                    items: displayNames,
-                    onChanged: (value) {
-                      final model = models.firstWhere(
-                        (m) => m.displayName == value,
+                  final selectedModel = models.firstWhere(
+                    (m) =>
+                        m.displayName ==
+                        (formState.outlineModel?.displayName ??
+                            models.first.displayName),
+                    orElse: () => models.first,
+                  );
+
+                  return FlexDropdownField<AIModel>(
+                    value: selectedModel,
+                    items: models,
+                    itemBuilder: (context, model) {
+                      final logoPath = ProviderLogoUtils.getLogoPath(
+                        model.provider,
                       );
+                      return Row(
+                        children: [
+                          Image.asset(logoPath, width: 20, height: 20),
+                          const SizedBox(width: 12),
+                          Text(
+                            model.displayName,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      );
+                    },
+                    onChanged: (model) {
                       formController.updateOutlineModel(model);
                       setSheetState(() {});
                     },

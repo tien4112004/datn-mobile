@@ -31,7 +31,23 @@ class ModelInfo {
   @override
   int get hashCode => name.hashCode ^ provider.hashCode;
 
+  static const defaultTextModelName = 'gpt-4o';
+  static const defaultTextModelProvider = 'openai';
+
+  static const defaultImageModelName = 'google/gemini-2.5-flash-image-preview';
+  static const defaultImageModelProvider = 'openRouter';
+
   static ModelInfo getDefault() {
-    return const ModelInfo(name: 'gpt-4o', provider: 'openai');
+    return const ModelInfo(
+      name: defaultTextModelName,
+      provider: defaultTextModelProvider,
+    );
+  }
+
+  static ModelInfo getDefaultImageModel() {
+    return const ModelInfo(
+      name: defaultImageModelName,
+      provider: defaultImageModelProvider,
+    );
   }
 }

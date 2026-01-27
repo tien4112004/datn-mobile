@@ -161,7 +161,9 @@
     "resource_types": {
       "image": "Hình ảnh",
       "presentation": "Bài thuyết trình",
-      "mindmap": "Sơ đồ tư duy"
+      "mindmap": "Sơ đồ tư duy",
+      "assignment": "Bài tập",
+      "question": "Ngân hàng câu hỏi"
     },
     "categories": "Danh mục",
     "your_presentations": "Bài thuyết trình của bạn",
@@ -268,7 +270,9 @@
       "document": "Tài liệu",
       "image": "Hình ảnh",
       "presentation": "Bài thuyết trình",
-      "mindmap": "Sơ đồ tư duy"
+      "mindmap": "Sơ đồ tư duy",
+      "assignment": "Bài tập",
+      "question": "Ngân hàng câu hỏi"
     },
     "presentationGenerate": {
       "selectGenerator": "Chọn công cụ tạo",
@@ -299,7 +303,10 @@
         "climateChange": "Giải pháp Biến đổi Khí hậu",
         "digitalMarketing": "Chiến lược Marketing Kỹ thuật số",
         "internetHistory": "Lịch sử Internet"
-      }
+      },
+      "grade": "Cấp độ lớp",
+      "subject": "Môn học",
+      "none": "Không"
     },
     "outlineEditor": {
       "title": "Chỉnh sửa dàn ý",
@@ -406,7 +413,10 @@
       "maxBranches": "Nhánh: $branches",
       "noModelsAvailable": "Không có mô hình khả dụng",
       "failedToLoadModels": "Không thể tải mô hình",
-      "error": "Lỗi: $error"
+      "error": "Lỗi: $error",
+      "grade": "Cấp độ lớp",
+      "subject": "Môn học",
+      "none": "Không"
     },
     "mindmapResult": {
       "title": "Sơ đồ tư duy đã tạo",

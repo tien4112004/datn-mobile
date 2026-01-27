@@ -6,6 +6,7 @@ import 'package:datn_mobile/features/generate/domain/entity/outline_editing_stat
 import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
 import 'package:datn_mobile/features/generate/enum/generator_type.dart';
 import 'package:datn_mobile/features/generate/enum/presentation_theme.dart';
+import 'package:datn_mobile/features/generate/service/generation_preferences_service.dart';
 import 'package:datn_mobile/features/generate/service/service_provider.dart';
 import 'package:datn_mobile/features/generate/states/image/image_form_state.dart';
 import 'package:datn_mobile/features/generate/states/image/image_generate_state.dart';
@@ -41,10 +42,9 @@ final presentationGenerateControllerProvider =
 
 /// Provider for the presentation form controller.
 final presentationFormControllerProvider =
-    NotifierProvider.autoDispose<
-      PresentationFormController,
-      PresentationFormState
-    >(PresentationFormController.new);
+    NotifierProvider<PresentationFormController, PresentationFormState>(
+      PresentationFormController.new,
+    );
 
 /// Provider for the outline editing controller.
 final outlineEditingControllerProvider =

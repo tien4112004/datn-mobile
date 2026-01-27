@@ -3,10 +3,12 @@ import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/utils/provider_logo_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+/// Displays generation settings like topic, slide count, language, and model
 /// Displays generation settings like topic, slide count, language, and model
 class GenerationOptionsSection extends ConsumerWidget {
   final AsyncValue generateStateAsync;
@@ -90,6 +92,11 @@ class GenerationOptionsSection extends ConsumerWidget {
                   value:
                       formState.outlineModel?.displayName ??
                       t.generate.customization.notSet,
+                  logoPath: formState.outlineModel != null
+                      ? ProviderLogoUtils.getLogoPath(
+                          formState.outlineModel!.provider,
+                        )
+                      : null,
                 ),
               ),
             ],
@@ -289,8 +296,18 @@ class ImageModelSection extends ConsumerWidget {
                 runSpacing: 8,
                 children: models.map((model) {
                   final isSelected = formState.imageModel?.id == model.id;
+                  final logoPath = ProviderLogoUtils.getLogoPath(
+                    model.provider,
+                  );
                   return ChoiceChip(
-                    label: Text(model.displayName),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(logoPath, width: 16, height: 16),
+                        const SizedBox(width: 8),
+                        Text(model.displayName),
+                      ],
+                    ),
                     selected: isSelected,
                     onSelected: (selected) {
                       if (selected) {
@@ -494,11 +511,13 @@ class _OptionItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final String? logoPath;
 
   const _OptionItem({
     required this.icon,
     required this.label,
     required this.value,
+    this.logoPath,
   });
 
   @override
@@ -514,8 +533,11 @@ class _OptionItem extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
-          const SizedBox(width: 6),
+          if (logoPath != null)
+            Image.asset(logoPath!, width: 16, height: 16)
+          else
+            Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,

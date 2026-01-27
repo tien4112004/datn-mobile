@@ -8,13 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Controller for fetching available AI models
 /// Handles filtering by model type and selecting default models
 class ModelsController extends AsyncNotifier<ModelsState> {
-  late final ModelsRepository _repository;
+  ModelsRepository get _repository => ref.read(modelsRepositoryProvider);
   late ModelType modelType;
 
   @override
   Future<ModelsState> build() async {
-    _repository = ref.watch(modelsRepositoryProvider);
-    final models = await _repository.getModels(modelType: modelType);
+    final repository = _repository;
+    final models = await repository.getModels(modelType: modelType);
     return ModelsState(availableModels: models);
   }
 

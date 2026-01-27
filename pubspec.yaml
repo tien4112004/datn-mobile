@@ -1,11 +1,11 @@
 name: datn_mobile
-description: ''
+description: ""
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
-  flutter: '>=3.8.0'
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.8.0"
 
 dependencies:
   auto_route: ^10.1.2
@@ -87,4 +87,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/images/providers/
     - .env

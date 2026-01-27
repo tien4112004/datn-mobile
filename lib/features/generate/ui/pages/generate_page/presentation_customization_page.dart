@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
+import 'package:datn_mobile/features/generate/service/generation_preferences_service.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/presentation_customization_widgets.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/theme_selection_section.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
@@ -29,24 +30,48 @@ class _PresentationCustomizationPageState
     final formState = ref.read(presentationFormControllerProvider);
     _avoidContentController.text = formState.avoidContent;
 
-    // Pre-fetch image models and set default if not already set
-    _initializeDefaultImageModel();
+    // Pre-fetch defaults if not set
+    _initializeDefaults();
   }
 
-  Future<void> _initializeDefaultImageModel() async {
+  Future<void> _initializeDefaults() async {
     final formState = ref.read(presentationFormControllerProvider);
+    final formController = ref.read(
+      presentationFormControllerProvider.notifier,
+    );
+    final prefsService = ref.read(generationPreferencesServiceProvider);
+
+    // 1. Initialize Image Model
     if (formState.imageModel == null) {
-      // Fetch image models and get default
       final modelsState = await ref.read(
         modelsControllerPod(ModelType.image).future,
       );
-      final defaultModel = modelsState.availableModels
+      final savedModelId = prefsService.getPresentationImageModelId();
+
+      AIModel? selectedModel;
+
+      // Try saved preference
+      if (savedModelId != null) {
+        selectedModel = modelsState.availableModels
+            .where((m) => m.id == savedModelId && m.isEnabled)
+            .firstOrNull;
+      }
+
+      // Fallback to default
+      selectedModel ??= modelsState.availableModels
           .where((m) => m.isDefault && m.isEnabled)
           .firstOrNull;
-      if (defaultModel != null && mounted) {
-        ref
-            .read(presentationFormControllerProvider.notifier)
-            .updateImageModel(defaultModel);
+
+      if (selectedModel != null && mounted) {
+        formController.updateImageModel(selectedModel);
+      }
+    }
+
+    // 2. Initialize Theme
+    if (formState.themeId == null) {
+      final savedThemeId = prefsService.getPresentationThemeId();
+      if (savedThemeId != null && mounted) {
+        formController.updateThemeId(savedThemeId);
       }
     }
   }
@@ -301,14 +326,26 @@ class _PresentationCustomizationPageState
   }
 
   void _handleGenerate() {
-    // final formController = ref.read(
-    //   presentationFormControllerProvider.notifier,
-    // );
-    // final request = formController.toPresentationRequest(ref);
-    // ref
-    //     .read(presentationGenerateControllerProvider.notifier)
-    //     .generatePresentation(request);
+    try {
+      final formController = ref.read(
+        presentationFormControllerProvider.notifier,
+      );
+      // Validates request before navigating
+      formController.toPresentationRequest();
 
-    // context.router.push(const PresentationGenerationWebViewRoute());
+      context.router.push(const PresentationGenerationWebViewRoute());
+    } catch (e) {
+      String message = e.toString();
+      if (e is FormatException) {
+        message = e.message;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 }

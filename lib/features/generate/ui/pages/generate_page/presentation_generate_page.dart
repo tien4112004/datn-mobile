@@ -14,6 +14,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/suggestions/topic_sugge
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/utils/provider_logo_utils.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -238,6 +239,11 @@ class _PresentationGeneratePageState
                     label:
                         formState.outlineModel?.displayName ??
                         t.generate.presentationGenerate.selectModel,
+                    logoPath: formState.outlineModel != null
+                        ? ProviderLogoUtils.getLogoPath(
+                            formState.outlineModel!.provider,
+                          )
+                        : null,
                     onTap: () => GeneralPickerOptions.showModelPicker(
                       context,
                       selectedModel: formState.outlineModel,

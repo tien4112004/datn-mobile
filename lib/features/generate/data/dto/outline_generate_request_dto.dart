@@ -10,18 +10,30 @@ class OutlineGenerateRequest {
   final String model;
   final String provider;
 
+  /// The grade level for the content (max 50 chars)
+  final String? grade;
+
+  /// The subject area for the content (max 100 chars)
+  final String? subject;
+
   const OutlineGenerateRequest({
     required this.topic,
     required this.slideCount,
     required this.language,
     required this.model,
     required this.provider,
+    this.grade,
+    this.subject,
   });
 
   factory OutlineGenerateRequest.fromJson(Map<String, dynamic> json) =>
       _$OutlineGenerateRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OutlineGenerateRequestToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$OutlineGenerateRequestToJson(this);
+    json.removeWhere((key, value) => value == null);
+    return json;
+  }
 
   OutlineGenerateRequest copyWith({
     String? topic,
@@ -29,6 +41,8 @@ class OutlineGenerateRequest {
     String? language,
     String? model,
     String? provider,
+    String? grade,
+    String? subject,
   }) {
     return OutlineGenerateRequest(
       topic: topic ?? this.topic,
@@ -36,6 +50,8 @@ class OutlineGenerateRequest {
       language: language ?? this.language,
       model: model ?? this.model,
       provider: provider ?? this.provider,
+      grade: grade ?? this.grade,
+      subject: subject ?? this.subject,
     );
   }
 }

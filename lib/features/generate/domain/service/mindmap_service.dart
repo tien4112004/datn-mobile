@@ -10,5 +10,7 @@ abstract interface class MindmapService {
     required String language,
     int? maxDepth,
     int? maxBranchesPerNode,
+    String? grade,
+    String? subject,
   });
 }

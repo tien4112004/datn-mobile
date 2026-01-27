@@ -195,65 +195,68 @@ class _PresentationGenerationWebViewPageState
     );
 
     // Build the generation request
-    final generationRequest = formController.toPresentationRequest(ref);
-
-    // Create a temporary presentation ID (will be replaced by backend)
-    final tempPresentationId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
-
-    // Build the presentation object structure
-    final presentation = {
-      'id': tempPresentationId,
-      'title': formState.topic.isEmpty
-          ? 'Untitled Presentation'
-          : formState.topic,
-      'slides': [], // Start with empty slides
-      'theme': generationRequest.presentation?['theme'],
-      'viewport': generationRequest.presentation?['viewport'],
-    };
-
-    // Build the complete generation request payload
-    final generationPayload = {
-      'presentationId': tempPresentationId,
-      'outline': generationRequest.outline,
-      'model': {
-        'name': generationRequest.model,
-        'provider': generationRequest.provider,
-      },
-      'slideCount': generationRequest.slideCount,
-      'language': generationRequest.language,
-      'presentation': generationRequest.presentation,
-      'others': generationRequest.others,
-    };
-
     try {
+      final generationRequest = formController.toPresentationRequest();
+
+      // Create a temporary presentation ID (will be replaced by backend)
+      final tempPresentationId =
+          'temp_${DateTime.now().millisecondsSinceEpoch}';
+
+      // Build the presentation object structure
+      final presentation = {
+        'id': tempPresentationId,
+        'title': formState.topic.isEmpty
+            ? 'Untitled Presentation'
+            : formState.topic,
+        'slides': [], // Start with empty slides
+        'theme': generationRequest.presentation?['theme'],
+        'viewport': generationRequest.presentation?['viewport'],
+      };
+
+      // Build the complete generation request payload
+      final generationPayload = {
+        'presentationId': tempPresentationId,
+        'outline': generationRequest.outline,
+        'model': {
+          'name': generationRequest.model,
+          'provider': generationRequest.provider,
+        },
+        'slideCount': generationRequest.slideCount,
+        'language': generationRequest.language,
+        'presentation': generationRequest.presentation,
+        'others': generationRequest.others,
+      };
+
       // Send data to Vue app using the setGenerationData function
       await _webViewController!.evaluateJavascript(
         source:
             '''
-          (function() {
-            try {
-              if (window.setGenerationData) {
-                window.setGenerationData(
-                  ${jsonEncode(presentation)},
-                  ${jsonEncode(generationPayload)}
-                );
-                return 'Data sent successfully';
-              } else {
-                return 'setGenerationData not available yet';
+            (function() {
+              try {
+                if (window.setGenerationData) {
+                  window.setGenerationData(
+                    ${jsonEncode(presentation)},
+                    ${jsonEncode(generationPayload)}
+                  );
+                  return 'Data sent successfully';
+                } else {
+                  return 'setGenerationData not available yet';
+                }
+              } catch (error) {
+                console.error('Error sending generation data:', error);
+                return 'Error: ' + error.message;
               }
-            } catch (error) {
-              console.error('Error sending generation data:', error);
-              return 'Error: ' + error.message;
-            }
-          })();
-        ''',
+            })();
+          ''',
       );
       debugPrint('Generation data sent to Vue app');
     } catch (e) {
-      debugPrint('Error sending generation data: $e');
+      debugPrint('Error preparing or sending generation data: $e');
       if (mounted) {
         setState(() {
-          _error = 'Failed to communicate with generation service';
+          _error = e is FormatException
+              ? e.message
+              : 'Failed to prepare generation request';
         });
       }
     }

@@ -17,12 +17,20 @@ class MindmapFormState {
   /// Maximum number of branches per node (1-10)
   final int maxBranchesPerNode;
 
+  /// The grade level for the content (optional, max 50 chars)
+  final String? grade;
+
+  /// The subject area for the content (optional, max 100 chars)
+  final String? subject;
+
   const MindmapFormState({
     this.topic = '',
     this.selectedModel,
     this.language = 'en',
     this.maxDepth = 3,
     this.maxBranchesPerNode = 5,
+    this.grade,
+    this.subject,
   });
 
   MindmapFormState copyWith({
@@ -32,6 +40,10 @@ class MindmapFormState {
     String? language,
     int? maxDepth,
     int? maxBranchesPerNode,
+    String? grade,
+    bool clearGrade = false,
+    String? subject,
+    bool clearSubject = false,
   }) {
     return MindmapFormState(
       topic: topic ?? this.topic,
@@ -41,6 +53,8 @@ class MindmapFormState {
       language: language ?? this.language,
       maxDepth: maxDepth ?? this.maxDepth,
       maxBranchesPerNode: maxBranchesPerNode ?? this.maxBranchesPerNode,
+      grade: clearGrade ? null : (grade ?? this.grade),
+      subject: clearSubject ? null : (subject ?? this.subject),
     );
   }
 

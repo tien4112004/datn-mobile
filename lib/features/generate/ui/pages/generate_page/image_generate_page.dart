@@ -14,6 +14,7 @@ import 'package:datn_mobile/features/generate/ui/widgets/shared/attach_file_shee
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/shared/utils/provider_logo_utils.dart';
 import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -215,6 +216,11 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                         label:
                             formState.selectedModel?.displayName ??
                             t.generate.presentationGenerate.selectModel,
+                        logoPath: formState.selectedModel != null
+                            ? ProviderLogoUtils.getLogoPath(
+                                formState.selectedModel!.provider,
+                              )
+                            : null,
                         onTap: () => GeneralPickerOptions.showModelPicker(
                           context,
                           selectedModel: formState.selectedModel,

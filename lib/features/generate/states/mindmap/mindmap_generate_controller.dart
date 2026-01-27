@@ -26,6 +26,8 @@ class MindmapGenerateController extends AsyncNotifier<MindmapGenerateState> {
             language: formState.language,
             maxDepth: formState.maxDepth,
             maxBranchesPerNode: formState.maxBranchesPerNode,
+            grade: formState.grade,
+            subject: formState.subject,
           );
 
       return MindmapGenerateState.success(response);

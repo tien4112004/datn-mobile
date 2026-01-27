@@ -1,11 +1,14 @@
 import 'package:datn_mobile/const/resource.dart';
 import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
 import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
+import 'package:datn_mobile/core/services/notification/notification_service.dart';
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
 import 'package:datn_mobile/features/auth/service/service_provider.dart';
 import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
+import 'package:datn_mobile/features/notification/service/service_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
@@ -39,6 +42,9 @@ class AuthController extends AsyncNotifier<AuthState> {
       await ref
           .read(userControllerProvider.notifier)
           .fetchAndStoreUserProfile();
+
+      // Register FCM token with backend
+      await _registerFcmToken();
 
       return AuthState(isAuthenticated: true);
     });
@@ -86,6 +92,9 @@ class AuthController extends AsyncNotifier<AuthState> {
           .read(userControllerProvider.notifier)
           .fetchAndStoreUserProfile();
 
+      // Register FCM token with backend
+      await _registerFcmToken();
+
       return AuthState(isAuthenticated: true);
     });
   }
@@ -109,6 +118,21 @@ class AuthController extends AsyncNotifier<AuthState> {
       await storage.delete(key: R.USER_PROFILE_KEY);
     } catch (e) {
       // print('Failed to clear user profile from storage: $e');
+    }
+  }
+
+  /// Register FCM device token with backend
+  Future<void> _registerFcmToken() async {
+    try {
+      final notificationService = NotificationService();
+      final token = await notificationService.getToken();
+      if (token != null) {
+        final apiService = ref.read(notificationApiServiceProvider);
+        await apiService.registerDevice(token);
+        debugPrint('FCM token registered with backend');
+      }
+    } catch (e) {
+      debugPrint('Failed to register FCM token: $e');
     }
   }
 }

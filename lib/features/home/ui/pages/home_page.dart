@@ -1,5 +1,7 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:datn_mobile/features/notification/ui/widgets/notification_bell.dart';
 import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +63,12 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         return CustomAppBar(
           title: t.homeGreeting,
           actions: [
+            NotificationBell(
+              onTap: () {
+                context.router.push(const NotificationListRoute());
+              },
+            ),
+            const SizedBox(width: 8),
             Container(
               margin: const EdgeInsets.only(right: 16, top: 4, bottom: 4),
               child: Material(

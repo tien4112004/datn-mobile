@@ -40,7 +40,7 @@ class PostTypeChip extends StatelessWidget {
 
   _ChipConfig _getConfig(PostType type, ColorScheme colorScheme) {
     switch (type) {
-      case PostType.general:
+      case PostType.post:
         return _ChipConfig(
           icon: LucideIcons.messageCircle,
           backgroundColor: colorScheme.surfaceContainerHighest,

@@ -1,7 +1,6 @@
-/// Enum representing different types of posts in a class.
 enum PostType {
   /// General posts and updates with content, attachments, and linked resources
-  general,
+  post,
 
   /// Exercise posts for linking assignments
   exercise;
@@ -9,17 +8,17 @@ enum PostType {
   /// Converts enum to API string format
   String get apiValue {
     switch (this) {
-      case PostType.general:
-        return 'general';
+      case PostType.post:
+        return 'Post';
       case PostType.exercise:
-        return 'exercise';
+        return 'Exercise';
     }
   }
 
   /// Returns user-facing display name
   String get displayName {
     switch (this) {
-      case PostType.general:
+      case PostType.post:
         return 'Post';
       case PostType.exercise:
         return 'Exercise';
@@ -29,12 +28,14 @@ enum PostType {
   /// Converts API string to PostType enum
   static PostType fromName(String value) {
     switch (value) {
+      case 'Post':
       case 'general':
-        return PostType.general;
+        return PostType.post;
+      case 'Exercise':
       case 'exercise':
         return PostType.exercise;
       default:
-        return PostType.general;
+        return PostType.post;
     }
   }
 }

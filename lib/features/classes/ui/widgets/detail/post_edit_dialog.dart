@@ -108,7 +108,7 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
               SegmentedButton<PostType>(
                 segments: const [
                   ButtonSegment(
-                    value: PostType.general,
+                    value: PostType.post,
                     label: Text('Post'),
                     icon: Icon(LucideIcons.messageCircle, size: 16),
                   ),

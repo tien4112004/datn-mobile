@@ -19,7 +19,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
   final _formKey = GlobalKey<FormState>();
   final _contentController = TextEditingController();
 
-  PostType _selectedType = PostType.general;
+  PostType _selectedType = PostType.post;
   bool _allowComments = true;
 
   @override
@@ -84,7 +84,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
               SegmentedButton<PostType>(
                 segments: const [
                   ButtonSegment(
-                    value: PostType.general,
+                    value: PostType.post,
                     label: Text('Post'),
                     icon: Icon(LucideIcons.messageCircle, size: 16),
                   ),

@@ -35,7 +35,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   late quill.QuillController _quillController;
   late FocusNode _editorFocusNode;
 
-  PostType _selectedType = PostType.general;
+  PostType _selectedType = PostType.post;
   bool _allowComments = true;
   DateTime? _dueDate; // For exercise type posts
   final List<AttachmentMetadata> _attachmentMetadata = [];

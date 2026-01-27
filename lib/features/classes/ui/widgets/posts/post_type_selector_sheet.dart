@@ -48,12 +48,12 @@ class PostTypeSelectorSheet extends StatelessWidget {
           const Divider(height: 1),
           // Post type options
           PostTypeOption(
-            icon: PostType.general.icon,
-            label: PostType.general.createPageLabel,
+            icon: PostType.post.icon,
+            label: PostType.post.createPageLabel,
             description: 'Share updates with attachments and resources',
-            isSelected: selectedType == PostType.general,
+            isSelected: selectedType == PostType.post,
             onTap: () {
-              onTypeSelected(PostType.general);
+              onTypeSelected(PostType.post);
               Navigator.pop(context);
               HapticFeedback.selectionClick();
             },

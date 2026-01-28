@@ -29,6 +29,7 @@ final dioPod = Provider.autoDispose<Dio>((ref) {
         settings: const TalkerDioLoggerSettings(
           printRequestHeaders: true,
           printResponseHeaders: true,
+          printResponseData: false,
         ),
       ),
     );

@@ -5,13 +5,16 @@ import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/auth/data/dto/request/user_profile_update_request.dart';
 import 'package:datn_mobile/features/profile/controller/profile_controller.dart';
+import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
+import 'package:datn_mobile/features/setting/widget/profile_picture.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:flutter/foundation.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 @RoutePage()
 class PersonalInformationPage extends ConsumerStatefulWidget {
@@ -74,6 +77,73 @@ class _PersonalInformationPageState
     }
   }
 
+  Future<Permission> _getRequiredPermission() async {
+    if (Platform.isAndroid) {
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+
+      // For Android 13+ (API 33+), use photos permission
+      if (androidInfo.version.sdkInt >= 33) {
+        return Permission.photos;
+      }
+      // For Android 12 and below, use storage permission
+      else {
+        return Permission.storage;
+      }
+    }
+    // For iOS
+    return Permission.photos;
+  }
+
+  Future<bool> _requestPermission() async {
+    final permission = await _getRequiredPermission();
+
+    // Check current status
+    var status = await permission.status;
+
+    // If already granted, return true
+    if (status.isGranted) {
+      return true;
+    }
+
+    // If denied but not permanently, request permission
+    if (status.isDenied) {
+      status = await permission.request();
+    }
+
+    // If still denied after request or permanently denied, show dialog
+    if (status.isDenied || status.isPermanentlyDenied) {
+      if (mounted) {
+        final shouldOpenSettings = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Permission Required'),
+            content: const Text(
+              'Gallery access is required to select photos. Please grant permission in settings.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Open Settings'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldOpenSettings == true) {
+          await openAppSettings();
+        }
+      }
+      return false;
+    }
+
+    return status.isGranted;
+  }
+
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -120,25 +190,26 @@ class _PersonalInformationPageState
   }
 
   Future<void> _pickAndUploadAvatar() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    try {
+      // Check and request permission
+      final hasPermission = await _requestPermission();
 
-    if (image != null) {
-      setState(() => _isLoading = true);
+      if (!hasPermission) return;
 
-      try {
-        final user = await ref.read(userControllerProvider.future);
-        final userId = user?.email ?? '';
+      // Permission granted, open image picker
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
 
-        final file = File(image.path);
-        final multipartFile = File.fromRawPath(
-          Uint8List.fromList(await file.readAsBytes()),
-        );
+      if (image != null && mounted) {
+        // Update avatar with the selected image
+        await ref.read(avatarProvider.notifier).updateAvatar(image.path);
 
-        await ref
-            .read(profileControllerProvider.notifier)
-            .updateAvatar(userId, multipartFile);
-
+        // Show success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -147,31 +218,23 @@ class _PersonalInformationPageState
             ),
           );
         }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to upload avatar: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to upload avatar: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
 
   Future<void> _removeAvatar() async {
-    setState(() => _isLoading = true);
-
     try {
-      final user = await ref.read(userControllerProvider.future);
-      final userId = user?.email ?? '';
-
-      await ref.read(profileControllerProvider.notifier).removeAvatar(userId);
+      // Clear the avatar from avatar provider
+      await ref.read(avatarProvider.notifier).clearAvatar();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -189,10 +252,6 @@ class _PersonalInformationPageState
             backgroundColor: Colors.red,
           ),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
       }
     }
   }
@@ -247,20 +306,7 @@ class _PersonalInformationPageState
                   Center(
                     child: Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.grey.shade200,
-                          backgroundImage: profile.avatarUrl != null
-                              ? NetworkImage(profile.avatarUrl!)
-                              : null,
-                          child: profile.avatarUrl == null
-                              ? Icon(
-                                  LucideIcons.user,
-                                  size: 60,
-                                  color: Colors.grey.shade600,
-                                )
-                              : null,
-                        ),
+                        const ProfilePicture(size: 120),
                         if (_isEditing)
                           Positioned(
                             bottom: 0,
@@ -280,35 +326,44 @@ class _PersonalInformationPageState
                                   color: Colors.white,
                                   size: 20,
                                 ),
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    onTap: _pickAndUploadAvatar,
-                                    child: const Row(
-                                      children: [
-                                        Icon(LucideIcons.upload),
-                                        SizedBox(width: 12),
-                                        Text('Upload Photo'),
-                                      ],
-                                    ),
-                                  ),
-                                  if (profile.avatarUrl != null)
+                                itemBuilder: (context) {
+                                  final avatarState = ref.watch(avatarProvider);
+                                  final hasAvatar =
+                                      avatarState.localAvatarFile != null ||
+                                      avatarState.avatarUrl != null;
+
+                                  return [
                                     PopupMenuItem(
-                                      onTap: _removeAvatar,
+                                      onTap: _pickAndUploadAvatar,
                                       child: const Row(
                                         children: [
-                                          Icon(
-                                            LucideIcons.trash2,
-                                            color: Colors.red,
-                                          ),
+                                          Icon(LucideIcons.upload),
                                           SizedBox(width: 12),
-                                          Text(
-                                            'Remove Photo',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
+                                          Text('Upload Photo'),
                                         ],
                                       ),
                                     ),
-                                ],
+                                    if (hasAvatar)
+                                      PopupMenuItem(
+                                        onTap: _removeAvatar,
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              LucideIcons.trash2,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(width: 12),
+                                            Text(
+                                              'Remove Photo',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ];
+                                },
                               ),
                             ),
                           ),

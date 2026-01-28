@@ -3,10 +3,7 @@ part of 'avatar_provider.dart';
 class AvatarNotifier extends Notifier<AvatarState> {
   @override
   AvatarState build() {
-    return const AvatarState(
-      avatarUrl:
-          "https://claritycareconsulting.co.uk/wp-content/uploads/et_temp/Blank-Profile-Picture-34126_1080x675.jpg",
-    );
+    return const AvatarState();
   }
 
   Future<void> updateAvatar(String imagePath) async {
@@ -15,13 +12,15 @@ class AvatarNotifier extends Notifier<AvatarState> {
     try {
       final profileService = ref.read(profileServiceProvider);
       // Call the mocked service
-      final uploadedUrl = await profileService.updateAvatar(imagePath);
+      await profileService.updateAvatar(imagePath);
 
       // Update state with the new image
-      state = state.copyWith(
+      // Only set localAvatarFile for now since we're not uploading to a server yet
+      state = AvatarState(
         localAvatarFile: File(imagePath),
-        avatarUrl: uploadedUrl,
+        avatarUrl: null, // Don't set URL for local files
         isLoading: false,
+        error: null,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -30,5 +29,9 @@ class AvatarNotifier extends Notifier<AvatarState> {
 
   void clearError() {
     state = state.copyWith(error: null);
+  }
+
+  Future<void> clearAvatar() async {
+    state = const AvatarState();
   }
 }

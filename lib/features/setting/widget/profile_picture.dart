@@ -1,3 +1,4 @@
+import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
 import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,13 +11,31 @@ class ProfilePicture extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final avatarState = ref.watch(avatarProvider);
+    final userProfileAsync = ref.watch(userControllerProvider);
+
+    final imageProvider = _getImageProvider(avatarState);
+    final hasImage = imageProvider != null;
 
     return CircleAvatar(
       radius: size / 2,
-      backgroundImage: _getImageProvider(avatarState),
-      backgroundColor: Colors.grey[200],
+      backgroundImage: imageProvider,
+      backgroundColor: hasImage ? Colors.grey[200] : Colors.blue,
       child: avatarState.isLoading
           ? const CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
+          : !hasImage
+          ? userProfileAsync.maybeWhen(
+              data: (profile) => profile != null
+                  ? Text(
+                      _getInitials(profile.firstName, profile.lastName),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size / 2.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : null,
+              orElse: () => null,
+            )
           : null,
     );
   }
@@ -28,5 +47,11 @@ class ProfilePicture extends ConsumerWidget {
       return NetworkImage(state.avatarUrl!);
     }
     return null;
+  }
+
+  String _getInitials(String firstName, String lastName) {
+    final firstInitial = firstName.isNotEmpty ? firstName[0].toUpperCase() : '';
+    final lastInitial = lastName.isNotEmpty ? lastName[0].toUpperCase() : '';
+    return '$firstInitial$lastInitial';
   }
 }

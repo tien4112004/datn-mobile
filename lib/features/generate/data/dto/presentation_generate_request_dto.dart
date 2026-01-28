@@ -25,6 +25,12 @@ class PresentationGenerateRequest {
   /// Other configuration options
   final Map<String, dynamic>? others;
 
+  /// The grade level for the content (max 50 chars)
+  final String? grade;
+
+  /// The subject area for the content (max 100 chars)
+  final String? subject;
+
   const PresentationGenerateRequest({
     required this.model,
     required this.provider,
@@ -33,10 +39,16 @@ class PresentationGenerateRequest {
     required this.outline,
     this.presentation,
     this.others,
+    this.grade,
+    this.subject,
   });
 
   factory PresentationGenerateRequest.fromJson(Map<String, dynamic> json) =>
       _$PresentationGenerateRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PresentationGenerateRequestToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$PresentationGenerateRequestToJson(this);
+    json.removeWhere((key, value) => value == null);
+    return json;
+  }
 }

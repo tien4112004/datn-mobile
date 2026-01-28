@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:datn_mobile/shared/models/cms_enums.dart';
 import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,73 @@ class PresentationWidgetOptions {
     );
   }
 
+  static Widget buildGradeSetting(Translations t) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final formState = ref.watch(presentationFormControllerProvider);
+        final formController = ref.read(
+          presentationFormControllerProvider.notifier,
+        );
+
+        return SettingItem(
+          label: t.generate.presentationGenerate.grade,
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              return FlexDropdownField<String?>(
+                value: formState.grade,
+                items: [null, ...GradeLevel.values.map((g) => g.apiValue)],
+                itemLabelBuilder: (v) {
+                  if (v == null) return t.generate.presentationGenerate.none;
+                  return GradeLevel.fromApiValue(v).displayName;
+                },
+                onChanged: (value) {
+                  formController.updateGrade(value);
+                  setSheetState(() {});
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  static Widget buildSubjectSetting(Translations t) {
+    return Consumer(
+      builder: (context, ref, _) {
+        final formState = ref.watch(presentationFormControllerProvider);
+        final formController = ref.read(
+          presentationFormControllerProvider.notifier,
+        );
+
+        return SettingItem(
+          label: t.generate.presentationGenerate.subject,
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              return FlexDropdownField<String?>(
+                value: formState.subject,
+                items: [null, ...Subject.values.map((s) => s.apiValue)],
+                itemLabelBuilder: (v) {
+                  if (v == null) return t.generate.presentationGenerate.none;
+                  return Subject.fromApiValue(v).displayName;
+                },
+                onChanged: (value) {
+                  formController.updateSubject(value);
+                  setSheetState(() {});
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   List<Widget> buildAllSettings(Translations t) {
-    return [buildSlideCountSetting(t)];
+    return [
+      buildSlideCountSetting(t),
+      buildGradeSetting(t),
+      buildSubjectSetting(t),
+    ];
   }
 }

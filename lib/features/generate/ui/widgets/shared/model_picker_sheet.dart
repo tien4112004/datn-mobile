@@ -3,6 +3,7 @@ import 'package:datn_mobile/features/generate/states/controller_provider.dart';
 import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:datn_mobile/shared/utils/provider_logo_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -63,6 +64,11 @@ class ModelPickerSheet extends ConsumerWidget {
           children: models.map((model) {
             final isSelected = selectedModelName == model.displayName;
             return ListTile(
+              leading: Image.asset(
+                ProviderLogoUtils.getLogoPath(model.provider),
+                width: 24,
+                height: 24,
+              ),
               title: Text(model.displayName),
               trailing: isSelected
                   ? Icon(

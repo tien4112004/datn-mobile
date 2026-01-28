@@ -21,6 +21,12 @@ class PresentationFormState {
   // Current step (1 or 2)
   final int currentStep;
 
+  /// The grade level for the content (optional, max 50 chars)
+  final String? grade;
+
+  /// The subject area for the content (optional, max 100 chars)
+  final String? subject;
+
   const PresentationFormState({
     this.topic = '',
     this.slideCount = 5,
@@ -32,6 +38,8 @@ class PresentationFormState {
     this.avoidContent = '',
     this.outline = '',
     this.currentStep = 1,
+    this.grade,
+    this.subject,
   });
 
   PresentationFormState copyWith({
@@ -47,6 +55,10 @@ class PresentationFormState {
     String? avoidContent,
     String? outline,
     int? currentStep,
+    String? grade,
+    bool clearGrade = false,
+    String? subject,
+    bool clearSubject = false,
   }) {
     return PresentationFormState(
       topic: topic ?? this.topic,
@@ -61,6 +73,8 @@ class PresentationFormState {
       avoidContent: avoidContent ?? this.avoidContent,
       outline: outline ?? this.outline,
       currentStep: currentStep ?? this.currentStep,
+      grade: clearGrade ? null : (grade ?? this.grade),
+      subject: clearSubject ? null : (subject ?? this.subject),
     );
   }
 

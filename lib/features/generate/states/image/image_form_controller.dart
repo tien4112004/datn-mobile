@@ -4,6 +4,22 @@ part of '../controller_provider.dart';
 class ImageFormController extends Notifier<ImageFormState> {
   @override
   ImageFormState build() {
+    // Load persisted image model
+    final prefs = ref.read(generationPreferencesServiceProvider);
+    final savedModelId = prefs.getImageGenerateModelId();
+    if (savedModelId != null) {
+      ref.listen(modelsControllerPod(ModelType.image), (_, next) {
+        next.whenData((state) {
+          final model = state.availableModels
+              .where((m) => m.id == savedModelId)
+              .firstOrNull;
+          if (model != null) {
+            updateModel(model);
+          }
+        });
+      });
+    }
+
     // Initialize with empty art style; UI will set it to first available from API
     return const ImageFormState(
       artDescription: '',
@@ -18,6 +34,9 @@ class ImageFormController extends Notifier<ImageFormState> {
 
   void updateModel(AIModel model) {
     state = state.copyWith(selectedModel: model);
+    ref
+        .read(generationPreferencesServiceProvider)
+        .saveImageGenerateModelId(model.id);
   }
 
   void updateAspectRatio(String aspectRatio) {
@@ -37,8 +56,10 @@ class ImageFormController extends Notifier<ImageFormState> {
   }
 
   void reset() {
-    // Reset with empty art style; UI will set it to first available from API
-    state = const ImageFormState(
+    // Preserve preference-related fields, only clear user-input fields
+    state = ImageFormState(
+      selectedModel: state.selectedModel,
+      // User-input fields are cleared
       artDescription: '',
       themeDescription: '',
       artStyle: '',

@@ -5,8 +5,15 @@ class FlexDropdownField<T> extends StatelessWidget {
   final T value;
   final List<T> items;
   final ValueChanged<T> onChanged;
+
+  /// Optional builder for the selected item label (used if itemBuilder is null)
   final String Function(T)? itemLabelBuilder;
+
+  /// Optional custom builder for the dropdown button content
   final Widget Function(BuildContext, VoidCallback)? buttonBuilder;
+
+  /// Optional builder for rendering items in both the list and the selected view
+  final Widget Function(BuildContext, T)? itemBuilder;
 
   final _controller = OverlayPortalController();
 
@@ -17,6 +24,7 @@ class FlexDropdownField<T> extends StatelessWidget {
     required this.onChanged,
     this.itemLabelBuilder,
     this.buttonBuilder,
+    this.itemBuilder,
   });
 
   @override
@@ -29,12 +37,8 @@ class FlexDropdownField<T> extends StatelessWidget {
           buttonBuilder ??
           (context, openMenu) {
             final selectedItem = value;
-            final label = selectedItem != null
-                ? itemLabelBuilder?.call(selectedItem) ?? '$selectedItem'
-                : 'Select';
             return SizedBox(
               width: double.infinity,
-
               child: Material(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -51,10 +55,16 @@ class FlexDropdownField<T> extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          label,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                        if (selectedItem != null && itemBuilder != null)
+                          itemBuilder!(context, selectedItem)
+                        else
+                          Text(
+                            selectedItem != null
+                                ? itemLabelBuilder?.call(selectedItem) ??
+                                      '$selectedItem'
+                                : 'Select',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         Icon(
                           Icons.keyboard_arrow_down_rounded,
                           size: 24,
@@ -80,13 +90,23 @@ class FlexDropdownField<T> extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 children: items.map((item) {
-                  final label = itemLabelBuilder?.call(item) ?? '$item';
-                  return ListTile(
-                    title: Text(label),
+                  return InkWell(
                     onTap: () {
                       onChanged(item);
                       _controller.hide();
                     },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: itemBuilder != null
+                          ? itemBuilder!(context, item)
+                          : Text(
+                              itemLabelBuilder?.call(item) ?? '$item',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                    ),
                   );
                 }).toList(),
               ),

@@ -25,6 +25,12 @@ class MindmapGenerateRequestDto {
   /// minimum: 1, maximum: 10, default: 5
   final int? maxBranchesPerNode;
 
+  /// The grade level for the content (max 50 chars)
+  final String? grade;
+
+  /// The subject area for the content (max 100 chars)
+  final String? subject;
+
   const MindmapGenerateRequestDto({
     required this.topic,
     required this.model,
@@ -32,10 +38,16 @@ class MindmapGenerateRequestDto {
     required this.language,
     this.maxDepth,
     this.maxBranchesPerNode,
+    this.grade,
+    this.subject,
   });
 
   factory MindmapGenerateRequestDto.fromJson(Map<String, dynamic> json) =>
       _$MindmapGenerateRequestDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MindmapGenerateRequestDtoToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$MindmapGenerateRequestDtoToJson(this);
+    json.removeWhere((key, value) => value == null);
+    return json;
+  }
 }

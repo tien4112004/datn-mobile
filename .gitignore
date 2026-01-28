@@ -173,3 +173,4 @@ firebase-debug.log
 # Platform specific gitignores are handled by respective platform folders    
 
 service-account.json
+android/app/google-services.json

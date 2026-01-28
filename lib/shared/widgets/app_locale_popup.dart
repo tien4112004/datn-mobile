@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/i18n/strings.g.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:datn_mobile/features/generate/service/generation_preferences_service.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This widget can be used to change the local in a popup
@@ -27,6 +28,9 @@ class AppLocalePopUp extends ConsumerWidget {
           AppLocale.vi => await AppLocale.vi.build(),
         };
         ref.read(translationsPod.notifier).update((state) => update);
+        ref
+            .read(generationPreferencesServiceProvider)
+            .saveAppLocale(locale.languageCode);
       },
       itemBuilder: (BuildContext context) => AppLocale.values.map((e) {
         return PopupMenuItem<AppLocale>(

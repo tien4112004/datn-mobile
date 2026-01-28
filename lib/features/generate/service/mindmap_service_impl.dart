@@ -12,6 +12,8 @@ class MindmapServiceImpl implements MindmapService {
     required String language,
     int? maxDepth,
     int? maxBranchesPerNode,
+    String? grade,
+    String? subject,
   }) async {
     // Add business logic validations here
     if (topic.trim().isEmpty) {
@@ -39,6 +41,8 @@ class MindmapServiceImpl implements MindmapService {
       language: language,
       maxDepth: maxDepth,
       maxBranchesPerNode: maxBranchesPerNode,
+      grade: grade,
+      subject: subject,
     );
 
     // Call the repository to generate mindmap via API

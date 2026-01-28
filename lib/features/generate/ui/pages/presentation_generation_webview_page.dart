@@ -285,7 +285,7 @@ class _PresentationGenerationWebViewPageState
     );
 
     // Build the generation request
-    final generationRequest = formController.toPresentationRequest(ref);
+    final generationRequest = formController.toPresentationRequest();
 
     // Convert to JSON for Vue's PresentationGenerationRequest format
     final requestJson = {

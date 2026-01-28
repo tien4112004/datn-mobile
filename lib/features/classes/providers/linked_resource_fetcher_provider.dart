@@ -2,7 +2,6 @@ import 'package:datn_mobile/features/classes/domain/entity/linked_resource_previ
 import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:datn_mobile/features/projects/service/service_provider.dart';
 import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that fetches resource details using known type (optimized, no cascading)
@@ -11,20 +10,14 @@ final linkedResourceFetcherProvider =
       ref,
       resource,
     ) async {
-      debugPrint(
-        '🔍 [LinkedResource] Fetching: ${resource.type} - ${resource.id}',
-      );
-
       try {
         // Direct lookup using known type - eliminates cascading API calls
         switch (resource.type.toLowerCase()) {
           case 'presentation':
-            debugPrint('📊 [Presentation] Fetching ID: ${resource.id}');
             final presentation = await ref
                 .read(presentationServiceProvider)
                 .fetchPresentationById(resource.id);
 
-            debugPrint('✅ [Presentation] Success: ${presentation.title}');
             return LinkedResourcePreview(
               id: presentation.id,
               title: presentation.title,
@@ -47,12 +40,10 @@ final linkedResourceFetcherProvider =
             );
 
           case 'assignment':
-            debugPrint('📝 [Assignment] Fetching ID: ${resource.id}');
             final assignment = await ref
                 .read(assignmentRepositoryProvider)
                 .getAssignmentById(resource.id);
 
-            debugPrint('✅ [Assignment] Success: ${assignment.title}');
             return LinkedResourcePreview(
               id: assignment.assignmentId,
               title: assignment.title,
@@ -64,23 +55,11 @@ final linkedResourceFetcherProvider =
               totalPoints: assignment.totalPoints,
               status: assignment.status.displayName,
             );
-
           default:
             // Unknown resource type
-            debugPrint(
-              '❌ [Error] Unknown resource type: "${resource.type}" for ID: ${resource.id}',
-            );
             return LinkedResourcePreview.error(resource.id);
         }
-      } catch (e, stackTrace) {
-        debugPrint(
-          '❌ [Error] Failed to fetch ${resource.type} - ${resource.id}',
-        );
-        debugPrint('   Error: ${e.toString()}');
-        debugPrint(
-          '   Stack: ${stackTrace.toString().split('\n').take(3).join('\n')}',
-        );
-
+      } catch (_) {
         // Return error preview instead of throwing
         return LinkedResourcePreview.error(resource.id);
       }
@@ -101,7 +80,7 @@ final linkedResourcesBatchFetcherProvider =
             linkedResourceFetcherProvider(resource).future,
           );
           return MapEntry(resource.id, preview);
-        } catch (e) {
+        } catch (_) {
           return MapEntry(
             resource.id,
             LinkedResourcePreview.error(resource.id),

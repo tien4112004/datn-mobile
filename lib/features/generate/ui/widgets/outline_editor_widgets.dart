@@ -4,9 +4,9 @@ import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:markdown_editor_plus/markdown_editor_plus.dart';
 
 /// Centralized auto-save function with error handling
 /// Saves the current outline state back to the presentation form controller
@@ -239,13 +239,16 @@ class SlideEditDialog extends ConsumerStatefulWidget {
 
 class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
   late TextEditingController _titleController;
-  late TextEditingController _contentController;
+  late quill.QuillController _contentController;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.slide.title);
-    _contentController = TextEditingController(text: widget.slide.content);
+    _contentController = quill.QuillController(
+      document: quill.Document()..insert(0, widget.slide.content),
+      selection: const TextSelection.collapsed(offset: 0),
+    );
   }
 
   @override
@@ -274,18 +277,38 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
               ),
             ),
             const SizedBox(height: 16),
-            MarkdownAutoPreview(
-              minLines: 5,
-              maxLines: 10,
-              controller: _contentController,
-              decoration: InputDecoration(
-                labelText: t.generate.outlineEditor.slideTitle,
-                hintText: t.generate.outlineEditor.enterSlideTitle,
+            RichTextToolbar(controller: _contentController),
+            const SizedBox(height: 8),
+            Container(
+              constraints: const BoxConstraints(minHeight: 150, maxHeight: 250),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+                borderRadius: BorderRadius.circular(8),
               ),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.7),
+              child: quill.QuillEditor.basic(
+                controller: _contentController,
+                config: quill.QuillEditorConfig(
+                  padding: const EdgeInsets.all(12),
+                  placeholder: t.generate.outlineEditor.enterSlideTitle,
+                  customStyles: quill.DefaultStyles(
+                    paragraph: quill.DefaultTextBlockStyle(
+                      Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                      const quill.HorizontalSpacing(0, 0),
+                      const quill.VerticalSpacing(4, 4),
+                      const quill.VerticalSpacing(0, 0),
+                      null,
+                    ),
+                  ),
+                  scrollable: true,
+                  autoFocus: false,
+                  expands: false,
+                ),
               ),
             ),
           ],
@@ -298,12 +321,15 @@ class _SlideEditDialogState extends ConsumerState<SlideEditDialog> {
         ),
         TextButton(
           onPressed: () async {
+            final contentText = _contentController.document
+                .toPlainText()
+                .trim();
             ref
                 .read(outlineEditingControllerProvider.notifier)
                 .updateSlideContent(
                   widget.slide.order,
                   _titleController.text.trim(),
-                  _contentController.text.trim(),
+                  contentText,
                 );
             // Auto-save the changes
             await _autoSaveOutline(ref, context);

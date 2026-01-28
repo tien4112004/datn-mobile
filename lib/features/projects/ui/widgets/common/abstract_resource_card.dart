@@ -77,15 +77,15 @@ class AbstractDocumentCard extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: Themes.padding.p4),
-                    // if (description != null) ...[
-                    //   Text(
-                    //     description!,
-                    //     style: TextStyle(
-                    //       fontSize: Themes.fontSize.s12,
-                    //       color: Colors.grey,
-                    //     ),
-                    //   ),
-                    // ],
+                    if (description != null) ...[
+                      Text(
+                        description!,
+                        style: TextStyle(
+                          fontSize: Themes.fontSize.s12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                     // Created at
                     if (createdAt != null) ...[
                       Text(

@@ -33,7 +33,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.dateCreatedDesc;
+    _sortOption = SortOption.nameAsc;
     _searchController = TextEditingController();
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {

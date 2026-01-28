@@ -12,8 +12,7 @@ class Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.0),
-      // use cover so image fills the aspect-ratio box without adding visual padding
-      child: Image.network(imageUrl, fit: BoxFit.cover),
+      child: Image.network(imageUrl, fit: BoxFit.fitWidth),
     );
   }
 }

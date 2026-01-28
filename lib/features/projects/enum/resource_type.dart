@@ -70,7 +70,7 @@ enum ResourceType {
   String getLabel(Translations t) {
     switch (this) {
       case ResourceType.assignment:
-        return t.generate.resourceTypes.assignment;
+        return 'Assignments';
       case ResourceType.image:
         return t.generate.resourceTypes.image;
       case ResourceType.mindmap:
@@ -78,7 +78,7 @@ enum ResourceType {
       case ResourceType.presentation:
         return t.generate.resourceTypes.presentation;
       case ResourceType.question:
-        return t.generate.resourceTypes.question;
+        return 'Questions Bank';
     }
   }
 

@@ -28,7 +28,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.dateCreatedDesc;
+    _sortOption = SortOption.nameAsc;
     _searchController = TextEditingController();
     // Initialize filter with default sort
     WidgetsBinding.instance.addPostFrameCallback((_) {

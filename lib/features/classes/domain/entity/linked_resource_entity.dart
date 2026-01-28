@@ -4,21 +4,31 @@ class LinkedResourceEntity {
   final String id;
   final String type;
   final PermissionLevel permissionLevel;
+  final String?
+  title; // Enriched by backend (optional for backward compatibility)
+  final String?
+  thumbnail; // Enriched by backend (optional, null for assignments)
 
   const LinkedResourceEntity({
     required this.id,
     required this.type,
     required this.permissionLevel,
+    this.title,
+    this.thumbnail,
   });
 
   LinkedResourceEntity copyWith({
     String? id,
     String? type,
     PermissionLevel? permissionLevel,
+    String? title,
+    String? thumbnail,
   }) => LinkedResourceEntity(
     id: id ?? this.id,
     type: type ?? this.type,
     permissionLevel: permissionLevel ?? this.permissionLevel,
+    title: title ?? this.title,
+    thumbnail: thumbnail ?? this.thumbnail,
   );
 
   @override

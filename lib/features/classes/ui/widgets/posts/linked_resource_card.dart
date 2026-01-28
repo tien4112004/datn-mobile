@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/classes/providers/linked_resource_fetcher_provider.dart';
 import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:datn_mobile/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
 import 'package:datn_mobile/features/classes/ui/widgets/posts/assignment_preview_card.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
@@ -45,6 +46,18 @@ class LinkedResourceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // If resource is already enriched by backend, use it directly without API call
+    if (resource.title != null) {
+      final preview = LinkedResourcePreview(
+        id: resource.id,
+        title: resource.title!,
+        type: resource.type,
+        thumbnail: resource.thumbnail,
+      );
+      return _buildResourceCard(context, preview);
+    }
+
+    // Otherwise fetch from API (backward compatibility)
     final resourceAsync = ref.watch(linkedResourceFetcherProvider(resource));
 
     return resourceAsync.easyWhen(

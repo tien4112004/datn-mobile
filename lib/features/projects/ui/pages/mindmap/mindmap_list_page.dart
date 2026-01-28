@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
 import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
 import 'package:datn_mobile/features/projects/enum/resource_type.dart';
 import 'package:datn_mobile/features/projects/enum/sort_option.dart';
@@ -35,7 +34,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.dateCreatedDesc;
+    _sortOption = SortOption.nameAsc;
     _searchController = TextEditingController();
     // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -237,7 +236,8 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
             mindmap: item,
             onTap: () {
               HapticFeedback.lightImpact();
-              context.router.push(MindmapDetailRoute(mindmapId: item.id));
+              // TODO: Navigate to mindmap detail when route is available
+              // context.router.push(MindmapDetailRoute(mindmapId: item.id));
             },
             onMoreOptions: () {
               _showMoreOptions(context, item);
@@ -247,7 +247,8 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
             mindmap: item,
             onTap: () {
               HapticFeedback.lightImpact();
-              context.router.push(MindmapDetailRoute(mindmapId: item.id));
+              // TODO: Navigate to mindmap detail when route is available
+              // context.router.push(MindmapDetailRoute(mindmapId: item.id));
             },
             onMoreOptions: () {
               _showMoreOptions(context, item);

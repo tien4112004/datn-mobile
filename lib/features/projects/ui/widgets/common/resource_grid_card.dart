@@ -65,51 +65,77 @@ class ResourceGridCard extends ConsumerWidget {
               ),
             ),
             // Content
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (onMoreOptions != null) ...[
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: onMoreOptions,
+                                child: Icon(
+                                  LucideIcons.ellipsisVertical,
+                                  size: 18,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
-                      ),
-                      if (onMoreOptions != null) ...[
-                        const SizedBox(width: 4),
-                        GestureDetector(
-                          onTap: onMoreOptions,
-                          child: Icon(
-                            LucideIcons.ellipsisVertical,
-                            size: 18,
-                            color: colorScheme.onSurfaceVariant,
+                        const SizedBox(height: 8),
+                        if (description != null)
+                          Text(
+                            description!.isEmpty
+                                ? 'No description provided'
+                                : description!,
+                            style: description!.isEmpty
+                                ? theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.5),
+                                    height: 1.3,
+                                    fontStyle: FontStyle.italic,
+                                  )
+                                : theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    height: 1.3,
+                                  ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
                       ],
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    DateFormatHelper.formatRelativeDate(
-                      ref: ref,
-                      updatedAt ?? DateFormatHelper.getNow(),
                     ),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.7,
+                    Text(
+                      DateFormatHelper.formatRelativeDate(
+                        ref: ref,
+                        updatedAt ?? DateFormatHelper.getNow(),
+                      ),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.7,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

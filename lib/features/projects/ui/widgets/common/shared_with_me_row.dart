@@ -1,20 +1,20 @@
 import 'package:datn_mobile/core/theme/app_theme.dart';
 import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/recent_document_card.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/shared_resource_card.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:datn_mobile/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RecentDocumentsRow extends ConsumerWidget {
-  const RecentDocumentsRow({this.title, super.key});
+class SharedWithMeRow extends ConsumerWidget {
+  const SharedWithMeRow({this.title, super.key});
 
   final String? title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final recentDocumentsAsync = ref.watch(recentDocumentsControllerProvider);
+    final sharedResourcesAsync = ref.watch(sharedResourcesControllerProvider);
     final t = ref.watch(translationsPod);
 
     return Column(
@@ -30,14 +30,14 @@ class RecentDocumentsRow extends ConsumerWidget {
           ),
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 160),
-          child: recentDocumentsAsync.easyWhen(
-            data: (resouce) => SingleChildScrollView(
+          child: sharedResourcesAsync.easyWhen(
+            data: (sharedResourceListState) => SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(vertical: Themes.padding.p16),
-              child: resouce.value.isEmpty
+              child: sharedResourceListState.value.isEmpty
                   ? Center(
                       child: Text(
-                        t.projects.no_recent_works,
+                        t.projects.no_shared_resources,
                         style: TextStyle(
                           fontSize: Themes.fontSize.s20,
                           color: Colors.grey,
@@ -46,15 +46,18 @@ class RecentDocumentsRow extends ConsumerWidget {
                       ),
                     )
                   : Row(
-                      children: List.generate(
-                        resouce.value.length,
-                        (index) => Padding(
-                          padding: EdgeInsets.only(right: Themes.padding.p12),
-                          child: RecentDocumentCard(
-                            recentDocument: resouce.value[index],
-                          ),
-                        ),
-                      ),
+                      children: sharedResourceListState.value
+                          .map(
+                            (sharedResource) => Padding(
+                              padding: EdgeInsets.only(
+                                right: Themes.padding.p12,
+                              ),
+                              child: SharedResourceCard(
+                                sharedResource: sharedResource,
+                              ),
+                            ),
+                          )
+                          .toList(),
                     ),
             ),
             loadingWidget: () => SingleChildScrollView(

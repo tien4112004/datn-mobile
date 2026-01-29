@@ -4,16 +4,19 @@ import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart
 import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
 import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:datn_mobile/features/projects/domain/entity/recent_document.dart';
+import 'package:datn_mobile/features/projects/domain/entity/shared_resource.dart';
 import 'package:datn_mobile/features/projects/service/service_provider.dart';
 import 'package:datn_mobile/features/projects/states/mindmap_list_state.dart';
 import 'package:datn_mobile/features/projects/states/presentation_list_state.dart';
 import 'package:datn_mobile/features/projects/states/recent_document_list_state.dart';
+import 'package:datn_mobile/features/projects/states/shared_resource_list_state.dart';
 import 'package:datn_mobile/shared/helper/date_format_helper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'presentation_controller.dart';
 part 'mindmap_controller.dart';
 part 'recent_document_controller.dart';
+part 'shared_resource_controller.dart';
 
 final presentationsControllerProvider =
     AsyncNotifierProvider<PresentationsController, PresentationListState>(
@@ -64,4 +67,9 @@ final mindmapByIdProvider = FutureProvider.family<Mindmap, String>((
 final recentDocumentsControllerProvider =
     AsyncNotifierProvider<RecentDocumentsController, RecentDocumentListState>(
       () => RecentDocumentsController(),
+    );
+
+final sharedResourcesControllerProvider =
+    AsyncNotifierProvider<SharedResourcesController, SharedResourceListState>(
+      () => SharedResourcesController(),
     );

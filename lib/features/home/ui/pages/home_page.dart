@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:datn_mobile/features/home/ui/widgets/today_works_section.dart';
 import 'package:datn_mobile/features/home/ui/widgets/my_classes_section.dart';
-import 'package:datn_mobile/features/home/ui/widgets/recent_documents_section.dart';
+import 'package:datn_mobile/features/projects/ui/widgets/common/recent_documents_row.dart';
 import 'package:datn_mobile/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -22,24 +22,26 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _HomeView extends StatelessWidget {
+class _HomeView extends ConsumerWidget {
   const _HomeView();
 
   @override
-  Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
+    return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 8),
-            TodayWorksSection(),
-            SizedBox(height: 32),
-            MyClassesSection(),
-            SizedBox(height: 32),
-            RecentDocumentsSection(),
-            SizedBox(height: 16),
+            const SizedBox(height: 8),
+            const TodayWorksSection(),
+            const SizedBox(height: 32),
+            const MyClassesSection(),
+            const SizedBox(height: 32),
+            RecentDocumentsRow(title: t.recentDocuments),
+            const SizedBox(height: 16),
           ],
         ),
       ),

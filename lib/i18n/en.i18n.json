@@ -113,6 +113,8 @@
     "search_hint": "Search projects...",
     "recently_works": "Recent projects",
     "no_recent_works": "No recent projects",
+    "shared_with_me": "Shared with me",
+    "no_shared_resources": "No shared resources",
     "created_at": "Created at: $date",
     "edited": "Edited: $date",
     "untitled": "Untitled",

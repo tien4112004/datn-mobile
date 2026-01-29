@@ -121,6 +121,8 @@
     "search_hint": "Tìm kiếm dự án...",
     "recently_works": "Các công việc gần đây",
     "no_recent_works": "Không có công việc gần đây",
+    "shared_with_me": "Được chia sẻ với tôi",
+    "no_shared_resources": "Không có tài nguyên được chia sẻ",
     "created_at": "Tạo lúc: $date",
     "edited": "Đã chỉnh sửa: $date",
     "untitled": "Chưa đặt tên",

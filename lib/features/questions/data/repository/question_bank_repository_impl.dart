@@ -1,11 +1,11 @@
-import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto_mapper.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_request_mapper.dart';
-import 'package:datn_mobile/features/questions/data/source/question_bank_remote_source.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
-import 'package:datn_mobile/features/questions/domain/repository/question_bank_repository.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_bank_item_dto_mapper.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_request_mapper.dart';
+import 'package:AIPrimary/features/questions/data/source/question_bank_remote_source.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_create_request_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_update_request_entity.dart';
+import 'package:AIPrimary/features/questions/domain/repository/question_bank_repository.dart';
 import 'package:flutter/material.dart';
 
 /// Implementation of QuestionBankRepository using remote data source.

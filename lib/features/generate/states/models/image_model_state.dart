@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 
 class ImageModelState {
   final AIModel? selectedModel;

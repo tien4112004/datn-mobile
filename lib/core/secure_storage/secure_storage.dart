@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_profile.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorage {

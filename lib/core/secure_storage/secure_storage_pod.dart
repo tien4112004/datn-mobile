@@ -1,4 +1,4 @@
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

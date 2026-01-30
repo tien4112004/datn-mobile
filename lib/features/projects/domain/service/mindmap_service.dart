@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/projects/domain/entity/mindmap.dart';
-import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
-import 'package:datn_mobile/features/projects/enum/sort_option.dart';
+import 'package:AIPrimary/features/projects/domain/entity/mindmap.dart';
+import 'package:AIPrimary/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:AIPrimary/features/projects/enum/sort_option.dart';
 
 abstract class MindmapService {
   Future<List<MindmapMinimal>> fetchMindmaps();

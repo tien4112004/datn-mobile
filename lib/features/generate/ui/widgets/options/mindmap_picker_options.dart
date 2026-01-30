@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class MindmapPickerOptions {

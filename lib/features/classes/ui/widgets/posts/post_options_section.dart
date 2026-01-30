@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

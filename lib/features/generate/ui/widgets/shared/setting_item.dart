@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/utils/theme_utils.dart';
+import 'package:AIPrimary/shared/utils/theme_utils.dart';
 import 'package:flutter/material.dart';
 
 /// Internal widget for displaying a labeled setting field.

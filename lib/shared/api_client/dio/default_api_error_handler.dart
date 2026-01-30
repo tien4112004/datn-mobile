@@ -1,4 +1,4 @@
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:dio/dio.dart';
 
 // coverage:ignore-file

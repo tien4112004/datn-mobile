@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_list.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/search_field.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/sort_button.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/projects/providers/filter_provider.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/resource/filter_list.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/resource/search_field.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/resource/sort_button.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

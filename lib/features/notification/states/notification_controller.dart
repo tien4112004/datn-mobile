@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/notification/domain/service/notification_api_service.dart';
-import 'package:datn_mobile/features/notification/service/service_provider.dart';
-import 'package:datn_mobile/features/notification/states/notification_state.dart';
+import 'package:AIPrimary/features/notification/domain/service/notification_api_service.dart';
+import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/features/notification/states/notification_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final notificationControllerProvider =

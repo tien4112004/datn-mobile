@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
+import 'package:AIPrimary/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
 import 'package:flutter_riverpod/misc.dart';
 
 import 'package:talker_flutter/talker_flutter.dart';

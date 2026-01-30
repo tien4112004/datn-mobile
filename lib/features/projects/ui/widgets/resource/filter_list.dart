@@ -1,7 +1,7 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/providers/filter_provider.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/filter_dropdown.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/projects/providers/filter_provider.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/resource/filter_dropdown.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 
 class FilterList extends StatelessWidget {

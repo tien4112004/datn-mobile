@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/data/dto/class_response_dto.dart';
-import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/features/classes/data/dto/class_response_dto.dart';
+import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'class_list_response_dto.g.dart';

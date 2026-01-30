@@ -1,5 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 typedef OnTokenReceived = Future<void> Function(String token);
@@ -13,7 +16,7 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  bool _isInitialized = false;
+  static Completer<void>? _initCompleter;
   OnTokenReceived? _onTokenReceived;
 
   void setOnTokenReceived(OnTokenReceived callback) {
@@ -21,51 +24,52 @@ class NotificationService {
   }
 
   Future<void> initialize() async {
-    if (_isInitialized) return;
-
-    // 1. Request Permission
-    await _requestPermission();
-
-    // 2. Initialize Local Notifications (for foreground display on Android)
-    await _initializeLocalNotifications();
-
-    // 3. Handle token
-    String? token = await _firebaseMessaging.getToken();
-    debugPrint('FCM Token: $token');
-    if (token != null && _onTokenReceived != null) {
-      await _onTokenReceived!(token);
+    if (_initCompleter != null) {
+      return _initCompleter!.future;
     }
 
-    // Listen for token refresh
-    _firebaseMessaging.onTokenRefresh.listen((newToken) async {
-      debugPrint('FCM Token Refreshed: $newToken');
-      if (_onTokenReceived != null) {
-        await _onTokenReceived!(newToken);
+    _initCompleter = Completer<void>();
+
+    try {
+      await _requestPermission();
+      await _initializeLocalNotifications();
+
+      final token = await _firebaseMessaging.getToken();
+      if (token != null && _onTokenReceived != null) {
+        await _onTokenReceived!(token);
       }
-    });
 
-    // 4. Handle Foreground Messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint('Foreground Message: ${message.notification?.title}');
-      _showLocalNotification(message);
-    });
+      _firebaseMessaging.onTokenRefresh.listen((newToken) async {
+        if (_onTokenReceived != null) {
+          await _onTokenReceived!(newToken);
+        }
+      });
 
-    // 5. Handle Background/Terminated Messages (User taps notification)
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      debugPrint('Notification Opened: ${message.data}');
-      // TODO: Navigate to specific screen based on data
-    });
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        _showLocalNotification(message);
+      });
 
-    _isInitialized = true;
+      FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
+
+      // Handle app opened from terminated state via notification tap
+      final initialMessage = await _firebaseMessaging.getInitialMessage();
+      if (initialMessage != null) {
+        _handleMessageOpenedApp(initialMessage);
+      }
+
+      _initCompleter!.complete();
+    } catch (e) {
+      _initCompleter!.completeError(e);
+      rethrow;
+    }
   }
 
   Future<void> _requestPermission() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+    await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-    debugPrint('User granted permission: ${settings.authorizationStatus}');
   }
 
   Future<void> _initializeLocalNotifications() async {
@@ -82,9 +86,7 @@ class NotificationService {
 
     await _localNotifications.initialize(
       initSettings,
-      onDidReceiveNotificationResponse: (response) {
-        debugPrint('Local Notification Clicked: ${response.payload}');
-      },
+      onDidReceiveNotificationResponse: _handleLocalNotificationTap,
     );
   }
 
@@ -106,9 +108,17 @@ class NotificationService {
           ),
           iOS: DarwinNotificationDetails(),
         ),
-        payload: message.data.toString(),
+        payload: jsonEncode(message.data),
       );
     }
+  }
+
+  void _handleMessageOpenedApp(RemoteMessage message) {
+    NotificationNavigationHandler.navigateFromFcmData(message.data);
+  }
+
+  void _handleLocalNotificationTap(NotificationResponse response) {
+    NotificationNavigationHandler.navigateFromLocalPayload(response.payload);
   }
 
   Future<String?> getToken() async => await _firebaseMessaging.getToken();

@@ -1,10 +1,10 @@
-import 'package:datn_mobile/core/services/notification/notification_service.dart';
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/core/services/notification/notification_service.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/notification/service/service_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/app/view/app.dart';
-import 'package:datn_mobile/bootstrap.dart';
-import 'package:datn_mobile/features/splash/view/splash_view.dart';
+import 'package:AIPrimary/app/view/app.dart';
+import 'package:AIPrimary/bootstrap.dart';
+import 'package:AIPrimary/features/splash/view/splash_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Splasher extends ConsumerStatefulWidget {
@@ -20,20 +20,6 @@ class _SplasherState extends ConsumerState<Splasher> {
   @override
   void initState() {
     super.initState();
-    _setupFcmTokenCallback();
-  }
-
-  void _setupFcmTokenCallback() {
-    // Set up callback for FCM token refresh
-    NotificationService().setOnTokenReceived((token) async {
-      try {
-        final apiService = ref.read(notificationApiServiceProvider);
-        await apiService.registerDevice(token);
-        debugPrint('FCM token registered on refresh: $token');
-      } catch (e) {
-        debugPrint('Failed to register FCM token on refresh: $e');
-      }
-    });
   }
 
   Future<void> _registerExistingToken() async {
@@ -45,10 +31,9 @@ class _SplasherState extends ConsumerState<Splasher> {
       if (token != null) {
         final apiService = ref.read(notificationApiServiceProvider);
         await apiService.registerDevice(token);
-        debugPrint('FCM token registered for existing session');
       }
-    } catch (e) {
-      debugPrint('Failed to register FCM token for existing session: $e');
+    } catch (_) {
+      // Silent fail - token registration is not critical
     }
   }
 

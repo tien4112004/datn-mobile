@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/ui/extensions/post_type_extension.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/ui/extensions/post_type_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Segmented control for selecting post type

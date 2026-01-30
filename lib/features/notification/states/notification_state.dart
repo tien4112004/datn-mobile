@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/notification/domain/entity/app_notification.dart';
+import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
 
 class NotificationState {
   final List<AppNotification> notifications;

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
-import 'package:datn_mobile/features/students/data/dto/student_import_response_dto.dart';
-import 'package:datn_mobile/features/students/data/dto/student_response_dto.dart';
-import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_create_request_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_import_response_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_response_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_update_request_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';

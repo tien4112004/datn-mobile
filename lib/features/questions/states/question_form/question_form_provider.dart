@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/questions/states/question_form/question_form_notifier.dart';
-import 'package:datn_mobile/features/questions/states/question_form/question_form_state.dart';
+import 'package:AIPrimary/features/questions/states/question_form/question_form_notifier.dart';
+import 'package:AIPrimary/features/questions/states/question_form/question_form_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

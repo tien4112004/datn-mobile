@@ -1,16 +1,16 @@
-import 'package:datn_mobile/core/config/config.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
-import 'package:datn_mobile/shared/api_client/dio/interceptors/author_api_interceptor.dart';
-import 'package:datn_mobile/shared/api_client/dio/interceptors/default_time_response_interceptor.dart';
-import 'package:datn_mobile/shared/api_client/dio/interceptors/form_data_interceptor.dart';
+import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/shared/api_client/dio/interceptors/author_api_interceptor.dart';
+import 'package:AIPrimary/shared/api_client/dio/interceptors/default_time_response_interceptor.dart';
+import 'package:AIPrimary/shared/api_client/dio/interceptors/form_data_interceptor.dart';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/bootstrap.dart';
-import 'package:datn_mobile/shared/api_client/dio/bad_certificate_fixer.dart';
-import 'package:datn_mobile/shared/api_client/dio/interceptors/default_api_interceptor.dart';
+import 'package:AIPrimary/bootstrap.dart';
+import 'package:AIPrimary/shared/api_client/dio/bad_certificate_fixer.dart';
+import 'package:AIPrimary/shared/api_client/dio/interceptors/default_api_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 ///This provider dioClient with interceptors(TimeResponseInterceptor,FormDataInterceptor,TalkerDioLogger,DefaultAPIInterceptor)

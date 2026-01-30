@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
+import 'package:AIPrimary/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_create_request_dto.g.dart';
 

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/credential_signup_request.dart';
 
 abstract class AuthService {
   Future<void> signInWithEmailAndPassword({

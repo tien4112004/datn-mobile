@@ -1,9 +1,9 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/states/controller_provider.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/shared_resource_card.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/project_loading_skeleton.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/projects/states/controller_provider.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/common/shared_resource_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/common/project_loading_skeleton.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

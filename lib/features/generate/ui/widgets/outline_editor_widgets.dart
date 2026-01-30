@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/utils/snackbar_utils.dart';
+import 'package:AIPrimary/features/generate/domain/entity/outline_slide.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

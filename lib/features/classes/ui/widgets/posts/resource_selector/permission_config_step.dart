@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
-import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/permission_card.dart';
+import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
+import 'package:AIPrimary/features/classes/states/resrouce_selection_state.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/resource_selector/permission_card.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

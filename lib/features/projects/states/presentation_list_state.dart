@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.dart';
 
 class PresentationListState {
   const PresentationListState(

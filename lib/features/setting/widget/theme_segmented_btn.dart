@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/core/theme/theme_controller.dart';
+import 'package:AIPrimary/core/theme/theme_controller.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This class provider segmented button which can be used

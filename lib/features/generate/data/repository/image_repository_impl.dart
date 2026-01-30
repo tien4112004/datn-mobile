@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/generate/data/dto/image_generation_request_dto.dart';
-import 'package:datn_mobile/features/generate/data/source/image_remote_source.dart';
-import 'package:datn_mobile/features/generate/domain/entity/generated_image.dart';
-import 'package:datn_mobile/features/generate/domain/repository/image_repository.dart';
+import 'package:AIPrimary/features/generate/data/dto/image_generation_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/source/image_remote_source.dart';
+import 'package:AIPrimary/features/generate/domain/entity/generated_image.dart';
+import 'package:AIPrimary/features/generate/domain/repository/image_repository.dart';
 
 class ImageRepositoryImpl implements ImageRepository {
   final ImageRemoteSource _remoteSource;

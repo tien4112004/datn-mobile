@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/data/dto/mindmap_node_content_dto.dart';
+import 'package:AIPrimary/features/generate/data/dto/mindmap_node_content_dto.dart';
 
 /// Domain entity representing a node in the generated mindmap.
 /// This is a recursive tree structure where each node can have children.

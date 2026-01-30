@@ -1,9 +1,9 @@
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
-import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
-import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
-import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/features/auth/data/repositories/user_repository_provider.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_profile.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

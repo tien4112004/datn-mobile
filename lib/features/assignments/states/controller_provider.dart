@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
-import 'package:datn_mobile/features/assignments/data/repository/assignment_repository_impl.dart';
-import 'package:datn_mobile/features/assignments/data/source/assignment_remote_source.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/repository/assignment_repository.dart';
-import 'package:datn_mobile/features/assignments/states/assignment_filter_state.dart';
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/repository/assignment_repository_impl.dart';
+import 'package:AIPrimary/features/assignments/data/source/assignment_remote_source.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/repository/assignment_repository.dart';
+import 'package:AIPrimary/features/assignments/states/assignment_filter_state.dart';
+import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

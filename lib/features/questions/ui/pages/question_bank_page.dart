@@ -1,16 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_bank_loading.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/question_bank_loading.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_bank_header.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_bank_list.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
+import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/question_bank_header.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/question_bank_list.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Question Bank management page for teachers.

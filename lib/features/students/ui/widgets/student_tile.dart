@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

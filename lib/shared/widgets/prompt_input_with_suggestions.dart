@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/widgets/input_card.dart';
-import 'package:datn_mobile/shared/widgets/sample_prompt.dart';
+import 'package:AIPrimary/shared/widgets/input_card.dart';
+import 'package:AIPrimary/shared/widgets/sample_prompt.dart';
 
 class PromptInputWithSuggestions extends StatefulWidget {
   final TextEditingController controller;

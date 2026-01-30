@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
-import 'package:datn_mobile/features/projects/service/service_provider.dart';
+import 'package:AIPrimary/features/projects/domain/entity/image_project_minimal.dart';
+import 'package:AIPrimary/features/projects/service/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

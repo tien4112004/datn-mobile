@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
+import 'package:AIPrimary/shared/exception/base_exception.dart';
 
 void main() {
   group('BaseException', () {

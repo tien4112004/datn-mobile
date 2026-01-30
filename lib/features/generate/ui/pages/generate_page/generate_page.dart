@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/generate/enum/generator_type.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/features/generate/ui/pages/generate_page/image_generate_page.dart';
-import 'package:datn_mobile/features/generate/ui/pages/generate_page/mindmap_generate_page.dart';
-import 'package:datn_mobile/features/generate/ui/pages/generate_page/presentation_generate_page.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/generator_picker_sheet.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/resource_generation_appbar.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/generate/enum/generator_type.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/pages/generate_page/image_generate_page.dart';
+import 'package:AIPrimary/features/generate/ui/pages/generate_page/mindmap_generate_page.dart';
+import 'package:AIPrimary/features/generate/ui/pages/generate_page/presentation_generate_page.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/generator_picker_sheet.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/resource_generation_appbar.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

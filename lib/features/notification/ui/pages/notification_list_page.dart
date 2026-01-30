@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/notification/states/notification_controller.dart';
-import 'package:datn_mobile/features/notification/ui/widgets/notification_item.dart';
+import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
+import 'package:AIPrimary/features/notification/states/notification_controller.dart';
+import 'package:AIPrimary/features/notification/ui/widgets/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -114,7 +115,10 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                           .read(notificationControllerProvider.notifier)
                           .markAsRead(notification.id);
                     }
-                    // TODO: Navigate based on notification type and referenceId
+                    NotificationNavigationHandler.navigateFromAppNotification(
+                      notification,
+                      context,
+                    );
                   },
                 );
               },

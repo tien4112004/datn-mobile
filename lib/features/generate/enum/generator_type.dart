@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/features/projects/enum/resource_type.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 /// Generator types available in the app
 enum GeneratorType {

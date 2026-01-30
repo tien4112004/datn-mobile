@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/domain/entity/image_project.dart';
-import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
+import 'package:AIPrimary/features/projects/domain/entity/image_project.dart';
+import 'package:AIPrimary/features/projects/domain/entity/image_project_minimal.dart';
 
 abstract class ImageRepository {
   Future<List<ImageProjectMinimal>> fetchImages();

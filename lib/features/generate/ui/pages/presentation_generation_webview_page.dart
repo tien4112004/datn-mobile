@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/config/config.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/shared/widgets/authenticated_webview.dart';
+import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';

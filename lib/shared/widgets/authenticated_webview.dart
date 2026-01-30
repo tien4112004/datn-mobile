@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 
 /// A widget that renders an authenticated InAppWebView with token authentication.
 ///

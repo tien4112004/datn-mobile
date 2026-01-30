@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 
 ///This is the base class exception which can be
 ///used to throw with a message

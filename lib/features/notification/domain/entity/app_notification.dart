@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/notification/domain/entity/notification_type.dart';
+import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 
 class AppNotification {
   final String id;
@@ -37,5 +37,17 @@ class AppNotification {
       isRead: isRead ?? this.isRead,
       createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': body,
+      'type': type.toString(),
+      'referenceId': referenceId,
+      'isRead': isRead,
+      'createdAt': createdAt.toIso8601String(),
+    };
   }
 }

@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

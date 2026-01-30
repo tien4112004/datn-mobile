@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

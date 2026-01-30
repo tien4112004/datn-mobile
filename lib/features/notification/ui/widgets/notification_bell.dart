@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/notification/states/notification_controller.dart';
+import 'package:AIPrimary/features/notification/states/notification_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,23 +34,14 @@ class _NotificationBellState extends ConsumerState<NotificationBell> {
           const Icon(Icons.notifications_outlined),
           if (unreadCount > 0)
             Positioned(
-              right: -6,
-              top: -6,
+              right: 0,
+              top: 0,
               child: Container(
-                padding: const EdgeInsets.all(4),
+                width: 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.error,
                   shape: BoxShape.circle,
-                ),
-                constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-                child: Text(
-                  unreadCount > 99 ? '99+' : unreadCount.toString(),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onError,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),

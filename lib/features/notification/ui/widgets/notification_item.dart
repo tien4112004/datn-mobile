@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/notification/domain/entity/app_notification.dart';
-import 'package:datn_mobile/features/notification/domain/entity/notification_type.dart';
+import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
+import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +25,10 @@ class NotificationItem extends StatelessWidget {
         return Icons.alarm_outlined;
       case NotificationType.system:
         return Icons.settings_outlined;
+      case NotificationType.sharedPresentation:
+        return Icons.slideshow_outlined;
+      case NotificationType.sharedMindmap:
+        return Icons.account_tree_outlined;
     }
   }
 
@@ -45,6 +49,10 @@ class NotificationItem extends StatelessWidget {
         return Colors.amber;
       case NotificationType.system:
         return colorScheme.onSurfaceVariant;
+      case NotificationType.sharedPresentation:
+        return Colors.indigo;
+      case NotificationType.sharedMindmap:
+        return Colors.teal;
     }
   }
 

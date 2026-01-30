@@ -1,14 +1,13 @@
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
-import 'package:datn_mobile/core/services/notification/notification_service.dart';
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
-import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
-import 'package:datn_mobile/features/auth/service/service_provider.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_state.dart';
-import 'package:datn_mobile/features/notification/service/service_provider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/core/services/notification/notification_service.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/credential_signup_request.dart';
+import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
+import 'package:AIPrimary/features/auth/service/service_provider.dart';
+import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
+import 'package:AIPrimary/features/notification/service/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
@@ -129,10 +128,9 @@ class AuthController extends AsyncNotifier<AuthState> {
       if (token != null) {
         final apiService = ref.read(notificationApiServiceProvider);
         await apiService.registerDevice(token);
-        debugPrint('FCM token registered with backend');
       }
-    } catch (e) {
-      debugPrint('Failed to register FCM token: $e');
+    } catch (_) {
+      // Silent fail - token registration is not critical
     }
   }
 }

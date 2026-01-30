@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_bank_item_dto.dart';
 
 part 'question_bank_response_dto.g.dart';
 

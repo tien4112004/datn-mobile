@@ -1,21 +1,21 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
-import 'package:datn_mobile/features/questions/states/question_form/question_form_provider.dart';
-import 'package:datn_mobile/features/questions/states/question_form/question_form_state.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/chapter_selection_dialog.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_create_request_entity.dart';
+import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
+import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
+import 'package:AIPrimary/features/questions/states/question_form/question_form_state.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/chapter_selection_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/modify/question_meta_row.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/modify/question_title_input.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/modify/question_advanced_options.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/multiple_choice_section.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/matching_section.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/open_ended_section.dart';
-import 'package:datn_mobile/features/questions/ui/pages/modify/fill_in_blank_section.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
-import 'package:datn_mobile/shared/widgets/unsaved_changes_dialog.dart';
-import 'package:datn_mobile/shared/widgets/form_action_buttons.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/modify/question_meta_row.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/modify/question_title_input.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/modify/question_advanced_options.dart';
+import 'package:AIPrimary/features/questions/ui/pages/modify/multiple_choice_section.dart';
+import 'package:AIPrimary/features/questions/ui/pages/modify/matching_section.dart';
+import 'package:AIPrimary/features/questions/ui/pages/modify/open_ended_section.dart';
+import 'package:AIPrimary/features/questions/ui/pages/modify/fill_in_blank_section.dart';
+import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
+import 'package:AIPrimary/shared/widgets/unsaved_changes_dialog.dart';
+import 'package:AIPrimary/shared/widgets/form_action_buttons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Page for creating a new question

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:datn_mobile/core/local_storage/app_storage.dart';
+import 'package:AIPrimary/core/local_storage/app_storage.dart';
 
 /// This provider used for App Storage Service class which
 /// depends on appBoxProvider for getting intial Hive Box

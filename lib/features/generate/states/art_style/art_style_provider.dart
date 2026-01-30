@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/generate/data/dto/art_style_dto.dart';
-import 'package:datn_mobile/features/generate/data/source/art_style_remote_source_provider.dart';
+import 'package:AIPrimary/features/generate/data/dto/art_style_dto.dart';
+import 'package:AIPrimary/features/generate/data/source/art_style_remote_source_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that fetches art styles from the API

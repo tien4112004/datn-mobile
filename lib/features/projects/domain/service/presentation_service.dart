@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
-import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
-import 'package:datn_mobile/features/projects/enum/sort_option.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.dart';
+import 'package:AIPrimary/features/projects/enum/sort_option.dart';
 
 abstract interface class PresentationService {
   Future<List<PresentationMinimal>> fetchPresentations();

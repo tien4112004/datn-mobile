@@ -1,7 +1,7 @@
 import 'dart:core';
 
-import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 
 class ImagePickerOptions {

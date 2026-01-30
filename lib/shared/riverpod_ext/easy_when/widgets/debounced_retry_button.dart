@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/easy_when_config.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/easy_when_config.dart';
 import 'package:flutter/material.dart';
 
 class DebouncedRetryButton extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
+import 'package:AIPrimary/features/classes/states/resrouce_selection_state.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/outline_editor_widgets.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/outline_editor_widgets.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

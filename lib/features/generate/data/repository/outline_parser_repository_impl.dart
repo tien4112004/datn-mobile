@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
-import 'package:datn_mobile/features/generate/domain/repositories/outline_parser_repository.dart';
-import 'package:datn_mobile/features/generate/service/outline_parser.dart';
+import 'package:AIPrimary/features/generate/domain/entity/outline_slide.dart';
+import 'package:AIPrimary/features/generate/domain/repositories/outline_parser_repository.dart';
+import 'package:AIPrimary/features/generate/service/outline_parser.dart';
 
 /// Implementation of OutlineParserRepository that delegates to OutlineParser.
 ///

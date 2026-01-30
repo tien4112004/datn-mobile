@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:datn_mobile/features/generate/data/dto/outline_generate_request_dto.dart';
-import 'package:datn_mobile/features/generate/data/dto/presentation_generate_request_dto.dart';
-import 'package:datn_mobile/features/generate/data/source/presentation_generate_remote_source.dart';
-import 'package:datn_mobile/features/generate/domain/repository/presentation_generate_repository.dart';
+import 'package:AIPrimary/features/generate/data/dto/outline_generate_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/dto/presentation_generate_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/source/presentation_generate_remote_source.dart';
+import 'package:AIPrimary/features/generate/domain/repository/presentation_generate_repository.dart';
 
 class PresentationGenerateRepositoryImpl
     implements PresentationGenerateRepository {

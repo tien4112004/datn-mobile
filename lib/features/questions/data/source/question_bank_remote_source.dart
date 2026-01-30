@@ -1,10 +1,10 @@
-import 'package:datn_mobile/features/questions/data/dto/question_bank_response_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_bank_item_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_batch_response_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_create_request_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_update_request_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/chapter_response_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_bank_response_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_bank_item_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_batch_response_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_create_request_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_update_request_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/chapter_response_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';

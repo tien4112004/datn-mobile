@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/generate/states/models/image_model_state.dart';
-import 'package:datn_mobile/features/generate/states/models/text_model_state.dart';
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/states/models/image_model_state.dart';
+import 'package:AIPrimary/features/generate/states/models/text_model_state.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 
 class ModelsState {
   final List<AIModel> availableModels;

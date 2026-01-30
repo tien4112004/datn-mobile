@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/notification/data/dto/app_notification_dto.dart';
-import 'package:datn_mobile/features/notification/data/dto/unread_count_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/notification/data/dto/app_notification_dto.dart';
+import 'package:AIPrimary/features/notification/data/dto/unread_count_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

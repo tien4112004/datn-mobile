@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:gal/gal.dart';

@@ -2,10 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/core/theme/theme_controller.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/core/theme/theme_controller.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:spot/spot.dart';
 
 extension PumpApp on WidgetTester {

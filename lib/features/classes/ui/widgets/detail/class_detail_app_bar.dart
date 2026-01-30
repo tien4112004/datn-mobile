@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/class_info_dialog.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/class_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

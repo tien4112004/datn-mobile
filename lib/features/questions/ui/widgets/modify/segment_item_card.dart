@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 
 /// Card widget for displaying and editing a fill-in-blank segment
 class SegmentItemCard extends StatelessWidget {

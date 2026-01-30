@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/states/chapter_provider.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/states/chapter_provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A stateful widget for chapter filtering that maintains local state

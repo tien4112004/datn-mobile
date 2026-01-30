@@ -1,6 +1,6 @@
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/easy_when_config.dart';
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/widgets/default_loading_widget.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_error_state.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/easy_when_config.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/widgets/default_loading_widget.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

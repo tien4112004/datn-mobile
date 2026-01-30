@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/profile/provider/avatar_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
-import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.dart';
 
 abstract class PresentationRepository {
   Future<List<PresentationMinimal>> fetchPresentations();

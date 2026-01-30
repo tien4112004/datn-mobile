@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
+import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
 
 enum ResourceTab { presentation, mindmap, assignment }
 

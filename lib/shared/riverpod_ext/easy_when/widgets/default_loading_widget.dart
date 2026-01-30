@@ -1,6 +1,6 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/easy_when_config.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/easy_when_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

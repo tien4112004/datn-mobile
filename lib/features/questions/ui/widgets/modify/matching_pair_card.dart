@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/widgets/image_input_field.dart';
+import 'package:AIPrimary/shared/widgets/image_input_field.dart';
 
 /// Card widget for displaying and editing a matching question pair
 class MatchingPairCard extends StatelessWidget {

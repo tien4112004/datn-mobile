@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/exception/base_exception.dart';
+import 'package:AIPrimary/shared/exception/base_exception.dart';
 
 class UnexpectedException extends APIException {
   UnexpectedException({

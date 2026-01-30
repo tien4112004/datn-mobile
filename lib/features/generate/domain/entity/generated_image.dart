@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/data/dto/image_generation_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/dto/image_generation_request_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'generated_image.g.dart';

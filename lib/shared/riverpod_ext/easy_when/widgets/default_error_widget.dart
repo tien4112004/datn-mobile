@@ -1,8 +1,8 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/easy_when_config.dart';
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/widgets/debounced_retry_button.dart';
-import 'package:datn_mobile/shared/riverpod_ext/easy_when/widgets/dio_error_message.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/easy_when_config.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/widgets/debounced_retry_button.dart';
+import 'package:AIPrimary/shared/riverpod_ext/easy_when/widgets/dio_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

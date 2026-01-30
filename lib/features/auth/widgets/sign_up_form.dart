@@ -1,12 +1,12 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 class SignUpForm extends ConsumerStatefulWidget {
   const SignUpForm({super.key});

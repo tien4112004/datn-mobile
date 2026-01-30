@@ -1,5 +1,5 @@
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
-import 'package:datn_mobile/shared/services/media_service.dart';
+import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/shared/services/media_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final mediaServiceProvider = Provider.autoDispose<MediaService>((ref) {

@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/notification/ui/widgets/notification_bell.dart';
-import 'package:datn_mobile/shared/widgets/custom_app_bar.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/notification/ui/widgets/notification_bell.dart';
+import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/home/ui/widgets/today_works_section.dart';
-import 'package:datn_mobile/features/home/ui/widgets/my_classes_section.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/recent_documents_row.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/home/ui/widgets/today_works_section.dart';
+import 'package:AIPrimary/features/home/ui/widgets/my_classes_section.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/common/recent_documents_row.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()

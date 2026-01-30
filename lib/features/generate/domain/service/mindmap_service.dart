@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
-import 'package:datn_mobile/features/generate/domain/entity/mindmap_node_content.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/domain/entity/mindmap_node_content.dart';
 
 /// Abstract service interface for mindmap generation.
 abstract interface class MindmapService {

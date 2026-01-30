@@ -1,5 +1,5 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/generate/domain/entity/generated_image.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/generate/domain/entity/generated_image.dart';
 import 'package:flutter/material.dart';
 
 /// Displays image metadata in a organized card format

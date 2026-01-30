@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/states/controller_provider.dart';
+import 'package:AIPrimary/features/classes/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
 
 /// State class for managing a list of students.
 class StudentListState {

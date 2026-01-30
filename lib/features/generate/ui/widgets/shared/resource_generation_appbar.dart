@@ -1,7 +1,7 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/generate/enum/generator_type.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/generate/enum/generator_type.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

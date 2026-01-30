@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:datn_mobile/core/local_storage/app_storage.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/core/local_storage/app_storage.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
 
 Object? errorOf(void Function() cb) {
   try {

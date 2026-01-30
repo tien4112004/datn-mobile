@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_profile.g.dart';

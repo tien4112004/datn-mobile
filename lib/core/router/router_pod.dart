@@ -1,7 +1,7 @@
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/core/router/router.dart';
+import 'package:AIPrimary/core/router/router.dart';
 
 /// This global variable used for global working on ui elements where
 /// may be context is not present

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/assignments/data/dto/api/question_item_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/question_item_request.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_create_request.g.dart';

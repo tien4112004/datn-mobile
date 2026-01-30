@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:datn_mobile/bootstrap.dart';
+import 'package:AIPrimary/bootstrap.dart';
 
 // coverage:ignore-file
 

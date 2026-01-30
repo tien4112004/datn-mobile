@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/models/media_response.dart';
+import 'package:AIPrimary/shared/models/media_response.dart';
 import 'package:dio/dio.dart';
 
 class MediaService {

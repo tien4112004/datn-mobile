@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/riverpod_ext/riverpod_observer/riverpod_log.dart';
+import 'package:AIPrimary/shared/riverpod_ext/riverpod_observer/riverpod_log.dart';
 import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';

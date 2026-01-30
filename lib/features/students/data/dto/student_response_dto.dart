@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'student_response_dto.g.dart';

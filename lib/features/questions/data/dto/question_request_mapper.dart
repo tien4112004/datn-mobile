@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/questions/data/dto/question_create_request_dto.dart';
-import 'package:datn_mobile/features/questions/data/dto/question_update_request_dto.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_create_request_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/question_update_request_dto.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_create_request_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_update_request_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Extensions to convert between domain entities and DTOs for question requests.
 

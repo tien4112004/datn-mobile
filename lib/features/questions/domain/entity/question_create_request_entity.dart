@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Domain entity for creating a question.
 class QuestionCreateRequestEntity {

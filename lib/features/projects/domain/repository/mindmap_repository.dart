@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/domain/entity/mindmap.dart';
-import 'package:datn_mobile/features/projects/domain/entity/mindmap_minimal.dart';
+import 'package:AIPrimary/features/projects/domain/entity/mindmap.dart';
+import 'package:AIPrimary/features/projects/domain/entity/mindmap_minimal.dart';
 
 abstract class MindmapRepository {
   Future<List<MindmapMinimal>> fetchMindmaps();

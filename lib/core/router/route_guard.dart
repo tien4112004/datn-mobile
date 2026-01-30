@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
 
 class RouteGuard extends AutoRouteGuard {
   final SecureStorage secureStorage;

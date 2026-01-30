@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/generate/data/dto/slide_theme_dto.dart';
-import 'package:datn_mobile/features/generate/data/source/slide_theme_remote_source_provider.dart';
+import 'package:AIPrimary/features/generate/data/dto/slide_theme_dto.dart';
+import 'package:AIPrimary/features/generate/data/source/slide_theme_remote_source_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that fetches slide themes from the API

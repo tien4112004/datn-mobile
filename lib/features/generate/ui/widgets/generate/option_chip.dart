@@ -1,4 +1,4 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 /// A clickable chip widget for displaying options like slide count, language, or model.

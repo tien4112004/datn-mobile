@@ -1,9 +1,9 @@
-import 'package:datn_mobile/features/classes/states/posts_provider.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_empty_state.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_input.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_list.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_loading_state.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_error_state.dart';
+import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_empty_state.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_input.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_list.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_loading_state.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/notification/domain/entity/app_notification.dart';
-import 'package:datn_mobile/features/notification/domain/entity/notification_type.dart';
+import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
+import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'app_notification_dto.g.dart';

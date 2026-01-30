@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
-import 'package:datn_mobile/features/auth/data/dto/request/user_profile_update_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/response/user_profile_response.dart';
-import 'package:datn_mobile/features/auth/data/sources/user_remote_source.dart';
-import 'package:datn_mobile/features/auth/domain/entities/user_profile.dart';
-import 'package:datn_mobile/features/auth/domain/entities/user_role.dart';
-import 'package:datn_mobile/features/auth/domain/repository/user_repository.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/user_profile_update_request.dart';
+import 'package:AIPrimary/features/auth/data/dto/response/user_profile_response.dart';
+import 'package:AIPrimary/features/auth/data/sources/user_remote_source.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_profile.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/features/auth/domain/repository/user_repository.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteSource _remoteSource;

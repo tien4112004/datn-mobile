@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:datn_mobile/features/auth/data/dto/request/user_profile_update_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/response/user_profile_response.dart';
-import 'package:datn_mobile/features/auth/data/repositories/user_repository_provider.dart';
-import 'package:datn_mobile/features/auth/domain/repository/user_repository.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/user_profile_update_request.dart';
+import 'package:AIPrimary/features/auth/data/dto/response/user_profile_response.dart';
+import 'package:AIPrimary/features/auth/data/repositories/user_repository_provider.dart';
+import 'package:AIPrimary/features/auth/domain/repository/user_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final profileControllerProvider =

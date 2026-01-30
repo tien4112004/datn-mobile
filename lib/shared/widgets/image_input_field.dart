@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:datn_mobile/shared/services/media_service_provider.dart';
+import 'package:AIPrimary/shared/services/media_service_provider.dart';
 import 'dart:io';
 
 /// Widget for selecting images either by uploading from device or entering URL

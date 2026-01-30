@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_preview.dart';
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
-import 'package:datn_mobile/features/projects/service/service_provider.dart';
-import 'package:datn_mobile/features/assignments/states/controller_provider.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_preview.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/projects/service/service_provider.dart';
+import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that fetches resource details using known type (optimized, no cascading)

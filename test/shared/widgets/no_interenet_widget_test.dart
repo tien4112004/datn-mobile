@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:datn_mobile/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
+import 'package:AIPrimary/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/pods/internet_checker_pod.dart';
-import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/internet_checker_pod.dart';
+import 'package:AIPrimary/shared/widgets/no_internet_widget.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:spot/spot.dart';
 import '../../helpers/pump_app.dart';
 

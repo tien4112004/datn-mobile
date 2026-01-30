@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:datn_mobile/shared/services/download_service.dart';
+import 'package:AIPrimary/shared/services/download_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareService {

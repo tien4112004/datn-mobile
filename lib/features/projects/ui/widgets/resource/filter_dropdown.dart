@@ -20,6 +20,7 @@ class FilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return PopupMenuButton<String?>(
       initialValue: value,
       onSelected: onChanged,
@@ -36,8 +37,8 @@ class FilterDropdown extends StatelessWidget {
         label: Text(value ?? label, style: const TextStyle(fontSize: 14)),
         style: OutlinedButton.styleFrom(
           backgroundColor: isActive
-              ? Colors.blue.shade100
-              : Colors.grey.shade100,
+              ? colorScheme.primary.withValues(alpha: 0.15)
+              : colorScheme.surfaceContainerHighest,
           padding: EdgeInsets.symmetric(
             horizontal: Themes.padding.p12,
             vertical: Themes.padding.p8,

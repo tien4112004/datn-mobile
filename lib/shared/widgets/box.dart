@@ -18,17 +18,15 @@ class Box extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     Widget content = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(borderRadius),
         border: borderStyle == BoxBorderStyle.solid
-            ? Border.all(
-                color: isDark ? Colors.grey[700]! : const Color(0xFFE6E6E6),
-              )
+            ? Border.all(color: colorScheme.outlineVariant)
             : null,
       ),
       child: child,
@@ -39,7 +37,7 @@ class Box extends StatelessWidget {
       content = CustomPaint(
         painter: _DashedBorderPainter(
           radius: borderRadius,
-          color: isDark ? Colors.grey[600]! : const Color(0xFFD6D6D6),
+          color: colorScheme.outlineVariant,
         ),
         child: content,
       );

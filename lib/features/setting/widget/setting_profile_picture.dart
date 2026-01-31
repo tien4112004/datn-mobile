@@ -142,10 +142,14 @@ class SettingProfilePicture extends ConsumerWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
               ),
-              child: const CircleAvatar(
+              child: CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.blue,
-                child: Icon(LucideIcons.pencil, color: Colors.white, size: 12),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: const Icon(
+                  LucideIcons.pencil,
+                  color: Colors.white,
+                  size: 12,
+                ),
               ),
             ),
           ),

@@ -28,6 +28,7 @@ class FilterList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -37,8 +38,8 @@ class FilterList extends StatelessWidget {
             onPressed: onClearFilters,
             style: OutlinedButton.styleFrom(
               backgroundColor: !hasActiveFilters
-                  ? Colors.blue.shade200
-                  : Colors.grey.shade100,
+                  ? colorScheme.primary.withValues(alpha: 0.2)
+                  : colorScheme.surfaceContainerHighest,
               padding: const EdgeInsets.all(12),
             ),
             child: Text(

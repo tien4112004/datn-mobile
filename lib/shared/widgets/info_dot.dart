@@ -18,11 +18,11 @@ class InfoDot extends StatelessWidget {
           borderRadius: BorderRadius.circular(9),
           color: isDark
               ? primaryColor.withValues(alpha: 0.2)
-              : const Color(0xFFEEF3FF),
+              : primaryColor.withValues(alpha: 0.1),
           border: Border.all(
             color: isDark
                 ? primaryColor.withValues(alpha: 0.5)
-                : const Color(0xFFBBD2FF),
+                : primaryColor.withValues(alpha: 0.3),
           ),
         ),
         alignment: Alignment.center,

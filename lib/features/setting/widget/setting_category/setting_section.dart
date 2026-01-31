@@ -9,6 +9,7 @@ class SettingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: SizedBox(
@@ -18,16 +19,16 @@ class SettingSection extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 12.0),
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.primary,
               ),
             ),
           ),
           subtitle: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).secondaryHeaderColor.withAlpha(50),
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: const BorderRadius.all(Radius.circular(24)),
             ),
             child: Column(

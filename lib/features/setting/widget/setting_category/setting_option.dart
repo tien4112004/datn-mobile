@@ -20,18 +20,19 @@ class SettingOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          color: colorScheme.primary.withValues(alpha: 0.1),
           borderRadius: Themes.boxRadius,
         ),
         child: Icon(
           icon ?? LucideIcons.settings,
           size: 24,
-          color: Theme.of(context).primaryColor,
+          color: colorScheme.primary,
         ),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),

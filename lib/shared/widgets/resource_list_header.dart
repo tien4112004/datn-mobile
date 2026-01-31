@@ -88,6 +88,7 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         // Search field
@@ -98,7 +99,7 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
           decoration: InputDecoration(
             hintText: widget.searchHint ?? 'Search...',
             hintStyle: TextStyle(
-              color: Colors.grey.shade600,
+              color: colorScheme.onSurfaceVariant,
               fontSize: Themes.fontSize.s14,
             ),
             prefixIcon: const Icon(LucideIcons.search, size: 20),
@@ -113,7 +114,7 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
                   )
                 : null,
             filled: true,
-            fillColor: Colors.grey.shade50,
+            fillColor: colorScheme.surfaceContainerHighest,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
               borderSide: BorderSide.none,
@@ -157,6 +158,7 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
       onChanged: widget.onSortChanged,
       itemLabelBuilder: (item) => item,
       buttonBuilder: (context, openMenu) {
+        final colorScheme = Theme.of(context).colorScheme;
         return InkWell(
           onTap: openMenu,
           borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
@@ -166,9 +168,9 @@ class _ResourceListHeaderState extends State<ResourceListHeader> {
               vertical: Themes.padding.p12,
             ),
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(color: colorScheme.outlineVariant),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

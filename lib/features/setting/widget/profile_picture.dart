@@ -16,10 +16,11 @@ class ProfilePicture extends ConsumerWidget {
     final imageProvider = _getImageProvider(avatarState);
     final hasImage = imageProvider != null;
 
+    final colorScheme = Theme.of(context).colorScheme;
     return CircleAvatar(
       radius: size / 2,
       backgroundImage: imageProvider,
-      backgroundColor: hasImage ? Colors.grey[200] : Colors.blue,
+      backgroundColor: hasImage ? Colors.grey[200] : colorScheme.primary,
       child: avatarState.isLoading
           ? const CircularProgressIndicator(strokeWidth: 2, color: Colors.white)
           : !hasImage

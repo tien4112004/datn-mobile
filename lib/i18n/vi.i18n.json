@@ -9,6 +9,12 @@
   "passwordAndSecurity": "Mật khẩu và bảo mật",
   "paymentMethods": "Phương thức thanh toán",
   "serverError": "Đã xảy ra lỗi máy chủ. Vui lòng thử lại.",
+  "navigation": {
+    "home": "Trang chủ",
+    "project": "Dự án",
+    "class": "Lớp học",
+    "profile": "Hồ sơ"
+  },
   "auth": {
     "or": "Hoặc",
     "signUp": {
@@ -713,6 +719,303 @@
       "manualGradingRequired": "Yêu cầu chấm điểm thủ công",
       "expectedAnswerReference": "Đáp án mong đợi (Tham khảo)",
       "referenceAnswer": "Đáp án tham khảo"
+    }
+  },
+  "classes": {
+    "title": "Lớp học",
+    "createClass": "Tạo lớp học",
+    "editClass": "Sửa lớp học",
+    "joinClass": "Tham gia lớp học",
+    "save": "Lưu",
+    "back": "Quay lại",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "discard": "Bỏ qua",
+    "close": "Đóng",
+    "update": "Cập nhật",
+    "create": "Tạo",
+
+    "tabs": {
+      "stream": "BẢNG TIN",
+      "classwork": "BÀI TẬP",
+      "students": "HỌC SINH"
+    },
+
+    "drawer": {
+      "classes": "Lớp học",
+      "exams": "Bài thi",
+      "questionBank": "Ngân hàng câu hỏi",
+      "settings": "Cài đặt",
+      "appTitle": "EduClass",
+      "appSubtitle": "Hệ thống quản lý học tập",
+      "version": "EduClass v1.0.0"
+    },
+
+    "emptyState": {
+      "noClasses": "Chưa có lớp học nào",
+      "noClassesDescription": "Tạo lớp học mới hoặc tham gia lớp học hiện có bằng mã lớp từ giáo viên của bạn.",
+      "getStarted": "Bắt đầu",
+      "semanticLabel": "Chưa có lớp học. Tạo hoặc tham gia lớp học để bắt đầu."
+    },
+
+    "card": {
+      "viewStudents": "Xem học sinh",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "inactive": "Không hoạt động",
+      "instructor": "Giáo viên",
+      "createJoinCode": "Tạo mã tham gia",
+      "semanticLabel": "Thẻ lớp học cho $className"
+    },
+
+    "deleteDialog": {
+      "title": "Xóa lớp học",
+      "message": "Bạn có chắc chắn muốn xóa \"$className\"?",
+      "notImplemented": "Chức năng xóa chưa được triển khai"
+    },
+
+    "editPage": {
+      "title": "Sửa lớp học",
+      "saveSuccess": "Cập nhật lớp học thành công",
+      "saveError": "Không thể cập nhật lớp học: $error",
+      "discardTitle": "Bỏ thay đổi?",
+      "discardMessage": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?"
+    },
+
+    "appBar": {
+      "back": "Quay lại",
+      "moreOptions": "Tùy chọn khác",
+      "classOptions": "Tùy chọn lớp học",
+      "classInformation": "Thông tin lớp học",
+      "copyJoinCode": "Sao chép mã tham gia",
+      "classSettings": "Cài đặt lớp học",
+      "notAvailable": "Không khả dụng",
+      "joinCodeCopied": "Đã sao chép mã tham gia",
+      "goBack": "Quay lại",
+      "returnHint": "Nhấn đúp để trở về danh sách lớp học",
+      "optionsHint": "Nhấn đúp để xem thêm tùy chọn"
+    },
+
+    "infoDialog": {
+      "title": "Thông tin lớp học",
+      "basicInfo": "Thông tin cơ bản",
+      "className": "Tên lớp",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "instructor": "Giáo viên",
+      "name": "Tên",
+      "ownerId": "ID chủ sở hữu",
+      "enrollment": "Đăng ký",
+      "joinCode": "Mã tham gia",
+      "timestamps": "Thời gian",
+      "created": "Ngày tạo",
+      "lastUpdated": "Cập nhật lần cuối",
+      "copyToClipboard": "Sao chép vào clipboard",
+      "copyLabel": "Sao chép $label",
+      "copyHint": "Nhấn đúp để sao chép vào clipboard",
+      "closeDialog": "Đóng hộp thoại",
+      "closeHint": "Nhấn đúp để đóng thông tin lớp học",
+      "copiedToClipboard": "Đã sao chép mã tham gia vào clipboard"
+    },
+
+    "classwork": {
+      "emptyTitle": "Chưa có bài tập nào",
+      "emptyDescription": "Bài tập, bài kiểm tra và tài liệu\nsẽ được đăng tại đây bởi giáo viên.\nSắp xếp theo ngày để dễ truy cập.",
+      "emptySemanticLabel": "Chưa có bài tập. Bài tập và tài liệu sẽ xuất hiện ở đây khi giáo viên đăng.",
+      "assignments": "Bài tập",
+      "assignmentsDesc": "Nộp bài và theo dõi hạn nộp",
+      "materials": "Tài liệu",
+      "materialsDesc": "Truy cập tài liệu khóa học",
+      "dueDates": "Hạn nộp",
+      "dueDatesDesc": "Không bao giờ bỏ lỡ hạn nộp bài"
+    },
+
+    "students": {
+      "addStudent": "Thêm học sinh mới",
+      "addHint": "Nhấn đúp để thêm học sinh vào lớp này",
+      "emptyTitle": "Chưa có học sinh nào",
+      "emptyDescription": "Bắt đầu xây dựng danh sách lớp.\nThêm học sinh để bắt đầu theo dõi tiến độ.",
+      "addFirstStudent": "Thêm học sinh đầu tiên",
+      "classRoster": "Danh sách lớp",
+      "student": "Học sinh",
+      "studentCount": "$count học sinh trong lớp này",
+      "removeTitle": "Xóa học sinh",
+      "removeMessage": "Bạn có chắc chắn muốn xóa $studentName khỏi lớp này?",
+      "removeSemanticLabel": "Bạn có chắc chắn muốn xóa $studentName khỏi lớp này? Hành động này không thể hoàn tác.",
+      "confirmRemove": "Xác nhận xóa $studentName",
+      "remove": "Xóa",
+      "removing": "Đang xóa học sinh...",
+      "removeSuccess": "Đã xóa $studentName thành công",
+      "removeError": "Không thể xóa học sinh: $error"
+    },
+
+    "comments": {
+      "noComments": "Chưa có bình luận nào",
+      "beFirst": "Hãy là người đầu tiên bình luận!",
+      "disabled": "Bình luận đã bị tắt cho bài đăng này",
+      "inputLabel": "Ô nhập bình luận",
+      "inputHint": "Thêm bình luận...",
+      "inputDisabledHint": "Bình luận đã bị tắt",
+      "sendLabel": "Gửi bình luận",
+      "postError": "Không thể đăng bình luận: $error",
+      "loadError": "Không thể tải bình luận"
+    },
+
+    "posts": {
+      "emptyTitle": "Chưa có bài đăng nào",
+      "emptyDescription": "Giáo viên sẽ đăng thông báo và cập nhật tại đây.",
+      "createFirst": "Tạo bài đăng đầu tiên",
+      "noMore": "Không còn bài đăng nào",
+      "newPost": "Bài đăng mới",
+      "createLabel": "Tạo bài đăng mới",
+      "loadError": "Lỗi khi tải bài đăng",
+      "semanticLabel": "$postType đăng $timeAgo",
+      "deleteTitle": "Xóa bài đăng?",
+      "deleteMessage": "Thao tác này sẽ xóa vĩnh viễn bài đăng và tất cả bình luận. Hành động này không thể hoàn tác.",
+      "pinError": "Không thể ghim/bỏ ghim: $error",
+      "deleteError": "Không thể xóa bài đăng: $error"
+    },
+
+    "postDialog": {
+      "createTitle": "Tạo bài đăng",
+      "editTitle": "Sửa bài đăng",
+      "typeLabel": "Loại",
+      "postType": "Bài đăng",
+      "exerciseType": "Bài tập",
+      "contentLabel": "Nội dung",
+      "contentHint": "Bạn muốn chia sẻ điều gì?",
+      "contentRequired": "Vui lòng nhập nội dung",
+      "contentMinLength": "Nội dung phải có ít nhất 10 ký tự",
+      "allowComments": "Cho phép bình luận",
+      "allowCommentsDesc": "Cho phép người khác bình luận bài đăng này",
+      "pinPost": "Ghim bài đăng",
+      "pinPostDesc": "Hiển thị bài đăng này ở đầu",
+      "createSuccess": "Tạo bài đăng thành công",
+      "updateSuccess": "Cập nhật bài đăng thành công",
+      "deleteSuccess": "Xóa bài đăng thành công",
+      "createError": "Không thể tạo bài đăng: $error",
+      "updateError": "Không thể cập nhật bài đăng: $error",
+      "deleteError": "Không thể xóa bài đăng: $error",
+      "deleteTooltip": "Xóa bài đăng"
+    },
+
+    "postUpsert": {
+      "createTitle": "Tạo bài đăng",
+      "editTitle": "Sửa bài đăng",
+      "creating": "Đang tạo...",
+      "updating": "Đang cập nhật...",
+      "typeCannotChange": "Không thể thay đổi loại bài đăng khi chỉnh sửa",
+      "loadError": "Không thể tải bài đăng: $error",
+      "createSuccess": "Tạo bài đăng thành công",
+      "updateSuccess": "Cập nhật bài đăng thành công",
+      "actionError": "Không thể $action bài đăng: $error",
+      "maxAttachments": "Tối đa 10 tệp đính kèm",
+      "maxAttachmentsReached": "Đã đạt giới hạn 10 tệp đính kèm",
+      "uploadedCount": "Đã tải lên $count tệp",
+      "uploadError": "Không thể tải lên $fileName: $error",
+      "pickError": "Không thể chọn tệp: $error",
+      "linkedCount": "Đã liên kết $count $resource",
+      "selectDueDate": "Chọn hạn nộp",
+      "dueDate": "Hạn nộp",
+      "dueDateHint": "Nhấn để đặt hạn nộp"
+    },
+
+    "postOptions": {
+      "label": "Tùy chọn bài đăng",
+      "unpin": "Bỏ ghim",
+      "pin": "Ghim",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "sectionTitle": "Tùy chọn",
+      "allowComments": "Cho phép bình luận",
+      "allowCommentsDesc": "Cho phép học sinh bình luận bài đăng này"
+    },
+
+    "postType": {
+      "title": "Loại bài đăng",
+      "post": "Bài đăng",
+      "exercise": "Bài tập",
+      "postDescription": "Chia sẻ cập nhật với tệp đính kèm và tài nguyên",
+      "exerciseDescription": "Liên kết bài tập cho học sinh"
+    },
+
+    "postEditor": {
+      "content": "Nội dung",
+      "richText": "Văn bản có định dạng",
+      "placeholder": "Viết nội dung bài đăng tại đây..."
+    },
+
+    "postActions": {
+      "uploading": "Đang tải lên...",
+      "addMore": "Thêm ($count)",
+      "addAttachments": "Thêm tệp đính kèm",
+      "attachAssignment": "Đính kèm bài tập",
+      "assignment": "Bài tập ($count)",
+      "linkResource": "Liên kết tài nguyên",
+      "linked": "Đã liên kết ($count)"
+    },
+
+    "assignmentSelector": {
+      "title": "Chọn bài tập",
+      "selected": "Đã chọn $count",
+      "done": "Xong",
+      "searchHint": "Tìm kiếm bài tập...",
+      "emptyTitle": "Không tìm thấy bài tập",
+      "emptyDescription": "Thử điều chỉnh bộ lọc",
+      "subject": "Môn học",
+      "allSubjects": "Tất cả môn học",
+      "grade": "Khối lớp",
+      "allGrades": "Tất cả khối lớp"
+    },
+
+    "editForm": {
+      "editing": "Đang chỉnh sửa lớp học",
+      "teacher": "Giáo viên: $teacherName",
+      "classInfo": "Thông tin lớp học",
+      "classId": "ID lớp học",
+      "created": "Ngày tạo",
+      "lastUpdated": "Cập nhật lần cuối"
+    },
+
+    "infoSection": {
+      "title": "Thông tin lớp học",
+      "classNameLabel": "Tên lớp *",
+      "classNameHint": "Nhập tên lớp",
+      "classNameHelper": "Trường bắt buộc, tối đa 50 ký tự",
+      "classNameRequired": "Vui lòng nhập tên lớp",
+      "classNameMinLength": "Tên lớp phải có ít nhất 3 ký tự",
+      "descriptionLabel": "Mô tả",
+      "descriptionHint": "Nhập mô tả lớp học (tùy chọn)",
+      "descriptionHelper": "Thêm chi tiết về lớp học này"
+    },
+
+    "settingsSection": {
+      "title": "Cài đặt",
+      "statusLabel": "Trạng thái lớp học",
+      "statusToggle": "Chuyển đổi trạng thái hoạt động của lớp",
+      "activeDescription": "Lớp học này đang hoạt động và hiển thị với học sinh",
+      "inactiveDescription": "Lớp học này không hoạt động và ẩn với học sinh",
+      "joinCodeLabel": "Mã tham gia",
+      "joinCodeDescription": "Học sinh có thể sử dụng mã này để tham gia lớp học",
+      "copyJoinCode": "Sao chép mã tham gia",
+      "joinCodeCopied": "Đã sao chép mã tham gia vào clipboard"
+    },
+
+    "createDialog": {
+      "title": "Tạo lớp học",
+      "classNameLabel": "Tên lớp",
+      "classNameHint": "VD: Phát triển phần mềm nâng cao",
+      "classNameRequired": "Vui lòng nhập tên lớp",
+      "classNameMaxLength": "Tên phải không quá 50 ký tự",
+      "descriptionLabel": "Mô tả (tùy chọn)",
+      "descriptionHint": "Mô tả ngắn về lớp học",
+      "createSuccess": "Tạo lớp học thành công"
+    },
+
+    "footer": {
+      "commentsCount": "$count bình luận"
     }
   }
 }

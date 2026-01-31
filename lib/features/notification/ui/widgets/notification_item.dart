@@ -36,7 +36,7 @@ class NotificationItem extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     switch (notification.type) {
       case NotificationType.post:
-        return Colors.blue;
+        return colorScheme.primary;
       case NotificationType.assignment:
         return Colors.orange;
       case NotificationType.comment:

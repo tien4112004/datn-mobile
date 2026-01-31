@@ -50,6 +50,7 @@ class AttachFileSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -59,10 +60,10 @@ class AttachFileSheet extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(LucideIcons.notepadText, color: Colors.blue),
+            child: Icon(LucideIcons.notepadText, color: colorScheme.primary),
           ),
           title: Text(t.generate.presentationGenerate.document),
           subtitle: Text(t.generate.presentationGenerate.documentFormats),

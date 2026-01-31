@@ -150,15 +150,15 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
                     : currentTheme == ThemeMode.light
                     ? SystemUiOverlayStyle.dark.copyWith(
                         statusBarColor: Colors.white.withValues(alpha: 0.4),
-                        systemNavigationBarColor: Colors.grey,
-                        systemNavigationBarDividerColor: Colors.grey,
-                        systemNavigationBarIconBrightness: Brightness.light,
+                        systemNavigationBarColor: Colors.white,
+                        systemNavigationBarDividerColor: Colors.white,
+                        systemNavigationBarIconBrightness: Brightness.dark,
                       )
                     : SystemUiOverlayStyle.dark.copyWith(
                         statusBarColor: Colors.white.withValues(alpha: 0.4),
-                        systemNavigationBarColor: Colors.grey,
-                        systemNavigationBarDividerColor: Colors.grey,
-                        systemNavigationBarIconBrightness: Brightness.light,
+                        systemNavigationBarColor: Colors.white,
+                        systemNavigationBarDividerColor: Colors.white,
+                        systemNavigationBarIconBrightness: Brightness.dark,
                       ),
                 child: GestureDetector(
                   child: child,

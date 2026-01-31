@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -45,7 +46,10 @@ class StatusBadge extends StatelessWidget {
       case AssignmentStatus.draft:
         return _StatusConfig(color: Colors.grey, icon: LucideIcons.file);
       case AssignmentStatus.generating:
-        return _StatusConfig(color: Colors.blue, icon: LucideIcons.loader);
+        return _StatusConfig(
+          color: Themes.primaryColor,
+          icon: LucideIcons.loader,
+        );
       case AssignmentStatus.completed:
         return _StatusConfig(
           color: Colors.green,

@@ -5,7 +5,7 @@ class SamplePrompt extends StatefulWidget {
   final bool selected;
   final VoidCallback onTap;
   final bool visible;
-  
+
   const SamplePrompt({
     super.key,
     required this.text,
@@ -18,7 +18,8 @@ class SamplePrompt extends StatefulWidget {
   State<SamplePrompt> createState() => _SamplePromptState();
 }
 
-class _SamplePromptState extends State<SamplePrompt> with SingleTickerProviderStateMixin {
+class _SamplePromptState extends State<SamplePrompt>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
@@ -30,14 +31,16 @@ class _SamplePromptState extends State<SamplePrompt> with SingleTickerProviderSt
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-    
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.8).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.8,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     if (!widget.visible) {
       _controller.value = 1.0;
@@ -67,11 +70,11 @@ class _SamplePromptState extends State<SamplePrompt> with SingleTickerProviderSt
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    // Theme-aware colors
+    // Theme-aware colors using primary color
     final bg = widget.selected
         ? (isDark
               ? primaryColor.withValues(alpha: 0.2)
-              : const Color(0xFFEEF3FF))
+              : primaryColor.withValues(alpha: 0.1))
         : (isDark ? Colors.grey[800]! : const Color(0xFFF3F4F6));
 
     final fg = widget.selected
@@ -81,7 +84,7 @@ class _SamplePromptState extends State<SamplePrompt> with SingleTickerProviderSt
     final borderColor = widget.selected
         ? (isDark
               ? primaryColor.withValues(alpha: 0.5)
-              : const Color(0xFFBBD2FF))
+              : primaryColor.withValues(alpha: 0.3))
         : (isDark ? Colors.grey[700]! : const Color(0xFFE6E6E6));
 
     return FadeTransition(

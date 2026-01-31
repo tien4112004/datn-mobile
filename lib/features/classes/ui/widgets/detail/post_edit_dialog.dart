@@ -1,6 +1,7 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +44,7 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
   Future<void> _handleUpdate() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final t = ref.read(translationsPod);
     HapticFeedback.mediumImpact();
 
     try {
@@ -60,14 +62,18 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post updated successfully')),
+          SnackBar(content: Text(t.classes.postDialog.updateSuccess)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to update post: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              t.classes.postDialog.updateError(error: e.toString()),
+            ),
+          ),
+        );
       }
     }
   }
@@ -76,17 +82,18 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final updateState = ref.watch(updatePostControllerProvider);
 
     return AlertDialog(
       title: Row(
         children: [
-          const Expanded(child: Text('Edit Post')),
+          Expanded(child: Text(t.classes.postDialog.editTitle)),
           IconButton(
             icon: const Icon(LucideIcons.trash2, size: 20),
             color: colorScheme.error,
             onPressed: updateState.isLoading ? null : () => _handleDelete(),
-            tooltip: 'Delete post',
+            tooltip: t.classes.postDialog.deleteTooltip,
           ),
         ],
       ),
@@ -99,23 +106,23 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
             children: [
               // Post type selector
               Text(
-                'Type',
+                t.classes.postDialog.typeLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 8),
               SegmentedButton<PostType>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: PostType.post,
-                    label: Text('Post'),
-                    icon: Icon(LucideIcons.messageCircle, size: 16),
+                    label: Text(t.classes.postDialog.postType),
+                    icon: const Icon(LucideIcons.messageCircle, size: 16),
                   ),
                   ButtonSegment(
                     value: PostType.exercise,
-                    label: Text('Exercise'),
-                    icon: Icon(LucideIcons.clipboardList, size: 16),
+                    label: Text(t.classes.postDialog.exerciseType),
+                    icon: const Icon(LucideIcons.clipboardList, size: 16),
                   ),
                 ],
                 selected: {_selectedType},
@@ -128,7 +135,7 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
 
               // Content field
               Text(
-                'Content',
+                t.classes.postDialog.contentLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -140,7 +147,7 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
                 minLines: 3,
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
-                  hintText: 'What would you like to share?',
+                  hintText: t.classes.postDialog.contentHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -149,10 +156,10 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter some content';
+                    return t.classes.postDialog.contentRequired;
                   }
                   if (value.trim().length < 10) {
-                    return 'Content must be at least 10 characters';
+                    return t.classes.postDialog.contentMinLength;
                   }
                   return null;
                 },
@@ -166,8 +173,8 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
                   HapticFeedback.selectionClick();
                   setState(() => _isPinned = value);
                 },
-                title: const Text('Pin post'),
-                subtitle: const Text('Show this post at the top'),
+                title: Text(t.classes.postDialog.pinPost),
+                subtitle: Text(t.classes.postDialog.pinPostDesc),
                 contentPadding: EdgeInsets.zero,
                 secondary: const Icon(LucideIcons.pin),
               ),
@@ -179,8 +186,8 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
                   HapticFeedback.selectionClick();
                   setState(() => _allowComments = value);
                 },
-                title: const Text('Allow comments'),
-                subtitle: const Text('Let others comment on this post'),
+                title: Text(t.classes.postDialog.allowComments),
+                subtitle: Text(t.classes.postDialog.allowCommentsDesc),
                 contentPadding: EdgeInsets.zero,
                 secondary: const Icon(LucideIcons.messageSquare),
               ),
@@ -193,7 +200,7 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
           onPressed: updateState.isLoading
               ? null
               : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(t.classes.cancel),
         ),
         FilledButton(
           onPressed: updateState.isLoading ? null : _handleUpdate,
@@ -203,31 +210,30 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Update'),
+              : Text(t.classes.update),
         ),
       ],
     );
   }
 
   Future<void> _handleDelete() async {
+    final t = ref.read(translationsPod);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Post?'),
-        content: const Text(
-          'This will permanently delete this post and all its comments. This action cannot be undone.',
-        ),
+        title: Text(t.classes.posts.deleteTitle),
+        content: Text(t.classes.posts.deleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(t.classes.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.classes.delete),
           ),
         ],
       ),
@@ -243,14 +249,18 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
         if (mounted) {
           Navigator.of(context).pop(); // Close edit dialog
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Post deleted successfully')),
+            SnackBar(content: Text(t.classes.postDialog.deleteSuccess)),
           );
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to delete post: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                t.classes.postDialog.deleteError(error: e.toString()),
+              ),
+            ),
+          );
         }
       }
     }

@@ -9,6 +9,7 @@ import 'package:AIPrimary/features/classes/ui/widgets/posts/post_header.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_pin_indicator.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_attachments_display.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resources_display.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/themed_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,7 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   Future<void> _togglePin() async {
     HapticFeedback.mediumImpact();
+    final t = ref.read(translationsPod);
     try {
       await ref
           .read(updatePostControllerProvider.notifier)
@@ -41,32 +43,33 @@ class _PostCardState extends ConsumerState<PostCard> {
           );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to toggle pin: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.classes.posts.pinError(error: e.toString())),
+          ),
+        );
       }
     }
   }
 
   Future<void> _deletePost() async {
+    final t = ref.read(translationsPod);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Post?'),
-        content: const Text(
-          'This will permanently delete this post and all its comments. This action cannot be undone.',
-        ),
+        title: Text(t.classes.posts.deleteTitle),
+        content: Text(t.classes.posts.deleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(t.classes.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.classes.delete),
           ),
         ],
       ),
@@ -80,9 +83,11 @@ class _PostCardState extends ConsumerState<PostCard> {
             .deletePost(classId: widget.classEntity.id, postId: widget.post.id);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to delete post: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(t.classes.posts.deleteError(error: e.toString())),
+            ),
+          );
         }
       }
     }
@@ -90,6 +95,7 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ClipRect(
@@ -98,8 +104,10 @@ class _PostCardState extends ConsumerState<PostCard> {
           clipBehavior: Clip.none,
           children: [
             Semantics(
-              label:
-                  '${widget.post.type.displayName} posted ${timeago.format(widget.post.createdAt)}',
+              label: t.classes.posts.semanticLabel(
+                postType: widget.post.type.displayName,
+                timeAgo: timeago.format(widget.post.createdAt),
+              ),
               child: ThemedCard(
                 borderColor: widget.post.isPinned
                     ? widget.classEntity.headerColor

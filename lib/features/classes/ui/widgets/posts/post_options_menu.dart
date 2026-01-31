@@ -1,9 +1,11 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Options menu for post actions (pin, edit, delete)
-class PostOptionsMenu extends StatelessWidget {
+class PostOptionsMenu extends ConsumerWidget {
   final bool isPinned;
   final VoidCallback onTogglePin;
   final VoidCallback onEdit;
@@ -18,9 +20,10 @@ class PostOptionsMenu extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Semantics(
-      label: 'Post options',
+      label: t.classes.postOptions.label,
       button: true,
       child: PopupMenuButton<String>(
         icon: const Icon(LucideIcons.ellipsisVertical, size: 20),
@@ -45,27 +48,31 @@ class PostOptionsMenu extends StatelessWidget {
               children: [
                 Icon(isPinned ? LucideIcons.pinOff : LucideIcons.pin, size: 18),
                 const SizedBox(width: 12),
-                Text(isPinned ? 'Unpin' : 'Pin'),
+                Text(
+                  isPinned
+                      ? t.classes.postOptions.unpin
+                      : t.classes.postOptions.pin,
+                ),
               ],
             ),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'edit',
             child: Row(
               children: [
-                Icon(LucideIcons.pencil, size: 18),
-                SizedBox(width: 12),
-                Text('Edit'),
+                const Icon(LucideIcons.pencil, size: 18),
+                const SizedBox(width: 12),
+                Text(t.classes.postOptions.edit),
               ],
             ),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: 'delete',
             child: Row(
               children: [
-                Icon(LucideIcons.trash2, size: 18),
-                SizedBox(width: 12),
-                Text('Delete'),
+                const Icon(LucideIcons.trash2, size: 18),
+                const SizedBox(width: 12),
+                Text(t.classes.postOptions.delete),
               ],
             ),
           ),

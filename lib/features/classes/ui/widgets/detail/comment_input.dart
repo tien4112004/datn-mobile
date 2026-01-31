@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,7 @@ class _CommentInputState extends ConsumerState<CommentInput> {
     final content = _controller.text.trim();
     if (content.isEmpty) return;
 
+    final t = ref.read(translationsPod);
     setState(() => _isSending = true);
     HapticFeedback.mediumImpact();
 
@@ -43,9 +45,11 @@ class _CommentInputState extends ConsumerState<CommentInput> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to post comment: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.classes.comments.postError(error: e.toString())),
+          ),
+        );
       }
     } finally {
       if (mounted) {
@@ -58,9 +62,10 @@ class _CommentInputState extends ConsumerState<CommentInput> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Semantics(
-      label: 'Comment input field',
+      label: t.classes.comments.inputLabel,
       textField: true,
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -79,8 +84,8 @@ class _CommentInputState extends ConsumerState<CommentInput> {
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   hintText: widget.enabled
-                      ? 'Add a comment...'
-                      : 'Comments are disabled',
+                      ? t.classes.comments.inputHint
+                      : t.classes.comments.inputDisabledHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: colorScheme.outlineVariant),
@@ -102,7 +107,7 @@ class _CommentInputState extends ConsumerState<CommentInput> {
             ),
             const SizedBox(width: 12),
             Semantics(
-              label: 'Send comment',
+              label: t.classes.comments.sendLabel,
               button: true,
               enabled: widget.enabled && !_isSending,
               child: IconButton.filled(

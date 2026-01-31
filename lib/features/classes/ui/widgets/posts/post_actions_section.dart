@@ -1,9 +1,11 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Actions section for attachments and linked resources
-class PostActionsSection extends StatelessWidget {
+class PostActionsSection extends ConsumerWidget {
   final PostType selectedType;
   final int attachmentsCount;
   final int linkedResourcesCount;
@@ -24,9 +26,10 @@ class PostActionsSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final isExercise = selectedType == PostType.exercise;
 
     return Padding(
@@ -83,10 +86,12 @@ class PostActionsSection extends StatelessWidget {
                         const SizedBox(width: 8),
                         Text(
                           isUploading
-                              ? 'Uploading...'
+                              ? t.classes.postActions.uploading
                               : (attachmentsCount > 0
-                                    ? 'Add More ($attachmentsCount)'
-                                    : 'Add Attachments'),
+                                    ? t.classes.postActions.addMore(
+                                        count: attachmentsCount,
+                                      )
+                                    : t.classes.postActions.addAttachments),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w500,
                             color: attachmentsCount > 0
@@ -136,11 +141,15 @@ class PostActionsSection extends StatelessWidget {
                       Text(
                         isExercise
                             ? (linkedResourcesCount > 0
-                                  ? 'Assignment ($linkedResourcesCount)'
-                                  : 'Attach Assignment')
+                                  ? t.classes.postActions.assignment(
+                                      count: linkedResourcesCount,
+                                    )
+                                  : t.classes.postActions.attachAssignment)
                             : (linkedResourcesCount > 0
-                                  ? 'Linked ($linkedResourcesCount)'
-                                  : 'Link Resource'),
+                                  ? t.classes.postActions.linked(
+                                      count: linkedResourcesCount,
+                                    )
+                                  : t.classes.postActions.linkResource),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                           color: linkedResourcesCount > 0

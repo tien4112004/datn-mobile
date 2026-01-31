@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Comprehensive Class Detail page with Stream, Classwork, and Students tabs.
 /// Follows Material Design 3 guidelines with clean component separation.
@@ -51,6 +52,7 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
   Widget build(BuildContext context) {
     final classState = ref.watch(detailClassControllerProvider(widget.classId));
     final userState = ref.watch(userControllerProvider);
+    final t = ref.watch(translationsPod);
     final isStudent =
         userState.value != null; // If role has value, the user is student
 
@@ -92,21 +94,21 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                 unselectedLabelStyle: Theme.of(
                   context,
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.normal),
-                tabs: const [
+                tabs: [
                   Tab(
-                    text: 'STREAM',
-                    icon: Icon(LucideIcons.messageSquare, size: 20),
-                    iconMargin: EdgeInsets.only(bottom: 4),
+                    text: t.classes.tabs.stream,
+                    icon: const Icon(LucideIcons.messageSquare, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
                   ),
                   Tab(
-                    text: 'CLASSWORK',
-                    icon: Icon(LucideIcons.fileText, size: 20),
-                    iconMargin: EdgeInsets.only(bottom: 4),
+                    text: t.classes.tabs.classwork,
+                    icon: const Icon(LucideIcons.fileText, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
                   ),
                   Tab(
-                    text: 'STUDENTS',
-                    icon: Icon(LucideIcons.users, size: 20),
-                    iconMargin: EdgeInsets.only(bottom: 4),
+                    text: t.classes.tabs.students,
+                    icon: const Icon(LucideIcons.users, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
                   ),
                 ],
               ),

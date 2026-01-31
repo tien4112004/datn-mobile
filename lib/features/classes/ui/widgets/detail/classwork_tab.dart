@@ -1,22 +1,26 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Classwork tab showing documents and assignments grouped by date.
 /// Currently displays an empty state as the API is not yet available.
-class ClassworkTab extends StatelessWidget {
+class ClassworkTab extends ConsumerWidget {
   final String classId;
 
   const ClassworkTab({super.key, required this.classId});
 
   @override
-  Widget build(BuildContext context) {
-    return const _ClassworkEmptyState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _ClassworkEmptyState(t: ref.watch(translationsPod));
   }
 }
 
 /// Empty state for the Classwork tab with attractive design.
 class _ClassworkEmptyState extends StatelessWidget {
-  const _ClassworkEmptyState();
+  final dynamic t;
+
+  const _ClassworkEmptyState({required this.t});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +28,7 @@ class _ClassworkEmptyState extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Semantics(
-      label:
-          'No classwork yet. Assignments and materials will appear here when your teacher posts them.',
+      label: t.classes.classwork.emptySemanticLabel,
       child: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(32),
@@ -115,7 +118,7 @@ class _ClassworkEmptyState extends StatelessWidget {
                   return Opacity(opacity: value, child: child);
                 },
                 child: Text(
-                  'No Classwork Yet',
+                  t.classes.classwork.emptyTitle,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
@@ -133,7 +136,7 @@ class _ClassworkEmptyState extends StatelessWidget {
                   return Opacity(opacity: value, child: child);
                 },
                 child: Text(
-                  'Assignments, quizzes, and materials\nwill be posted here by your teacher.\nOrganized by date for easy access.',
+                  t.classes.classwork.emptyDescription,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     height: 1.5,
@@ -145,24 +148,24 @@ class _ClassworkEmptyState extends StatelessWidget {
               // Feature highlights
               _FeatureHighlight(
                 icon: LucideIcons.clipboardList,
-                title: 'Assignments',
-                description: 'Submit your work and track deadlines',
+                title: t.classes.classwork.assignments,
+                description: t.classes.classwork.assignmentsDesc,
                 colorScheme: colorScheme,
                 delay: 0,
               ),
               const SizedBox(height: 12),
               _FeatureHighlight(
                 icon: LucideIcons.folderOpen,
-                title: 'Materials',
-                description: 'Access course documents and resources',
+                title: t.classes.classwork.materials,
+                description: t.classes.classwork.materialsDesc,
                 colorScheme: colorScheme,
                 delay: 100,
               ),
               const SizedBox(height: 12),
               _FeatureHighlight(
                 icon: LucideIcons.clock,
-                title: 'Due Dates',
-                description: 'Never miss an assignment deadline',
+                title: t.classes.classwork.dueDates,
+                description: t.classes.classwork.dueDatesDesc,
                 colorScheme: colorScheme,
                 delay: 200,
               ),

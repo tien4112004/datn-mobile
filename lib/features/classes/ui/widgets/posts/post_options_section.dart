@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -20,6 +21,7 @@ class PostOptionsSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -46,7 +48,7 @@ class PostOptionsSection extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Options',
+                  t.classes.postOptions.sectionTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -94,14 +96,14 @@ class PostOptionsSection extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Allow comments',
+                            t.classes.postOptions.allowComments,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            'Let students comment on this post',
+                            t.classes.postOptions.allowCommentsDesc,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),

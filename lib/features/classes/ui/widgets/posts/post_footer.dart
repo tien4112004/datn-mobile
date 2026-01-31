@@ -1,9 +1,11 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Footer section of a post card with comment count and edited indicator
-class PostFooter extends StatelessWidget {
+class PostFooter extends ConsumerWidget {
   final bool allowComments;
   final int commentCount;
   final bool showComments;
@@ -22,9 +24,10 @@ class PostFooter extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -40,7 +43,7 @@ class PostFooter extends StatelessWidget {
           // Comment count button
           if (allowComments)
             Semantics(
-              label: '$commentCount comments',
+              label: t.classes.footer.commentsCount(count: commentCount),
               button: true,
               child: TextButton.icon(
                 onPressed: () {

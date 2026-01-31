@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/providers/post_paging_controller_pod.dart';
 import 'package:AIPrimary/features/classes/ui/pages/post_upsert_page.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/animated_list_item.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
@@ -48,6 +49,7 @@ class _PostListState extends ConsumerState<PostList> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final pagingController = ref.watch(
       postPagingControllerPod(widget.classEntity.id),
     );
@@ -76,17 +78,15 @@ class _PostListState extends ConsumerState<PostList> {
                   },
                   firstPageErrorIndicatorBuilder: (context) =>
                       EnhancedErrorState(
-                        title: 'Error loading posts',
-                        message: state.error?.toString() ?? 'Unknown error',
-                        actionLabel: 'Retry',
+                        title: t.classes.posts.loadError,
+                        message: state.error?.toString() ?? '',
                         onRetry: () => pagingController.refresh(),
                       ),
                   noItemsFoundIndicatorBuilder: (context) => EnhancedEmptyState(
                     icon: LucideIcons.messageSquare,
-                    title: 'No Posts Yet',
-                    message:
-                        'Your teacher will post announcements and updates here.',
-                    actionLabel: 'Create First Post',
+                    title: t.classes.posts.emptyTitle,
+                    message: t.classes.posts.emptyDescription,
+                    actionLabel: t.classes.posts.createFirst,
                     onAction: _navigateToCreatePost,
                   ),
                   newPageProgressIndicatorBuilder: (context) => const Padding(
@@ -103,7 +103,7 @@ class _PostListState extends ConsumerState<PostList> {
                     padding: const EdgeInsets.all(24),
                     child: Center(
                       child: Text(
-                        'No more posts',
+                        t.classes.posts.noMore,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -115,12 +115,12 @@ class _PostListState extends ConsumerState<PostList> {
         ),
       ),
       floatingActionButton: Semantics(
-        label: 'Create new post',
+        label: t.classes.posts.createLabel,
         button: true,
         child: FloatingActionButton.extended(
           onPressed: _navigateToCreatePost,
           icon: const Icon(LucideIcons.plus),
-          label: const Text('New Post'),
+          label: Text(t.classes.posts.newPost),
         ),
       ),
     );

@@ -2,12 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/class_info_dialog.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Sliver app bar with class header and tab navigation.
-class ClassDetailAppBar extends StatelessWidget {
+class ClassDetailAppBar extends ConsumerWidget {
   final ClassEntity classEntity;
   final bool isStudent;
 
@@ -18,7 +20,8 @@ class ClassDetailAppBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return SliverAppBar(
       expandedHeight: 200,
       floating: false,
@@ -28,30 +31,30 @@ class ClassDetailAppBar extends StatelessWidget {
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light,
       leading: Semantics(
-        label: 'Go back',
+        label: t.classes.appBar.goBack,
         button: true,
-        hint: 'Double tap to return to classes list',
+        hint: t.classes.appBar.returnHint,
         child: IconButton(
           icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
           onPressed: () {
             HapticFeedback.lightImpact();
             context.router.maybePop();
           },
-          tooltip: 'Back',
+          tooltip: t.classes.appBar.back,
         ),
       ),
       actions: [
         Semantics(
-          label: 'Class options',
+          label: t.classes.appBar.classOptions,
           button: true,
-          hint: 'Double tap to see more options',
+          hint: t.classes.appBar.optionsHint,
           child: IconButton(
             icon: const Icon(LucideIcons.ellipsisVertical, color: Colors.white),
             onPressed: () {
               HapticFeedback.mediumImpact();
-              _showClassOptions(context);
+              _showClassOptions(context, t);
             },
-            tooltip: 'More options',
+            tooltip: t.classes.appBar.moreOptions,
           ),
         ),
       ],
@@ -168,7 +171,7 @@ class ClassDetailAppBar extends StatelessWidget {
     );
   }
 
-  void _showClassOptions(BuildContext context) {
+  void _showClassOptions(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -180,7 +183,7 @@ class ClassDetailAppBar extends StatelessWidget {
           children: [
             ListTile(
               leading: Icon(LucideIcons.info, color: colorScheme.primary),
-              title: const Text('Class Information'),
+              title: Text(t.classes.appBar.classInformation),
               onTap: () {
                 Navigator.pop(context);
                 ClassInfoDialog.show(context, classEntity);
@@ -189,8 +192,10 @@ class ClassDetailAppBar extends StatelessWidget {
             if (!isStudent) ...[
               ListTile(
                 leading: Icon(LucideIcons.copy, color: colorScheme.primary),
-                title: const Text('Copy Join Code'),
-                subtitle: Text(classEntity.joinCode ?? 'Not available'),
+                title: Text(t.classes.appBar.copyJoinCode),
+                subtitle: Text(
+                  classEntity.joinCode ?? t.classes.appBar.notAvailable,
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   if (classEntity.joinCode != null) {
@@ -198,14 +203,14 @@ class ClassDetailAppBar extends StatelessWidget {
                       ClipboardData(text: classEntity.joinCode!),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Join code copied')),
+                      SnackBar(content: Text(t.classes.appBar.joinCodeCopied)),
                     );
                   }
                 },
               ),
               ListTile(
                 leading: Icon(LucideIcons.settings, color: colorScheme.primary),
-                title: const Text('Class Settings'),
+                title: Text(t.classes.appBar.classSettings),
                 onTap: () {
                   Navigator.pop(context);
                   context.router.push(ClassEditRoute(classId: classEntity.id));

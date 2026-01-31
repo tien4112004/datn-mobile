@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/classes/states/controller_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,9 +10,10 @@ class CreateClassDialog {
     final nameController = TextEditingController();
     final descController = TextEditingController();
     final formKey = GlobalKey<FormState>();
+    final t = ref.read(translationsPod);
 
     return AlertDialog(
-      title: const Text('Create Class'),
+      title: Text(t.classes.createDialog.title),
       content: Form(
         key: formKey,
         child: Column(
@@ -19,16 +21,16 @@ class CreateClassDialog {
           children: [
             TextFormField(
               controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Class name',
-                hintText: 'e.g., Advanced Software Development',
+              decoration: InputDecoration(
+                labelText: t.classes.createDialog.classNameLabel,
+                hintText: t.classes.createDialog.classNameHint,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a class name';
+                  return t.classes.createDialog.classNameRequired;
                 }
                 if (value.length > 50) {
-                  return 'Name must be 50 characters or less';
+                  return t.classes.createDialog.classNameMaxLength;
                 }
                 return null;
               },
@@ -37,9 +39,9 @@ class CreateClassDialog {
             const SizedBox(height: 16),
             TextFormField(
               controller: descController,
-              decoration: const InputDecoration(
-                labelText: 'Description (optional)',
-                hintText: 'Brief class description',
+              decoration: InputDecoration(
+                labelText: t.classes.createDialog.descriptionLabel,
+                hintText: t.classes.createDialog.descriptionHint,
               ),
               maxLines: 2,
             ),
@@ -49,7 +51,7 @@ class CreateClassDialog {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(t.classes.cancel),
         ),
         FilledButton(
           onPressed: () async {
@@ -65,12 +67,12 @@ class CreateClassDialog {
                   );
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Class created successfully')),
+                  SnackBar(content: Text(t.classes.createDialog.createSuccess)),
                 );
               }
             }
           },
-          child: const Text('Create'),
+          child: Text(t.classes.create),
         ),
       ],
     );

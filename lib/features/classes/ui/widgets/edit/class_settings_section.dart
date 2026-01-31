@@ -1,5 +1,7 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Section for managing class settings.
@@ -14,7 +16,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Clear status indicators
 /// - Information cards
 /// - Accessible design
-class ClassSettingsSection extends StatelessWidget {
+class ClassSettingsSection extends ConsumerWidget {
   final bool isActive;
   final String? joinCode;
   final DateTime? createdAt;
@@ -31,9 +33,10 @@ class ClassSettingsSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +58,7 @@ class ClassSettingsSection extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'Settings',
+              t.classes.settingsSection.title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -66,22 +69,22 @@ class ClassSettingsSection extends StatelessWidget {
         const SizedBox(height: 20),
 
         // Active status toggle
-        _buildActiveStatusCard(context),
+        _buildActiveStatusCard(context, t),
 
         const SizedBox(height: 16),
 
         // Join code display
-        if (joinCode != null) _buildJoinCodeCard(context),
+        if (joinCode != null) _buildJoinCodeCard(context, t),
       ],
     );
   }
 
-  Widget _buildActiveStatusCard(BuildContext context) {
+  Widget _buildActiveStatusCard(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
     return Semantics(
-      label: 'Class active status toggle',
+      label: t.classes.settingsSection.statusToggle,
       toggled: isActive,
       child: Card(
         elevation: 0,
@@ -123,7 +126,7 @@ class ClassSettingsSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Class Status',
+                      t.classes.settingsSection.statusLabel,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -132,8 +135,8 @@ class ClassSettingsSection extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       isActive
-                          ? 'This class is active and visible to students'
-                          : 'This class is inactive and hidden from students',
+                          ? t.classes.settingsSection.activeDescription
+                          : t.classes.settingsSection.inactiveDescription,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -158,7 +161,7 @@ class ClassSettingsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildJoinCodeCard(BuildContext context) {
+  Widget _buildJoinCodeCard(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -195,7 +198,7 @@ class ClassSettingsSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Join Code',
+                    t.classes.settingsSection.joinCodeLabel,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -212,7 +215,7 @@ class ClassSettingsSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Students can use this code to join the class',
+                    t.classes.settingsSection.joinCodeDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -223,22 +226,22 @@ class ClassSettingsSection extends StatelessWidget {
 
             // Copy button
             Semantics(
-              label: 'Copy join code',
+              label: t.classes.settingsSection.copyJoinCode,
               button: true,
               child: IconButton(
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: joinCode!));
                   HapticFeedback.lightImpact();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Join code copied to clipboard'),
+                    SnackBar(
+                      content: Text(t.classes.settingsSection.joinCodeCopied),
                       behavior: SnackBarBehavior.floating,
-                      duration: Duration(seconds: 2),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
                 icon: const Icon(LucideIcons.copy),
-                tooltip: 'Copy join code',
+                tooltip: t.classes.settingsSection.copyJoinCode,
               ),
             ),
           ],

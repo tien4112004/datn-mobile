@@ -1,11 +1,13 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/ui/extensions/post_type_extension.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_type_option.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class PostTypeSelectorSheet extends StatelessWidget {
+class PostTypeSelectorSheet extends ConsumerWidget {
   final PostType selectedType;
   final ValueChanged<PostType> onTypeSelected;
 
@@ -16,9 +18,10 @@ class PostTypeSelectorSheet extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -37,7 +40,7 @@ class PostTypeSelectorSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Post Type',
+                  t.classes.postType.title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -49,8 +52,8 @@ class PostTypeSelectorSheet extends StatelessWidget {
           // Post type options
           PostTypeOption(
             icon: PostType.post.icon,
-            label: PostType.post.createPageLabel,
-            description: 'Share updates with attachments and resources',
+            label: t.classes.postType.post,
+            description: t.classes.postType.postDescription,
             isSelected: selectedType == PostType.post,
             onTap: () {
               onTypeSelected(PostType.post);
@@ -60,8 +63,8 @@ class PostTypeSelectorSheet extends StatelessWidget {
           ),
           PostTypeOption(
             icon: PostType.exercise.icon,
-            label: PostType.exercise.createPageLabel,
-            description: 'Link assignments for students',
+            label: t.classes.postType.exercise,
+            description: t.classes.postType.exerciseDescription,
             isSelected: selectedType == PostType.exercise,
             onTap: () {
               onTypeSelected(PostType.exercise);

@@ -1,4 +1,6 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Section for editing basic class information.
@@ -12,7 +14,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Character counters
 /// - Validation feedback
 /// - Accessible form design
-class ClassInfoSection extends StatelessWidget {
+class ClassInfoSection extends ConsumerWidget {
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final VoidCallback onFieldChanged;
@@ -25,9 +27,10 @@ class ClassInfoSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +52,7 @@ class ClassInfoSection extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'Class Information',
+              t.classes.infoSection.title,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -61,14 +64,14 @@ class ClassInfoSection extends StatelessWidget {
 
         // Class name field
         Semantics(
-          label: 'Class name input field, required',
+          label: t.classes.infoSection.classNameLabel,
           child: TextFormField(
             controller: nameController,
             onChanged: (_) => onFieldChanged(),
             decoration: InputDecoration(
-              labelText: 'Class Name *',
-              hintText: 'Enter class name',
-              helperText: 'Required field, maximum 50 characters',
+              labelText: t.classes.infoSection.classNameLabel,
+              hintText: t.classes.infoSection.classNameHint,
+              helperText: t.classes.infoSection.classNameHelper,
               prefixIcon: const Icon(LucideIcons.graduationCap),
               counterText: '${nameController.text.length}/50',
               border: const OutlineInputBorder(
@@ -79,10 +82,10 @@ class ClassInfoSection extends StatelessWidget {
             textCapitalization: TextCapitalization.words,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Please enter a class name';
+                return t.classes.infoSection.classNameRequired;
               }
               if (value.trim().length < 3) {
-                return 'Class name must be at least 3 characters';
+                return t.classes.infoSection.classNameMinLength;
               }
               return null;
             },
@@ -94,17 +97,17 @@ class ClassInfoSection extends StatelessWidget {
 
         // Description field
         Semantics(
-          label: 'Class description input field, optional',
+          label: t.classes.infoSection.descriptionLabel,
           child: TextFormField(
             controller: descriptionController,
             onChanged: (_) => onFieldChanged(),
-            decoration: const InputDecoration(
-              labelText: 'Description',
-              hintText: 'Enter class description (optional)',
-              helperText: 'Add details about this class',
-              prefixIcon: Icon(LucideIcons.fileText),
+            decoration: InputDecoration(
+              labelText: t.classes.infoSection.descriptionLabel,
+              hintText: t.classes.infoSection.descriptionHint,
+              helperText: t.classes.infoSection.descriptionHelper,
+              prefixIcon: const Icon(LucideIcons.fileText),
               alignLabelWithHint: true,
-              border: OutlineInputBorder(
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
             ),

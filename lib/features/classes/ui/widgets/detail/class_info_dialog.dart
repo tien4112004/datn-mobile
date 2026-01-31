@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +25,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       elevation: 3,
@@ -33,7 +35,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header Section
-            _buildHeader(context),
+            _buildHeader(context, t),
 
             // Scrollable Content
             Flexible(
@@ -45,29 +47,33 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                     // Basic Information Card
                     _buildInfoCard(
                       context: context,
-                      title: 'Basic Information',
+                      title: t.classes.infoDialog.basicInfo,
                       icon: LucideIcons.info,
                       children: [
                         _buildInfoRow(
                           context: context,
-                          label: 'Class Name',
+                          label: t.classes.infoDialog.className,
                           value: classEntity.name,
+                          t: t,
                         ),
                         if (classEntity.description != null &&
                             classEntity.description!.isNotEmpty) ...[
                           const SizedBox(height: 12),
                           _buildInfoRow(
                             context: context,
-                            label: 'Description',
+                            label: t.classes.infoDialog.description,
                             value: classEntity.description!,
                             isMultiline: true,
+                            t: t,
                           ),
                         ],
                         const SizedBox(height: 12),
                         _buildInfoRow(
                           context: context,
-                          label: 'Status',
-                          value: classEntity.isActive ? 'Active' : 'Inactive',
+                          label: t.classes.infoDialog.status,
+                          value: classEntity.isActive
+                              ? t.classes.infoDialog.active
+                              : t.classes.infoDialog.inactive,
                           valueColor: classEntity.isActive
                               ? Colors.green.shade700
                               : Colors.red.shade700,
@@ -80,6 +86,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                                 ? Colors.green.shade700
                                 : Colors.red.shade700,
                           ),
+                          t: t,
                         ),
                       ],
                     ),
@@ -89,20 +96,22 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                     // Instructor Information Card
                     _buildInfoCard(
                       context: context,
-                      title: 'Instructor',
+                      title: t.classes.infoDialog.instructor,
                       icon: LucideIcons.user,
                       children: [
                         _buildInfoRow(
                           context: context,
-                          label: 'Name',
+                          label: t.classes.infoDialog.name,
                           value: classEntity.teacherName,
+                          t: t,
                         ),
                         const SizedBox(height: 12),
                         _buildInfoRow(
                           context: context,
-                          label: 'Owner ID',
+                          label: t.classes.infoDialog.ownerId,
                           value: classEntity.teacherId,
                           isMonospace: true,
+                          t: t,
                         ),
                       ],
                     ),
@@ -113,19 +122,20 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                     if (classEntity.joinCode != null)
                       _buildInfoCard(
                         context: context,
-                        title: 'Enrollment',
+                        title: t.classes.infoDialog.enrollment,
                         icon: LucideIcons.link,
                         children: [
                           _buildInfoRow(
                             context: context,
-                            label: 'Join Code',
+                            label: t.classes.infoDialog.joinCode,
                             value: classEntity.joinCode!,
                             isMonospace: true,
                             onCopy: () => _copyToClipboard(
                               context,
                               classEntity.joinCode!,
-                              'Join code copied to clipboard',
+                              t.classes.infoDialog.copiedToClipboard,
                             ),
+                            t: t,
                           ),
                         ],
                       ),
@@ -135,17 +145,18 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                     // Timestamps Card
                     _buildInfoCard(
                       context: context,
-                      title: 'Timestamps',
+                      title: t.classes.infoDialog.timestamps,
                       icon: LucideIcons.clock,
                       children: [
                         if (classEntity.createdAt != null) ...[
                           _buildInfoRow(
                             context: context,
-                            label: 'Created',
+                            label: t.classes.infoDialog.created,
                             value: DateFormatHelper.formatRelativeDate(
                               ref: ref,
                               classEntity.createdAt!,
                             ),
+                            t: t,
                           ),
                           if (classEntity.updatedAt != null)
                             const SizedBox(height: 12),
@@ -153,11 +164,12 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                         if (classEntity.updatedAt != null)
                           _buildInfoRow(
                             context: context,
-                            label: 'Last Updated',
+                            label: t.classes.infoDialog.lastUpdated,
                             value: DateFormatHelper.formatRelativeDate(
                               ref: ref,
                               classEntity.updatedAt!,
                             ),
+                            t: t,
                           ),
                       ],
                     ),
@@ -177,7 +189,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                       HapticFeedback.lightImpact();
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Close'),
+                    child: Text(t.classes.close),
                   ),
                 ],
               ),
@@ -188,7 +200,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
 
     return Container(
@@ -215,9 +227,9 @@ class _ClassInfoDialogContent extends ConsumerWidget {
               children: [
                 Semantics(
                   header: true,
-                  label: 'Class information for ${classEntity.name}',
+                  label: '${t.classes.infoDialog.title} ${classEntity.name}',
                   child: Text(
-                    'Class Information',
+                    t.classes.infoDialog.title,
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -237,9 +249,9 @@ class _ClassInfoDialogContent extends ConsumerWidget {
             ),
           ),
           Semantics(
-            label: 'Close dialog',
+            label: t.classes.infoDialog.closeDialog,
             button: true,
-            hint: 'Double tap to close class information',
+            hint: t.classes.infoDialog.closeHint,
             child: IconButton(
               onPressed: () {
                 HapticFeedback.lightImpact();
@@ -247,7 +259,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
               },
               icon: const Icon(LucideIcons.x),
               color: Colors.white,
-              tooltip: 'Close',
+              tooltip: t.classes.close,
             ),
           ),
         ],
@@ -301,6 +313,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
     required BuildContext context,
     required String label,
     required String value,
+    required dynamic t,
     bool isMultiline = false,
     bool isMonospace = false,
     Color? valueColor,
@@ -340,9 +353,9 @@ class _ClassInfoDialogContent extends ConsumerWidget {
             if (onCopy != null) ...[
               const SizedBox(width: 8),
               Semantics(
-                label: 'Copy $label',
+                label: t.classes.infoDialog.copyLabel(label: label),
                 button: true,
-                hint: 'Double tap to copy to clipboard',
+                hint: t.classes.infoDialog.copyHint,
                 child: IconButton(
                   icon: Icon(
                     LucideIcons.copy,
@@ -350,7 +363,7 @@ class _ClassInfoDialogContent extends ConsumerWidget {
                     color: colorScheme.primary,
                   ),
                   onPressed: onCopy,
-                  tooltip: 'Copy to clipboard',
+                  tooltip: t.classes.infoDialog.copyToClipboard,
                   visualDensity: VisualDensity.compact,
                   constraints: const BoxConstraints(
                     minWidth: 40,

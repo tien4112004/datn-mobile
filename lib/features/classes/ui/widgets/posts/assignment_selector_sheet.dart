@@ -1,8 +1,10 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
@@ -112,6 +114,7 @@ class _AssignmentSelectorSheetState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final assignmentsAsync = ref.watch(assignmentsControllerProvider);
 
     return Container(
@@ -146,13 +149,15 @@ class _AssignmentSelectorSheetState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Select Assignments',
+                        t.classes.assignmentSelector.title,
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
-                        '${_selectedIds.length} selected',
+                        t.classes.assignmentSelector.selected(
+                          count: _selectedIds.length,
+                        ),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -173,7 +178,7 @@ class _AssignmentSelectorSheetState
                       vertical: 10,
                     ),
                   ),
-                  child: const Text('Done'),
+                  child: Text(t.classes.assignmentSelector.done),
                 ),
               ],
             ),
@@ -185,7 +190,7 @@ class _AssignmentSelectorSheetState
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search assignments...',
+                hintText: t.classes.assignmentSelector.searchHint,
                 prefixIcon: const Icon(LucideIcons.search, size: 20),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -213,7 +218,7 @@ class _AssignmentSelectorSheetState
           GenericFiltersBar(
             filters: [
               FilterConfig<Subject>(
-                label: 'Subject',
+                label: t.classes.assignmentSelector.subject,
                 icon: LucideIcons.book,
                 selectedValue: _filterSubject,
                 options: Subject.values,
@@ -221,17 +226,17 @@ class _AssignmentSelectorSheetState
                 iconBuilder: (subject) => _getSubjectIcon(subject),
                 onChanged: (subject) =>
                     setState(() => _filterSubject = subject),
-                allLabel: 'All Subjects',
+                allLabel: t.classes.assignmentSelector.allSubjects,
                 allIcon: LucideIcons.book,
               ),
               FilterConfig<GradeLevel>(
-                label: 'Grade',
+                label: t.classes.assignmentSelector.grade,
                 icon: LucideIcons.graduationCap,
                 selectedValue: _filterGrade,
                 options: GradeLevel.values,
                 displayNameBuilder: (grade) => grade.displayName,
                 onChanged: (grade) => setState(() => _filterGrade = grade),
-                allLabel: 'All Grades',
+                allLabel: t.classes.assignmentSelector.allGrades,
                 allIcon: LucideIcons.graduationCap,
               ),
             ],
@@ -245,7 +250,7 @@ class _AssignmentSelectorSheetState
                 final filtered = _filterAssignments(result.assignments);
 
                 if (filtered.isEmpty) {
-                  return _buildEmptyState(theme, colorScheme);
+                  return _buildEmptyState(theme, colorScheme, t);
                 }
 
                 return ListView.separated(
@@ -273,7 +278,7 @@ class _AssignmentSelectorSheetState
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildEmptyState(ThemeData theme, ColorScheme colorScheme, dynamic t) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -285,14 +290,14 @@ class _AssignmentSelectorSheetState
           ),
           const SizedBox(height: 16),
           Text(
-            'No assignments found',
+            t.classes.assignmentSelector.emptyTitle,
             style: theme.textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Try adjusting your filters',
+            t.classes.assignmentSelector.emptyDescription,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
@@ -329,7 +334,7 @@ class _AssignmentSelectionTile extends StatelessWidget {
   Color _getSubjectColor(Subject subject) {
     switch (subject) {
       case Subject.english:
-        return const Color(0xFF2563EB);
+        return Themes.primaryColor;
       case Subject.mathematics:
         return const Color(0xFFDC2626);
       case Subject.literature:
@@ -507,7 +512,7 @@ class _AssignmentSelectionTile extends StatelessWidget {
       case AssignmentStatus.draft:
         return colorScheme.tertiary;
       case AssignmentStatus.generating:
-        return const Color(0xFF2563EB);
+        return Themes.primaryColor;
       case AssignmentStatus.error:
         return colorScheme.error;
       case AssignmentStatus.archived:

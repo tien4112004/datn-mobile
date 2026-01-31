@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Expandable Floating Action Button for class actions.
 ///
 /// Shows options to Create Class or Join Class when tapped.
-class ClassActionFab extends StatefulWidget {
+class ClassActionFab extends ConsumerStatefulWidget {
   final VoidCallback onCreateClass;
   final VoidCallback? onJoinClass;
 
@@ -16,10 +18,10 @@ class ClassActionFab extends StatefulWidget {
   });
 
   @override
-  State<ClassActionFab> createState() => _ClassActionFabState();
+  ConsumerState<ClassActionFab> createState() => _ClassActionFabState();
 }
 
-class _ClassActionFabState extends State<ClassActionFab>
+class _ClassActionFabState extends ConsumerState<ClassActionFab>
     with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late AnimationController _animationController;
@@ -64,6 +66,7 @@ class _ClassActionFabState extends State<ClassActionFab>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -83,7 +86,7 @@ class _ClassActionFabState extends State<ClassActionFab>
                 if (widget.onJoinClass != null) ...[
                   _buildMiniAction(
                     context,
-                    label: 'Join Class',
+                    label: t.classes.joinClass,
                     icon: LucideIcons.userPlus,
                     onTap: () => _handleAction(widget.onJoinClass!),
                   ),
@@ -92,7 +95,7 @@ class _ClassActionFabState extends State<ClassActionFab>
                 // Create Class option
                 _buildMiniAction(
                   context,
-                  label: 'Create Class',
+                  label: t.classes.createClass,
                   icon: LucideIcons.plus,
                   onTap: () => _handleAction(widget.onCreateClass),
                 ),
@@ -101,18 +104,14 @@ class _ClassActionFabState extends State<ClassActionFab>
           ),
         ),
         // Main FAB
-        Semantics(
-          label: _isExpanded ? 'Close menu' : 'Add class options',
-          button: true,
-          child: FloatingActionButton(
-            onPressed: _toggle,
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            child: AnimatedRotation(
-              turns: _isExpanded ? 0.125 : 0,
-              duration: const Duration(milliseconds: 200),
-              child: const Icon(LucideIcons.plus),
-            ),
+        FloatingActionButton(
+          onPressed: _toggle,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          child: AnimatedRotation(
+            turns: _isExpanded ? 0.125 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: const Icon(LucideIcons.plus),
           ),
         ),
       ],

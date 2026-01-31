@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Tab switcher widget for bank type selection (Personal/Public)
 ///

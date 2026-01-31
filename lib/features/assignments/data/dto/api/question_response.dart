@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 part 'question_response.g.dart';
 

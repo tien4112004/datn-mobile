@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/bootstrap.dart';
-import 'package:datn_mobile/features/splash/controller/future_initializer.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/bootstrap.dart';
+import 'package:AIPrimary/features/splash/controller/future_initializer.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 
 ///This view displayed for initializing all the required things on initialization.
 /// This will help for initial loading screen for apps with heavy things initialization;

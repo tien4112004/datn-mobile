@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/classes/data/dto/class_create_request_dto.dart';
-import 'package:datn_mobile/features/classes/data/dto/class_list_response_dto.dart';
-import 'package:datn_mobile/features/classes/data/dto/class_response_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/classes/data/dto/class_create_request_dto.dart';
+import 'package:AIPrimary/features/classes/data/dto/class_list_response_dto.dart';
+import 'package:AIPrimary/features/classes/data/dto/class_response_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';

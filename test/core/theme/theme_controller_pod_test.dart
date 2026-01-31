@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:datn_mobile/core/local_storage/app_storage.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/core/theme/theme_controller.dart';
+import 'package:AIPrimary/core/local_storage/app_storage.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/core/theme/theme_controller.dart';
 
 void main() {
   group('ThemeModeController Test', () {

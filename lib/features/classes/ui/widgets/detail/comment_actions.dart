@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

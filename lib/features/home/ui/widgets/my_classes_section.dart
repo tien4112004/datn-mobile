@@ -1,8 +1,8 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 class MyClassesSection extends ConsumerWidget {
   const MyClassesSection({super.key});

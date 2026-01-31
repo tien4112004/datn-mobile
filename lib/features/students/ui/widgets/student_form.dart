@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
-import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/features/students/data/dto/student_create_request_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_update_request_dto.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

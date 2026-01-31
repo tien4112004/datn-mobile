@@ -1,5 +1,5 @@
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 

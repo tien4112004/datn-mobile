@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 
 /// Repository interface for assignment data operations.
 /// Matches the API specification from ASSIGNMENT_API_DOCS.md

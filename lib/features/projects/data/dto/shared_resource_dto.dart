@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/shared_resource.dart';
+import 'package:AIPrimary/features/projects/domain/entity/shared_resource.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'shared_resource_dto.g.dart';

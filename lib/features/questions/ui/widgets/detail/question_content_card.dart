@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/multiple_choice/multiple_choice_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/matching/matching_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/fill_in_blank/fill_in_blank_viewing.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/open_ended/open_ended_viewing.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_viewing.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_viewing.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_blank_viewing.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/open_ended/open_ended_viewing.dart';
 
 class QuestionContentCard extends StatelessWidget {
   final BaseQuestion question;

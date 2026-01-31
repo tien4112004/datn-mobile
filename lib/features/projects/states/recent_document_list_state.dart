@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/recent_document.dart';
+import 'package:AIPrimary/features/projects/domain/entity/recent_document.dart';
 
 class RecentDocumentListState {
   const RecentDocumentListState(

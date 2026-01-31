@@ -1,9 +1,9 @@
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
-import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/resource_picker_step.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/permission_config_step.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/resource_selector/sheet_header.dart';
-import 'package:datn_mobile/features/classes/states/resrouce_selection_state.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/resource_selector/resource_picker_step.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/resource_selector/permission_config_step.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/resource_selector/sheet_header.dart';
+import 'package:AIPrimary/features/classes/states/resrouce_selection_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

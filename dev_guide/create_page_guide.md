@@ -140,7 +140,7 @@ Create `lib/features/your_feature/data/dto/your_entity_dto.dart`:
 
 ```dart
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/your_feature/domain/entity/your_entity.dart';
+import 'package:AIPrimary/features/your_feature/domain/entity/your_entity.dart';
 
 part 'your_entity_dto.g.dart';
 
@@ -194,7 +194,7 @@ Create `lib/features/your_feature/data/source/your_feature_remote_source.dart`:
 ```dart
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
-import 'package:datn_mobile/features/your_feature/data/dto/your_entity_dto.dart';
+import 'package:AIPrimary/features/your_feature/data/dto/your_entity_dto.dart';
 
 part 'your_feature_remote_source.g.dart';
 
@@ -221,7 +221,7 @@ Create `lib/features/your_feature/data/source/your_feature_remote_source_provide
 
 ```dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
 import 'your_feature_remote_source.dart';
 
 final yourFeatureRemoteSourceProvider = Provider<YourFeatureRemoteSource>((ref) {
@@ -236,8 +236,8 @@ final yourFeatureRemoteSourceProvider = Provider<YourFeatureRemoteSource>((ref) 
 Create `lib/features/your_feature/service/your_feature_service.dart`:
 
 ```dart
-import 'package:datn_mobile/features/your_feature/domain/entity/your_entity.dart';
-import 'package:datn_mobile/features/your_feature/data/source/your_feature_remote_source.dart';
+import 'package:AIPrimary/features/your_feature/domain/entity/your_entity.dart';
+import 'package:AIPrimary/features/your_feature/data/source/your_feature_remote_source.dart';
 
 class YourFeatureService {
   final YourFeatureRemoteSource _remoteSource;
@@ -286,7 +286,7 @@ Create `lib/features/your_feature/service/service_provider.dart`:
 
 ```dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/your_feature/data/source/your_feature_remote_source_provider.dart';
+import 'package:AIPrimary/features/your_feature/data/source/your_feature_remote_source_provider.dart';
 import 'your_feature_service.dart';
 
 final yourFeatureServiceProvider = Provider<YourFeatureService>((ref) {
@@ -342,8 +342,8 @@ Create `lib/features/your_feature/controllers/controller_provider.dart`:
 
 ```dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/your_feature/domain/entity/your_entity.dart';
-import 'package:datn_mobile/features/your_feature/service/service_provider.dart';
+import 'package:AIPrimary/features/your_feature/domain/entity/your_entity.dart';
+import 'package:AIPrimary/features/your_feature/service/service_provider.dart';
 
 part 'your_feature_controller.dart';
 
@@ -460,7 +460,7 @@ Here's a complete minimal example for a "Tasks" feature:
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/tasks/controllers/controller_provider.dart';
+import 'package:AIPrimary/features/tasks/controllers/controller_provider.dart';
 
 @RoutePage()
 class TasksPage extends StatelessWidget {

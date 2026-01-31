@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/assignments/data/dto/matrix_item_dto.dart';
+import 'package:AIPrimary/features/assignments/data/dto/matrix_item_dto.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'generate_questions_request_dto.g.dart';

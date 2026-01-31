@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/data/dto/linked_resource_dto.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_response_dto.g.dart';
 

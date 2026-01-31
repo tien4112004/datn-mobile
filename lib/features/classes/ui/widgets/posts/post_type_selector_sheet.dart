@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/ui/extensions/post_type_extension.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/post_type_option.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/ui/extensions/post_type_extension.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/post_type_option.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -48,12 +48,12 @@ class PostTypeSelectorSheet extends StatelessWidget {
           const Divider(height: 1),
           // Post type options
           PostTypeOption(
-            icon: PostType.general.icon,
-            label: PostType.general.createPageLabel,
+            icon: PostType.post.icon,
+            label: PostType.post.createPageLabel,
             description: 'Share updates with attachments and resources',
-            isSelected: selectedType == PostType.general,
+            isSelected: selectedType == PostType.post,
             onTap: () {
-              onTypeSelected(PostType.general);
+              onTypeSelected(PostType.post);
               Navigator.pop(context);
               HapticFeedback.selectionClick();
             },

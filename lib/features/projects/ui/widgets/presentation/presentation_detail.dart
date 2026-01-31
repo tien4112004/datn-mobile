@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/features/projects/domain/entity/presentation.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widgets/authenticated_webview.dart';
-import 'package:datn_mobile/core/config/config.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
+import 'package:AIPrimary/core/config/config.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// datn-fe-presentation web app.

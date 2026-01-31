@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:datn_mobile/features/projects/data/dto/image_project_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/image_project_minimal_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/mindmap_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/mindmap_minimal_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/presentation_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/presentation_minimal_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/recent_document_dto.dart';
-import 'package:datn_mobile/features/projects/data/dto/shared_resource_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/image_project_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/image_project_minimal_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/mindmap_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/mindmap_minimal_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/presentation_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/presentation_minimal_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/recent_document_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/shared_resource_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';

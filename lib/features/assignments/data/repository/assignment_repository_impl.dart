@@ -1,9 +1,9 @@
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_response.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
-import 'package:datn_mobile/features/assignments/data/source/assignment_remote_source.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/domain/repository/assignment_repository.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/source/assignment_remote_source.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/repository/assignment_repository.dart';
 
 /// Implementation of AssignmentRepository using remote API source.
 /// Maps DTOs to domain entities according to ASSIGNMENT_API_DOCS.md

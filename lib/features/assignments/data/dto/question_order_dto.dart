@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'question_order_dto.g.dart';

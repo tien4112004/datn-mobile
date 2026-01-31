@@ -1,14 +1,14 @@
 import 'dart:core';
 
-import 'package:datn_mobile/features/generate/data/dto/art_style_dto.dart';
-import 'package:datn_mobile/features/generate/states/art_style/art_style_provider.dart';
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/options/art_style_picker.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/setting_item.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widgets/flex_dropdown_field.dart';
+import 'package:AIPrimary/features/generate/data/dto/art_style_dto.dart';
+import 'package:AIPrimary/features/generate/states/art_style/art_style_provider.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/options/art_style_picker.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

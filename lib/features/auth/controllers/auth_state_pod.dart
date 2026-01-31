@@ -1,5 +1,5 @@
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage_pod.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that checks if user is authenticated by checking for access token

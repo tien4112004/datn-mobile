@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/auth/data/dto/request/user_profile_update_request.dart';
-import 'package:datn_mobile/features/profile/controller/profile_controller.dart';
-import 'package:datn_mobile/features/profile/provider/avatar_provider.dart';
-import 'package:datn_mobile/features/setting/widget/profile_picture.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/user_profile_update_request.dart';
+import 'package:AIPrimary/features/profile/controller/profile_controller.dart';
+import 'package:AIPrimary/features/profile/provider/avatar_provider.dart';
+import 'package:AIPrimary/features/setting/widget/profile_picture.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

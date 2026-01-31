@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/projects/domain/entity/presentation_minimal.dart';
-import 'package:datn_mobile/features/projects/enum/sort_option.dart';
-import 'package:datn_mobile/features/projects/service/service_provider.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.dart';
+import 'package:AIPrimary/features/projects/enum/sort_option.dart';
+import 'package:AIPrimary/features/projects/service/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 

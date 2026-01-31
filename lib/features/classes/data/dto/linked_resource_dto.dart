@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
-import 'package:datn_mobile/features/classes/domain/entity/permission_level.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
 
 part 'linked_resource_dto.g.dart';
 

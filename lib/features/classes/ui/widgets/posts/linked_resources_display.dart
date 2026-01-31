@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/ui/widgets/posts/linked_resource_card.dart';
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resource_card.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

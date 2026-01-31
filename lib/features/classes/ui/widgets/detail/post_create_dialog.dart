@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +19,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
   final _formKey = GlobalKey<FormState>();
   final _contentController = TextEditingController();
 
-  PostType _selectedType = PostType.general;
+  PostType _selectedType = PostType.post;
   bool _allowComments = true;
 
   @override
@@ -84,7 +84,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
               SegmentedButton<PostType>(
                 segments: const [
                   ButtonSegment(
-                    value: PostType.general,
+                    value: PostType.post,
                     label: Text('Post'),
                     icon: Icon(LucideIcons.messageCircle, size: 16),
                   ),

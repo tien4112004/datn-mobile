@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 

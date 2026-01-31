@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/generate/data/dto/mindmap_generate_request_dto.dart';
-import 'package:datn_mobile/features/generate/data/source/mindmap_remote_source.dart';
-import 'package:datn_mobile/features/generate/domain/entity/mindmap_node_content.dart';
-import 'package:datn_mobile/features/generate/domain/repository/mindmap_repository.dart';
+import 'package:AIPrimary/features/generate/data/dto/mindmap_generate_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/source/mindmap_remote_source.dart';
+import 'package:AIPrimary/features/generate/domain/entity/mindmap_node_content.dart';
+import 'package:AIPrimary/features/generate/domain/repository/mindmap_repository.dart';
 
 class MindmapRepositoryImpl implements MindmapRepository {
   final MindmapRemoteSource _remoteSource;

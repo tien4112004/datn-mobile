@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entity/mindmap_node_content.dart';
+import 'package:AIPrimary/features/generate/domain/entity/mindmap_node_content.dart';
 
 /// State class representing the mindmap generation state.
 class MindmapGenerateState {

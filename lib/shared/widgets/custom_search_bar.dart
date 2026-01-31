@@ -1,4 +1,4 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 

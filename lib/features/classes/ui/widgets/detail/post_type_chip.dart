@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -40,7 +40,7 @@ class PostTypeChip extends StatelessWidget {
 
   _ChipConfig _getConfig(PostType type, ColorScheme colorScheme) {
     switch (type) {
-      case PostType.general:
+      case PostType.post:
         return _ChipConfig(
           icon: LucideIcons.messageCircle,
           backgroundColor: colorScheme.surfaceContainerHighest,

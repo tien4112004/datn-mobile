@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// State class for assignment filters.
 /// Follows the same pattern as Question Bank filters.

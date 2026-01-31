@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/mindmap.dart';
+import 'package:AIPrimary/features/projects/domain/entity/mindmap.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'mindmap_dto.g.dart';

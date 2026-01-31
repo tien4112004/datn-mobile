@@ -1,6 +1,6 @@
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/resource/resource_type_card.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/projects/enum/resource_type.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/resource/resource_type_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

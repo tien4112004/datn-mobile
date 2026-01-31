@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/setting/widget/setting_category/setting_option.dart';
+import 'package:AIPrimary/features/setting/widget/setting_category/setting_option.dart';
 import 'package:flutter/material.dart';
 
 class SettingSection extends StatelessWidget {

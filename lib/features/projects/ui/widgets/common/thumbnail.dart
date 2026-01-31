@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/enum/resource_type.dart';
+import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:flutter/material.dart';
 
 class Thumbnail extends StatelessWidget {

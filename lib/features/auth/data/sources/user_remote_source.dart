@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:datn_mobile/features/auth/data/dto/request/user_profile_update_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/response/update_avatar_response.dart';
-import 'package:datn_mobile/features/auth/data/dto/response/user_profile_response.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/user_profile_update_request.dart';
+import 'package:AIPrimary/features/auth/data/dto/response/update_avatar_response.dart';
+import 'package:AIPrimary/features/auth/data/dto/response/user_profile_response.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

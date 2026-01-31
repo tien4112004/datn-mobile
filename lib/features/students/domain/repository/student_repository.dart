@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:datn_mobile/features/students/data/dto/student_create_request_dto.dart';
-import 'package:datn_mobile/features/students/data/dto/student_update_request_dto.dart';
-import 'package:datn_mobile/features/students/domain/entity/student.dart';
-import 'package:datn_mobile/features/students/domain/entity/student_import_result.dart';
+import 'package:AIPrimary/features/students/data/dto/student_create_request_dto.dart';
+import 'package:AIPrimary/features/students/data/dto/student_update_request_dto.dart';
+import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/students/domain/entity/student_import_result.dart';
 
 /// Repository interface for student operations.
 /// Abstracts data source implementation from domain layer.

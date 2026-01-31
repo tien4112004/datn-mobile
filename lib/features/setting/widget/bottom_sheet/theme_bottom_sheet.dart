@@ -1,8 +1,8 @@
-import 'package:datn_mobile/shared/helper/option_bottom_sheet.dart';
+import 'package:AIPrimary/shared/helper/option_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/core/theme/theme_controller.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/theme/theme_controller.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 void showThemeBottomSheet(BuildContext context, WidgetRef ref) {

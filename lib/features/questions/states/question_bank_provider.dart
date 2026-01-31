@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:datn_mobile/features/questions/data/repository/question_bank_repository_provider.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_create_request_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_update_request_entity.dart';
-import 'package:datn_mobile/features/questions/states/question_bank_filter_state.dart';
+import 'package:AIPrimary/features/questions/data/repository/question_bank_repository_provider.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_create_request_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_update_request_entity.dart';
+import 'package:AIPrimary/features/questions/states/question_bank_filter_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entity/generated_image.dart';
+import 'package:AIPrimary/features/generate/domain/entity/generated_image.dart';
 
 /// State class representing the image generation state.
 class ImageGenerateState {

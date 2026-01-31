@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/generate/states/controller_provider.dart';
-import 'package:datn_mobile/features/generate/states/theme/theme_provider.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/theme_preview_card.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/states/theme/theme_provider.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/theme_preview_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

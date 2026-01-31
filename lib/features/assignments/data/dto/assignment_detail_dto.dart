@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/assignments/data/dto/question_order_dto.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/assignments/data/dto/question_order_dto.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'assignment_detail_dto.g.dart';

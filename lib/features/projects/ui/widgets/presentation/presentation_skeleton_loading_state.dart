@@ -1,5 +1,4 @@
-import 'package:datn_mobile/shared/widgets/skeleton_card.dart'
-    show SkeletonCard;
+import 'package:AIPrimary/shared/widgets/skeleton_card.dart' show SkeletonCard;
 import 'package:flutter/material.dart';
 
 class PresentationSkeletonLoadingState extends StatelessWidget {

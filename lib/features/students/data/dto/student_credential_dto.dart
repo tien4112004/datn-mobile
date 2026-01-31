@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/students/domain/entity/student_credential.dart';
+import 'package:AIPrimary/features/students/domain/entity/student_credential.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'student_credential_dto.g.dart';

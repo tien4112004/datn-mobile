@@ -1,19 +1,19 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/questions/states/question_bank_provider.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_empty_state.dart';
-import 'package:datn_mobile/shared/widgets/enhanced_error_state.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // Import detail widgets
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_title_section.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_content_card.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/explanation_card.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_metadata_section.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/detail/question_title_section.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/detail/question_content_card.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/detail/explanation_card.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/detail/question_metadata_section.dart';
 
 @RoutePage()
 class QuestionDetailPage extends ConsumerStatefulWidget {

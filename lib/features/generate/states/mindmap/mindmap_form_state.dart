@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 
 /// State class representing the mindmap generation form inputs.
 class MindmapFormState {

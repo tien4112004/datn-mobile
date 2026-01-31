@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
-import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Controller for creating a new post

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/shared/widgets/question_badges.dart';
-import 'package:datn_mobile/shared/widgets/question_metadata_row.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/shared/widgets/question_badges.dart';
+import 'package:AIPrimary/shared/widgets/question_metadata_row.dart';
 
 /// Card component for displaying question items in a list
 ///

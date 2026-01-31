@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/generate/option_chip.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/model_picker_sheet.dart';
-import 'package:datn_mobile/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/model_picker_sheet.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 
 class GeneralPickerOptions {

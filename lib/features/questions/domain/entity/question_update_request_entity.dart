@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Domain entity for updating a question.
 /// All fields are optional, only provide what needs updating.

@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/question_item_request.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/question_item_request.dart';
 
 /// Domain entity representing a question within an assignment context.
 ///

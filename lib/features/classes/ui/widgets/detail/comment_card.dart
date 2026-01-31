@@ -1,9 +1,9 @@
-import 'package:datn_mobile/features/auth/controllers/user_controller.dart';
-import 'package:datn_mobile/features/classes/domain/entity/comment_entity.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_actions.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_author_info.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/comment_avatar.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_actions.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_author_info.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_avatar.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;

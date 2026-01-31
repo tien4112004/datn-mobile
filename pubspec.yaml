@@ -1,4 +1,4 @@
-name: datn_mobile
+name: AIPrimary
 description: ""
 version: 1.0.0+1
 publish_to: none
@@ -65,6 +65,9 @@ dependencies:
   flex_dropdown: ^0.1.0
   freezed: ^3.2.3
   modal_bottom_sheet: ^3.0.0
+  firebase_messaging: ^16.1.1
+  firebase_core: ^4.4.0
+  flutter_local_notifications: ^19.5.0
 
 dev_dependencies:
   flutter_test:

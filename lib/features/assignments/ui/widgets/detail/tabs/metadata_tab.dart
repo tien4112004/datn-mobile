@@ -1,9 +1,9 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:datn_mobile/features/assignments/ui/widgets/assignment_form_dialog.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MetadataTab extends ConsumerWidget {

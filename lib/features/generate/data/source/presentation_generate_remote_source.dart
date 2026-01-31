@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/generate/data/dto/outline_generate_request_dto.dart';
-import 'package:datn_mobile/features/generate/data/dto/presentation_generate_request_dto.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/generate/data/dto/outline_generate_request_dto.dart';
+import 'package:AIPrimary/features/generate/data/dto/presentation_generate_request_dto.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

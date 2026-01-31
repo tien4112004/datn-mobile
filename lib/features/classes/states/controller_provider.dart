@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:datn_mobile/features/classes/data/repository/class_repository_impl.dart';
-import 'package:datn_mobile/features/classes/data/source/class_remote_data_source.dart';
-import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
-import 'package:datn_mobile/features/classes/domain/repository/class_repository.dart';
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/features/classes/data/repository/class_repository_impl.dart';
+import 'package:AIPrimary/features/classes/data/source/class_remote_data_source.dart';
+import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/features/classes/domain/repository/class_repository.dart';
+import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'classes_controller.dart';

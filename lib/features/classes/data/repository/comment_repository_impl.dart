@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/classes/data/dto/comment_create_request_dto.dart';
-import 'package:datn_mobile/features/classes/data/dto/comment_response_dto.dart';
-import 'package:datn_mobile/features/classes/data/source/comment_remote_data_source.dart';
-import 'package:datn_mobile/features/classes/domain/entity/comment_entity.dart';
-import 'package:datn_mobile/features/classes/domain/repository/comment_repository.dart';
+import 'package:AIPrimary/features/classes/data/dto/comment_create_request_dto.dart';
+import 'package:AIPrimary/features/classes/data/dto/comment_response_dto.dart';
+import 'package:AIPrimary/features/classes/data/source/comment_remote_data_source.dart';
+import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
+import 'package:AIPrimary/features/classes/domain/repository/comment_repository.dart';
 
 /// Implementation of CommentRepository that uses remote data source
 class CommentRepositoryImpl implements CommentRepository {

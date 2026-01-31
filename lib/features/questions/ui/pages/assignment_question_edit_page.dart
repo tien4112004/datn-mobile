@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/detail/question_content_card.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/detail/question_content_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

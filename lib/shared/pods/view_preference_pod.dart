@@ -1,4 +1,4 @@
-import 'package:datn_mobile/core/shared_preference/shared_preferences_pod.dart';
+import 'package:AIPrimary/core/shared_preference/shared_preferences_pod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

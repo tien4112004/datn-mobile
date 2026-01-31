@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:datn_mobile/shared/widgets/filter_chip_button.dart';
+import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 
 /// Base class for type-erased filter configuration
 abstract class BaseFilterConfig {

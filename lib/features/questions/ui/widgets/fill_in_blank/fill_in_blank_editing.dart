@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_card_wrapper.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/fill_in_blank/widgets/editing_header.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/fill_in_blank/widgets/segment_item.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/fill_in_blank/widgets/add_segment_controls.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/widgets/editing_header.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/widgets/segment_item.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/widgets/add_segment_controls.dart';
 
 /// Fill in Blank Question in Editing Mode (Teacher creating/editing)
 /// Enhanced with Material 3 design principles

@@ -1,8 +1,8 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/detail/post_type_chip.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/post_author_avatar.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/post_author_info.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/posts/post_options_menu.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/post_type_chip.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/post_author_avatar.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/post_author_info.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/post_options_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

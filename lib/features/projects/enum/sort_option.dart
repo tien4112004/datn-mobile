@@ -1,4 +1,4 @@
-import 'package:datn_mobile/i18n/strings.g.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_create_request.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_response.dart';
-import 'package:datn_mobile/features/assignments/data/dto/api/assignment_update_request.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 

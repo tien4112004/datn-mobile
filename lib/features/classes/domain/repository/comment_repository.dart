@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/classes/domain/entity/comment_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
 
 /// Repository interface for comment-related operations.
 /// This defines the contract without implementation details.

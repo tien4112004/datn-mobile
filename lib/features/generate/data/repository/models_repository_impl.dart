@@ -1,7 +1,7 @@
-import 'package:datn_mobile/features/generate/data/dto/model_response.dart';
-import 'package:datn_mobile/features/generate/domain/repositories/models_repository.dart';
-import 'package:datn_mobile/features/generate/data/source/models_remote_source.dart';
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/data/dto/model_response.dart';
+import 'package:AIPrimary/features/generate/domain/repositories/models_repository.dart';
+import 'package:AIPrimary/features/generate/data/source/models_remote_source.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 
 /// Real implementation of ModelsRepository using API calls
 class ModelsRepositoryImpl implements ModelsRepository {

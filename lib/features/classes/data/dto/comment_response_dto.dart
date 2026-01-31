@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:datn_mobile/features/classes/domain/entity/comment_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
 
 part 'comment_response_dto.g.dart';
 

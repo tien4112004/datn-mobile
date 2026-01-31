@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:datn_mobile/const/resource.dart';
-import 'package:datn_mobile/core/config/config.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
-import 'package:datn_mobile/features/auth/data/dto/request/credential_signin_request.dart';
-import 'package:datn_mobile/features/auth/data/dto/request/credential_signup_request.dart';
-import 'package:datn_mobile/features/auth/data/sources/auth_remote_source.dart';
-import 'package:datn_mobile/features/auth/domain/services/auth_service.dart';
-import 'package:datn_mobile/shared/api_client/response_dto/server_reponse_dto.dart';
-import 'package:datn_mobile/shared/exception/base_exception.dart';
-import 'package:datn_mobile/shared/exception/unexpected_exception.dart';
-import 'package:datn_mobile/shared/service/webview_service.dart';
+import 'package:AIPrimary/const/resource.dart';
+import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/credential_signin_request.dart';
+import 'package:AIPrimary/features/auth/data/dto/request/credential_signup_request.dart';
+import 'package:AIPrimary/features/auth/data/sources/auth_remote_source.dart';
+import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
+import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
+import 'package:AIPrimary/shared/exception/base_exception.dart';
+import 'package:AIPrimary/shared/exception/unexpected_exception.dart';
+import 'package:AIPrimary/shared/service/webview_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 

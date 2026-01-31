@@ -166,6 +166,8 @@ yarn-error.log*
 .firebase/
 firebase-debug.log
 .firebaserc
+google-services.json
+GoogleService-Info.plist
 
 # Local development
 .local/

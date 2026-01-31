@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
-import 'package:datn_mobile/features/classes/states/controller_provider.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/edit/class_edit_form.dart';
-import 'package:datn_mobile/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/features/classes/states/controller_provider.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/edit/class_edit_form.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 
 /// Multiple Choice Question in After Assessment Mode (Student reviewing their answer)
 class MultipleChoiceAfterAssess extends StatelessWidget {

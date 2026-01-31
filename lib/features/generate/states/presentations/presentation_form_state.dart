@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/generate/domain/entity/ai_model.dart';
-import 'package:datn_mobile/features/generate/enum/presentation_theme.dart';
+import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/features/generate/enum/presentation_theme.dart';
 
 /// State class representing the presentation generation form inputs.
 class PresentationFormState {

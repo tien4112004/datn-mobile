@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/assignments/domain/entity/assignment_question_entity.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_bank_item_entity.dart';
-import 'package:datn_mobile/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

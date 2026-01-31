@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/exception/base_exception.dart';
+import 'package:AIPrimary/shared/exception/base_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'server_reponse_dto.g.dart';

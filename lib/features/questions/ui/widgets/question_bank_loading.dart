@@ -1,4 +1,4 @@
-import 'package:datn_mobile/shared/widgets/skeleton_card.dart';
+import 'package:AIPrimary/shared/widgets/skeleton_card.dart';
 import 'package:flutter/material.dart';
 
 /// Loading skeleton widget for Question Bank page

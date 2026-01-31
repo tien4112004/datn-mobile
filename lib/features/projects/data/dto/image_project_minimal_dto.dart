@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/image_project_minimal.dart';
+import 'package:AIPrimary/features/projects/domain/entity/image_project_minimal.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_project_minimal_dto.g.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:datn_mobile/shared/api_client/dio/dio_client_provider.dart';
-import 'package:datn_mobile/shared/pods/internet_checker_pod.dart';
+import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/shared/pods/internet_checker_pod.dart';
 
 ///No internet extension widget
 extension NoInternet on Widget {

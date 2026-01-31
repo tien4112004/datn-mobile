@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/projects/enum/resource_type.dart';
-import 'package:datn_mobile/features/projects/ui/widgets/common/thumbnail.dart';
-import 'package:datn_mobile/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/features/projects/enum/resource_type.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/common/thumbnail.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

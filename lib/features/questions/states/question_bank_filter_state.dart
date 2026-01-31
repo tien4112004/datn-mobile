@@ -1,5 +1,5 @@
-import 'package:datn_mobile/shared/models/cms_enums.dart';
-import 'package:datn_mobile/shared/state/base_filter_state.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/state/base_filter_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'question_bank_filter_state.freezed.dart';

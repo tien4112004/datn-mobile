@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/students/data/dto/student_credential_dto.dart';
-import 'package:datn_mobile/features/students/domain/entity/student_import_result.dart';
+import 'package:AIPrimary/features/students/data/dto/student_credential_dto.dart';
+import 'package:AIPrimary/features/students/domain/entity/student_import_result.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'student_import_response_dto.g.dart';

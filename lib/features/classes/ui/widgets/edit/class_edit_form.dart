@@ -1,6 +1,6 @@
-import 'package:datn_mobile/features/classes/domain/entity/class_entity.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/edit/class_info_section.dart';
-import 'package:datn_mobile/features/classes/ui/widgets/edit/class_settings_section.dart';
+import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/edit/class_info_section.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/edit/class_settings_section.dart';
 import 'package:flutter/material.dart';
 
 /// Main form widget for editing class information.

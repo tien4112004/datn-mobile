@@ -1,15 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/core/router/router_pod.dart';
-import 'package:datn_mobile/features/setting/widget/bottom_sheet/language_bottom_sheet.dart';
-import 'package:datn_mobile/features/setting/widget/bottom_sheet/theme_bottom_sheet.dart';
-import 'package:datn_mobile/features/setting/widget/setting_category/setting_option.dart';
-import 'package:datn_mobile/features/setting/widget/setting_profile_picture.dart';
-import 'package:datn_mobile/features/setting/widget/setting_category/setting_section.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/router/router_pod.dart';
+import 'package:AIPrimary/features/setting/widget/bottom_sheet/language_bottom_sheet.dart';
+import 'package:AIPrimary/features/setting/widget/bottom_sheet/theme_bottom_sheet.dart';
+import 'package:AIPrimary/features/setting/widget/setting_category/setting_option.dart';
+import 'package:AIPrimary/features/setting/widget/setting_profile_picture.dart';
+import 'package:AIPrimary/features/setting/widget/setting_category/setting_section.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SettingContentView extends ConsumerWidget {

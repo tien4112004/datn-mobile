@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_entity.dart';
-import 'package:datn_mobile/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
+import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 

@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/generate/domain/entity/outline_slide.dart';
+import 'package:AIPrimary/features/generate/domain/entity/outline_slide.dart';
 
 /// Repository interface for outline parsing operations.
 ///

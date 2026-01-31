@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:datn_mobile/core/router/route_guard.dart';
-import 'package:datn_mobile/core/router/router.gr.dart';
-import 'package:datn_mobile/core/secure_storage/secure_storage.dart';
+import 'package:AIPrimary/core/router/route_guard.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
 
 /// This class used for defined routes and paths and other properties
 @AutoRouterConfig()
@@ -75,6 +75,9 @@ class AppRouter extends RootStackRouter {
       page: StudentEditRoute.page,
       path: '/classes/:classId/students/:studentId/edit',
     ),
+
+    // Notification Routes
+    AutoRoute(page: NotificationListRoute.page, path: '/notifications'),
 
     // Exam Routes
     AutoRoute(page: AssignmentsRoute.page, path: '/assignments'),

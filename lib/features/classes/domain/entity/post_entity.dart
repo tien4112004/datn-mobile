@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/classes/domain/entity/post_type.dart';
-import 'package:datn_mobile/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 
 /// Domain entity representing a class post.
 /// This is a pure domain model without any JSON serialization logic.

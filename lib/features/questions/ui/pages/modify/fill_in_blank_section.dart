@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 
 /// Section for managing fill-in-blank question segments
 /// Uses raw text input format: "Text {{answer1 | answer2}} more text"

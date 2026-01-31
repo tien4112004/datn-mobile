@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:datn_mobile/features/questions/ui/widgets/modify/option_item_card.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/modify/option_item_card.dart';
 
 /// Section for managing multiple choice question options
 class MultipleChoiceSection extends StatefulWidget {

@@ -4,23 +4,24 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
-import 'package:datn_mobile/features/auth/controllers/auth_controller_pod.dart';
-import 'package:datn_mobile/shared/pods/loading_overlay_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:datn_mobile/core/router/auto_route_observer.dart';
-import 'package:datn_mobile/core/router/router_pod.dart';
-import 'package:datn_mobile/core/theme/app_theme.dart';
-import 'package:datn_mobile/core/theme/theme_controller.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/helper/global_helper.dart';
-import 'package:datn_mobile/shared/widgets/no_internet_widget.dart';
-import 'package:datn_mobile/shared/widgets/responsive_wrapper.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/core/router/auto_route_observer.dart';
+import 'package:AIPrimary/core/router/router_pod.dart';
+import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/core/theme/theme_controller.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
+import 'package:AIPrimary/shared/widgets/no_internet_widget.dart';
+import 'package:AIPrimary/shared/widgets/responsive_wrapper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 ///This class holds Material App or Cupertino App
 ///with routing,theming and locale setup .
@@ -41,11 +42,18 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
   void initState() {
     super.initState();
     _initDeepLinks();
+
+    // Register router for notification navigation after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final router = ref.read(autorouterProvider);
+      NotificationNavigationHandler.registerRouter(router);
+    });
   }
 
   @override
   void dispose() {
     _linkSubscription?.cancel();
+    NotificationNavigationHandler.unregisterRouter();
     super.dispose();
   }
 

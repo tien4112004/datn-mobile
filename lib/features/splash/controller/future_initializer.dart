@@ -1,17 +1,17 @@
-import 'package:datn_mobile/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
+import 'package:AIPrimary/shared/riverpod_ext/riverpod_observer/riverpod_obs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:datn_mobile/i18n/strings.g.dart';
-import 'package:datn_mobile/shared/pods/internet_checker_pod.dart';
-import 'package:datn_mobile/shared/pods/translation_pod.dart';
-import 'package:datn_mobile/features/generate/service/generation_preferences_service.dart';
-import 'package:datn_mobile/core/shared_preference/shared_preferences_pod.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/internet_checker_pod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/features/generate/service/generation_preferences_service.dart';
+import 'package:AIPrimary/core/shared_preference/shared_preferences_pod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:platform_info/platform_info.dart';
-import 'package:datn_mobile/bootstrap.dart';
-import 'package:datn_mobile/core/local_storage/app_storage_pod.dart';
-import 'package:datn_mobile/features/splash/controller/box_encryption_key_pod.dart';
-import 'package:datn_mobile/init.dart';
+import 'package:AIPrimary/bootstrap.dart';
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
+import 'package:AIPrimary/features/splash/controller/box_encryption_key_pod.dart';
+import 'package:AIPrimary/init.dart';
 
 final futureInitializerPod = FutureProvider.autoDispose<ProviderContainer>((
   ref,

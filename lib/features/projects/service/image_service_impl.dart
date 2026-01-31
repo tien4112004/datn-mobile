@@ -25,11 +25,13 @@ class ImageServiceImpl implements ImageService {
     int pageKey, {
     int pageSize = 10,
     String? search,
+    String? sort,
   }) {
     return _repo.fetchImageMinimalsPaged(
       pageKey,
       pageSize: pageSize,
       search: search,
+      sort: sort,
     );
   }
 }

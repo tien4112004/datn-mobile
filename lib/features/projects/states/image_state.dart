@@ -28,10 +28,14 @@ class ImageState {
 /// Filter state for images
 class ImageFilterState {
   final String? searchQuery;
+  final String? sortOption;
 
-  const ImageFilterState({this.searchQuery});
+  const ImageFilterState({this.searchQuery, this.sortOption});
 
-  ImageFilterState copyWith({String? searchQuery}) {
-    return ImageFilterState(searchQuery: searchQuery ?? this.searchQuery);
+  ImageFilterState copyWith({String? searchQuery, String? sortOption}) {
+    return ImageFilterState(
+      searchQuery: searchQuery ?? this.searchQuery,
+      sortOption: sortOption ?? this.sortOption,
+    );
   }
 }

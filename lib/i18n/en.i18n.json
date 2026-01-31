@@ -150,7 +150,19 @@
       "description": "Description",
       "created": "Created",
       "updated": "Updated",
-      "underConstruction": "Image Detail Page is under construction"
+      "underConstruction": "Image Detail Page is under construction",
+      "detail": {
+        "title": "Image Gallery",
+        "type": "Type",
+        "size": "Size",
+        "error_loading": "Error loading image",
+        "retry": "Retry",
+        "url_copied": "Image URL copied to clipboard",
+        "downloading": "Downloading image...",
+        "saved": "Image saved to gallery",
+        "share_failed": "Failed to share image",
+        "save_failed": "Failed to save image"
+      }
     },
     "resource_types": {
       "image": "Image",

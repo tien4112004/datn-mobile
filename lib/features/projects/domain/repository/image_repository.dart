@@ -10,5 +10,6 @@ abstract class ImageRepository {
     int pageKey, {
     int pageSize = 10,
     String? search,
+    String? sort,
   });
 }

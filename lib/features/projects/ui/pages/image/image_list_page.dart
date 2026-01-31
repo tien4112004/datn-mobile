@@ -1,17 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/projects/domain/entity/image_project_minimal.dart';
-import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/enum/sort_option.dart';
 import 'package:AIPrimary/features/projects/states/image_provider.dart';
-import 'package:AIPrimary/features/projects/ui/widgets/common/project_loading_skeleton.dart';
-import 'package:AIPrimary/features/projects/ui/widgets/image/image_grid_card.dart';
-import 'package:AIPrimary/features/projects/ui/widgets/image/image_tile.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
-import 'package:AIPrimary/shared/pods/view_preference_pod.dart';
-import 'package:AIPrimary/shared/riverpod_ext/async_value_transform.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
-import 'package:AIPrimary/shared/widgets/unified_resource_list.dart';
+import 'package:AIPrimary/features/projects/states/image_paging_controller_pod.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/image/image_gallery_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,11 +28,13 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.nameAsc;
+    _sortOption = SortOption.dateCreatedDesc;
     _searchController = TextEditingController();
-    // Load initial data
+    // Initialize filter with default sort
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(imageProvider.notifier).loadImagesWithFilter();
+      ref.read(imageFilterProvider.notifier).state = ImageFilterState(
+        sortOption: _sortOption?.toApiValue(),
+      );
     });
   }
 
@@ -51,21 +48,19 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      // Update filter and reload
+      // Update filter state which will trigger the paging controller to refresh
+      final currentFilter = ref.read(imageFilterProvider);
       ref.read(imageFilterProvider.notifier).state = ImageFilterState(
         searchQuery: query,
+        sortOption: currentFilter.sortOption,
       );
-      ref.read(imageProvider.notifier).loadImagesWithFilter();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final imageState = ref.watch(imageProvider);
-    final viewPreferenceAsync = ref.watch(
-      viewPreferenceNotifierPod(ResourceType.image.name),
-    );
+    final pagingController = ref.watch(imagePagingControllerPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -98,7 +93,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                 tooltip: 'Refresh',
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  ref.read(imageProvider.notifier).loadImagesWithFilter();
+                  pagingController.refresh();
                 },
               ),
             ],
@@ -126,12 +121,16 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                                 icon: const Icon(LucideIcons.x, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
-                                  // Update filter and reload
-                                  ref.read(imageFilterProvider.notifier).state =
-                                      const ImageFilterState(searchQuery: '');
+                                  // Update filter and the paging controller will auto-refresh
+                                  final currentFilter = ref.read(
+                                    imageFilterProvider,
+                                  );
                                   ref
-                                      .read(imageProvider.notifier)
-                                      .loadImagesWithFilter();
+                                      .read(imageFilterProvider.notifier)
+                                      .state = ImageFilterState(
+                                    searchQuery: '',
+                                    sortOption: currentFilter.sortOption,
+                                  );
                                 },
                               )
                             : null,
@@ -157,59 +156,37 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Filters and view toggle row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GenericFiltersBar(
-                            filters: [
-                              FilterConfig<SortOption>(
-                                label: 'Sort',
-                                icon: LucideIcons.arrowUpDown,
-                                selectedValue: _sortOption,
-                                options: SortOption.values,
-                                displayNameBuilder: (option) =>
-                                    (option).displayName(t),
-                                iconBuilder: (option) => (option).icon,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _sortOption = value;
-                                  });
-                                },
-                                allLabel: 'Default Sort',
-                                allIcon: LucideIcons.list,
-                              ),
-                            ],
-                            onClearFilters: () {
-                              setState(() {
-                                _sortOption = null;
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(
-                            viewPreferenceAsync
-                                ? LucideIcons.list
-                                : LucideIcons.layoutGrid,
-                            size: 24,
-                          ),
-                          onPressed: () {
-                            HapticFeedback.selectionClick();
+                    // Filters row
+                    GenericFiltersBar(
+                      filters: [
+                        FilterConfig<SortOption>(
+                          label: 'Sort',
+                          icon: LucideIcons.arrowUpDown,
+                          selectedValue: _sortOption,
+                          options: SortOption.values,
+                          displayNameBuilder: (option) =>
+                              (option).displayName(t),
+                          iconBuilder: (option) => (option).icon,
+                          onChanged: (value) {
+                            setState(() {
+                              _sortOption = value;
+                            });
+                            // Update filter state with sort option
+                            final currentFilter = ref.read(imageFilterProvider);
                             ref
-                                .read(
-                                  viewPreferenceNotifierPod(
-                                    ResourceType.image.name,
-                                  ).notifier,
-                                )
-                                .toggle();
+                                .read(imageFilterProvider.notifier)
+                                .state = ImageFilterState(
+                              searchQuery: currentFilter.searchQuery,
+                              sortOption: value?.toApiValue(),
+                            );
                           },
-                          tooltip: viewPreferenceAsync
-                              ? 'List view'
-                              : 'Grid view',
+                          allLabel: '',
+                          allIcon: LucideIcons.list,
                         ),
                       ],
+                      onClearFilters: () {
+                        // No clear action needed since sort is required
+                      },
                     ),
                   ],
                 ),
@@ -217,37 +194,20 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
             ),
           ),
         ],
-        body: UnifiedResourceList<ImageProjectMinimal>(
-          asyncItems: imageState.mapData((state) => state.images),
-          isGridView: viewPreferenceAsync,
-          gridCardBuilder: (item) => ImageGridCard(
-            image: item,
-            onTap: () {
-              HapticFeedback.lightImpact();
-              context.router.push(ImageDetailRoute(imageId: item.id));
-            },
-            onMoreOptions: () {
-              _showMoreOptions(context, item);
-            },
-          ),
-          listTileBuilder: (item) => ImageTile(
-            image: item,
-            onTap: () {
-              HapticFeedback.lightImpact();
-              context.router.push(ImageDetailRoute(imageId: item.id));
-            },
-            onMoreOptions: () {
-              _showMoreOptions(context, item);
-            },
-          ),
-          skeletonGridBuilder: () => const ProjectGridSkeletonLoader(),
-          skeletonListBuilder: () => const ProjectListSkeletonLoader(),
-          emptyIcon: LucideIcons.image,
-          emptyTitle: t.projects.no_images,
-          emptyMessage: 'Create your first image to get started',
-          onRefresh: () {
-            ref.read(imageProvider.notifier).loadImagesWithFilter();
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await ref.read(imageProvider.notifier).loadImagesWithFilter();
           },
+          child: ImageGalleryView(
+            pagingController: pagingController,
+            onImageTap: (image) {
+              HapticFeedback.lightImpact();
+              context.router.push(ImageDetailRoute(imageId: image.id));
+            },
+            onMoreOptions: (image) {
+              _showMoreOptions(context, image);
+            },
+          ),
         ),
       ),
     );

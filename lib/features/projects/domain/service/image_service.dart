@@ -10,5 +10,6 @@ abstract interface class ImageService {
     int pageKey, {
     int pageSize = 10,
     String? search,
+    String? sort,
   });
 }

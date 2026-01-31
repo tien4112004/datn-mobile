@@ -158,7 +158,19 @@
       "description": "Mô tả",
       "created": "Tạo lúc",
       "updated": "Cập nhật lúc",
-      "underConstruction": "Trang chi tiết hình ảnh đang được phát triển"
+      "underConstruction": "Trang chi tiết hình ảnh đang được phát triển",
+      "detail": {
+        "title": "Thư viện ảnh",
+        "type": "Loại",
+        "size": "Kích thước",
+        "error_loading": "Lỗi khi tải hình ảnh",
+        "retry": "Thử lại",
+        "url_copied": "Đã sao chép URL hình ảnh",
+        "downloading": "Đang tải xuống hình ảnh...",
+        "saved": "Đã lưu hình ảnh vào thư viện",
+        "share_failed": "Không thể chia sẻ hình ảnh",
+        "save_failed": "Không thể lưu hình ảnh"
+      }
     },
     "resource_types": {
       "image": "Hình ảnh",

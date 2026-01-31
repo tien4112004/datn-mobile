@@ -32,11 +32,13 @@ class ImageRepositoryImpl implements ImageRepository {
     int pageKey, {
     int pageSize = 10,
     String? search,
+    String? sort,
   }) async {
     final dtoResponse = await _remoteSource.fetchImages(
       page: pageKey,
       size: pageSize,
       search: search,
+      sort: sort,
     );
 
     return dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [];

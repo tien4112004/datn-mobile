@@ -49,6 +49,7 @@ abstract class ProjectsRemoteSource {
     @Query("page") int page = 1,
     @Query("size") int size = 10,
     @Query("search") String? search,
+    @Query("sort") String? sort,
   });
 
   @GET("/images/{id}")

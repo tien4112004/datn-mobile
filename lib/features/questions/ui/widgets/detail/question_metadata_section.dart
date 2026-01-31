@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Minimal Metadata Footer - Displays technical details at the bottom
-class QuestionMetadataSection extends StatelessWidget {
+class QuestionMetadataSection extends ConsumerWidget {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? ownerId;
@@ -17,9 +19,10 @@ class QuestionMetadataSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final dateFormat = DateFormat('MMM dd, yyyy — hh:mm a');
 
     return Padding(
@@ -30,7 +33,7 @@ class QuestionMetadataSection extends StatelessWidget {
           Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.3)),
           const SizedBox(height: 16),
           Text(
-            'Other Information',
+            t.questionBank.detail.otherInfo,
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.0,
@@ -47,9 +50,17 @@ class QuestionMetadataSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (chapter != null && chapter!.isNotEmpty)
-                  Text('Chapter: $chapter'),
-                Text('Created: ${dateFormat.format(createdAt)}'),
-                Text('Last Updated: ${dateFormat.format(updatedAt)}'),
+                  Text(t.questionBank.detail.chapter(chapter: chapter!)),
+                Text(
+                  t.questionBank.detail.created(
+                    date: dateFormat.format(createdAt),
+                  ),
+                ),
+                Text(
+                  t.questionBank.detail.lastUpdated(
+                    date: dateFormat.format(updatedAt),
+                  ),
+                ),
               ],
             ),
           ),

@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Multiple Choice Question in Viewing Mode (Read-only)
 /// Enhanced with Material 3 design principles
-class MultipleChoiceViewing extends StatelessWidget {
+class MultipleChoiceViewing extends ConsumerWidget {
   final MultipleChoiceQuestion question;
 
-  const MultipleChoiceViewing({super.key, required this.question});
+  /// When false, hides the header (title, badges) to avoid duplication
+  final bool showHeader;
+
+  const MultipleChoiceViewing({
+    super.key,
+    required this.question,
+    this.showHeader = true,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return QuestionCardWrapper(
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
+      showHeader: showHeader,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,7 +49,7 @@ class MultipleChoiceViewing extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Correct answer shown',
+                  t.questionBank.viewing.correctAnswerShown,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
@@ -53,7 +64,7 @@ class MultipleChoiceViewing extends StatelessWidget {
             final option = entry.value;
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _buildViewOption(option, index, theme),
+              child: _buildViewOption(option, index, theme, t),
             );
           }),
         ],
@@ -65,6 +76,7 @@ class MultipleChoiceViewing extends StatelessWidget {
     MultipleChoiceOption option,
     int index,
     ThemeData theme,
+    dynamic t,
   ) {
     final colorScheme = theme.colorScheme;
     final isCorrect = option.isCorrect;
@@ -131,7 +143,7 @@ class MultipleChoiceViewing extends StatelessWidget {
                   const Icon(Icons.check_circle, size: 16, color: Colors.white),
                   const SizedBox(width: 6),
                   Text(
-                    'Correct',
+                    t.questionBank.viewing.correct,
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

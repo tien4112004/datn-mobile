@@ -17,6 +17,8 @@ import 'package:AIPrimary/features/questions/ui/pages/modify/fill_in_blank_secti
 import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:AIPrimary/shared/widgets/unsaved_changes_dialog.dart';
 import 'package:AIPrimary/shared/widgets/form_action_buttons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Page for creating or editing a question
@@ -187,7 +189,8 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
       }
     } catch (e) {
       if (!mounted) return;
-      _showErrorSnackBar('Error saving question: $e');
+      final t = ref.read(translationsPod);
+      _showErrorSnackBar(t.questionBank.errors.saving(error: e.toString()));
     }
   }
 
@@ -243,13 +246,14 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     final formState = ref.watch(questionFormProvider);
     final hasUnsavedChanges = ref.watch(hasUnsavedChangesProvider);
     final questionBankState = ref.watch(questionBankProvider);
+    final t = ref.watch(translationsPod);
 
     // Show loading while fetching question data in edit mode
     if (_isEditing && questionBankState.isLoading && formState.title.isEmpty) {
       return Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: CustomAppBar(
-          title: 'Edit Question',
+          title: t.questionBank.editQuestion,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.router.maybePop(),
@@ -273,7 +277,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
       child: Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: CustomAppBar(
-          title: 'Edit Question',
+          title: t.questionBank.editQuestion,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -288,7 +292,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
             IconButton(
               icon: const Icon(Icons.check_rounded),
               onPressed: _handleSave,
-              tooltip: 'Save',
+              tooltip: t.questionBank.save,
             ),
           ],
         ),
@@ -324,7 +328,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Type: ",
+                    t.questionBank.form.type,
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -340,7 +344,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      formState.type.displayName,
+                      formState.type.localizedName(t),
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.bold,

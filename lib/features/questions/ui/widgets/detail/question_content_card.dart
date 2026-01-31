@@ -33,15 +33,17 @@ class QuestionContentCard extends StatelessWidget {
   }
 
   /// Renders type-specific question content using appropriate viewing widgets
+  /// Passes showHeader: false to avoid duplicating title and badges
+  /// which are already shown in QuestionTitleSection
   Widget _buildTypeSpecificContent(BaseQuestion question) {
     if (question is MultipleChoiceQuestion) {
-      return MultipleChoiceViewing(question: question);
+      return MultipleChoiceViewing(question: question, showHeader: false);
     } else if (question is MatchingQuestion) {
-      return MatchingViewing(question: question);
+      return MatchingViewing(question: question, showHeader: false);
     } else if (question is FillInBlankQuestion) {
-      return FillInBlankViewing(question: question);
+      return FillInBlankViewing(question: question, showHeader: false);
     } else if (question is OpenEndedQuestion) {
-      return OpenEndedViewing(question: question);
+      return OpenEndedViewing(question: question, showHeader: false);
     }
 
     return const SizedBox.shrink();

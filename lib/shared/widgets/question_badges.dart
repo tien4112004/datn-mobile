@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 
 /// Shared badge components for displaying question-related information
 /// across the app (question bank, exams, classes, etc.)
@@ -7,7 +10,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 /// Provides consistent styling and reduces code duplication.
 
 /// Badge displaying question type with icon and label
-class QuestionTypeBadge extends StatelessWidget {
+class QuestionTypeBadge extends ConsumerWidget {
   final QuestionType type;
   final double iconSize;
   final double fontSize;
@@ -22,10 +25,11 @@ class QuestionTypeBadge extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final badgeColor = QuestionType.getColor(type);
     final icon = QuestionType.getIcon(type);
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding:
@@ -41,7 +45,7 @@ class QuestionTypeBadge extends StatelessWidget {
           Icon(icon, size: iconSize, color: badgeColor),
           const SizedBox(width: 6),
           Text(
-            type.displayName,
+            type.localizedName(t),
             style: theme.textTheme.labelSmall?.copyWith(
               color: badgeColor,
               fontWeight: FontWeight.w600,
@@ -55,7 +59,7 @@ class QuestionTypeBadge extends StatelessWidget {
 }
 
 /// Badge displaying difficulty level with icon and label
-class DifficultyBadge extends StatelessWidget {
+class DifficultyBadge extends ConsumerWidget {
   final Difficulty difficulty;
   final double iconSize;
   final double fontSize;
@@ -70,11 +74,12 @@ class DifficultyBadge extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final badgeColor = Difficulty.getDifficultyColor(difficulty);
     final icon = Difficulty.getDifficultyIcon(difficulty);
-    final label = difficulty.displayName;
+    final t = ref.watch(translationsPod);
+    final label = difficulty.localizedName(t);
 
     return Container(
       padding:

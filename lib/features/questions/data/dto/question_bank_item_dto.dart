@@ -1,6 +1,24 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'question_bank_item_dto.g.dart';
+
+/// Converter to handle `data` field that may come as a JSON string or a Map.
+class DataJsonConverter implements JsonConverter<Map<String, dynamic>, Object> {
+  const DataJsonConverter();
+
+  @override
+  Map<String, dynamic> fromJson(Object json) {
+    if (json is String) {
+      return jsonDecode(json) as Map<String, dynamic>;
+    }
+    return json as Map<String, dynamic>;
+  }
+
+  @override
+  Object toJson(Map<String, dynamic> object) => object;
+}
 
 /// DTO for individual question item in question bank list.
 @JsonSerializable()
@@ -12,6 +30,7 @@ class QuestionBankItemDto {
   difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION, ADVANCED_APPLICATION
   final String? explanation;
   final String? titleImageUrl;
+  @DataJsonConverter()
   final Map<String, dynamic> data;
   final String? ownerId;
   final DateTime createdAt;

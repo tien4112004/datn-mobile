@@ -5,7 +5,7 @@ part 'font_size.dart';
 part 'padding_value.dart';
 
 ///This class defines light theme and dark theme
-///Here we used flex color scheme
+///Here we used flex color scheme with custom primary color
 class Themes {
   static const double boxRadiusValue = 12.0;
   static const FontSize fontSize = FontSize();
@@ -14,15 +14,37 @@ class Themes {
     Radius.circular(boxRadiusValue),
   );
 
+  // App Primary Color - Material Design Blue
+  static const Color primaryColor = Color(0xFF2196F3);
+  static const Color primaryColorDark = Color(0xFF1976D2);
+  static const Color primaryColorLight = Color(0xFF64B5F6);
+
+  // Custom color scheme for the app
+  static const FlexSchemeColor _lightColors = FlexSchemeColor(
+    primary: primaryColor,
+    primaryContainer: Color(0xFFBBDEFB),
+    secondary: Color(0xFF03A9F4),
+    secondaryContainer: Color(0xFFB3E5FC),
+    tertiary: Color(0xFF00BCD4),
+    tertiaryContainer: Color(0xFFB2EBF2),
+  );
+
+  static const FlexSchemeColor _darkColors = FlexSchemeColor(
+    primary: Color(0xFF90CAF9),
+    primaryContainer: Color(0xFF1565C0),
+    secondary: Color(0xFF4FC3F7),
+    secondaryContainer: Color(0xFF0277BD),
+    tertiary: Color(0xFF4DD0E1),
+    tertiaryContainer: Color(0xFF00838F),
+  );
+
   static ThemeData get theme => FlexThemeData.light(
-    scheme: FlexScheme.brandBlue,
+    colors: _lightColors,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
     lightIsWhite: true,
     blendLevel: 20,
     appBarOpacity: 0.95,
-    swapColors: true,
     tabBarStyle: FlexTabBarStyle.forBackground,
-
     subThemesData: const FlexSubThemesData(
       blendOnLevel: 20,
       blendOnColors: false,
@@ -32,20 +54,16 @@ class Themes {
     keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        // replace default CupertinoPageTransitionsBuilder with this
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     useMaterial3: true,
-
-    /// fontFamily: GoogleFonts.getFont('Lato').fontFamily,
-
-    ///
   );
+
   static ThemeData get darkTheme => FlexThemeData.dark(
-    scheme: FlexScheme.brandBlue,
+    colors: _darkColors,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
     blendLevel: 15,
     appBarOpacity: 0.90,
@@ -58,15 +76,12 @@ class Themes {
     keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        // replace default CupertinoPageTransitionsBuilder with this
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     useMaterial3: true,
-    // To use the playground font, add GoogleFonts package and uncomment
-    // fontFamily: GoogleFonts.getFont('Lato').fontFamily,
   );
   // If you do not have a themeMode switch, uncomment this line
   // to let the device system mode control the theme mode:

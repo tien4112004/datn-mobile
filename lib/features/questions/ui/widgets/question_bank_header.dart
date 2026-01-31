@@ -2,6 +2,8 @@ import 'package:AIPrimary/features/questions/states/question_bank_provider.dart'
 import 'package:AIPrimary/features/questions/ui/widgets/advanced_question_filter_dialog.dart';
 
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -23,41 +25,42 @@ class QuestionBankHeader extends ConsumerWidget {
     final filterState = ref.watch(questionBankFilterProvider);
     final filterNotifier = ref.read(questionBankFilterProvider.notifier);
     final questionbankController = ref.watch(questionBankProvider.notifier);
+    final t = ref.watch(translationsPod);
 
     debugPrint(filterState.hasActiveFilters.toString());
 
     final filterConfigs = List<BaseFilterConfig>.of([
       FilterConfig<GradeLevel>(
-        label: 'Grade',
+        label: t.questionBank.filters.grade,
         icon: LucideIcons.graduationCap,
         options: GradeLevel.values,
-        allLabel: 'All Grades',
+        allLabel: t.questionBank.filters.allGrades,
         allIcon: LucideIcons.list,
         selectedValue: filterState.gradeFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(gradeFilter: value);
           questionbankController.loadQuestionsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.localizedName(t),
       ),
       FilterConfig<Subject>(
-        label: 'Subject',
+        label: t.questionBank.filters.subject,
         icon: LucideIcons.bookOpen,
         options: Subject.values,
-        allLabel: 'All Subjects',
+        allLabel: t.questionBank.filters.allSubjects,
         allIcon: LucideIcons.list,
         selectedValue: filterState.subjectFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(subjectFilter: value);
           questionbankController.loadQuestionsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.localizedName(t),
       ),
       FilterConfig<QuestionType>(
-        label: 'Type',
+        label: t.questionBank.filters.type,
         icon: LucideIcons.circleQuestionMark,
         options: QuestionType.values,
-        allLabel: 'All Types',
+        allLabel: t.questionBank.filters.allTypes,
         allIcon: LucideIcons.list,
         selectedValue: filterState.questionTypeFilter,
         onChanged: (value) {
@@ -66,20 +69,20 @@ class QuestionBankHeader extends ConsumerWidget {
           );
           questionbankController.loadQuestionsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.localizedName(t),
       ),
       FilterConfig<Difficulty>(
-        label: 'Difficulty',
+        label: t.questionBank.filters.difficulty,
         icon: LucideIcons.gauge,
         options: Difficulty.values,
-        allLabel: 'All Difficulties',
+        allLabel: t.questionBank.filters.allDifficulties,
         allIcon: LucideIcons.list,
         selectedValue: filterState.difficultyFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(difficultyFilter: value);
           questionbankController.loadQuestionsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.localizedName(t),
       ),
     ]);
 
@@ -107,7 +110,7 @@ class QuestionBankHeader extends ConsumerWidget {
           TextField(
             controller: _searchController,
             decoration: InputDecoration(
-              hintText: 'Search questions...',
+              hintText: t.questionBank.search.hint,
               prefixIcon: const Icon(LucideIcons.search),
               suffixIcon: _searchController.text.isNotEmpty
                   ? IconButton(

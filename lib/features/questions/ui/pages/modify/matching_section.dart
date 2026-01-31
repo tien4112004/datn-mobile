@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/modify/matching_pair_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing matching question pairs
-class MatchingSection extends StatefulWidget {
+class MatchingSection extends ConsumerStatefulWidget {
   final List<MatchingPairData> pairs;
   final bool shufflePairs;
   final ValueChanged<List<MatchingPairData>> onPairsChanged;
@@ -17,10 +19,10 @@ class MatchingSection extends StatefulWidget {
   });
 
   @override
-  State<MatchingSection> createState() => _MatchingSectionState();
+  ConsumerState<MatchingSection> createState() => _MatchingSectionState();
 }
 
-class _MatchingSectionState extends State<MatchingSection> {
+class _MatchingSectionState extends ConsumerState<MatchingSection> {
   late List<MatchingPairData> _pairs;
 
   @override
@@ -45,9 +47,10 @@ class _MatchingSectionState extends State<MatchingSection> {
 
   void _removePair(int index) {
     if (_pairs.length <= 2) {
+      final t = ref.read(translationsPod);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least 2 pairs are required'),
+        SnackBar(
+          content: Text(t.questionBank.matching.minPairsRequired),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -82,6 +85,7 @@ class _MatchingSectionState extends State<MatchingSection> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,8 +93,8 @@ class _MatchingSectionState extends State<MatchingSection> {
         // Section header
         _buildSectionHeader(
           context,
-          'Matching Pairs',
-          'Create pairs to match (minimum 2 required)',
+          t.questionBank.matching.title,
+          t.questionBank.matching.subtitle,
         ),
         const SizedBox(height: 16),
 
@@ -131,7 +135,7 @@ class _MatchingSectionState extends State<MatchingSection> {
           child: OutlinedButton.icon(
             onPressed: _addPair,
             icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Add Pair'),
+            label: Text(t.questionBank.matching.addPair),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
@@ -147,13 +151,13 @@ class _MatchingSectionState extends State<MatchingSection> {
           value: widget.shufflePairs,
           onChanged: widget.onShuffleChanged,
           title: Text(
-            'Shuffle Pairs',
+            t.questionBank.matching.shufflePairs,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
-            'Randomize pair order when displayed to students',
+            t.questionBank.matching.shuffleDescription,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),

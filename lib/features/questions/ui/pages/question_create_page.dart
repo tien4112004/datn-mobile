@@ -16,6 +16,8 @@ import 'package:AIPrimary/features/questions/ui/pages/modify/fill_in_blank_secti
 import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:AIPrimary/shared/widgets/unsaved_changes_dialog.dart';
 import 'package:AIPrimary/shared/widgets/form_action_buttons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Page for creating a new question
@@ -95,7 +97,8 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
       }
     } catch (e) {
       if (!mounted) return;
-      _showErrorSnackBar('Error saving question: $e');
+      final t = ref.read(translationsPod);
+      _showErrorSnackBar(t.questionBank.errors.saving(error: e.toString()));
     }
   }
 
@@ -150,6 +153,7 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
     final colorScheme = theme.colorScheme;
     final formState = ref.watch(questionFormProvider);
     final hasUnsavedChanges = ref.watch(hasUnsavedChangesProvider);
+    final t = ref.watch(translationsPod);
 
     return PopScope(
       canPop: !hasUnsavedChanges,
@@ -165,7 +169,7 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
       child: Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: CustomAppBar(
-          title: 'Create Question',
+          title: t.questionBank.createQuestion,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -180,7 +184,7 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
             IconButton(
               icon: const Icon(Icons.check_rounded),
               onPressed: _handleSave,
-              tooltip: 'Save',
+              tooltip: t.questionBank.save,
             ),
           ],
         ),
@@ -221,7 +225,7 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    "Type: ",
+                    t.questionBank.form.type,
                     style: theme.textTheme.labelMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -240,9 +244,9 @@ class _QuestionCreatePageState extends ConsumerState<QuestionCreatePage> {
                     ),
                     items: QuestionType.values
                         .map(
-                          (t) => DropdownMenuItem(
-                            value: t,
-                            child: Text(t.displayName),
+                          (type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type.localizedName(t)),
                           ),
                         )
                         .toList(),

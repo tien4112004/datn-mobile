@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/chapter_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A stateful widget for chapter filtering that maintains local state
@@ -59,6 +61,7 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final canShowChapter =
         widget.currentGrade != null && widget.currentSubject != null;
 
@@ -67,7 +70,7 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Chapter Filter',
+            t.questionBank.chapter.filter,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -90,7 +93,7 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Please select both Grade and Subject to filter by Chapter',
+                    t.questionBank.chapter.selectGradeAndSubject,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -115,14 +118,17 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Filter by Chapter',
+          t.questionBank.chapter.filterBy,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Select one or more chapters for ${widget.currentGrade?.displayName} - ${widget.currentSubject?.displayName}',
+          t.questionBank.chapter.selectFor(
+            grade: widget.currentGrade?.localizedName(t) ?? '',
+            subject: widget.currentSubject?.localizedName(t) ?? '',
+          ),
           style: theme.textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
@@ -148,7 +154,7 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'No chapters available for the selected grade and subject',
+                        t.questionBank.chapter.noAvailable,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -209,7 +215,7 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Failed to load chapters. Please try again.',
+                    t.questionBank.chapter.failedToLoad,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.error,
                     ),

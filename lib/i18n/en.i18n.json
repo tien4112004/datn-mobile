@@ -471,5 +471,243 @@
       "imageSavedToGallery": "Image saved to gallery!",
       "failedToSaveImage": "Failed to save image: $error"
     }
+  },
+  "questionBank": {
+    "title": "Question Bank",
+    "createQuestion": "Create Question",
+    "editQuestion": "Edit Question",
+    "questionDetails": "Question Details",
+    "selectQuestions": "Select Questions",
+    "save": "Save",
+    "refresh": "Refresh",
+    "back": "Back",
+    "continue": "Continue",
+    "addQuestion": "Add Question",
+
+    "bankTypes": {
+      "myQuestions": "My Questions",
+      "publicBank": "Public Bank"
+    },
+
+    "search": {
+      "hint": "Search questions...",
+      "noResults": "No questions found"
+    },
+
+    "filters": {
+      "title": "Question Filters",
+      "quickFilters": "Quick Filters",
+      "applyFilters": "Apply Filters",
+      "grade": "Grade",
+      "allGrades": "All Grades",
+      "subject": "Subject",
+      "allSubjects": "All Subjects",
+      "type": "Type",
+      "allTypes": "All Types",
+      "difficulty": "Difficulty",
+      "allDifficulties": "All Difficulties",
+      "level": "Level"
+    },
+
+    "chapter": {
+      "title": "Chapter",
+      "filter": "Chapter Filter",
+      "filterBy": "Filter by Chapter",
+      "select": "Select Chapter",
+      "selectOptional": "Select Chapter (Optional)",
+      "noChapter": "No Chapter",
+      "noChapterDescription": "Don't assign to any chapter",
+      "selectGradeAndSubject": "Please select both Grade and Subject to filter by Chapter",
+      "selectFor": "Select one or more chapters for $grade - $subject",
+      "noAvailable": "No chapters available for the selected grade and subject",
+      "noChaptersFound": "No chapters found for $grade - $subject",
+      "failedToLoad": "Failed to load chapters. Please try again.",
+      "failedToLoadTitle": "Failed to Load Chapters"
+    },
+
+    "emptyState": {
+      "noQuestions": "No questions yet",
+      "noPublicQuestions": "No public questions found",
+      "createFirst": "Create your first question to build your question bank",
+      "tryAdjusting": "Try adjusting your search or check back later",
+      "notFound": "Question Not Found",
+      "notFoundMessage": "The question you are looking for does not exist."
+    },
+
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "select": "Select",
+      "ok": "OK"
+    },
+
+    "deleteDialog": {
+      "title": "Delete Question",
+      "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
+      "success": "Question deleted successfully"
+    },
+
+    "loading": {
+      "question": "Loading question..."
+    },
+
+    "errors": {
+      "saving": "Error saving question: $error",
+      "loading": "Failed to load question",
+      "retry": "Retry",
+      "selectAtLeastOne": "Please select at least one question"
+    },
+
+    "form": {
+      "type": "Type:",
+      "titleHint": "Enter your question...",
+      "titleRequired": "Question title is required",
+      "addImage": "Add Image",
+      "removeImage": "Remove image",
+      "selectImage": "Select Question Image",
+      "questionImage": "Question Image"
+    },
+
+    "advancedSettings": {
+      "title": "Advanced Settings",
+      "explanation": "Explanation (Optional)",
+      "explanationHint": "Explain the answer..."
+    },
+
+    "multipleChoice": {
+      "title": "Answer Options",
+      "subtitle": "Add multiple choice options (minimum 2 required)",
+      "addOption": "Add Option",
+      "shuffleOptions": "Shuffle Options",
+      "shuffleDescription": "Randomize option order when displayed to students",
+      "minOptionsRequired": "At least 2 options are required",
+      "markCorrect": "Please mark at least one option as correct",
+      "optionHint": "Option $number",
+      "optionImage": "Option Image",
+      "optionImageLabel": "Option $number Image",
+      "addImageTooltip": "Add Image",
+      "removeTooltip": "Remove"
+    },
+
+    "matching": {
+      "title": "Matching Pairs",
+      "subtitle": "Create pairs to match (minimum 2 required)",
+      "addPair": "Add Pair",
+      "shufflePairs": "Shuffle Pairs",
+      "shuffleDescription": "Randomize pair order when displayed to students",
+      "minPairsRequired": "At least 2 pairs are required",
+      "pairNumber": "Pair $number",
+      "removePair": "Remove pair",
+      "leftSide": "Left Side",
+      "rightSide": "Right Side",
+      "textLabel": "Text *",
+      "enterLeftText": "Enter left text",
+      "enterRightText": "Enter right text",
+      "required": "Required",
+      "leftImage": "Left Image",
+      "rightImage": "Right Image",
+      "imageHint": "Upload, take photo, or enter URL"
+    },
+
+    "openEnded": {
+      "title": "Open-Ended Settings",
+      "subtitle": "Configure answer expectations and limits",
+      "infoText": "Open-ended questions allow students to provide free-form text answers. Both fields below are optional.",
+      "expectedAnswer": "Expected Answer (Optional)",
+      "expectedAnswerHint": "Enter a sample or expected answer for reference",
+      "expectedAnswerHelper": "This helps with grading but is not enforced automatically",
+      "maxLength": "Maximum Length (Optional)",
+      "characters": "characters",
+      "maxLengthHelper": "Leave empty or 0 for no limit",
+      "invalidNumber": "Please enter a valid number",
+      "gradingNote": "Grading Note",
+      "gradingNoteText": "Open-ended questions typically require manual grading. The expected answer serves as a reference guide."
+    },
+
+    "fillInBlank": {
+      "title": "Fill in the Blank Question",
+      "subtitle": "Use {{answer}} syntax to create blanks",
+      "formatGuide": "Format Guide",
+      "singleAnswer": "Single answer:",
+      "multipleAnswers": "Multiple answers:",
+      "questionText": "Question Text *",
+      "insertBlank": "Insert Blank",
+      "exampleHint": "Example: The {{quick | fast}} brown fox jumps over the {{lazy}} dog.",
+      "preview": "Preview",
+      "previewPlaceholder": "Preview will appear here",
+      "caseSensitive": "Case Sensitive",
+      "caseSensitiveDescription": "Answers must match exact capitalization",
+      "addBlankWarning": "Please add at least one blank using {{answer}} syntax"
+    },
+
+    "detail": {
+      "questionTitle": "QUESTION TITLE",
+      "explanation": "Explanation",
+      "otherInfo": "Other Information",
+      "chapter": "Chapter: $chapter",
+      "created": "Created: $date",
+      "lastUpdated": "Last Updated: $date"
+    },
+
+    "picker": {
+      "questionsSelected": "$count question(s) selected"
+    },
+
+    "selectGradeSubjectFirst": {
+      "title": "Select Grade and Subject First",
+      "message": "Please select both Grade and Subject before choosing a chapter."
+    },
+
+    "noChaptersAvailable": {
+      "title": "No Chapters Available"
+    },
+
+    "questionTypes": {
+      "multipleChoice": "Multiple Choice",
+      "matching": "Matching",
+      "openEnded": "Open Ended",
+      "fillInBlank": "Fill in Blank"
+    },
+
+    "difficulties": {
+      "knowledge": "Knowledge",
+      "comprehension": "Comprehension",
+      "application": "Application",
+      "advancedApplication": "Advanced Application"
+    },
+
+    "grades": {
+      "grade1": "Grade 1",
+      "grade2": "Grade 2",
+      "grade3": "Grade 3",
+      "grade4": "Grade 4",
+      "grade5": "Grade 5"
+    },
+
+    "subjects": {
+      "english": "English",
+      "mathematics": "Mathematics",
+      "literature": "Literature"
+    },
+
+    "viewing": {
+      "imageNotAvailable": "Image not available",
+      "correctAnswerShown": "Correct answer shown",
+      "correct": "Correct",
+      "viewingModeCorrectMatches": "Correct matches:",
+      "viewingModeCorrectAnswers": "Correct answers:",
+      "viewingMode": "Viewing Mode",
+      "questionFormat": "Question Format",
+      "responseType": "Response Type",
+      "longFormTextAnswer": "Long-form text answer",
+      "characterLimit": "Character Limit",
+      "characters": "$count characters",
+      "grading": "Grading",
+      "manualGradingRequired": "Manual grading required",
+      "expectedAnswerReference": "Expected Answer (Reference)",
+      "referenceAnswer": "Reference Answer"
+    }
   }
 }

@@ -6,6 +6,8 @@ import 'package:AIPrimary/features/questions/ui/widgets/chapter_filter_widget.da
 import 'package:AIPrimary/shared/widgets/advanced_filter_dialog.dart';
 import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -23,6 +25,7 @@ void showAdvancedQuestionFilterDialog({
 }) {
   // Get current filter state
   final currentFilterState = ref.read(questionBankFilterProvider);
+  final t = ref.read(translationsPod);
 
   // Initialize draft state with current values
   QuestionBankFilterState draftState = currentFilterState;
@@ -30,16 +33,16 @@ void showAdvancedQuestionFilterDialog({
 
   showAdvancedFilterDialog(
     context: context,
-    title: 'Question Filters',
+    title: t.questionBank.filters.title,
     content: StatefulBuilder(
       builder: (context, setState) {
         // Create filter configs with draft state
         final filterConfigs = List<BaseFilterConfig>.of([
           FilterConfig<GradeLevel>(
-            label: 'Grade',
+            label: t.questionBank.filters.grade,
             icon: LucideIcons.graduationCap,
             options: GradeLevel.values,
-            allLabel: 'All Grades',
+            allLabel: t.questionBank.filters.allGrades,
             allIcon: LucideIcons.list,
             selectedValue: draftState.gradeFilter,
             onChanged: (value) {
@@ -47,13 +50,13 @@ void showAdvancedQuestionFilterDialog({
                 draftState = draftState.copyWith(gradeFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.localizedName(t),
           ),
           FilterConfig<Subject>(
-            label: 'Subject',
+            label: t.questionBank.filters.subject,
             icon: LucideIcons.bookOpen,
             options: Subject.values,
-            allLabel: 'All Subjects',
+            allLabel: t.questionBank.filters.allSubjects,
             allIcon: LucideIcons.list,
             selectedValue: draftState.subjectFilter,
             onChanged: (value) {
@@ -61,13 +64,13 @@ void showAdvancedQuestionFilterDialog({
                 draftState = draftState.copyWith(subjectFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.localizedName(t),
           ),
           FilterConfig<QuestionType>(
-            label: 'Type',
+            label: t.questionBank.filters.type,
             icon: LucideIcons.circleQuestionMark,
             options: QuestionType.values,
-            allLabel: 'All Types',
+            allLabel: t.questionBank.filters.allTypes,
             allIcon: LucideIcons.list,
             selectedValue: draftState.questionTypeFilter,
             onChanged: (value) {
@@ -75,13 +78,13 @@ void showAdvancedQuestionFilterDialog({
                 draftState = draftState.copyWith(questionTypeFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.localizedName(t),
           ),
           FilterConfig<Difficulty>(
-            label: 'Difficulty',
+            label: t.questionBank.filters.difficulty,
             icon: LucideIcons.gauge,
             options: Difficulty.values,
-            allLabel: 'All Difficulties',
+            allLabel: t.questionBank.filters.allDifficulties,
             allIcon: LucideIcons.list,
             selectedValue: draftState.difficultyFilter,
             onChanged: (value) {
@@ -89,7 +92,7 @@ void showAdvancedQuestionFilterDialog({
                 draftState = draftState.copyWith(difficultyFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.localizedName(t),
           ),
         ]);
 
@@ -97,7 +100,7 @@ void showAdvancedQuestionFilterDialog({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter chips display
-            _buildFiltersSection(context, filterConfigs),
+            _buildFiltersSection(context, filterConfigs, t),
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 16),
@@ -132,7 +135,7 @@ void showAdvancedQuestionFilterDialog({
 
       ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
     },
-    applyButtonText: 'Apply Filters',
+    applyButtonText: t.questionBank.filters.applyFilters,
   );
 }
 
@@ -140,6 +143,7 @@ void showAdvancedQuestionFilterDialog({
 Widget _buildFiltersSection(
   BuildContext context,
   List<BaseFilterConfig> filters,
+  dynamic t,
 ) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
@@ -156,7 +160,7 @@ Widget _buildFiltersSection(
           ),
           const SizedBox(width: 8),
           Text(
-            'Quick Filters',
+            t.questionBank.filters.quickFilters,
             style: theme.textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,

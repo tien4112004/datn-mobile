@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 
-class QuestionMetaRow extends StatelessWidget {
+class QuestionMetaRow extends ConsumerWidget {
   final GradeLevel grade;
   final Subject subject;
   final Difficulty difficulty;
@@ -22,9 +25,10 @@ class QuestionMetaRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -42,9 +46,9 @@ class QuestionMetaRow extends StatelessWidget {
               value: grade,
               items: GradeLevel.values,
               onChanged: canEdit ? onGradeChanged : null,
-              labelBuilder: (g) => g.displayName,
+              labelBuilder: (g) => g.localizedName(t),
               icon: Icons.school_outlined,
-              label: 'Grade',
+              label: t.questionBank.filters.grade,
             ),
           ),
           Container(
@@ -61,9 +65,9 @@ class QuestionMetaRow extends StatelessWidget {
               value: subject,
               items: Subject.values,
               onChanged: canEdit ? onSubjectChanged : null,
-              labelBuilder: (s) => s.displayName,
+              labelBuilder: (s) => s.localizedName(t),
               icon: Icons.book_outlined,
-              label: 'Subject',
+              label: t.questionBank.filters.subject,
             ),
           ),
           Container(
@@ -81,9 +85,9 @@ class QuestionMetaRow extends StatelessWidget {
               items: Difficulty.values,
               onChanged:
                   onDifficultyChanged, // Difficulty can usually be changed even in edit
-              labelBuilder: (d) => d.displayName,
+              labelBuilder: (d) => d.localizedName(t),
               icon: Icons.bar_chart_outlined,
-              label: 'Level',
+              label: t.questionBank.filters.level,
             ),
           ),
         ],

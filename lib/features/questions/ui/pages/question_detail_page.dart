@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +59,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final questionBankAsync = ref.watch(questionBankProvider);
+    final t = ref.watch(translationsPod);
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerLowest,
@@ -66,7 +71,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
           );
           if (questionBankState.selectedQuestion == null) {
             debugPrint('[DEBUG] Question not found, showing empty state');
-            return _buildEmptyState(context);
+            return _buildEmptyState(context, t);
           }
 
           final questionItem = questionBankState.selectedQuestion!;
@@ -75,7 +80,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
           return CustomScrollView(
             slivers: [
               // Sticky App Bar
-              _buildAppBar(context, theme, colorScheme),
+              _buildAppBar(context, theme, colorScheme, questionItem, t),
 
               SliverToBoxAdapter(
                 child: Container(
@@ -97,8 +102,8 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                       // Title with Header Chips (Type, Grade, Subject)
                       QuestionTitleSection(
                         question: question,
-                        grade: questionItem.grade?.displayName,
-                        subject: questionItem.subject?.displayName,
+                        grade: questionItem.grade?.localizedName(t),
+                        subject: questionItem.subject?.localizedName(t),
                       ),
                     ],
                   ),
@@ -142,8 +147,8 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
             ],
           );
         },
-        loadingWidget: () => _buildLoadingState(context),
-        errorWidget: (error, stack) => _buildErrorState(context, error),
+        loadingWidget: () => _buildLoadingState(context, t),
+        errorWidget: (error, stack) => _buildErrorState(context, error, t),
       ),
     );
   }
@@ -152,7 +157,14 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    QuestionBankItemEntity questionItem,
+    dynamic t,
   ) {
+    final userState = ref.watch(userControllerProvider);
+    final currentUserId = userState.value?.id;
+    final isOwner =
+        currentUserId != null && questionItem.ownerId == currentUserId;
+
     return SliverAppBar(
       pinned: true,
       elevation: 0,
@@ -161,29 +173,30 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
       leading: IconButton(
         icon: const Icon(LucideIcons.arrowLeft),
         onPressed: () => context.router.maybePop(),
-        tooltip: 'Back',
+        tooltip: t.questionBank.back,
       ),
       title: Text(
-        'Question Details',
+        t.questionBank.questionDetails,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(LucideIcons.pencil, size: 20),
-          onPressed: _navigateToEdit,
-          tooltip: 'Edit Question',
-          style: IconButton.styleFrom(foregroundColor: colorScheme.primary),
-        ),
+        if (isOwner)
+          IconButton(
+            icon: const Icon(LucideIcons.pencil, size: 20),
+            onPressed: _navigateToEdit,
+            tooltip: t.questionBank.editQuestion,
+            style: IconButton.styleFrom(foregroundColor: colorScheme.primary),
+          ),
         const SizedBox(width: 8),
       ],
     );
   }
 
   /// Loading State - Shows circular progress indicator
-  Widget _buildLoadingState(BuildContext context) {
+  Widget _buildLoadingState(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -197,7 +210,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
             onPressed: () => context.router.maybePop(),
           ),
           title: Text(
-            'Question Details',
+            t.questionBank.questionDetails,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
@@ -212,7 +225,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                 CircularProgressIndicator(color: colorScheme.primary),
                 const SizedBox(height: 16),
                 Text(
-                  'Loading question...',
+                  t.questionBank.loading.question,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -226,7 +239,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   }
 
   /// Error State - Uses EnhancedErrorState widget
-  Widget _buildErrorState(BuildContext context, Object error) {
+  Widget _buildErrorState(BuildContext context, Object error, dynamic t) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return CustomScrollView(
@@ -239,7 +252,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
             onPressed: () => context.router.maybePop(),
           ),
           title: Text(
-            'Question Details',
+            t.questionBank.questionDetails,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
@@ -248,8 +261,8 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
         ),
         SliverFillRemaining(
           child: EnhancedErrorState(
-            message: 'Failed to load question',
-            actionLabel: 'Retry',
+            message: t.questionBank.errors.loading,
+            actionLabel: t.questionBank.errors.retry,
             onRetry: () {
               ref
                   .read(questionBankProvider.notifier)
@@ -262,7 +275,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
   }
 
   /// Empty State - Uses EnhancedEmptyState widget
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, dynamic t) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return CustomScrollView(
@@ -275,18 +288,18 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
             onPressed: () => context.router.maybePop(),
           ),
           title: Text(
-            'Question Details',
+            t.questionBank.questionDetails,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
             ),
           ),
         ),
-        const SliverFillRemaining(
+        SliverFillRemaining(
           child: EnhancedEmptyState(
             icon: LucideIcons.fileText,
-            title: 'Question Not Found',
-            message: 'The question you are looking for does not exist.',
+            title: t.questionBank.emptyState.notFound,
+            message: t.questionBank.emptyState.notFoundMessage,
           ),
         ),
       ],

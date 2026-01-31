@@ -1,9 +1,11 @@
 import 'package:AIPrimary/shared/widgets/question_badges.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// A wrapper widget that provides Material 3 styling for question cards
-class QuestionCardWrapper extends StatelessWidget {
+class QuestionCardWrapper extends ConsumerWidget {
   final String title;
   final String? titleImageUrl;
   final Difficulty difficulty;
@@ -11,6 +13,10 @@ class QuestionCardWrapper extends StatelessWidget {
   final Widget child;
   final String? explanation;
   final bool showExplanation;
+
+  /// When false, hides the header (title, badges) to avoid duplication
+  /// when the card is used inside a detail page that already shows this info
+  final bool showHeader;
 
   const QuestionCardWrapper({
     super.key,
@@ -21,12 +27,14 @@ class QuestionCardWrapper extends StatelessWidget {
     required this.child,
     this.explanation,
     this.showExplanation = false,
+    this.showHeader = true,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       decoration: BoxDecoration(
@@ -42,72 +50,74 @@ class QuestionCardWrapper extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with type and difficulty badges
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
-                DifficultyBadge(
-                  difficulty: difficulty,
-                  iconSize: 16,
-                  fontSize: 12,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Question title
-            Text(
-              title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-                height: 1.3,
+            // Header with type and difficulty badges (only shown when showHeader is true)
+            if (showHeader) ...[
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
+                  DifficultyBadge(
+                    difficulty: difficulty,
+                    iconSize: 16,
+                    fontSize: 12,
+                  ),
+                ],
               ),
-            ),
-
-            // Title image if available
-            if (titleImageUrl != null) ...[
               const SizedBox(height: 16),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  titleImageUrl!,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
+
+              // Question title
+              Text(
+                title,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
+                  height: 1.3,
+                ),
+              ),
+
+              // Title image if available
+              if (titleImageUrl != null) ...[
+                const SizedBox(height: 16),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    titleImageUrl!,
                     height: 200,
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.broken_image_outlined,
-                            size: 48,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Image not available',
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.broken_image_outlined,
+                              size: 48,
                               color: colorScheme.onSurfaceVariant,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            Text(
+                              t.questionBank.viewing.imageNotAvailable,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
+            ],
 
             // Question content
             child,
@@ -137,7 +147,7 @@ class QuestionCardWrapper extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Explanation',
+                          t.questionBank.detail.explanation,
                           style: theme.textTheme.titleSmall?.copyWith(
                             color: colorScheme.onPrimaryContainer,
                             fontWeight: FontWeight.w600,

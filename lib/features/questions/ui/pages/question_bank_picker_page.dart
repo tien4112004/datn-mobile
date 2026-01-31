@@ -5,6 +5,8 @@ import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_en
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_filter_state.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -81,8 +83,9 @@ class _QuestionBankPickerPageState
 
   Future<void> _handleContinue() async {
     if (_selectedQuestions.isEmpty) {
+      final t = ref.read(translationsPod);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one question')),
+        SnackBar(content: Text(t.questionBank.errors.selectAtLeastOne)),
       );
       return;
     }
@@ -110,6 +113,7 @@ class _QuestionBankPickerPageState
     final colorScheme = theme.colorScheme;
     final questionBankState = ref.watch(questionBankProvider);
     final currentFilter = ref.watch(questionBankFilterProvider);
+    final t = ref.watch(translationsPod);
 
     return Scaffold(
       body: Stack(
@@ -120,7 +124,7 @@ class _QuestionBankPickerPageState
               SliverAppBar(
                 floating: true,
                 pinned: true,
-                title: const Text('Select Questions'),
+                title: Text(t.questionBank.selectQuestions),
                 actions: [
                   // Selected count badge
                   if (_selectedQuestions.isNotEmpty)
@@ -158,7 +162,7 @@ class _QuestionBankPickerPageState
                       TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: 'Search questions...',
+                          hintText: t.questionBank.search.hint,
                           prefixIcon: Icon(
                             LucideIcons.search,
                             color: colorScheme.onSurfaceVariant,
@@ -219,7 +223,7 @@ class _QuestionBankPickerPageState
                             final isSelected =
                                 currentFilter.questionTypeFilter == type;
                             return FilterChip(
-                              label: Text(type.displayName),
+                              label: Text(type.localizedName(t)),
                               selected: isSelected,
                               onSelected: (selected) {
                                 _updateFilters(
@@ -238,7 +242,7 @@ class _QuestionBankPickerPageState
                             final isSelected =
                                 currentFilter.difficultyFilter == difficulty;
                             return FilterChip(
-                              label: Text(difficulty.displayName),
+                              label: Text(difficulty.localizedName(t)),
                               selected: isSelected,
                               onSelected: (selected) {
                                 _updateFilters(
@@ -271,7 +275,7 @@ class _QuestionBankPickerPageState
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'No questions found',
+                              t.questionBank.search.noResults,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -337,7 +341,9 @@ class _QuestionBankPickerPageState
                     children: [
                       Expanded(
                         child: Text(
-                          '${_selectedQuestions.length} question(s) selected',
+                          t.questionBank.picker.questionsSelected(
+                            count: _selectedQuestions.length.toString(),
+                          ),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -345,7 +351,7 @@ class _QuestionBankPickerPageState
                       ),
                       FilledButton(
                         onPressed: _handleContinue,
-                        child: const Text('Continue'),
+                        child: Text(t.questionBank.kContinue),
                       ),
                     ],
                   ),
@@ -359,7 +365,7 @@ class _QuestionBankPickerPageState
 }
 
 /// Card widget for selectable question
-class _QuestionSelectionCard extends StatelessWidget {
+class _QuestionSelectionCard extends ConsumerWidget {
   final QuestionBankItemEntity bankItem;
   final bool isSelected;
   final VoidCallback onToggle;
@@ -371,10 +377,11 @@ class _QuestionSelectionCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final question = bankItem.question;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -424,14 +431,14 @@ class _QuestionSelectionCard extends StatelessWidget {
                         children: [
                           _InfoChip(
                             icon: QuestionType.getIcon(question.type),
-                            label: question.type.displayName,
+                            label: question.type.localizedName(t),
                             color: QuestionType.getColor(question.type),
                           ),
                           _InfoChip(
                             icon: Difficulty.getDifficultyIcon(
                               question.difficulty,
                             ),
-                            label: question.difficulty.displayName,
+                            label: question.difficulty.localizedName(t),
                             color: Difficulty.getDifficultyColor(
                               question.difficulty,
                             ),
@@ -439,7 +446,7 @@ class _QuestionSelectionCard extends StatelessWidget {
                           if (bankItem.grade != null)
                             _InfoChip(
                               icon: LucideIcons.graduationCap,
-                              label: bankItem.grade!.displayName,
+                              label: bankItem.grade!.localizedName(t),
                               color: colorScheme.tertiary,
                             ),
                         ],

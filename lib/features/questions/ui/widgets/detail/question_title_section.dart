@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/widgets/question_badges.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
-class QuestionTitleSection extends StatelessWidget {
+class QuestionTitleSection extends ConsumerWidget {
   final BaseQuestion question;
   final String? grade;
   final String? subject;
@@ -15,9 +17,10 @@ class QuestionTitleSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
@@ -26,7 +29,7 @@ class QuestionTitleSection extends StatelessWidget {
         children: [
           // Section Label
           Text(
-            'QUESTION TITLE',
+            t.questionBank.detail.questionTitle,
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,

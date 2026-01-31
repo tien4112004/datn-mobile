@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// Displays question header information including title, type, difficulty, and points
-class QuestionInfoHeader extends StatelessWidget {
+class QuestionInfoHeader extends ConsumerWidget {
   final BaseQuestion question;
 
   const QuestionInfoHeader({super.key, required this.question});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -90,7 +94,7 @@ class QuestionInfoHeader extends StatelessWidget {
                 _buildBadge(
                   context: context,
                   icon: QuestionType.getIcon(question.type),
-                  label: question.type.displayName,
+                  label: question.type.localizedName(t),
                   color: QuestionType.getColor(question.type),
                 ),
 
@@ -98,7 +102,7 @@ class QuestionInfoHeader extends StatelessWidget {
                 _buildBadge(
                   context: context,
                   icon: Difficulty.getDifficultyIcon(question.difficulty),
-                  label: question.difficulty.displayName,
+                  label: question.difficulty.localizedName(t),
                   color: Difficulty.getDifficultyColor(question.difficulty),
                 ),
               ],

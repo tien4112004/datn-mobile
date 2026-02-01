@@ -4,6 +4,7 @@ import 'package:AIPrimary/features/projects/data/dto/image_project_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/image_project_minimal_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/mindmap_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/mindmap_minimal_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/create_presentation_request_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/presentation_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/presentation_minimal_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/recent_document_dto.dart';
@@ -29,8 +30,8 @@ abstract class ProjectsRemoteSource {
   );
 
   @POST("/presentations")
-  Future<PresentationDto> createPresentation(
-    @Body() PresentationDto presentation,
+  Future<ServerResponseDto<PresentationDto>> createPresentation(
+    @Body() CreatePresentationRequestDto presentation,
   );
 
   // /presentations?page=1&pageSize=20&sort=desc

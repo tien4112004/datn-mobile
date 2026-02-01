@@ -7,8 +7,7 @@ part 'question_create_request_dto.g.dart';
 class QuestionCreateRequestDto {
   final String title;
   final String type; // MULTIPLE_CHOICE, MATCHING, FILL_IN_BLANK, OPEN_ENDED
-  final String
-  difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION, ADVANCED_APPLICATION
+  final String difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION
   final String? explanation;
   final String? titleImageUrl;
   final Map<String, dynamic> data;

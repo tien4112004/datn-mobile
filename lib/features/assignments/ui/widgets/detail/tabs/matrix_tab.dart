@@ -199,7 +199,6 @@ class MatrixTab extends StatelessWidget {
                     Difficulty.knowledge,
                     Difficulty.comprehension,
                     Difficulty.application,
-                    Difficulty.advancedApplication,
                   ].map((difficulty) {
                     return Expanded(
                       child: Center(
@@ -281,7 +280,6 @@ class MatrixTab extends StatelessWidget {
                     Difficulty.knowledge,
                     Difficulty.comprehension,
                     Difficulty.application,
-                    Difficulty.advancedApplication,
                   ].map((difficulty) {
                     final actual = matrix.getActual(type, difficulty);
                     return Expanded(
@@ -399,8 +397,6 @@ class MatrixTab extends StatelessWidget {
         return 'COM';
       case Difficulty.application:
         return 'APP';
-      case Difficulty.advancedApplication:
-        return 'ADV';
     }
   }
 

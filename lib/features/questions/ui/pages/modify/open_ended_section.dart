@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing open-ended question settings
-class OpenEndedSection extends StatelessWidget {
+class OpenEndedSection extends ConsumerWidget {
   final String? expectedAnswer;
   final int? maxLength;
   final ValueChanged<String> onExpectedAnswerChanged;
@@ -17,9 +19,10 @@ class OpenEndedSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,8 +30,8 @@ class OpenEndedSection extends StatelessWidget {
         // Section header
         _buildSectionHeader(
           context,
-          'Open-Ended Settings',
-          'Configure answer expectations and limits',
+          t.questionBank.openEnded.title,
+          t.questionBank.openEnded.subtitle,
         ),
         const SizedBox(height: 16),
 
@@ -49,7 +52,7 @@ class OpenEndedSection extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Open-ended questions allow students to provide free-form text answers. Both fields below are optional.',
+                  t.questionBank.openEnded.infoText,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurface,
                   ),
@@ -65,13 +68,12 @@ class OpenEndedSection extends StatelessWidget {
           initialValue: expectedAnswer ?? '',
           onChanged: onExpectedAnswerChanged,
           decoration: InputDecoration(
-            labelText: 'Expected Answer (Optional)',
-            hintText: 'Enter a sample or expected answer for reference',
+            labelText: t.questionBank.openEnded.expectedAnswer,
+            hintText: t.questionBank.openEnded.expectedAnswerHint,
             alignLabelWithHint: true,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             contentPadding: const EdgeInsets.all(16),
-            helperText:
-                'This helps with grading but is not enforced automatically',
+            helperText: t.questionBank.openEnded.expectedAnswerHelper,
             helperMaxLines: 2,
           ),
           maxLines: 5,
@@ -92,13 +94,13 @@ class OpenEndedSection extends StatelessWidget {
             }
           },
           decoration: InputDecoration(
-            labelText: 'Maximum Length (Optional)',
+            labelText: t.questionBank.openEnded.maxLength,
             hintText: '0',
             prefixIcon: const Icon(Icons.format_size),
-            suffixText: 'characters',
+            suffixText: t.questionBank.openEnded.characters,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             contentPadding: const EdgeInsets.all(16),
-            helperText: 'Leave empty or 0 for no limit',
+            helperText: t.questionBank.openEnded.maxLengthHelper,
           ),
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -106,7 +108,7 @@ class OpenEndedSection extends StatelessWidget {
             if (value != null && value.isNotEmpty) {
               final length = int.tryParse(value);
               if (length == null || length < 0) {
-                return 'Please enter a valid number';
+                return t.questionBank.openEnded.invalidNumber;
               }
             }
             return null;
@@ -135,14 +137,14 @@ class OpenEndedSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Grading Note',
+                      t.questionBank.openEnded.gradingNote,
                       style: theme.textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Open-ended questions typically require manual grading. The expected answer serves as a reference guide.',
+                      t.questionBank.openEnded.gradingNoteText,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),

@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/services/notification/notification_service.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _SplasherState extends ConsumerState<Splasher> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.blue),
+      theme: Themes.theme,
       home: SplashView(
         removeSplashLoader: false,
         onInitialized: (container) {

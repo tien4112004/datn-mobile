@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/widgets/image_input_field.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
-class QuestionTitleInput extends StatelessWidget {
+class QuestionTitleInput extends ConsumerWidget {
   final String title;
   final ValueChanged<String> onTitleChanged;
   final String? titleImageUrl;
@@ -16,9 +18,10 @@ class QuestionTitleInput extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +36,7 @@ class QuestionTitleInput extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(
-                hintText: 'Enter your question...',
+                hintText: t.questionBank.form.titleHint,
                 hintStyle: theme.textTheme.headlineSmall?.copyWith(
                   color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
@@ -46,13 +49,13 @@ class QuestionTitleInput extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Question title is required';
+                  return t.questionBank.form.titleRequired;
                 }
                 return null;
               },
             ),
             // Image button embedded
-            _buildImageButton(context),
+            _buildImageButton(context, t),
           ],
         ),
 
@@ -98,7 +101,7 @@ class QuestionTitleInput extends StatelessWidget {
                     backgroundColor: colorScheme.errorContainer,
                     foregroundColor: colorScheme.onErrorContainer,
                   ),
-                  tooltip: 'Remove image',
+                  tooltip: t.questionBank.form.removeImage,
                 ),
               ),
             ],
@@ -109,7 +112,7 @@ class QuestionTitleInput extends StatelessWidget {
     );
   }
 
-  Widget _buildImageButton(BuildContext context) {
+  Widget _buildImageButton(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return IconButton(
@@ -135,7 +138,7 @@ class QuestionTitleInput extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "Select Question Image",
+                  t.questionBank.form.selectImage,
                   style: theme.textTheme.titleMedium,
                 ),
                 const SizedBox(height: 16),
@@ -145,14 +148,14 @@ class QuestionTitleInput extends StatelessWidget {
                     onTitleImageChanged(val);
                     Navigator.pop(context);
                   },
-                  label: "Question Image",
+                  label: t.questionBank.form.questionImage,
                 ),
               ],
             ),
           ),
         );
       },
-      tooltip: 'Add Image',
+      tooltip: t.questionBank.form.addImage,
     );
   }
 }

@@ -1,8 +1,10 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class PostEditorSection extends StatelessWidget {
+class PostEditorSection extends ConsumerWidget {
   final quill.QuillController controller;
   final bool isLoading;
   final FocusNode? focusNode;
@@ -15,9 +17,10 @@ class PostEditorSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -47,7 +50,7 @@ class PostEditorSection extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Content',
+                  t.classes.postEditor.content,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -72,7 +75,7 @@ class PostEditorSection extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Rich Text',
+                        t.classes.postEditor.richText,
                         style: theme.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF7C3AED), // purple-700
@@ -99,7 +102,7 @@ class PostEditorSection extends StatelessWidget {
               focusNode: focusNode,
               config: quill.QuillEditorConfig(
                 padding: const EdgeInsets.all(12),
-                placeholder: 'Write your post content here...',
+                placeholder: t.classes.postEditor.placeholder,
                 customStyles: quill.DefaultStyles(
                   paragraph: quill.DefaultTextBlockStyle(
                     theme.textTheme.bodyLarge!,

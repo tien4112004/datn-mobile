@@ -1,24 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Open Ended Question in Viewing Mode (Read-only)
 /// Enhanced with Material 3 design principles
-class OpenEndedViewing extends StatelessWidget {
+class OpenEndedViewing extends ConsumerWidget {
   final OpenEndedQuestion question;
 
-  const OpenEndedViewing({super.key, required this.question});
+  /// When false, hides the header (title, badges) to avoid duplication
+  final bool showHeader;
+
+  const OpenEndedViewing({
+    super.key,
+    required this.question,
+    this.showHeader = true,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return QuestionCardWrapper(
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
+      showHeader: showHeader,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,7 +49,7 @@ class OpenEndedViewing extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Viewing Mode',
+                  t.questionBank.viewing.viewingMode,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
@@ -69,7 +80,7 @@ class OpenEndedViewing extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Question Format',
+                      t.questionBank.viewing.questionFormat,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -78,24 +89,26 @@ class OpenEndedViewing extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 _buildInfoRow(
-                  'Response Type',
-                  'Long-form text answer',
+                  t.questionBank.viewing.responseType,
+                  t.questionBank.viewing.longFormTextAnswer,
                   Icons.text_snippet_outlined,
                   theme,
                 ),
                 if (question.data.maxLength != null) ...[
                   const SizedBox(height: 8),
                   _buildInfoRow(
-                    'Character Limit',
-                    '${question.data.maxLength} characters',
+                    t.questionBank.viewing.characterLimit,
+                    t.questionBank.viewing.characters(
+                      count: question.data.maxLength!,
+                    ),
                     Icons.text_fields,
                     theme,
                   ),
                 ],
                 const SizedBox(height: 8),
                 _buildInfoRow(
-                  'Grading',
-                  'Manual grading required',
+                  t.questionBank.viewing.grading,
+                  t.questionBank.viewing.manualGradingRequired,
                   Icons.grading_outlined,
                   theme,
                 ),
@@ -107,7 +120,7 @@ class OpenEndedViewing extends StatelessWidget {
           if (question.data.expectedAnswer != null) ...[
             const SizedBox(height: 16),
             Text(
-              'Expected Answer (Reference)',
+              t.questionBank.viewing.expectedAnswerReference,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
@@ -134,7 +147,7 @@ class OpenEndedViewing extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Reference Answer',
+                        t.questionBank.viewing.referenceAnswer,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: Colors.green.shade700,
                           fontWeight: FontWeight.w600,

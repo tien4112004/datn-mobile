@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_empty_state
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_input.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_list.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_loading_state.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class CommentSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final commentsState = ref.watch(commentsControllerProvider(postId));
 
     return Container(
@@ -42,9 +44,8 @@ class CommentSection extends ConsumerWidget {
             error: (error, stack) => Padding(
               padding: const EdgeInsets.all(24),
               child: EnhancedErrorState(
-                title: 'Failed to load comments',
+                title: t.classes.comments.loadError,
                 message: error.toString(),
-                actionLabel: 'Retry',
                 onRetry: () =>
                     ref.invalidate(commentsControllerProvider(postId)),
               ),

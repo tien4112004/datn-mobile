@@ -18,16 +18,14 @@ class ThemeSelectionSection extends ConsumerWidget {
     final t = ref.watch(translationsPod);
     final formState = ref.watch(presentationFormControllerProvider);
     final themesAsync = ref.watch(slideThemesProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[850] : Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
-        ),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,10 +49,10 @@ class ThemeSelectionSection extends ConsumerWidget {
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: onInfoTap,
-                  child: const Icon(
+                  child: Icon(
                     LucideIcons.info,
                     size: 18,
-                    color: Colors.grey,
+                    color: colorScheme.primary,
                   ),
                 ),
               ],
@@ -140,7 +138,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
       presentationFormControllerProvider.notifier,
     );
     final themesAsync = ref.watch(slideThemesProvider);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
@@ -149,7 +147,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey[900] : Colors.white,
+            color: colorScheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -160,7 +158,7 @@ class _ThemeSelectionModal extends ConsumerWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[700] : Colors.grey[300],
+                  color: colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -214,10 +212,8 @@ class _ThemeSelectionModal extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
-                                    ? Theme.of(context).colorScheme.primary
-                                    : isDark
-                                    ? Colors.grey[700]!
-                                    : Colors.grey[300]!,
+                                    ? colorScheme.primary
+                                    : colorScheme.outlineVariant,
                                 width: isSelected ? 3 : 1,
                               ),
                             ),

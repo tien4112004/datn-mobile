@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/image_input_field.dart';
 
 /// Card widget for displaying and editing a matching question pair
-class MatchingPairCard extends StatelessWidget {
+class MatchingPairCard extends ConsumerWidget {
   final int index;
   final String leftText;
   final String? leftImageUrl;
@@ -31,9 +33,10 @@ class MatchingPairCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -61,7 +64,7 @@ class MatchingPairCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    'Pair ${index + 1}',
+                    t.questionBank.matching.pairNumber(number: index + 1),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.w600,
@@ -73,7 +76,7 @@ class MatchingPairCard extends StatelessWidget {
                     icon: Icon(Icons.delete_outline, color: colorScheme.error),
                     iconSize: 20,
                     onPressed: onRemove,
-                    tooltip: 'Remove pair',
+                    tooltip: t.questionBank.matching.removePair,
                   ),
               ],
             ),
@@ -97,7 +100,7 @@ class MatchingPairCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Left Side',
+                            t.questionBank.matching.leftSide,
                             style: theme.textTheme.labelMedium?.copyWith(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.w600,
@@ -109,8 +112,8 @@ class MatchingPairCard extends StatelessWidget {
                       TextFormField(
                         initialValue: leftText,
                         decoration: InputDecoration(
-                          labelText: 'Text *',
-                          hintText: 'Enter left text',
+                          labelText: t.questionBank.matching.textLabel,
+                          hintText: t.questionBank.matching.enterLeftText,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -120,7 +123,7 @@ class MatchingPairCard extends StatelessWidget {
                         onChanged: onLeftTextChanged,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Required';
+                            return t.questionBank.matching.required;
                           }
                           return null;
                         },
@@ -128,8 +131,8 @@ class MatchingPairCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       ImageInputField(
                         initialValue: leftImageUrl,
-                        label: 'Left Image',
-                        hint: 'Upload, take photo, or enter URL',
+                        label: t.questionBank.matching.leftImage,
+                        hint: t.questionBank.matching.imageHint,
                         isRequired: false,
                         onChanged: onLeftImageChanged,
                       ),
@@ -166,7 +169,7 @@ class MatchingPairCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Right Side',
+                            t.questionBank.matching.rightSide,
                             style: theme.textTheme.labelMedium?.copyWith(
                               color: colorScheme.secondary,
                               fontWeight: FontWeight.w600,
@@ -178,8 +181,8 @@ class MatchingPairCard extends StatelessWidget {
                       TextFormField(
                         initialValue: rightText,
                         decoration: InputDecoration(
-                          labelText: 'Text *',
-                          hintText: 'Enter right text',
+                          labelText: t.questionBank.matching.textLabel,
+                          hintText: t.questionBank.matching.enterRightText,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -189,7 +192,7 @@ class MatchingPairCard extends StatelessWidget {
                         onChanged: onRightTextChanged,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Required';
+                            return t.questionBank.matching.required;
                           }
                           return null;
                         },
@@ -197,8 +200,8 @@ class MatchingPairCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       ImageInputField(
                         initialValue: rightImageUrl,
-                        label: 'Right Image',
-                        hint: 'Upload, take photo, or enter URL',
+                        label: t.questionBank.matching.rightImage,
+                        hint: t.questionBank.matching.imageHint,
                         isRequired: false,
                         onChanged: onRightImageChanged,
                       ),

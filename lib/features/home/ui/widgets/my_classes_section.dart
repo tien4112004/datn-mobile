@@ -28,7 +28,7 @@ class MyClassesSection extends ConsumerWidget {
           className: 'Grade 4 - Reading',
           classCode: 'ENG4-01',
           dueDate: '29/12/2024',
-          color: Colors.blue.shade50,
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         ),
         const SizedBox(height: 16),
         _buildClassCard(
@@ -74,7 +74,10 @@ class MyClassesSection extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             classCode,
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 8),
           Text(

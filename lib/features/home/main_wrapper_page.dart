@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/no_internet_widget.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +62,7 @@ class MainWrapperPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userControllerProvider);
+    final t = ref.watch(translationsPod);
     return userState.easyWhen(
       data: (userProfileState) {
         final isStudent = userState.value?.role == UserRole.student;
@@ -96,13 +98,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.school,
-                            "Class",
+                            t.navigation.kClass,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.school,
-                            "Class",
+                            t.navigation.kClass,
                             true,
                             context,
                           ),
@@ -111,13 +113,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.user,
-                            "Profile",
+                            t.navigation.profile,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.user,
-                            "Profile",
+                            t.navigation.profile,
                             true,
                             context,
                           ),
@@ -128,13 +130,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.house,
-                            "Home",
+                            t.navigation.home,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.house400,
-                            "Home",
+                            t.navigation.home,
                             true,
                             context,
                           ),
@@ -143,13 +145,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.folder,
-                            "Project",
+                            t.navigation.project,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.folder,
-                            "Project",
+                            t.navigation.project,
                             true,
                             context,
                           ),
@@ -158,13 +160,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.school,
-                            "Class",
+                            t.navigation.kClass,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.school,
-                            "Class",
+                            t.navigation.kClass,
                             true,
                             context,
                           ),
@@ -173,13 +175,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.user,
-                            "Profile",
+                            t.navigation.profile,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.user,
-                            "Profile",
+                            t.navigation.profile,
                             true,
                             context,
                           ),

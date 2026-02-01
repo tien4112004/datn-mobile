@@ -16,12 +16,11 @@ class DropdownField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? Colors.grey[700]! : const Color(0xFFE6E6E6);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: borderColor),
+      borderSide: BorderSide(color: colorScheme.outlineVariant),
     );
 
     return DropdownButtonFormField<T>(
@@ -46,16 +45,16 @@ class DropdownField<T> extends StatelessWidget {
         border: border,
         enabledBorder: border,
         focusedBorder: border.copyWith(
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         suffixIcon: Icon(
           Icons.keyboard_arrow_down_rounded,
           size: 24,
-          color: isDark ? Colors.grey[400] : Colors.grey[600],
+          color: colorScheme.onSurfaceVariant,
         ),
       ),
       style: Theme.of(context).textTheme.bodyMedium,
-      dropdownColor: isDark ? Colors.grey[850] : Colors.white,
+      dropdownColor: colorScheme.surfaceContainerHighest,
       iconSize: 0, // Hide default icon since we use custom suffixIcon
     );
   }

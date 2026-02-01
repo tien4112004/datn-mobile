@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:AIPrimary/shared/widgets/question_badges.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -8,7 +11,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 ///
 /// Shows usage statistics, difficulty, creation date, and other metadata
 /// in a consistent format across question lists, detail views, and exams.
-class QuestionMetadataRow extends StatelessWidget {
+class QuestionMetadataRow extends ConsumerWidget {
   final Difficulty difficulty;
   final int? usageCount;
   final DateTime? createdAt;
@@ -29,7 +32,7 @@ class QuestionMetadataRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -78,18 +81,19 @@ class QuestionMetadataRow extends StatelessWidget {
 }
 
 /// Compact version for footer displays
-class CompactMetadataRow extends StatelessWidget {
+class CompactMetadataRow extends ConsumerWidget {
   final Difficulty difficulty;
   final Subject? subject;
 
   const CompactMetadataRow({super.key, required this.difficulty, this.subject});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final badgeColor = Difficulty.getDifficultyColor(difficulty);
     final icon = Difficulty.getDifficultyIcon(difficulty);
+    final t = ref.watch(translationsPod);
 
     return Row(
       children: [
@@ -101,7 +105,7 @@ class CompactMetadataRow extends StatelessWidget {
             color: colorScheme.onSurfaceVariant,
           ),
           Text(
-            ' ${subject?.displayName} ',
+            ' ${subject?.localizedName(t)} ',
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
@@ -115,7 +119,7 @@ class CompactMetadataRow extends StatelessWidget {
         Icon(icon, size: 14, color: badgeColor),
         const SizedBox(width: 4),
         Text(
-          difficulty.displayName,
+          difficulty.localizedName(t),
           style: theme.textTheme.bodySmall?.copyWith(
             color: badgeColor,
             fontWeight: FontWeight.w600,

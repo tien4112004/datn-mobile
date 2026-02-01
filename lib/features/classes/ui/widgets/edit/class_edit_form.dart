@@ -1,7 +1,9 @@
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/edit/class_info_section.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/edit/class_settings_section.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Main form widget for editing class information.
 ///
@@ -11,7 +13,7 @@ import 'package:flutter/material.dart';
 ///
 /// Implements clean component architecture with separate
 /// section widgets for better maintainability.
-class ClassEditForm extends StatelessWidget {
+class ClassEditForm extends ConsumerWidget {
   final GlobalKey<FormState> formKey;
   final ClassEntity classEntity;
   final TextEditingController nameController;
@@ -32,14 +34,15 @@ class ClassEditForm extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Form(
       key: formKey,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         children: [
           // Class header with color indicator
-          _buildClassHeader(context),
+          _buildClassHeader(context, t),
 
           const SizedBox(height: 32),
 
@@ -64,13 +67,13 @@ class ClassEditForm extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Additional info
-          _buildMetadataInfo(context),
+          _buildMetadataInfo(context, t),
         ],
       ),
     );
   }
 
-  Widget _buildClassHeader(BuildContext context) {
+  Widget _buildClassHeader(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
 
     return Container(
@@ -109,7 +112,7 @@ class ClassEditForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Editing Class',
+                      t.classes.editForm.editing,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontWeight: FontWeight.w500,
@@ -133,7 +136,7 @@ class ClassEditForm extends StatelessWidget {
           ...[
             const SizedBox(height: 12),
             Text(
-              'Teacher: ${classEntity.teacherName}',
+              t.classes.editForm.teacher(teacherName: classEntity.teacherName),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: Colors.white.withValues(alpha: 0.85),
               ),
@@ -144,7 +147,7 @@ class ClassEditForm extends StatelessWidget {
     );
   }
 
-  Widget _buildMetadataInfo(BuildContext context) {
+  Widget _buildMetadataInfo(BuildContext context, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -165,7 +168,7 @@ class ClassEditForm extends StatelessWidget {
               Icon(Icons.info_outline, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                'Class Information',
+                t.classes.editForm.classInfo,
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: colorScheme.primary,
                   fontWeight: FontWeight.w600,
@@ -175,12 +178,12 @@ class ClassEditForm extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildInfoRow(context, 'Class ID', classEntity.id),
+          _buildInfoRow(context, t.classes.editForm.classId, classEntity.id),
           if (classEntity.createdAt != null) ...[
             const SizedBox(height: 8),
             _buildInfoRow(
               context,
-              'Created',
+              t.classes.editForm.created,
               _formatDateTime(classEntity.createdAt!),
             ),
           ],
@@ -188,7 +191,7 @@ class ClassEditForm extends StatelessWidget {
             const SizedBox(height: 8),
             _buildInfoRow(
               context,
-              'Last Updated',
+              t.classes.editForm.lastUpdated,
               _formatDateTime(classEntity.updatedAt!),
             ),
           ],

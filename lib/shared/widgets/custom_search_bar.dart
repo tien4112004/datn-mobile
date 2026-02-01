@@ -67,12 +67,15 @@ class CustomSearchBar extends StatelessWidget {
           controller.text = initialValue!;
         }
 
+        final colorScheme = Theme.of(context).colorScheme;
         return SearchBar(
           autoFocus: autoFocus,
           constraints: BoxConstraints(
             minWidth: MediaQuery.sizeOf(context).width,
           ),
-          backgroundColor: WidgetStatePropertyAll(Colors.grey.shade50),
+          backgroundColor: WidgetStatePropertyAll(
+            colorScheme.surfaceContainerHighest,
+          ),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Themes.boxRadiusValue),
@@ -114,7 +117,7 @@ class CustomSearchBar extends StatelessWidget {
                 child: Text(
                   hintText,
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: Themes.fontSize.s14,
                   ),
                 ),

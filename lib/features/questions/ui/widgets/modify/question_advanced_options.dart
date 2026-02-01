@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
-class QuestionAdvancedOptions extends StatelessWidget {
+class QuestionAdvancedOptions extends ConsumerWidget {
   final String? chapter;
   final String explanation;
   final ValueChanged<String> onExplanationChanged;
@@ -15,15 +17,16 @@ class QuestionAdvancedOptions extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         title: Text(
-          'Advanced Settings',
+          t.questionBank.advancedSettings.title,
           style: theme.textTheme.titleSmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w600,
@@ -63,7 +66,7 @@ class QuestionAdvancedOptions extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Chapter',
+                                t.questionBank.chapter.title,
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: colorScheme.onSurfaceVariant,
                                 ),
@@ -71,7 +74,7 @@ class QuestionAdvancedOptions extends StatelessWidget {
                               Text(
                                 chapter != null && chapter!.isNotEmpty
                                     ? chapter!
-                                    : 'Select Chapter (Optional)',
+                                    : t.questionBank.chapter.selectOptional,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: chapter != null && chapter!.isNotEmpty
                                       ? colorScheme.onSurface
@@ -96,8 +99,8 @@ class QuestionAdvancedOptions extends StatelessWidget {
                   initialValue: explanation,
                   onChanged: onExplanationChanged,
                   decoration: InputDecoration(
-                    labelText: 'Explanation (Optional)',
-                    hintText: 'Explain the answer...',
+                    labelText: t.questionBank.advancedSettings.explanation,
+                    hintText: t.questionBank.advancedSettings.explanationHint,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

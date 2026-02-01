@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Main page displaying the list of classes (Google Classroom style).
 @RoutePage()
@@ -101,12 +102,13 @@ class ClassPage extends ConsumerWidget {
   // }
 }
 
-class _ClassListAppBar extends StatelessWidget implements PreferredSizeWidget {
+class _ClassListAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const _ClassListAppBar();
 
   @override
-  Widget build(BuildContext context) {
-    return const CustomAppBar(title: 'Classes');
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+    return CustomAppBar(title: t.classes.title);
   }
 
   @override
@@ -126,18 +128,19 @@ class _ClassListContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     if (classes.isEmpty) {
       return EnhancedEmptyState(
         icon: LucideIcons.graduationCap,
-        title: 'No Classes Yet',
-        message:
-            'Create a new class or join an existing one using a class code from your instructor.',
-        actionLabel: 'Get Started',
+        title: t.classes.emptyState.noClasses,
+        message: t.classes.emptyState.noClassesDescription,
+        actionLabel: t.classes.emptyState.getStarted,
         onAction: () {
           HapticFeedback.mediumImpact();
           const CreateClassDialog().show(context, ref);
         },
-        semanticLabel: 'No classes yet. Create or join a class to get started.',
+        semanticLabel: t.classes.emptyState.semanticLabel,
       );
     }
 
@@ -169,7 +172,7 @@ class _ClassListContent extends ConsumerWidget {
               onDelete: isStudent
                   ? null
                   : () {
-                      _showDeleteConfirmation(context, classEntity);
+                      _showDeleteConfirmation(context, classEntity, t);
                     },
             );
           },
@@ -178,29 +181,35 @@ class _ClassListContent extends ConsumerWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, ClassEntity classEntity) {
+  void _showDeleteConfirmation(
+    BuildContext context,
+    ClassEntity classEntity,
+    dynamic t,
+  ) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Class'),
-        content: Text('Are you sure you want to delete "${classEntity.name}"?'),
+        title: Text(t.classes.deleteDialog.title),
+        content: Text(
+          t.classes.deleteDialog.message(className: classEntity.name),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text(t.classes.cancel),
           ),
           FilledButton(
             onPressed: () {
               Navigator.pop(dialogContext);
               // TODO: Implement delete class
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Delete not implemented yet')),
+                SnackBar(content: Text(t.classes.deleteDialog.notImplemented)),
               );
             },
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.classes.delete),
           ),
         ],
       ),

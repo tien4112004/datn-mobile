@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
   Future<void> _handleCreate() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final t = ref.read(translationsPod);
     HapticFeedback.mediumImpact();
 
     try {
@@ -46,14 +48,18 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Post created successfully')),
+          SnackBar(content: Text(t.classes.postDialog.createSuccess)),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to create post: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              t.classes.postDialog.createError(error: e.toString()),
+            ),
+          ),
+        );
       }
     }
   }
@@ -62,10 +68,11 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final createState = ref.watch(createPostControllerProvider);
 
     return AlertDialog(
-      title: const Text('Create Post'),
+      title: Text(t.classes.postDialog.createTitle),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -75,23 +82,23 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
             children: [
               // Post type selector
               Text(
-                'Type',
+                t.classes.postDialog.typeLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 8),
               SegmentedButton<PostType>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: PostType.post,
-                    label: Text('Post'),
-                    icon: Icon(LucideIcons.messageCircle, size: 16),
+                    label: Text(t.classes.postDialog.postType),
+                    icon: const Icon(LucideIcons.messageCircle, size: 16),
                   ),
                   ButtonSegment(
                     value: PostType.exercise,
-                    label: Text('Exercise'),
-                    icon: Icon(LucideIcons.clipboardList, size: 16),
+                    label: Text(t.classes.postDialog.exerciseType),
+                    icon: const Icon(LucideIcons.clipboardList, size: 16),
                   ),
                 ],
                 selected: {_selectedType},
@@ -104,7 +111,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
 
               // Content field
               Text(
-                'Content',
+                t.classes.postDialog.contentLabel,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -116,7 +123,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
                 minLines: 3,
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
-                  hintText: 'What would you like to share?',
+                  hintText: t.classes.postDialog.contentHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -125,10 +132,10 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter some content';
+                    return t.classes.postDialog.contentRequired;
                   }
                   if (value.trim().length < 10) {
-                    return 'Content must be at least 10 characters';
+                    return t.classes.postDialog.contentMinLength;
                   }
                   return null;
                 },
@@ -142,8 +149,8 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
                   HapticFeedback.selectionClick();
                   setState(() => _allowComments = value);
                 },
-                title: const Text('Allow comments'),
-                subtitle: const Text('Let others comment on this post'),
+                title: Text(t.classes.postDialog.allowComments),
+                subtitle: Text(t.classes.postDialog.allowCommentsDesc),
                 contentPadding: EdgeInsets.zero,
               ),
             ],
@@ -155,7 +162,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
           onPressed: createState.isLoading
               ? null
               : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(t.classes.cancel),
         ),
         FilledButton(
           onPressed: createState.isLoading ? null : _handleCreate,
@@ -165,7 +172,7 @@ class _PostCreateDialogState extends ConsumerState<PostCreateDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Create'),
+              : Text(t.classes.create),
         ),
       ],
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/modify/option_item_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing multiple choice question options
-class MultipleChoiceSection extends StatefulWidget {
+class MultipleChoiceSection extends ConsumerStatefulWidget {
   final List<MultipleChoiceOptionData> options;
   final bool shuffleOptions;
   final ValueChanged<List<MultipleChoiceOptionData>> onOptionsChanged;
@@ -17,10 +19,11 @@ class MultipleChoiceSection extends StatefulWidget {
   });
 
   @override
-  State<MultipleChoiceSection> createState() => _MultipleChoiceSectionState();
+  ConsumerState<MultipleChoiceSection> createState() =>
+      _MultipleChoiceSectionState();
 }
 
-class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
+class _MultipleChoiceSectionState extends ConsumerState<MultipleChoiceSection> {
   late List<MultipleChoiceOptionData> _options;
 
   @override
@@ -40,9 +43,10 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
 
   void _removeOption(int index) {
     if (_options.length <= 2) {
+      final t = ref.read(translationsPod);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('At least 2 options are required'),
+        SnackBar(
+          content: Text(t.questionBank.multipleChoice.minOptionsRequired),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -75,6 +79,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,8 +87,8 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
         // Section header
         _buildSectionHeader(
           context,
-          'Answer Options',
-          'Add multiple choice options (minimum 2 required)',
+          t.questionBank.multipleChoice.title,
+          t.questionBank.multipleChoice.subtitle,
         ),
         const SizedBox(height: 16),
 
@@ -120,7 +125,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
           child: OutlinedButton.icon(
             onPressed: _addOption,
             icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Add Option'),
+            label: Text(t.questionBank.multipleChoice.addOption),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
@@ -136,13 +141,13 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
           value: widget.shuffleOptions,
           onChanged: widget.onShuffleChanged,
           title: Text(
-            'Shuffle Options',
+            t.questionBank.multipleChoice.shuffleOptions,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
-            'Randomize option order when displayed to students',
+            t.questionBank.multipleChoice.shuffleDescription,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -172,7 +177,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Please mark at least one option as correct',
+                    t.questionBank.multipleChoice.markCorrect,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w500,

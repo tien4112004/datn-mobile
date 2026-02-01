@@ -15,6 +15,7 @@ class ArtStylePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 12,
@@ -35,7 +36,7 @@ class ArtStylePicker extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: isSelected
-                        ? Border.all(color: Colors.blue, width: 3)
+                        ? Border.all(color: colorScheme.primary, width: 3)
                         : Border.all(color: Colors.grey[300]!, width: 1),
                   ),
                   child: Stack(
@@ -79,8 +80,8 @@ class ArtStylePicker extends StatelessWidget {
                           top: 8,
                           right: 8,
                           child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary,
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(4),

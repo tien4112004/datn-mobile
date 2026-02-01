@@ -1,14 +1,17 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Empty state widget when no comments exist
-class CommentEmptyState extends StatelessWidget {
+class CommentEmptyState extends ConsumerWidget {
   final bool allowComments;
 
   const CommentEmptyState({super.key, this.allowComments = true});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -23,7 +26,7 @@ class CommentEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'No comments yet',
+            t.classes.comments.noComments,
             style: theme.textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -31,8 +34,8 @@ class CommentEmptyState extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             allowComments
-                ? 'Be the first to comment!'
-                : 'Comments are disabled for this post',
+                ? t.classes.comments.beFirst
+                : t.classes.comments.disabled,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),

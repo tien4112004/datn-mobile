@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing fill-in-blank question segments
 /// Uses raw text input format: "Text {{answer1 | answer2}} more text"
-class FillInBlankSection extends StatefulWidget {
+class FillInBlankSection extends ConsumerStatefulWidget {
   final List<SegmentData> segments;
   final bool caseSensitive;
   final ValueChanged<List<SegmentData>> onSegmentsChanged;
@@ -18,10 +20,10 @@ class FillInBlankSection extends StatefulWidget {
   });
 
   @override
-  State<FillInBlankSection> createState() => _FillInBlankSectionState();
+  ConsumerState<FillInBlankSection> createState() => _FillInBlankSectionState();
 }
 
-class _FillInBlankSectionState extends State<FillInBlankSection> {
+class _FillInBlankSectionState extends ConsumerState<FillInBlankSection> {
   late TextEditingController _rawInputController;
   late FocusNode _textFieldFocusNode;
   late List<SegmentData> _parsedSegments;
@@ -200,6 +202,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,8 +210,8 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
         // Section header
         _buildSectionHeader(
           context,
-          'Fill in the Blank Question',
-          'Use {{answer}} syntax to create blanks',
+          t.questionBank.fillInBlank.title,
+          t.questionBank.fillInBlank.subtitle,
         ),
         const SizedBox(height: 16),
 
@@ -234,7 +237,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    'Format Guide',
+                    t.questionBank.fillInBlank.formatGuide,
                     style: theme.textTheme.titleSmall?.copyWith(
                       color: colorScheme.primary,
                       fontWeight: FontWeight.w600,
@@ -246,14 +249,14 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
               _buildFormatExample(
                 theme,
                 colorScheme,
-                'Single answer:',
+                t.questionBank.fillInBlank.singleAnswer,
                 'The capital of France is {{Paris}}',
               ),
               const SizedBox(height: 8),
               _buildFormatExample(
                 theme,
                 colorScheme,
-                'Multiple answers:',
+                t.questionBank.fillInBlank.multipleAnswers,
                 'The color is {{red | blue | green}}',
               ),
               const SizedBox(height: 8),
@@ -276,7 +279,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Question Text *',
+              t.questionBank.fillInBlank.questionText,
               style: theme.textTheme.labelMedium?.copyWith(
                 color: colorScheme.onSurface,
                 fontWeight: FontWeight.w500,
@@ -285,7 +288,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
             FilledButton.tonalIcon(
               onPressed: _insertBlankAtCursor,
               icon: const Icon(Icons.add_circle_outline, size: 18),
-              label: const Text('Insert Blank'),
+              label: Text(t.questionBank.fillInBlank.insertBlank),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -303,8 +306,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
           focusNode: _textFieldFocusNode,
           maxLines: 5,
           decoration: InputDecoration(
-            hintText:
-                'Example: The {{quick | fast}} brown fox jumps over the {{lazy}} dog.',
+            hintText: t.questionBank.fillInBlank.exampleHint,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             filled: true,
             fillColor: colorScheme.surfaceContainerLowest,
@@ -315,14 +317,14 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
 
         // Preview section
         Text(
-          'Preview',
+          t.questionBank.fillInBlank.preview,
           style: theme.textTheme.labelMedium?.copyWith(
             color: colorScheme.onSurface,
             fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: 8),
-        _buildPreview(theme, colorScheme),
+        _buildPreview(theme, colorScheme, t),
 
         const SizedBox(height: 24),
 
@@ -331,13 +333,13 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
           value: widget.caseSensitive,
           onChanged: widget.onCaseSensitiveChanged,
           title: Text(
-            'Case Sensitive',
+            t.questionBank.fillInBlank.caseSensitive,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
           ),
           subtitle: Text(
-            'Answers must match exact capitalization',
+            t.questionBank.fillInBlank.caseSensitiveDescription,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -367,7 +369,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Please add at least one blank using {{answer}} syntax',
+                    t.questionBank.fillInBlank.addBlankWarning,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onErrorContainer,
                       fontWeight: FontWeight.w500,
@@ -427,7 +429,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
     );
   }
 
-  Widget _buildPreview(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildPreview(ThemeData theme, ColorScheme colorScheme, dynamic t) {
     if (_parsedSegments.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -438,7 +440,7 @@ class _FillInBlankSectionState extends State<FillInBlankSection> {
         ),
         child: Center(
           child: Text(
-            'Preview will appear here',
+            t.questionBank.fillInBlank.previewPlaceholder,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,

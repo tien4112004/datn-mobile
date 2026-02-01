@@ -1,5 +1,7 @@
 import 'package:AIPrimary/features/questions/states/chapter_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -54,19 +56,18 @@ class _ChapterSelectionDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     // Check if grade and subject are selected
     if (widget.grade == null || widget.subject == null) {
       return AlertDialog(
         icon: Icon(LucideIcons.info, color: colorScheme.primary, size: 48),
-        title: const Text('Select Grade and Subject First'),
-        content: const Text(
-          'Please select both Grade and Subject before choosing a chapter.',
-        ),
+        title: Text(t.questionBank.selectGradeSubjectFirst.title),
+        content: Text(t.questionBank.selectGradeSubjectFirst.message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text(t.questionBank.actions.ok),
           ),
         ],
       );
@@ -79,7 +80,7 @@ class _ChapterSelectionDialogState
 
     return AlertDialog(
       title: Text(
-        'Select Chapter',
+        t.questionBank.chapter.select,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -103,14 +104,17 @@ class _ChapterSelectionDialogState
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No Chapters Available',
+                      t.questionBank.noChaptersAvailable.title,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'No chapters found for ${widget.grade?.displayName} - ${widget.subject?.displayName}',
+                      t.questionBank.chapter.noChaptersFound(
+                        grade: widget.grade?.localizedName(t) ?? '',
+                        subject: widget.subject?.localizedName(t) ?? '',
+                      ),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -137,13 +141,13 @@ class _ChapterSelectionDialogState
                       color: isSelected ? colorScheme.primary : null,
                     ),
                     title: Text(
-                      'No Chapter',
+                      t.questionBank.chapter.noChapter,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: isSelected ? colorScheme.primary : null,
                         fontWeight: isSelected ? FontWeight.w600 : null,
                       ),
                     ),
-                    subtitle: const Text('Don\'t assign to any chapter'),
+                    subtitle: Text(t.questionBank.chapter.noChapterDescription),
                     onTap: () {
                       setState(() {
                         _selectedChapterName = null;
@@ -197,7 +201,7 @@ class _ChapterSelectionDialogState
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Failed to Load Chapters',
+                  t.questionBank.chapter.failedToLoadTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: colorScheme.error,
@@ -205,7 +209,7 @@ class _ChapterSelectionDialogState
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Please try again later.',
+                  t.questionBank.chapter.failedToLoad,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -219,13 +223,13 @@ class _ChapterSelectionDialogState
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(t.questionBank.actions.cancel),
         ),
         FilledButton(
           onPressed: () {
             Navigator.of(context).pop(_selectedChapterName);
           },
-          child: const Text('Select'),
+          child: Text(t.questionBank.actions.select),
         ),
       ],
     );

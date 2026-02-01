@@ -1,6 +1,7 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,11 +31,13 @@ class ClassCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final instructorName =
-        ref.read(userControllerProvider).value?.fullName ?? 'Instructor';
+        ref.read(userControllerProvider).value?.fullName ??
+        t.classes.card.instructor;
 
     return Semantics(
-      label: 'Class card for ${classEntity.name}',
+      label: t.classes.card.semanticLabel(className: classEntity.name),
       button: true,
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -53,9 +56,9 @@ class ClassCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Colored header section
-              _buildHeader(context, instructorName),
+              _buildHeader(context, instructorName, t),
               // Content section
-              _buildContent(context, colorScheme),
+              _buildContent(context, colorScheme, t),
             ],
           ),
         ),
@@ -63,7 +66,7 @@ class ClassCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, String instructorName) {
+  Widget _buildHeader(BuildContext context, String instructorName, dynamic t) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -134,7 +137,7 @@ class ClassCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                _buildOptionsMenu(context),
+                _buildOptionsMenu(context, t),
               ],
             ),
           ),
@@ -143,70 +146,70 @@ class ClassCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildOptionsMenu(BuildContext context) {
-    return Semantics(
-      label: 'More options for ${classEntity.name}',
-      button: true,
-      child: PopupMenuButton<String>(
-        icon: const Icon(
-          LucideIcons.ellipsisVertical,
-          color: Colors.white,
-          size: 20,
-        ),
-        onSelected: (value) {
-          HapticFeedback.selectionClick();
-          switch (value) {
-            case 'students':
-              onViewStudents?.call();
-              break;
-            case 'edit':
-              onEdit?.call();
-              break;
-            case 'delete':
-              onDelete?.call();
-              break;
-          }
-        },
-        itemBuilder: (context) => [
-          if (onViewStudents != null)
-            const PopupMenuItem(
-              value: 'students',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.users, size: 18),
-                  SizedBox(width: 12),
-                  Text('View Students'),
-                ],
-              ),
-            ),
-          if (onEdit != null)
-            const PopupMenuItem(
-              value: 'edit',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.pencil, size: 18),
-                  SizedBox(width: 12),
-                  Text('Edit'),
-                ],
-              ),
-            ),
-          if (onDelete != null)
-            const PopupMenuItem(
-              value: 'delete',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.trash2, size: 18),
-                  SizedBox(width: 12),
-                  Text('Delete'),
-                ],
-              ),
-            ),
-        ],
+  Widget _buildOptionsMenu(BuildContext context, dynamic t) {
+    return PopupMenuButton<String>(
+      icon: const Icon(
+        LucideIcons.ellipsisVertical,
+        color: Colors.white,
+        size: 20,
       ),
+      onSelected: (value) {
+        HapticFeedback.selectionClick();
+        switch (value) {
+          case 'students':
+            onViewStudents?.call();
+            break;
+          case 'edit':
+            onEdit?.call();
+            break;
+          case 'delete':
+            onDelete?.call();
+            break;
+        }
+      },
+      itemBuilder: (context) => [
+        if (onViewStudents != null)
+          PopupMenuItem(
+            value: 'students',
+            child: Row(
+              children: [
+                const Icon(LucideIcons.users, size: 18),
+                const SizedBox(width: 12),
+                Text(t.classes.card.viewStudents),
+              ],
+            ),
+          ),
+        if (onEdit != null)
+          PopupMenuItem(
+            value: 'edit',
+            child: Row(
+              children: [
+                const Icon(LucideIcons.pencil, size: 18),
+                const SizedBox(width: 12),
+                Text(t.classes.card.edit),
+              ],
+            ),
+          ),
+        if (onDelete != null)
+          PopupMenuItem(
+            value: 'delete',
+            child: Row(
+              children: [
+                const Icon(LucideIcons.trash2, size: 18),
+                const SizedBox(width: 12),
+                Text(t.classes.card.delete),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
-  Widget _buildContent(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildContent(
+    BuildContext context,
+    ColorScheme colorScheme,
+    dynamic t,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -229,7 +232,7 @@ class ClassCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  classEntity.joinCode ?? 'Create join code',
+                  classEntity.joinCode ?? t.classes.card.createJoinCode,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -249,7 +252,7 @@ class ClassCard extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                'Inactive',
+                t.classes.card.inactive,
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,

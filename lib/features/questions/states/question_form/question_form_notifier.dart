@@ -1,4 +1,5 @@
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_state.dart';
 import 'package:AIPrimary/features/questions/ui/pages/modify/fill_in_blank_section.dart';
 import 'package:AIPrimary/features/questions/ui/pages/modify/matching_section.dart';
@@ -46,6 +47,74 @@ class QuestionFormNotifier extends StateNotifier<QuestionFormState> {
 
     // Load type-specific data
     _loadTypeSpecificData(data);
+  }
+
+  /// Initialize form from a BaseQuestion entity (for assignment context editing)
+  void initializeFromBaseQuestion(BaseQuestion question) {
+    // Set base question data
+    state = QuestionFormState(
+      questionId: question.id,
+      title: question.title,
+      type: question.type,
+      difficulty: question.difficulty,
+      titleImageUrl: question.titleImageUrl,
+      explanation: question.explanation ?? '',
+      hasUnsavedChanges: false,
+    );
+
+    // Load type-specific data based on question type
+    final data = _extractDataFromQuestion(question);
+    _loadTypeSpecificData(data);
+  }
+
+  Map<String, dynamic> _extractDataFromQuestion(BaseQuestion question) {
+    if (question is MultipleChoiceQuestion) {
+      return {
+        'options': question.data.options
+            .map(
+              (opt) => {
+                'text': opt.text,
+                'imageUrl': opt.imageUrl,
+                'isCorrect': opt.isCorrect,
+              },
+            )
+            .toList(),
+        'shuffleOptions': question.data.shuffleOptions,
+      };
+    } else if (question is MatchingQuestion) {
+      return {
+        'pairs': question.data.pairs
+            .map(
+              (pair) => {
+                'leftText': pair.left ?? '',
+                'leftImageUrl': pair.leftImageUrl,
+                'rightText': pair.right ?? '',
+                'rightImageUrl': pair.rightImageUrl,
+              },
+            )
+            .toList(),
+        'shufflePairs': question.data.shufflePairs,
+      };
+    } else if (question is OpenEndedQuestion) {
+      return {
+        'expectedAnswer': question.data.expectedAnswer,
+        'maxLength': question.data.maxLength,
+      };
+    } else if (question is FillInBlankQuestion) {
+      return {
+        'segments': question.data.segments
+            .map(
+              (seg) => {
+                'type': seg.type == SegmentType.text ? 'TEXT' : 'BLANK',
+                'content': seg.content,
+                'acceptableAnswers': seg.acceptableAnswers,
+              },
+            )
+            .toList(),
+        'caseSensitive': question.data.caseSensitive,
+      };
+    }
+    return {};
   }
 
   void _loadTypeSpecificData(Map<String, dynamic> data) {

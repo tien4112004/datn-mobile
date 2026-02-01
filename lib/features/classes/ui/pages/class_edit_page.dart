@@ -6,6 +6,7 @@ import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Comprehensive Class Edit Page for managing class information.
 ///
@@ -71,6 +72,8 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
 
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final t = ref.read(translationsPod);
+    final errorColor = Theme.of(context).colorScheme.error;
 
     await ref
         .read(updateClassControllerProvider.notifier)
@@ -88,8 +91,8 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
     updateState.whenOrNull(
       data: (_) {
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Class updated successfully'),
+          SnackBar(
+            content: Text(t.classes.editPage.saveSuccess),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -98,9 +101,11 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
       error: (error, _) {
         messenger.showSnackBar(
           SnackBar(
-            content: Text('Failed to update class: $error'),
+            content: Text(
+              t.classes.editPage.saveError(error: error.toString()),
+            ),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: errorColor,
           ),
         );
       },
@@ -110,24 +115,24 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
   Future<bool> _onWillPop() async {
     if (!_hasChanges) return true;
 
+    final t = ref.read(translationsPod);
+
     final shouldPop = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Discard changes?'),
-        content: const Text(
-          'You have unsaved changes. Are you sure you want to leave?',
-        ),
+        title: Text(t.classes.editPage.discardTitle),
+        content: Text(t.classes.editPage.discardMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(t.classes.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Discard'),
+            child: Text(t.classes.discard),
           ),
         ],
       ),
@@ -140,6 +145,7 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
   Widget build(BuildContext context) {
     final classState = ref.watch(classesControllerProvider);
     final updateState = ref.watch(updateClassControllerProvider);
+    final t = ref.watch(translationsPod);
 
     return PopScope(
       canPop: !_hasChanges,
@@ -153,7 +159,7 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Class'),
+          title: Text(t.classes.editPage.title),
           centerTitle: false,
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
@@ -163,7 +169,7 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
                 Navigator.of(context).pop();
               }
             },
-            tooltip: 'Back',
+            tooltip: t.classes.back,
           ),
           actions: [
             // Save button
@@ -183,7 +189,7 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
                 orElse: () => FilledButton.icon(
                   onPressed: _hasChanges ? _saveChanges : null,
                   icon: const Icon(LucideIcons.save, size: 18),
-                  label: const Text('Save'),
+                  label: Text(t.classes.save),
                 ),
               ),
             ),

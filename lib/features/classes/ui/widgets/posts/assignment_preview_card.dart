@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class AssignmentPreviewCard extends StatelessWidget {
   Color _getSubjectColor(Subject subject) {
     switch (subject) {
       case Subject.english:
-        return const Color(0xFF2563EB); // Blue - Communication
+        return Themes.primaryColor; // Primary - Communication
       case Subject.mathematics:
         return const Color(0xFFDC2626); // Red - Logic
       case Subject.literature:
@@ -267,7 +268,7 @@ class AssignmentPreviewCard extends StatelessWidget {
       case AssignmentStatus.draft:
         return colorScheme.tertiary;
       case AssignmentStatus.generating:
-        return const Color(0xFF2563EB); // Blue
+        return Themes.primaryColor;
       case AssignmentStatus.error:
         return colorScheme.error;
       case AssignmentStatus.archived:

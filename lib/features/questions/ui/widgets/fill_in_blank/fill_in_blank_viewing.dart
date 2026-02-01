@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Fill in Blank Question in Viewing Mode
-class FillInBlankViewing extends StatelessWidget {
+class FillInBlankViewing extends ConsumerWidget {
   final FillInBlankQuestion question;
 
-  const FillInBlankViewing({super.key, required this.question});
+  /// When false, hides the header (title, badges) to avoid duplication
+  final bool showHeader;
+
+  const FillInBlankViewing({
+    super.key,
+    required this.question,
+    this.showHeader = true,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final t = ref.watch(translationsPod);
     debugPrint(question.data.segments.toString());
 
     return QuestionCardWrapper(
@@ -18,11 +28,12 @@ class FillInBlankViewing extends StatelessWidget {
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
+      showHeader: showHeader,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'VIEWING MODE - Correct answers:',
+            t.questionBank.viewing.viewingModeCorrectAnswers,
             style: theme.textTheme.labelSmall?.copyWith(
               color: Colors.grey,
               fontWeight: FontWeight.w600,

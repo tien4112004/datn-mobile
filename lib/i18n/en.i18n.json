@@ -9,6 +9,12 @@
   "passwordAndSecurity": "Password and Security",
   "paymentMethods": "Payment Methods",
   "serverError": "Server error occurred. Please try again.",
+  "navigation": {
+    "home": "Home",
+    "project": "Project",
+    "class": "Class",
+    "profile": "Profile"
+  },
   "settings": {
     "appSettings": "App Settings",
     "support": "Support",
@@ -470,6 +476,541 @@
       "failedToLoadImage": "Failed to load image",
       "imageSavedToGallery": "Image saved to gallery!",
       "failedToSaveImage": "Failed to save image: $error"
+    }
+  },
+  "questionBank": {
+    "title": "Question Bank",
+    "createQuestion": "Create Question",
+    "editQuestion": "Edit Question",
+    "questionDetails": "Question Details",
+    "selectQuestions": "Select Questions",
+    "save": "Save",
+    "refresh": "Refresh",
+    "back": "Back",
+    "continue": "Continue",
+    "addQuestion": "Add Question",
+
+    "bankTypes": {
+      "myQuestions": "My Questions",
+      "publicBank": "Public Bank"
+    },
+
+    "search": {
+      "hint": "Search questions...",
+      "noResults": "No questions found"
+    },
+
+    "filters": {
+      "title": "Question Filters",
+      "quickFilters": "Quick Filters",
+      "applyFilters": "Apply Filters",
+      "grade": "Grade",
+      "allGrades": "All Grades",
+      "subject": "Subject",
+      "allSubjects": "All Subjects",
+      "type": "Type",
+      "allTypes": "All Types",
+      "difficulty": "Difficulty",
+      "allDifficulties": "All Difficulties",
+      "level": "Level"
+    },
+
+    "chapter": {
+      "title": "Chapter",
+      "filter": "Chapter Filter",
+      "filterBy": "Filter by Chapter",
+      "select": "Select Chapter",
+      "selectOptional": "Select Chapter (Optional)",
+      "noChapter": "No Chapter",
+      "noChapterDescription": "Don't assign to any chapter",
+      "selectGradeAndSubject": "Please select both Grade and Subject to filter by Chapter",
+      "selectFor": "Select one or more chapters for $grade - $subject",
+      "noAvailable": "No chapters available for the selected grade and subject",
+      "noChaptersFound": "No chapters found for $grade - $subject",
+      "failedToLoad": "Failed to load chapters. Please try again.",
+      "failedToLoadTitle": "Failed to Load Chapters"
+    },
+
+    "emptyState": {
+      "noQuestions": "No questions yet",
+      "noPublicQuestions": "No public questions found",
+      "createFirst": "Create your first question to build your question bank",
+      "tryAdjusting": "Try adjusting your search or check back later",
+      "notFound": "Question Not Found",
+      "notFoundMessage": "The question you are looking for does not exist."
+    },
+
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "select": "Select",
+      "ok": "OK"
+    },
+
+    "deleteDialog": {
+      "title": "Delete Question",
+      "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
+      "success": "Question deleted successfully"
+    },
+
+    "loading": {
+      "question": "Loading question..."
+    },
+
+    "errors": {
+      "saving": "Error saving question: $error",
+      "loading": "Failed to load question",
+      "retry": "Retry",
+      "selectAtLeastOne": "Please select at least one question"
+    },
+
+    "form": {
+      "type": "Type:",
+      "titleHint": "Enter your question...",
+      "titleRequired": "Question title is required",
+      "addImage": "Add Image",
+      "removeImage": "Remove image",
+      "selectImage": "Select Question Image",
+      "questionImage": "Question Image"
+    },
+
+    "advancedSettings": {
+      "title": "Advanced Settings",
+      "explanation": "Explanation (Optional)",
+      "explanationHint": "Explain the answer..."
+    },
+
+    "multipleChoice": {
+      "title": "Answer Options",
+      "subtitle": "Add multiple choice options (minimum 2 required)",
+      "addOption": "Add Option",
+      "shuffleOptions": "Shuffle Options",
+      "shuffleDescription": "Randomize option order when displayed to students",
+      "minOptionsRequired": "At least 2 options are required",
+      "markCorrect": "Please mark at least one option as correct",
+      "optionHint": "Option $number",
+      "optionImage": "Option Image",
+      "optionImageLabel": "Option $number Image",
+      "addImageTooltip": "Add Image",
+      "removeTooltip": "Remove"
+    },
+
+    "matching": {
+      "title": "Matching Pairs",
+      "subtitle": "Create pairs to match (minimum 2 required)",
+      "addPair": "Add Pair",
+      "shufflePairs": "Shuffle Pairs",
+      "shuffleDescription": "Randomize pair order when displayed to students",
+      "minPairsRequired": "At least 2 pairs are required",
+      "pairNumber": "Pair $number",
+      "removePair": "Remove pair",
+      "leftSide": "Left Side",
+      "rightSide": "Right Side",
+      "textLabel": "Text *",
+      "enterLeftText": "Enter left text",
+      "enterRightText": "Enter right text",
+      "required": "Required",
+      "leftImage": "Left Image",
+      "rightImage": "Right Image",
+      "imageHint": "Upload, take photo, or enter URL"
+    },
+
+    "openEnded": {
+      "title": "Open-Ended Settings",
+      "subtitle": "Configure answer expectations and limits",
+      "infoText": "Open-ended questions allow students to provide free-form text answers. Both fields below are optional.",
+      "expectedAnswer": "Expected Answer (Optional)",
+      "expectedAnswerHint": "Enter a sample or expected answer for reference",
+      "expectedAnswerHelper": "This helps with grading but is not enforced automatically",
+      "maxLength": "Maximum Length (Optional)",
+      "characters": "characters",
+      "maxLengthHelper": "Leave empty or 0 for no limit",
+      "invalidNumber": "Please enter a valid number",
+      "gradingNote": "Grading Note",
+      "gradingNoteText": "Open-ended questions typically require manual grading. The expected answer serves as a reference guide."
+    },
+
+    "fillInBlank": {
+      "title": "Fill in the Blank Question",
+      "subtitle": "Use {{answer}} syntax to create blanks",
+      "formatGuide": "Format Guide",
+      "singleAnswer": "Single answer:",
+      "multipleAnswers": "Multiple answers:",
+      "questionText": "Question Text *",
+      "insertBlank": "Insert Blank",
+      "exampleHint": "Example: The {{quick | fast}} brown fox jumps over the {{lazy}} dog.",
+      "preview": "Preview",
+      "previewPlaceholder": "Preview will appear here",
+      "caseSensitive": "Case Sensitive",
+      "caseSensitiveDescription": "Answers must match exact capitalization",
+      "addBlankWarning": "Please add at least one blank using {{answer}} syntax"
+    },
+
+    "detail": {
+      "questionTitle": "QUESTION TITLE",
+      "explanation": "Explanation",
+      "otherInfo": "Other Information",
+      "chapter": "Chapter: $chapter",
+      "created": "Created: $date",
+      "lastUpdated": "Last Updated: $date"
+    },
+
+    "picker": {
+      "questionsSelected": "$count question(s) selected"
+    },
+
+    "selectGradeSubjectFirst": {
+      "title": "Select Grade and Subject First",
+      "message": "Please select both Grade and Subject before choosing a chapter."
+    },
+
+    "noChaptersAvailable": {
+      "title": "No Chapters Available"
+    },
+
+    "questionTypes": {
+      "multipleChoice": "Multiple Choice",
+      "matching": "Matching",
+      "openEnded": "Open Ended",
+      "fillInBlank": "Fill in Blank"
+    },
+
+    "difficulties": {
+      "knowledge": "Knowledge",
+      "comprehension": "Comprehension",
+      "application": "Application",
+      "advancedApplication": "Advanced Application"
+    },
+
+    "grades": {
+      "grade1": "Grade 1",
+      "grade2": "Grade 2",
+      "grade3": "Grade 3",
+      "grade4": "Grade 4",
+      "grade5": "Grade 5"
+    },
+
+    "subjects": {
+      "english": "English",
+      "mathematics": "Mathematics",
+      "literature": "Literature"
+    },
+
+    "viewing": {
+      "imageNotAvailable": "Image not available",
+      "correctAnswerShown": "Correct answer shown",
+      "correct": "Correct",
+      "viewingModeCorrectMatches": "Correct matches:",
+      "viewingModeCorrectAnswers": "Correct answers:",
+      "viewingMode": "Viewing Mode",
+      "questionFormat": "Question Format",
+      "responseType": "Response Type",
+      "longFormTextAnswer": "Long-form text answer",
+      "characterLimit": "Character Limit",
+      "characters": "$count characters",
+      "grading": "Grading",
+      "manualGradingRequired": "Manual grading required",
+      "expectedAnswerReference": "Expected Answer (Reference)",
+      "referenceAnswer": "Reference Answer"
+    }
+  },
+  "classes": {
+    "title": "Classes",
+    "createClass": "Create Class",
+    "editClass": "Edit Class",
+    "joinClass": "Join Class",
+    "save": "Save",
+    "back": "Back",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "discard": "Discard",
+    "close": "Close",
+    "update": "Update",
+    "create": "Create",
+
+    "tabs": {
+      "stream": "STREAM",
+      "classwork": "CLASSWORK",
+      "students": "STUDENTS"
+    },
+
+    "drawer": {
+      "classes": "Classes",
+      "exams": "Exams",
+      "questionBank": "Question Bank",
+      "settings": "Settings",
+      "appTitle": "EduClass",
+      "appSubtitle": "Learning Management System",
+      "version": "EduClass v1.0.0"
+    },
+
+    "emptyState": {
+      "noClasses": "No Classes Yet",
+      "noClassesDescription": "Create a new class or join an existing one using a class code from your instructor.",
+      "getStarted": "Get Started",
+      "semanticLabel": "No classes yet. Create or join a class to get started."
+    },
+
+    "card": {
+      "viewStudents": "View Students",
+      "edit": "Edit",
+      "delete": "Delete",
+      "inactive": "Inactive",
+      "instructor": "Instructor",
+      "createJoinCode": "Create join code",
+      "semanticLabel": "Class card for $className"
+    },
+
+    "deleteDialog": {
+      "title": "Delete Class",
+      "message": "Are you sure you want to delete \"$className\"?",
+      "notImplemented": "Delete not implemented yet"
+    },
+
+    "editPage": {
+      "title": "Edit Class",
+      "saveSuccess": "Class updated successfully",
+      "saveError": "Failed to update class: $error",
+      "discardTitle": "Discard changes?",
+      "discardMessage": "You have unsaved changes. Are you sure you want to leave?"
+    },
+
+    "appBar": {
+      "back": "Back",
+      "moreOptions": "More options",
+      "classOptions": "Class options",
+      "classInformation": "Class Information",
+      "copyJoinCode": "Copy Join Code",
+      "classSettings": "Class Settings",
+      "notAvailable": "Not available",
+      "joinCodeCopied": "Join code copied",
+      "goBack": "Go back",
+      "returnHint": "Double tap to return to classes list",
+      "optionsHint": "Double tap to see more options"
+    },
+
+    "infoDialog": {
+      "title": "Class Information",
+      "basicInfo": "Basic Information",
+      "className": "Class Name",
+      "description": "Description",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "instructor": "Instructor",
+      "name": "Name",
+      "ownerId": "Owner ID",
+      "enrollment": "Enrollment",
+      "joinCode": "Join Code",
+      "timestamps": "Timestamps",
+      "created": "Created",
+      "lastUpdated": "Last Updated",
+      "copyToClipboard": "Copy to clipboard",
+      "copyLabel": "Copy $label",
+      "copyHint": "Double tap to copy to clipboard",
+      "closeDialog": "Close dialog",
+      "closeHint": "Double tap to close class information",
+      "copiedToClipboard": "Join code copied to clipboard"
+    },
+
+    "classwork": {
+      "emptyTitle": "No Classwork Yet",
+      "emptyDescription": "Assignments, quizzes, and materials\nwill be posted here by your teacher.\nOrganized by date for easy access.",
+      "emptySemanticLabel": "No classwork yet. Assignments and materials will appear here when your teacher posts them.",
+      "assignments": "Assignments",
+      "assignmentsDesc": "Submit your work and track deadlines",
+      "materials": "Materials",
+      "materialsDesc": "Access course documents and resources",
+      "dueDates": "Due Dates",
+      "dueDatesDesc": "Never miss an assignment deadline"
+    },
+
+    "students": {
+      "addStudent": "Add new student",
+      "addHint": "Double tap to add a student to this class",
+      "emptyTitle": "No Students Yet",
+      "emptyDescription": "Start building your class roster.\nAdd students to begin tracking their progress.",
+      "addFirstStudent": "Add First Student",
+      "classRoster": "Class Roster",
+      "student": "Student",
+      "studentCount": "$count students in this class",
+      "removeTitle": "Remove Student",
+      "removeMessage": "Are you sure you want to remove $studentName from this class?",
+      "removeSemanticLabel": "Are you sure you want to remove $studentName from this class? This action cannot be undone.",
+      "confirmRemove": "Confirm deletion of $studentName",
+      "remove": "Remove",
+      "removing": "Removing student...",
+      "removeSuccess": "$studentName removed successfully",
+      "removeError": "Failed to remove student: $error"
+    },
+
+    "comments": {
+      "noComments": "No comments yet",
+      "beFirst": "Be the first to comment!",
+      "disabled": "Comments are disabled for this post",
+      "inputLabel": "Comment input field",
+      "inputHint": "Add a comment...",
+      "inputDisabledHint": "Comments are disabled",
+      "sendLabel": "Send comment",
+      "postError": "Failed to post comment: $error",
+      "loadError": "Failed to load comments"
+    },
+
+    "posts": {
+      "emptyTitle": "No Posts Yet",
+      "emptyDescription": "Your teacher will post announcements and updates here.",
+      "createFirst": "Create First Post",
+      "noMore": "No more posts",
+      "newPost": "New Post",
+      "createLabel": "Create new post",
+      "loadError": "Error loading posts",
+      "semanticLabel": "$postType posted $timeAgo",
+      "deleteTitle": "Delete Post?",
+      "deleteMessage": "This will permanently delete this post and all its comments. This action cannot be undone.",
+      "pinError": "Failed to toggle pin: $error",
+      "deleteError": "Failed to delete post: $error"
+    },
+
+    "postDialog": {
+      "createTitle": "Create Post",
+      "editTitle": "Edit Post",
+      "typeLabel": "Type",
+      "postType": "Post",
+      "exerciseType": "Exercise",
+      "contentLabel": "Content",
+      "contentHint": "What would you like to share?",
+      "contentRequired": "Please enter some content",
+      "contentMinLength": "Content must be at least 10 characters",
+      "allowComments": "Allow comments",
+      "allowCommentsDesc": "Let others comment on this post",
+      "pinPost": "Pin post",
+      "pinPostDesc": "Show this post at the top",
+      "createSuccess": "Post created successfully",
+      "updateSuccess": "Post updated successfully",
+      "deleteSuccess": "Post deleted successfully",
+      "createError": "Failed to create post: $error",
+      "updateError": "Failed to update post: $error",
+      "deleteError": "Failed to delete post: $error",
+      "deleteTooltip": "Delete post"
+    },
+
+    "postUpsert": {
+      "createTitle": "Create Post",
+      "editTitle": "Edit Post",
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "typeCannotChange": "Post type cannot be changed when editing",
+      "loadError": "Failed to load post: $error",
+      "createSuccess": "Post created successfully",
+      "updateSuccess": "Post updated successfully",
+      "actionError": "Failed to $action post: $error",
+      "maxAttachments": "Maximum 10 attachments allowed",
+      "maxAttachmentsReached": "Maximum 10 attachments reached",
+      "uploadedCount": "Uploaded $count file(s)",
+      "uploadError": "Failed to upload $fileName: $error",
+      "pickError": "Failed to pick files: $error",
+      "linkedCount": "Linked $count $resource",
+      "selectDueDate": "Select Due Date",
+      "dueDate": "Due Date",
+      "dueDateHint": "Tap to set due date"
+    },
+
+    "postOptions": {
+      "label": "Post options",
+      "unpin": "Unpin",
+      "pin": "Pin",
+      "edit": "Edit",
+      "delete": "Delete",
+      "sectionTitle": "Options",
+      "allowComments": "Allow comments",
+      "allowCommentsDesc": "Let students comment on this post"
+    },
+
+    "postType": {
+      "title": "Post Type",
+      "post": "Post",
+      "exercise": "Exercise",
+      "postDescription": "Share updates with attachments and resources",
+      "exerciseDescription": "Link assignments for students"
+    },
+
+    "postEditor": {
+      "content": "Content",
+      "richText": "Rich Text",
+      "placeholder": "Write your post content here..."
+    },
+
+    "postActions": {
+      "uploading": "Uploading...",
+      "addMore": "Add More ($count)",
+      "addAttachments": "Add Attachments",
+      "attachAssignment": "Attach Assignment",
+      "assignment": "Assignment ($count)",
+      "linkResource": "Link Resource",
+      "linked": "Linked ($count)"
+    },
+
+    "assignmentSelector": {
+      "title": "Select Assignments",
+      "selected": "$count selected",
+      "done": "Done",
+      "searchHint": "Search assignments...",
+      "emptyTitle": "No assignments found",
+      "emptyDescription": "Try adjusting your filters",
+      "subject": "Subject",
+      "allSubjects": "All Subjects",
+      "grade": "Grade",
+      "allGrades": "All Grades"
+    },
+
+    "editForm": {
+      "editing": "Editing Class",
+      "teacher": "Teacher: $teacherName",
+      "classInfo": "Class Information",
+      "classId": "Class ID",
+      "created": "Created",
+      "lastUpdated": "Last Updated"
+    },
+
+    "infoSection": {
+      "title": "Class Information",
+      "classNameLabel": "Class Name *",
+      "classNameHint": "Enter class name",
+      "classNameHelper": "Required field, maximum 50 characters",
+      "classNameRequired": "Please enter a class name",
+      "classNameMinLength": "Class name must be at least 3 characters",
+      "descriptionLabel": "Description",
+      "descriptionHint": "Enter class description (optional)",
+      "descriptionHelper": "Add details about this class"
+    },
+
+    "settingsSection": {
+      "title": "Settings",
+      "statusLabel": "Class Status",
+      "statusToggle": "Class active status toggle",
+      "activeDescription": "This class is active and visible to students",
+      "inactiveDescription": "This class is inactive and hidden from students",
+      "joinCodeLabel": "Join Code",
+      "joinCodeDescription": "Students can use this code to join the class",
+      "copyJoinCode": "Copy join code",
+      "joinCodeCopied": "Join code copied to clipboard"
+    },
+
+    "createDialog": {
+      "title": "Create Class",
+      "classNameLabel": "Class name",
+      "classNameHint": "e.g., Advanced Software Development",
+      "classNameRequired": "Please enter a class name",
+      "classNameMaxLength": "Name must be 50 characters or less",
+      "descriptionLabel": "Description (optional)",
+      "descriptionHint": "Brief class description",
+      "createSuccess": "Class created successfully"
+    },
+
+    "footer": {
+      "commentsCount": "$count comments"
     }
   }
 }

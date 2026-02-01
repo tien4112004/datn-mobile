@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/image_input_field.dart';
 
 /// Row widget for displaying and editing a multiple choice option
-class OptionItemCard extends StatelessWidget {
+class OptionItemCard extends ConsumerWidget {
   final int index;
   final String text;
   final String? imageUrl;
@@ -30,9 +32,10 @@ class OptionItemCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -68,7 +71,9 @@ class OptionItemCard extends StatelessWidget {
                 TextFormField(
                   initialValue: text,
                   decoration: InputDecoration(
-                    hintText: 'Option ${index + 1}',
+                    hintText: t.questionBank.multipleChoice.optionHint(
+                      number: index + 1,
+                    ),
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurfaceVariant.withValues(
                         alpha: 0.5,
@@ -143,9 +148,9 @@ class OptionItemCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     // Simple image picker dialog for option
-                    _showImagePickerDialog(context);
+                    _showImagePickerDialog(context, ref);
                   },
-                  tooltip: 'Add Image',
+                  tooltip: t.questionBank.multipleChoice.addImageTooltip,
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.all(8),
                   iconSize: 20,
@@ -154,7 +159,7 @@ class OptionItemCard extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.close, color: colorScheme.onSurfaceVariant),
                   onPressed: onRemove,
-                  tooltip: 'Remove',
+                  tooltip: t.questionBank.multipleChoice.removeTooltip,
                   constraints: const BoxConstraints(),
                   padding: const EdgeInsets.all(8),
                   iconSize: 20,
@@ -166,7 +171,8 @@ class OptionItemCard extends StatelessWidget {
     );
   }
 
-  void _showImagePickerDialog(BuildContext context) {
+  void _showImagePickerDialog(BuildContext context, WidgetRef ref) {
+    final t = ref.read(translationsPod);
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -176,7 +182,7 @@ class OptionItemCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Option Image",
+              t.questionBank.multipleChoice.optionImage,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
@@ -186,7 +192,9 @@ class OptionItemCard extends StatelessWidget {
                 onImageUrlChanged(val);
                 Navigator.pop(context);
               },
-              label: "Option ${index + 1} Image",
+              label: t.questionBank.multipleChoice.optionImageLabel(
+                number: index + 1,
+              ),
             ),
           ],
         ),

@@ -40,7 +40,8 @@ class ThemePreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = isSelected ? Colors.blue : Colors.grey[300];
+    final colorScheme = Theme.of(context).colorScheme;
+    final borderColor = isSelected ? colorScheme.primary : Colors.grey[300];
     final borderWidth = isSelected ? 2.0 : 2.0;
 
     final backgroundColorOrGradient = themeDto.getBackgroundColorOrGradient();
@@ -69,7 +70,7 @@ class ThemePreviewCard extends StatelessWidget {
             ),
             if (isSelected)
               BoxShadow(
-                color: Colors.blue.withValues(alpha: 0.12),
+                color: colorScheme.primary.withValues(alpha: 0.12),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -159,8 +160,8 @@ class ThemePreviewCard extends StatelessWidget {
                 child: Container(
                   width: 24,
                   height: 24,
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

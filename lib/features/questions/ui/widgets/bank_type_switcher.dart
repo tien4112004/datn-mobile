@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Tab switcher widget for bank type selection (Personal/Public)
 ///
 /// Provides a custom segmented control matching Material 3 design
 /// with rounded background and smooth transitions.
-class BankTypeSwitcher extends StatelessWidget {
+class BankTypeSwitcher extends ConsumerWidget {
   final BankType selectedType;
   final ValueChanged<BankType> onTypeChanged;
 
@@ -16,9 +18,10 @@ class BankTypeSwitcher extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.all(4),
@@ -33,7 +36,7 @@ class BankTypeSwitcher extends StatelessWidget {
               context,
               type: BankType.personal,
               icon: Icons.person_outline,
-              label: 'My Questions',
+              label: t.questionBank.bankTypes.myQuestions,
             ),
           ),
           Expanded(
@@ -41,7 +44,7 @@ class BankTypeSwitcher extends StatelessWidget {
               context,
               type: BankType.public,
               icon: Icons.public_outlined,
-              label: 'Public Bank',
+              label: t.questionBank.bankTypes.publicBank,
             ),
           ),
         ],

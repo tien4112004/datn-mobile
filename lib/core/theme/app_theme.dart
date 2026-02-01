@@ -5,7 +5,7 @@ part 'font_size.dart';
 part 'padding_value.dart';
 
 ///This class defines light theme and dark theme
-///Here we used flex color scheme
+///Here we used flex color scheme with custom primary color
 class Themes {
   static const double boxRadiusValue = 12.0;
   static const FontSize fontSize = FontSize();
@@ -14,124 +14,148 @@ class Themes {
     Radius.circular(boxRadiusValue),
   );
 
-  static ThemeData get theme => FlexThemeData.light(
-    scheme: FlexScheme.brandBlue,
-    surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-    lightIsWhite: true,
-    blendLevel: 20,
-    appBarOpacity: 0.95,
-    swapColors: true,
-    tabBarStyle: FlexTabBarStyle.forBackground,
+  // App Primary Color - Material Design Blue
+  static const Color primaryColor = Color.fromARGB(255, 39, 95, 217);
+  static const Color primaryColorDark = Color(0xFF1976D2);
+  static const Color primaryColorLight = Color(0xFF64B5F6);
 
-    subThemesData: const FlexSubThemesData(
-      blendOnLevel: 20,
-      blendOnColors: false,
-      inputDecoratorRadius: boxRadiusValue,
-      cardRadius: boxRadiusValue,
-    ),
-    keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        // replace default CupertinoPageTransitionsBuilder with this
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-      },
-    ),
-    visualDensity: FlexColorScheme.comfortablePlatformDensity,
-    useMaterial3: true,
-
-    /// fontFamily: GoogleFonts.getFont('Lato').fontFamily,
-
-    ///
+  // Custom color scheme for the app
+  static const FlexSchemeColor _lightColors = FlexSchemeColor(
+    primary: primaryColor,
+    primaryContainer: Color(0xFFBBDEFB),
+    secondary: Color(0xFF03A9F4),
+    secondaryContainer: Color(0xFFB3E5FC),
+    tertiary: Color(0xFF00BCD4),
+    tertiaryContainer: Color(0xFFB2EBF2),
   );
-  static ThemeData get darkTheme => FlexThemeData.dark(
-    scheme: FlexScheme.brandBlue,
-    surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-    blendLevel: 15,
-    appBarOpacity: 0.90,
+
+  static const FlexSchemeColor _darkColors = FlexSchemeColor(
+    primary: Color(0xFF90CAF9),
+    primaryContainer: Color(0xFF1565C0),
+    secondary: Color(0xFF4FC3F7),
+    secondaryContainer: Color(0xFF0277BD),
+    tertiary: Color(0xFF4DD0E1),
+    tertiaryContainer: Color(0xFF00838F),
+  );
+
+  static ThemeData get theme => FlexThemeData.light(
+    colors: _lightColors,
+    surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
+    lightIsWhite: true,
+    blendLevel: 0,
+    appBarOpacity: 0.9,
     tabBarStyle: FlexTabBarStyle.forBackground,
     subThemesData: const FlexSubThemesData(
-      blendOnLevel: 30,
+      blendOnLevel: 0,
+      blendOnColors: false,
+      useMaterial3Typography: true,
       inputDecoratorRadius: boxRadiusValue,
       cardRadius: boxRadiusValue,
+      filledButtonRadius: boxRadiusValue,
+      elevatedButtonRadius: boxRadiusValue,
+      outlinedButtonRadius: boxRadiusValue,
+      textButtonRadius: boxRadiusValue,
     ),
-    keyColors: const FlexKeyColors(useSecondary: true, useTertiary: true),
+    // Disable tonal palette generation - use exact colors specified
+    keyColors: const FlexKeyColors(
+      useSecondary: false,
+      useTertiary: false,
+      useKeyColors: true,
+      keepPrimary: true,
+      keepPrimaryContainer: true,
+    ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        // replace default CupertinoPageTransitionsBuilder with this
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
       },
     ),
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     useMaterial3: true,
-    // To use the playground font, add GoogleFonts package and uncomment
-    // fontFamily: GoogleFonts.getFont('Lato').fontFamily,
+  );
+
+  static ThemeData get darkTheme => FlexThemeData.dark(
+    colors: _darkColors,
+    surfaceMode: FlexSurfaceMode.level,
+    blendLevel: 0,
+    appBarOpacity: 1.0,
+    tabBarStyle: FlexTabBarStyle.forBackground,
+    subThemesData: const FlexSubThemesData(
+      blendOnLevel: 0,
+      useMaterial3Typography: true,
+      inputDecoratorRadius: boxRadiusValue,
+      cardRadius: boxRadiusValue,
+      filledButtonRadius: boxRadiusValue,
+      elevatedButtonRadius: boxRadiusValue,
+      outlinedButtonRadius: boxRadiusValue,
+      textButtonRadius: boxRadiusValue,
+    ),
+    // Disable tonal palette generation - use exact colors specified
+    keyColors: const FlexKeyColors(useSecondary: false, useTertiary: false),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+      },
+    ),
+    visualDensity: FlexColorScheme.comfortablePlatformDensity,
+    useMaterial3: true,
   );
   // If you do not have a themeMode switch, uncomment this line
   // to let the device system mode control the theme mode:
   // themeMode: ThemeMode.system,
 }
 
-/// Extension providing theme-aware utilities to reduce duplication
-/// of dark mode checks and color resolution across the app.
-///
-/// Used to eliminate the repeated pattern:
-/// ```dart
-/// final isDark = Theme.of(context).brightness == Brightness.dark;
-/// color: isDark ? Colors.grey[900] : Colors.white;
-/// ```
+/// Extension providing theme-aware utilities using the actual colorScheme.
+/// Uses Material 3 color tokens for consistent theming.
 extension ThemeContextExtension on BuildContext {
+  /// Access to the current color scheme
+  ColorScheme get _colorScheme => Theme.of(this).colorScheme;
+
   /// Check if the current theme brightness is dark
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
 
   /// Get theme-aware surface color for containers
-  /// Dark: grey[900], Light: white
-  Color get surfaceColor => isDarkMode ? Colors.grey[900]! : Colors.white;
+  Color get surfaceColor => _colorScheme.surface;
 
   /// Get theme-aware elevated surface color
-  /// Dark: grey[850], Light: white
-  Color get elevatedSurfaceColor =>
-      isDarkMode ? Colors.grey[850]! : Colors.white;
+  Color get elevatedSurfaceColor => _colorScheme.surfaceContainerHigh;
 
-  /// Get theme-aware border color
-  /// Dark: grey[800], Light: grey[200]
-  Color get borderColor => isDarkMode ? Colors.grey[800]! : Colors.grey[200]!;
+  /// Get theme-aware border color - uses outline variant for subtle borders
+  Color get borderColor => _colorScheme.outlineVariant;
 
   /// Get theme-aware divider color
-  /// Dark: grey[700], Light: grey[300]
-  Color get dividerColor => isDarkMode ? Colors.grey[700]! : Colors.grey[300]!;
+  Color get dividerColor => _colorScheme.outlineVariant;
 
   /// Get theme-aware card background color
-  /// Dark: grey[850], Light: white
-  Color get cardColor => isDarkMode ? Colors.grey[850]! : Colors.white;
+  Color get cardColor => _colorScheme.surfaceContainerLow;
 
   /// Get theme-aware secondary surface color (e.g., for chips, input fields)
-  /// Dark: grey[800], Light: grey[100]
-  Color get secondarySurfaceColor =>
-      isDarkMode ? Colors.grey[800]! : Colors.grey[100]!;
+  /// Uses a very subtle tint of primary for more visual interest
+  Color get secondarySurfaceColor => isDarkMode
+      ? _colorScheme.surfaceContainerHighest
+      : _colorScheme.primary.withValues(alpha: 0.05);
 
   /// Get theme-aware tertiary surface color (for slight variations)
-  /// Dark: grey[800], Light: grey[50]
-  Color get tertiarySurfaceColor =>
-      isDarkMode ? Colors.grey[800]! : Colors.grey[50]!;
+  Color get tertiarySurfaceColor => _colorScheme.surfaceContainerLowest;
 
   /// Get theme-aware text color for secondary text
-  /// Dark: grey[400], Light: grey[600]
-  Color get secondaryTextColor =>
-      isDarkMode ? Colors.grey[400]! : Colors.grey[600]!;
+  Color get secondaryTextColor => _colorScheme.onSurfaceVariant;
 
   /// Get theme-aware text color for tertiary/hint text
-  /// Dark: grey[500], Light: grey[500]
-  Color get tertiaryTextColor => Colors.grey[500]!;
+  Color get tertiaryTextColor => _colorScheme.outline;
 
   /// Get theme-aware text color for body text
-  /// Dark: grey[300], Light: grey[700]
-  Color get bodyTextColor => isDarkMode ? Colors.grey[300]! : Colors.grey[700]!;
+  Color get bodyTextColor => _colorScheme.onSurface;
 
   /// Get theme-aware overlay color (for modals, dialogs)
-  /// Dark: grey[900], Light: white
-  Color get overlayColor => isDarkMode ? Colors.grey[900]! : Colors.white;
+  Color get overlayColor => _colorScheme.surface;
+
+  /// Get the primary color directly
+  Color get primaryColor => _colorScheme.primary;
+
+  /// Get a subtle primary background (useful for selected states)
+  Color get primarySurfaceColor => _colorScheme.primaryContainer;
 }
 
 /// Provides common BoxDecoration patterns used throughout the app

@@ -11,6 +11,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Question Bank management page for teachers.
@@ -40,6 +41,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
       questionBankProvider.notifier,
     );
     final questionFilterState = ref.watch(questionBankFilterProvider);
+    final t = ref.watch(translationsPod);
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -55,7 +57,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
             leading: Semantics(
-              label: 'Go back',
+              label: t.questionBank.back,
               button: true,
               hint: 'Double tap to return to previous page',
               child: IconButton(
@@ -64,20 +66,20 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                   HapticFeedback.lightImpact();
                   context.router.maybePop();
                 },
-                tooltip: 'Back',
+                tooltip: t.questionBank.back,
               ),
             ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh_rounded),
-                tooltip: 'Refresh',
+                tooltip: t.questionBank.refresh,
                 onPressed: () {
                   questionBankControllerNotifier.loadQuestionsWithFilter();
                 },
               ),
             ],
             title: Text(
-              'Question Bank',
+              t.questionBank.title,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -94,7 +96,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
               await questionBankControllerNotifier.loadQuestionsWithFilter();
             },
             child: questionBankState.questions.isEmpty
-                ? _buildEmptyState(theme, questionFilterState.bankType)
+                ? _buildEmptyState(theme, questionFilterState.bankType, t)
                 : QuestionBankList(
                     questions: questionBankState.questions,
                     isPersonal:
@@ -110,7 +112,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                         QuestionUpdateRoute(questionId: item.id),
                       );
                     },
-                    onDelete: (item) => _showDeleteConfirmation(item),
+                    onDelete: (item) => _showDeleteConfirmation(item, t),
                   ),
           ),
           loadingWidget: () => const QuestionBankLoading(),
@@ -123,21 +125,23 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Add Question'),
+        label: Text(t.questionBank.addQuestion),
       ),
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme, BankType bankType) {
+  Widget _buildEmptyState(ThemeData theme, BankType bankType, dynamic t) {
     final isPersonal = bankType == BankType.personal;
 
     return EnhancedEmptyState(
       icon: isPersonal ? Icons.quiz_outlined : Icons.public_outlined,
-      title: isPersonal ? 'No questions yet' : 'No public questions found',
+      title: isPersonal
+          ? t.questionBank.emptyState.noQuestions
+          : t.questionBank.emptyState.noPublicQuestions,
       message: isPersonal
-          ? 'Create your first question to build your question bank'
-          : 'Try adjusting your search or check back later',
-      actionLabel: isPersonal ? 'Create Question' : null,
+          ? t.questionBank.emptyState.createFirst
+          : t.questionBank.emptyState.tryAdjusting,
+      actionLabel: isPersonal ? t.questionBank.createQuestion : null,
       onAction: isPersonal
           ? () {
               ref.context.router.navigate(const QuestionCreateRoute());
@@ -146,7 +150,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
     );
   }
 
-  void _showDeleteConfirmation(QuestionBankItemEntity item) {
+  void _showDeleteConfirmation(QuestionBankItemEntity item, dynamic t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -159,14 +163,14 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
             color: colorScheme.error,
             size: 48,
           ),
-          title: const Text('Delete Question'),
+          title: Text(t.questionBank.deleteDialog.title),
           content: Text(
-            'Are you sure you want to delete "${item.question.title}"? This action cannot be undone.',
+            t.questionBank.deleteDialog.message(title: item.question.title),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(t.questionBank.actions.cancel),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -177,12 +181,10 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
                 Navigator.of(dialogContext).pop();
                 ref.read(questionBankProvider.notifier).deleteQuestion(item.id);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Question deleted successfully'),
-                  ),
+                  SnackBar(content: Text(t.questionBank.deleteDialog.success)),
                 );
               },
-              child: const Text('Delete'),
+              child: Text(t.questionBank.actions.delete),
             ),
           ],
         );

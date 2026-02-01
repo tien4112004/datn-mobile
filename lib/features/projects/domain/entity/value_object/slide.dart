@@ -1,5 +1,5 @@
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide_background.dart';
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide_element.dart';
+import 'package:AIPrimary/features/projects/domain/entity/value_object/slide_background.dart';
+import 'package:AIPrimary/features/projects/domain/entity/value_object/slide_element.dart';
 
 class Slide {
   String id;

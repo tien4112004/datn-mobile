@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/widgets/richtext_toolbar.dart';
 
 /// Centralized auto-save function with error handling
 /// Saves the current outline state back to the presentation form controller

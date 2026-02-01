@@ -1,4 +1,4 @@
-import 'package:datn_mobile/features/projects/domain/entity/value_object/slide.dart';
+import 'package:AIPrimary/features/projects/domain/entity/value_object/slide.dart';
 
 class Presentation {
   String id;

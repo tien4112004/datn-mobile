@@ -1,4 +1,3 @@
-import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/projects/domain/entity/mindmap_minimal.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';

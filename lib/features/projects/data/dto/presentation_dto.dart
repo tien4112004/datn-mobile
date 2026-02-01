@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/projects/data/dto/slide_dto.dart';
 import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:json_annotation/json_annotation.dart';

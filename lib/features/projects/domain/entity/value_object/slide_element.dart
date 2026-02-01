@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:datn_mobile/features/projects/enum/slide_element_type.dart';
+import 'package:AIPrimary/features/projects/enum/slide_element_type.dart';
 
 class SlideElement {
   SlideElementType type;

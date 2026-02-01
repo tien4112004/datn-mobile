@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
-import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
@@ -12,11 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Page that embeds the Vue app's /generation/:id route for real-time presentation generation
 ///
-/// This page follows the same pattern as MobileApp.vue:
+/// Flow:
 /// 1. Creates presentation via API first (gets back presentationId)
-/// 2. Stores generation request in localStorage
+/// 2. Stores generation request in localStorage for Vue to access
 /// 3. Opens webview with /generation/:id
-/// 4. Vue fetches presentation and generation request, then starts streaming
+/// 4. Vue handles streaming and displays slides
 @RoutePage()
 class PresentationGenerationWebViewPage extends ConsumerStatefulWidget {
   const PresentationGenerationWebViewPage({super.key});
@@ -28,16 +27,11 @@ class PresentationGenerationWebViewPage extends ConsumerStatefulWidget {
 
 class _PresentationGenerationWebViewPageState
     extends ConsumerState<PresentationGenerationWebViewPage> {
-  InAppWebViewController? _webViewController;
   bool _isWebViewLoading = true;
   bool _isCreatingPresentation = true;
-  bool _isPageLoaded = false;
-  bool _isVueReady = false;
-  bool _hasStoredData = false;
+  bool _isGenerationComplete = false;
   String? _error;
   String? _presentationId;
-
-  static const String _generationRequestStorageKey = 'generation_request';
 
   @override
   void initState() {
@@ -49,29 +43,38 @@ class _PresentationGenerationWebViewPageState
     try {
       final formState = ref.read(presentationFormControllerProvider);
 
-      // Create presentation DTO with initial data
-      final presentationDto = PresentationDto(
-        id: '', // Will be assigned by backend
+      // Get the selected theme from the themes provider
+      SlideThemeDto? selectedTheme;
+      final themeId = formState.themeId;
+      if (themeId != null) {
+        final themesValue = ref.read(slideThemesProvider);
+        final themes = themesValue.asData?.value;
+        if (themes != null && themes.isNotEmpty) {
+          selectedTheme = themes.firstWhere(
+            (t) => t.id == themeId,
+            orElse: () => themes.first,
+          );
+        }
+      }
+
+      // Create presentation request DTO
+      final createRequest = CreatePresentationRequestDto(
         title: formState.topic.isEmpty
             ? 'Untitled Presentation'
             : formState.topic,
-        metaData: {},
         slides: [],
-        createdAt: DateFormatHelper.getNow(),
-        updatedAt: DateFormatHelper.getNow(),
         isParsed: false,
         viewport: {'width': 1000.0, 'height': 562.5},
+        theme: selectedTheme,
       );
 
       // Create presentation via API
       final remoteSource = ref.read(projectsRemoteSourceProvider);
-      final createdPresentation = await remoteSource.createPresentation(
-        presentationDto,
-      );
+      final response = await remoteSource.createPresentation(createRequest);
 
       if (mounted) {
         setState(() {
-          _presentationId = createdPresentation.id;
+          _presentationId = response.data?.id;
           _isCreatingPresentation = false;
         });
       }
@@ -192,10 +195,17 @@ class _PresentationGenerationWebViewPageState
   Widget _buildWebViewScaffold(String url) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: Text(t.generate.presentationGenerate.generating),
+=======
+        title: Text(
+          _isGenerationComplete ? 'Presentation' : 'Generating Presentation',
+        ),
+>>>>>>> e89d14e (feat: wip)
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => _handleClose(),
+          onPressed: () =>
+              _isGenerationComplete ? context.router.pop() : _handleClose(),
         ),
       ),
       body: Stack(
@@ -204,15 +214,14 @@ class _PresentationGenerationWebViewPageState
             webViewUrl: url,
             enableZoom: false,
             onWebViewCreated: (controller) {
-              _webViewController = controller;
               _registerHandlers(controller);
             },
             onLoadStop: (controller, url) async {
               debugPrint('WebView page loaded');
-              _isPageLoaded = true;
               setState(() => _isWebViewLoading = false);
-              // Try to start generation if Vue is ready
-              _tryStartGeneration();
+
+              // Store generation request in localStorage for Vue to access
+              await _storeGenerationRequest(controller);
             },
             onReceivedError: (controller, request, error) {
               debugPrint('WebView error: ${error.description}');
@@ -223,7 +232,7 @@ class _PresentationGenerationWebViewPageState
           ),
           if (_isWebViewLoading)
             const Center(child: CircularProgressIndicator()),
-          if (_error != null)
+          if (_error != null && !_isCreatingPresentation)
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -263,108 +272,8 @@ class _PresentationGenerationWebViewPageState
     );
   }
 
-  /// Try to start the generation process
-  /// This is called when both page is loaded and Vue is ready
-  void _tryStartGeneration() {
-    if (_isPageLoaded &&
-        _isVueReady &&
-        !_hasStoredData &&
-        _webViewController != null) {
-      _hasStoredData = true;
-      _storeGenerationRequest(_webViewController!);
-    }
-  }
-
-  Future<void> _storeGenerationRequest(
-    InAppWebViewController controller,
-  ) async {
-    if (_presentationId == null) return;
-
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
-
-    // Build the generation request
-    final generationRequest = formController.toPresentationRequest();
-
-    // Convert to JSON for Vue's PresentationGenerationRequest format
-    final requestJson = {
-      'model': {
-        'name': generationRequest.model,
-        'provider': generationRequest.provider,
-      },
-      'language': generationRequest.language,
-      'slideCount': generationRequest.slideCount,
-      'outline': generationRequest.outline,
-      'presentation': generationRequest.presentation,
-      'others': generationRequest.others,
-    };
-
-    try {
-      // Store in localStorage with presentation ID as key
-      final storageKey = '${_generationRequestStorageKey}_$_presentationId';
-      final jsonString = jsonEncode(
-        requestJson,
-      ).replaceAll("'", "\\'").replaceAll('\n', '\\n');
-      await controller.evaluateJavascript(
-        source:
-            '''
-          localStorage.setItem('$storageKey', '$jsonString');
-        ''',
-      );
-      debugPrint('Generation request stored in localStorage');
-
-      // Notify Vue to start the generation process
-      await controller.evaluateJavascript(
-        source: '''
-          if (window.startGeneration) {
-            window.startGeneration();
-          } else {
-            console.error('startGeneration not available');
-          }
-        ''',
-      );
-      debugPrint('Called startGeneration on Vue app');
-    } catch (e) {
-      debugPrint('Error storing generation request: $e');
-      if (mounted) {
-        setState(() {
-          _error = 'Failed to initialize generation';
-        });
-      }
-    }
-  }
-
   void _registerHandlers(InAppWebViewController controller) {
-    // Handler: Vue app view is ready
-    controller.addJavaScriptHandler(
-      handlerName: 'generationViewReady',
-      callback: (args) {
-        debugPrint('Generation view ready');
-        _isVueReady = true;
-        // Try to start generation if page is loaded
-        _tryStartGeneration();
-      },
-    );
-
-    // Handler: Generation has started
-    controller.addJavaScriptHandler(
-      handlerName: 'generationStarted',
-      callback: (args) {
-        final data = args.isNotEmpty ? args[0] as Map<String, dynamic> : {};
-        debugPrint('Generation started: $data');
-
-        if (data['success'] != true) {
-          if (mounted) {
-            setState(() {
-              _error = data['error'] as String? ?? 'Failed to start generation';
-            });
-          }
-        }
-      },
-    );
-
-    // Handler: Generation completed
+    // Handler: Generation completed (from Vue after processing all slides)
     controller.addJavaScriptHandler(
       handlerName: 'generationCompleted',
       callback: (args) {
@@ -374,7 +283,11 @@ class _PresentationGenerationWebViewPageState
         if (data['success'] == true) {
           final slideCount = data['slideCount'] as int?;
           debugPrint('Successfully generated $slideCount slides');
-          _navigateToDetail();
+          if (mounted) {
+            setState(() {
+              _isGenerationComplete = true;
+            });
+          }
         } else {
           if (mounted) {
             setState(() {
@@ -490,7 +403,6 @@ class _PresentationGenerationWebViewPageState
 
   @override
   void dispose() {
-    _webViewController = null;
     super.dispose();
   }
 }

@@ -148,7 +148,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   }
 
   Widget _buildWebView(Presentation presentation) {
-    final url = '${Config.presentationBaseUrl}/mobile';
+    final url = '${Config.presentationBaseUrl}/mobile/${presentation.id}';
 
     return AuthenticatedWebView(
       webViewUrl: url,

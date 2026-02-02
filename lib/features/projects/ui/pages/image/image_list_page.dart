@@ -180,8 +180,6 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
                               sortOption: value?.toApiValue(),
                             );
                           },
-                          allLabel: '',
-                          allIcon: LucideIcons.list,
                         ),
                       ],
                       onClearFilters: () {

@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -109,8 +110,10 @@ class _PresentationGenerationWebViewPageState
     }
 
     // Build the main scaffold with WebView (hidden until Vue ready)
+    // Get current locale to pass to WebView
+    final locale = ref.read(translationsPod).$meta.locale.languageCode;
     final url = _presentationId != null
-        ? '${Config.presentationBaseUrl}/generation/$_presentationId'
+        ? '${Config.presentationBaseUrl}/generation/$_presentationId?locale=$locale'
         : null;
 
     if (kDebugMode && url != null) {

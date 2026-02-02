@@ -278,7 +278,9 @@
       "message": "You have unsaved changes. Are you sure you want to leave?",
       "cancel": "Cancel",
       "discard": "Discard"
-    }
+    },
+    "all": "All",
+    "filterBy": "Filter by $label"
   },
   "errors": {
     "network_error": "Network error occurred. Please try again.",

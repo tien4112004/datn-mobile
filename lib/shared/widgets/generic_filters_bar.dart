@@ -2,6 +2,7 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 
 /// Base class for type-erased filter configuration
@@ -10,8 +11,6 @@ abstract class BaseFilterConfig {
   IconData get icon;
   bool get hasSelection;
   String get displayLabel;
-  String get allLabel;
-  IconData get allIcon;
 
   /// Build the options list for the picker
   List<Widget> buildOptions(BuildContext context, VoidCallback onItemTapped);
@@ -31,10 +30,6 @@ class FilterConfig<T> implements BaseFilterConfig {
   final String Function(T) displayNameBuilder;
   final IconData Function(T)? iconBuilder;
   final ValueChanged<T?> onChanged;
-  @override
-  final String allLabel;
-  @override
-  final IconData allIcon;
 
   const FilterConfig({
     required this.label,
@@ -44,8 +39,6 @@ class FilterConfig<T> implements BaseFilterConfig {
     required this.displayNameBuilder,
     this.iconBuilder,
     required this.onChanged,
-    required this.allLabel,
-    this.allIcon = LucideIcons.list,
   });
 
   @override
@@ -53,7 +46,7 @@ class FilterConfig<T> implements BaseFilterConfig {
 
   @override
   String get displayLabel {
-    if (selectedValue == null) return allLabel;
+    if (selectedValue == null) return label;
     return displayNameBuilder(selectedValue as T);
   }
 
@@ -131,7 +124,7 @@ class GenericFiltersBar extends ConsumerWidget {
       ...filters.map((filter) {
         final chip = FilterChipButton(
           filter: filter,
-          onTap: () => FilterChipButton.showFilterPicker(context, filter),
+          onTap: () => FilterChipButton.showFilterPicker(context, filter, ref),
           isReadOnly: isReadOnly,
         );
 

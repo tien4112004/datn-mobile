@@ -31,8 +31,6 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         label: t.assignments.filters.status,
         icon: LucideIcons.info,
         options: AssignmentStatus.values,
-        allLabel: t.assignments.filters.allStatus,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.statusFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(statusFilter: value);
@@ -45,8 +43,6 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         label: t.assignments.filters.gradeLevel,
         icon: LucideIcons.graduationCap,
         options: GradeLevel.values,
-        allLabel: t.assignments.filters.allGrades,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.gradeLevelFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(gradeLevelFilter: value);
@@ -58,8 +54,6 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         label: t.assignments.filters.subject,
         icon: LucideIcons.bookOpen,
         options: Subject.values,
-        allLabel: t.assignments.filters.allSubjects,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.subjectFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(subjectFilter: value);

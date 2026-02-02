@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -107,7 +108,9 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   }
 
   Widget _buildWebView({required String mindmapId}) {
-    final url = '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId';
+    final locale = ref.read(translationsPod).$meta.locale.languageCode;
+    final url =
+        '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId?locale=$locale';
     return AuthenticatedWebView(
       webViewUrl: url,
       enableZoom: false,

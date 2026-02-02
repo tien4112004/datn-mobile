@@ -70,7 +70,7 @@ class ResourceGridCard extends ConsumerWidget {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,28 +101,9 @@ class ResourceGridCard extends ConsumerWidget {
                             ],
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        if (description != null)
-                          Text(
-                            description!.isEmpty
-                                ? 'No description provided'
-                                : description!,
-                            style: description!.isEmpty
-                                ? theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant
-                                        .withValues(alpha: 0.5),
-                                    height: 1.3,
-                                    fontStyle: FontStyle.italic,
-                                  )
-                                : theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                    height: 1.3,
-                                  ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
                       ],
                     ),
+                    const SizedBox(height: 8),
                     Text(
                       DateFormatHelper.formatRelativeDate(
                         ref: ref,

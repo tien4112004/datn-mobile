@@ -166,7 +166,6 @@ class AssessmentMatrixDashboard extends StatelessWidget {
                     Difficulty.knowledge,
                     Difficulty.comprehension,
                     Difficulty.application,
-                    Difficulty.advancedApplication,
                   ].map((difficulty) {
                     return Expanded(
                       child: Center(
@@ -252,7 +251,6 @@ class AssessmentMatrixDashboard extends StatelessWidget {
                     Difficulty.knowledge,
                     Difficulty.comprehension,
                     Difficulty.application,
-                    Difficulty.advancedApplication,
                   ].map((difficulty) {
                     final target = matrix.getTarget(type, difficulty);
                     final actual = matrix.getActual(type, difficulty);
@@ -532,8 +530,6 @@ class AssessmentMatrixDashboard extends StatelessWidget {
         return 'Comp';
       case Difficulty.application:
         return 'App';
-      case Difficulty.advancedApplication:
-        return 'Adv';
     }
   }
 
@@ -584,7 +580,6 @@ class AssessmentMatrix {
       Difficulty.knowledge,
       Difficulty.comprehension,
       Difficulty.application,
-      Difficulty.advancedApplication,
     ].fold(0, (sum, diff) => sum + getTarget(type, diff));
   }
 
@@ -593,7 +588,6 @@ class AssessmentMatrix {
       Difficulty.knowledge,
       Difficulty.comprehension,
       Difficulty.application,
-      Difficulty.advancedApplication,
     ].fold(0, (sum, diff) => sum + getActual(type, diff));
   }
 
@@ -608,7 +602,7 @@ class AssessmentMatrix {
   MatrixStats getStats() {
     final totalTarget = getTotalTarget();
     final totalActual = getTotalActual();
-    final totalCells = QuestionType.values.length * 4; // 4 difficulty levels
+    final totalCells = QuestionType.values.length * 3; // 3 difficulty levels
 
     int matchedCells = 0;
     for (final type in QuestionType.values) {
@@ -616,7 +610,6 @@ class AssessmentMatrix {
         Difficulty.knowledge,
         Difficulty.comprehension,
         Difficulty.application,
-        Difficulty.advancedApplication,
       ]) {
         final target = getTarget(type, difficulty);
         final actual = getActual(type, difficulty);

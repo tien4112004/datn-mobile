@@ -11,8 +11,7 @@ part 'question_response.g.dart';
 class QuestionResponse {
   final String id;
   final String type; // MULTIPLE_CHOICE, MATCHING, OPEN_ENDED, FILL_IN_BLANK
-  final String?
-  difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION, ADVANCED_APPLICATION
+  final String? difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION
   final String? title;
   final String? titleImageUrl;
   final String? explanation;

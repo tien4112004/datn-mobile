@@ -680,8 +680,7 @@
     "difficulties": {
       "knowledge": "Knowledge",
       "comprehension": "Comprehension",
-      "application": "Application",
-      "advancedApplication": "Advanced Application"
+      "application": "Application"
     },
 
     "grades": {

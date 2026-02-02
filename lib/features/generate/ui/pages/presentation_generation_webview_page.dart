@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
@@ -12,10 +13,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Page that embeds the Vue app's /generation/:id route for real-time presentation generation
 ///
 /// Flow:
-/// 1. Creates presentation via API first (gets back presentationId)
-/// 2. Stores generation request in localStorage for Vue to access
-/// 3. Opens webview with /generation/:id
-/// 4. Vue handles streaming and displays slides
+/// 1. Creates presentation via API (hidden behind loading)
+/// 2. Opens WebView (hidden behind loading)
+/// 3. Stores generation request in localStorage
+/// 4. Waits for Vue to signal 'generationViewReady'
+/// 5. Shows WebView with Vue's streaming UI
 @RoutePage()
 class PresentationGenerationWebViewPage extends ConsumerStatefulWidget {
   const PresentationGenerationWebViewPage({super.key});
@@ -27,8 +29,7 @@ class PresentationGenerationWebViewPage extends ConsumerStatefulWidget {
 
 class _PresentationGenerationWebViewPageState
     extends ConsumerState<PresentationGenerationWebViewPage> {
-  bool _isWebViewLoading = true;
-  bool _isCreatingPresentation = true;
+  bool _isVueReady = false;
   bool _isGenerationComplete = false;
   String? _error;
   String? _presentationId;
@@ -75,7 +76,6 @@ class _PresentationGenerationWebViewPageState
       if (mounted) {
         setState(() {
           _presentationId = response.data?.id;
-          _isCreatingPresentation = false;
         });
       }
     } catch (e) {
@@ -83,7 +83,6 @@ class _PresentationGenerationWebViewPageState
       if (mounted) {
         setState(() {
           _error = e.toString();
-          _isCreatingPresentation = false;
         });
       }
     }
@@ -104,38 +103,17 @@ class _PresentationGenerationWebViewPageState
       );
     }
 
-    // Show loading while creating presentation
-    if (_isCreatingPresentation) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Preparing...'),
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => context.router.pop(),
-          ),
-        ),
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text('Creating presentation...'),
-            ],
-          ),
-        ),
-      );
-    }
-
     // Show error if presentation creation failed
-    if (_error != null || _presentationId == null) {
+    if (_error != null) {
       return _buildErrorView();
     }
 
-    // Build webview with presentation ID
-    final url = '${Config.presentationBaseUrl}/generation/$_presentationId';
+    // Build the main scaffold with WebView (hidden until Vue ready)
+    final url = _presentationId != null
+        ? '${Config.presentationBaseUrl}/generation/$_presentationId'
+        : null;
 
-    if (kDebugMode) {
+    if (kDebugMode && url != null) {
       debugPrint('Opening generation webview: $url');
     }
 
@@ -174,7 +152,6 @@ class _PresentationGenerationWebViewPageState
                 onPressed: () {
                   setState(() {
                     _error = null;
-                    _isCreatingPresentation = true;
                   });
                   _createPresentation();
                 },
@@ -192,7 +169,7 @@ class _PresentationGenerationWebViewPageState
     );
   }
 
-  Widget _buildWebViewScaffold(String url) {
+  Widget _buildWebViewScaffold(String? url) {
     return Scaffold(
       appBar: AppBar(
 <<<<<<< HEAD
@@ -205,64 +182,46 @@ class _PresentationGenerationWebViewPageState
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () =>
-              _isGenerationComplete ? context.router.pop() : _handleClose(),
+              _isGenerationComplete ? _navigateToProjects() : _handleClose(),
         ),
       ),
       body: Stack(
         children: [
-          AuthenticatedWebView(
-            webViewUrl: url,
-            enableZoom: false,
-            onWebViewCreated: (controller) {
-              _registerHandlers(controller);
-            },
-            onLoadStop: (controller, url) async {
-              debugPrint('WebView page loaded');
-              setState(() => _isWebViewLoading = false);
+          // WebView - hidden until Vue signals ready
+          if (url != null)
+            Opacity(
+              opacity: _isVueReady ? 1.0 : 0.0,
+              child: AuthenticatedWebView(
+                webViewUrl: url,
+                enableZoom: false,
+                onWebViewCreated: (controller) {
+                  _registerHandlers(controller);
+                },
+                onLoadStop: (controller, url) async {
+                  debugPrint('WebView page loaded');
+                  // Store generation request in localStorage for Vue to access
+                  await _storeGenerationRequest(controller);
+                },
+                onReceivedError: (controller, request, error) {
+                  debugPrint('WebView error: ${error.description}');
+                },
+                onConsoleMessage: (controller, message) {
+                  debugPrint('[Generation] ${message.message}');
+                },
+              ),
+            ),
 
-              // Store generation request in localStorage for Vue to access
-              await _storeGenerationRequest(controller);
-            },
-            onReceivedError: (controller, request, error) {
-              debugPrint('WebView error: ${error.description}');
-            },
-            onConsoleMessage: (controller, message) {
-              debugPrint('[Generation] ${message.message}');
-            },
-          ),
-          if (_isWebViewLoading)
-            const Center(child: CircularProgressIndicator()),
-          if (_error != null && !_isCreatingPresentation)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
+          // Single loading indicator - shown until Vue is ready
+          if (!_isVueReady)
+            Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      t.generate.customization.error,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _error!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () => context.router.pop(),
-                      child: Text(t.generate.presentationGenerate.goBack),
-                    ),
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Starting generation...'),
                   ],
                 ),
               ),
@@ -273,6 +232,19 @@ class _PresentationGenerationWebViewPageState
   }
 
   void _registerHandlers(InAppWebViewController controller) {
+    // Handler: Vue is ready to show content
+    controller.addJavaScriptHandler(
+      handlerName: 'generationViewReady',
+      callback: (args) {
+        debugPrint('Vue generation view ready');
+        if (mounted) {
+          setState(() {
+            _isVueReady = true;
+          });
+        }
+      },
+    );
+
     // Handler: Generation completed (from Vue after processing all slides)
     controller.addJavaScriptHandler(
       handlerName: 'generationCompleted',
@@ -365,15 +337,16 @@ class _PresentationGenerationWebViewPageState
       );
       debugPrint('Generation data sent to Vue app');
     } catch (e) {
-      debugPrint('Error preparing or sending generation data: $e');
-      if (mounted) {
-        setState(() {
-          _error = e is FormatException
-              ? e.message
-              : 'Failed to prepare generation request';
-        });
-      }
+      debugPrint('[Flutter] Error storing generation request: $e');
     }
+  }
+
+  /// Navigate to Projects page after generation complete
+  void _navigateToProjects() {
+    // Pop all routes and navigate to MainWrapper with Projects tab active
+    context.router.replaceAll([
+      MainWrapperRoute(children: [const ProjectsRoute()]),
+    ]);
   }
 
   void _handleClose() {

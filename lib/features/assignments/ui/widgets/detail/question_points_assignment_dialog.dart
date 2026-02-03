@@ -1,15 +1,18 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Dialog for assigning points to selected questions from the question bank.
 ///
 /// Shows a list of selected questions with input fields for points.
 /// Provides a quick "Apply All" action to set the same points for all questions.
-class QuestionPointsAssignmentDialog extends StatefulWidget {
+class QuestionPointsAssignmentDialog extends ConsumerStatefulWidget {
   final List<QuestionBankItemEntity> selectedQuestions;
 
   const QuestionPointsAssignmentDialog({
@@ -31,12 +34,12 @@ class QuestionPointsAssignmentDialog extends StatefulWidget {
   }
 
   @override
-  State<QuestionPointsAssignmentDialog> createState() =>
+  ConsumerState<QuestionPointsAssignmentDialog> createState() =>
       _QuestionPointsAssignmentDialogState();
 }
 
 class _QuestionPointsAssignmentDialogState
-    extends State<QuestionPointsAssignmentDialog> {
+    extends ConsumerState<QuestionPointsAssignmentDialog> {
   late final Map<String, TextEditingController> _pointsControllers;
   late final Map<String, double> _points;
   final _applyAllController = TextEditingController(text: '10');
@@ -73,10 +76,15 @@ class _QuestionPointsAssignmentDialogState
   double get _totalPoints => _points.values.fold(0.0, (sum, val) => sum + val);
 
   void _applyAllPoints() {
+    final t = ref.read(translationsPod);
     final value = double.tryParse(_applyAllController.text) ?? 10.0;
     if (value <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Points must be greater than 0')),
+        SnackBar(
+          content: Text(
+            t.assignments.pointsAssignment.pointsMustBeGreaterThanZero,
+          ),
+        ),
       );
       return;
     }
@@ -87,11 +95,16 @@ class _QuestionPointsAssignmentDialogState
   }
 
   void _handleAdd() {
+    final t = ref.read(translationsPod);
     // Validate all points
     for (final entry in _points.entries) {
       if (entry.value <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('All points must be greater than 0')),
+          SnackBar(
+            content: Text(
+              t.assignments.pointsAssignment.allPointsMustBeGreaterThanZero,
+            ),
+          ),
         );
         return;
       }
@@ -114,6 +127,7 @@ class _QuestionPointsAssignmentDialogState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Dialog(
       backgroundColor: colorScheme.surface,
@@ -127,7 +141,7 @@ class _QuestionPointsAssignmentDialogState
           children: [
             // Title
             Text(
-              'Assign Points to Questions',
+              t.assignments.pointsAssignment.title,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: colorScheme.onSurface,
@@ -137,7 +151,7 @@ class _QuestionPointsAssignmentDialogState
 
             // Subtitle
             Text(
-              'Set points for each question in this assignment',
+              t.assignments.pointsAssignment.subtitle,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -157,8 +171,8 @@ class _QuestionPointsAssignmentDialogState
                       ),
                     ],
                     decoration: InputDecoration(
-                      labelText: 'Apply All',
-                      suffixText: 'pts',
+                      labelText: t.assignments.pointsAssignment.applyAll,
+                      suffixText: t.assignments.pointsAssignment.pts,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -169,7 +183,7 @@ class _QuestionPointsAssignmentDialogState
                 FilledButton.icon(
                   onPressed: _applyAllPoints,
                   icon: const Icon(LucideIcons.copy, size: 18),
-                  label: const Text('Apply'),
+                  label: Text(t.assignments.pointsAssignment.apply),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -217,14 +231,16 @@ class _QuestionPointsAssignmentDialogState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Points',
+                    t.assignments.pointsAssignment.totalPoints,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onPrimaryContainer,
                     ),
                   ),
                   Text(
-                    '${_totalPoints.toStringAsFixed(0)} pts',
+                    t.assignments.pointsAssignment.pointsValue(
+                      points: _totalPoints.toStringAsFixed(0),
+                    ),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: colorScheme.onPrimaryContainer,
@@ -241,12 +257,12 @@ class _QuestionPointsAssignmentDialogState
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(t.assignments.pointsAssignment.cancel),
                 ),
                 const SizedBox(width: 12),
                 FilledButton(
                   onPressed: _handleAdd,
-                  child: const Text('Add Questions'),
+                  child: Text(t.assignments.pointsAssignment.addQuestions),
                 ),
               ],
             ),
@@ -258,7 +274,7 @@ class _QuestionPointsAssignmentDialogState
 }
 
 /// Widget for a single question point input item
-class _QuestionPointItem extends StatelessWidget {
+class _QuestionPointItem extends ConsumerWidget {
   final int index;
   final String title;
   final QuestionType type;
@@ -272,9 +288,10 @@ class _QuestionPointItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -332,7 +349,7 @@ class _QuestionPointItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      type.displayName,
+                      type.localizedName(t),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),
@@ -355,7 +372,7 @@ class _QuestionPointItem extends StatelessWidget {
               ],
               textAlign: TextAlign.center,
               decoration: InputDecoration(
-                suffixText: 'pts',
+                suffixText: t.assignments.pointsAssignment.pts,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 12,

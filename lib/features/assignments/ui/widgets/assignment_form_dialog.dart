@@ -5,6 +5,7 @@ import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_re
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,6 +62,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Dialog(
       backgroundColor: colorScheme.surface,
@@ -81,8 +83,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       Expanded(
                         child: Text(
                           _isEditing
-                              ? 'Edit Assignment'
-                              : 'Create New Assignment',
+                              ? t.assignments.form.editTitle
+                              : t.assignments.form.createTitle,
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -100,15 +102,15 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
-                      labelText: 'Assignment Title *',
-                      hintText: 'e.g., Mathematics Final Assignment - Grade 1',
+                      labelText: t.assignments.form.titleLabel,
+                      hintText: t.assignments.form.titleHint,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter assignment title';
+                        return t.assignments.form.titleRequired;
                       }
                       return null;
                     },
@@ -121,7 +123,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       Padding(
                         padding: const EdgeInsets.only(left: 12, bottom: 8),
                         child: Text(
-                          'Subject *',
+                          t.assignments.form.subjectLabel,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -141,8 +143,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Brief description of the assignment',
+                      labelText: t.assignments.form.descriptionLabel,
+                      hintText: t.assignments.form.descriptionHint,
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -158,7 +160,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       Padding(
                         padding: const EdgeInsets.only(left: 12, bottom: 8),
                         child: Text(
-                          'Grade Level *',
+                          t.assignments.form.gradeLevelLabel,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -178,8 +180,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                   TextFormField(
                     controller: _timeLimitController,
                     decoration: InputDecoration(
-                      labelText: 'Time Limit (minutes)',
-                      hintText: 'e.g., 60',
+                      labelText: t.assignments.form.timeLimitLabel,
+                      hintText: t.assignments.form.timeLimitHint,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -190,7 +192,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       if (value != null && value.isNotEmpty) {
                         final minutes = int.tryParse(value);
                         if (minutes == null || minutes <= 0) {
-                          return 'Please enter a valid time limit';
+                          return t.assignments.form.timeLimitInvalid;
                         }
                       }
                       return null;
@@ -202,7 +204,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        child: Text(t.assignments.form.cancel),
                       ),
                       const SizedBox(width: 8),
                       FilledButton.icon(
@@ -211,7 +213,11 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                           _isEditing ? LucideIcons.check : LucideIcons.plus,
                           size: 18,
                         ),
-                        label: Text(_isEditing ? 'Save' : 'Create'),
+                        label: Text(
+                          _isEditing
+                              ? t.assignments.form.save
+                              : t.assignments.form.create,
+                        ),
                       ),
                     ],
                   ),
@@ -229,6 +235,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
       return;
     }
 
+    final t = ref.read(translationsPod);
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final timeLimitText = _timeLimitController.text.trim();
@@ -254,7 +261,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
         if (mounted) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Assignment updated successfully')),
+            SnackBar(content: Text(t.assignments.form.updateSuccess)),
           );
         }
       } else {
@@ -285,20 +292,19 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Assignment created! Add questions to complete setup.',
-              ),
-              duration: Duration(seconds: 3),
+            SnackBar(
+              content: Text(t.assignments.form.createSuccess),
+              duration: const Duration(seconds: 3),
             ),
           );
         }
       }
     } catch (e) {
       if (mounted) {
+        final t = ref.read(translationsPod);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text(t.assignments.form.error(error: e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );

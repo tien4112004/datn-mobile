@@ -1,9 +1,11 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Bottom action dock for save/cancel operations in edit mode.
 /// Follows Material Design 3 with elevated styling.
-class BottomActionDock extends StatelessWidget {
+class BottomActionDock extends ConsumerWidget {
   final VoidCallback onCancel;
   final VoidCallback onSave;
   final bool isSaving;
@@ -16,9 +18,10 @@ class BottomActionDock extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       decoration: BoxDecoration(
@@ -47,7 +50,7 @@ class BottomActionDock extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: isSaving ? null : onCancel,
                   icon: const Icon(LucideIcons.x, size: 18),
-                  label: const Text('Cancel'),
+                  label: Text(t.assignments.actionDock.cancel),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
@@ -71,7 +74,11 @@ class BottomActionDock extends StatelessWidget {
                           ),
                         )
                       : const Icon(LucideIcons.save, size: 18),
-                  label: Text(isSaving ? 'Saving...' : 'Save Changes'),
+                  label: Text(
+                    isSaving
+                        ? t.assignments.actionDock.saving
+                        : t.assignments.actionDock.saveChanges,
+                  ),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),

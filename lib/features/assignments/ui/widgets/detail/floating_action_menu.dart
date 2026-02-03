@@ -1,4 +1,6 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Floating action menu with speed dial for adding questions.
@@ -11,17 +13,17 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Smooth stagger animation (300ms)
 /// - Material 3 design
 /// - Backdrop overlay when expanded
-class FloatingActionMenu extends StatefulWidget {
+class FloatingActionMenu extends ConsumerStatefulWidget {
   final VoidCallback? onAddFromBank;
   final VoidCallback? onCreateNew;
 
   const FloatingActionMenu({super.key, this.onAddFromBank, this.onCreateNew});
 
   @override
-  State<FloatingActionMenu> createState() => _FloatingActionMenuState();
+  ConsumerState<FloatingActionMenu> createState() => _FloatingActionMenuState();
 }
 
-class _FloatingActionMenuState extends State<FloatingActionMenu>
+class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _rotationAnimation;
@@ -76,6 +78,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Stack(
       alignment: Alignment.bottomRight,
@@ -91,7 +94,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
               // From Bank Option
               _buildSpeedDialItem(
                 icon: LucideIcons.library,
-                label: 'From Bank',
+                label: t.assignments.floatingMenu.fromBank,
                 color: colorScheme.secondary,
                 delay: 0,
                 onTap: () => _handleAction(widget.onAddFromBank),
@@ -102,7 +105,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
               // Create New Option
               _buildSpeedDialItem(
                 icon: LucideIcons.plus,
-                label: 'Create New',
+                label: t.assignments.floatingMenu.createNew,
                 color: colorScheme.tertiary,
                 delay: 50,
                 onTap: () => _handleAction(widget.onCreateNew),
@@ -123,7 +126,9 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
               child: Icon(_isExpanded ? LucideIcons.x : LucideIcons.plus),
             ),
             label: Text(
-              _isExpanded ? 'Close' : 'Add Question',
+              _isExpanded
+                  ? t.assignments.floatingMenu.close
+                  : t.assignments.floatingMenu.addQuestion,
               style: theme.textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

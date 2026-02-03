@@ -4,6 +4,7 @@ import 'package:AIPrimary/features/assignments/ui/widgets/assignment_card.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_header.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_loading.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +25,13 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final assignmentsAsync = ref.watch(assignmentsControllerProvider);
+    final t = ref.watch(translationsPod);
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerLowest,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [_buildSliverAppBar(context, colorScheme, theme)];
+          return [_buildSliverAppBar(context, colorScheme, theme, t)];
         },
         body: assignmentsAsync.easyWhen(
           data: (result) {
@@ -38,9 +40,9 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
             if (assignments.isEmpty) {
               return EnhancedEmptyState(
                 icon: LucideIcons.fileText,
-                title: 'No assignments yet',
-                message: 'Create your first assignment to get started',
-                actionLabel: 'Create Exam',
+                title: t.assignments.emptyState.noAssignments,
+                message: t.assignments.emptyState.createFirstMessage,
+                actionLabel: t.assignments.createExam,
                 onAction: () => _showCreateExamDialog(context),
               );
             }
@@ -73,7 +75,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showCreateExamDialog(context),
         icon: const Icon(LucideIcons.plus),
-        label: const Text('Create Exam'),
+        label: Text(t.assignments.createExam),
         elevation: 2,
       ),
     );
@@ -84,6 +86,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     BuildContext context,
     ColorScheme colorScheme,
     ThemeData theme,
+    dynamic t,
   ) {
     final filterState = ref.watch(assignmentFilterProvider);
 
@@ -94,7 +97,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(
-        'Assignment Management',
+        t.assignments.title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -105,7 +108,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
           onPressed: () {
             ref.read(assignmentsControllerProvider.notifier).refresh();
           },
-          tooltip: 'Refresh',
+          tooltip: t.assignments.refresh,
         ),
         const SizedBox(width: 8),
       ],

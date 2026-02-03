@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/states/assignment_filter_state.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/advanced_filter_dialog.dart';
 import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
@@ -22,22 +23,23 @@ void showAdvancedAssignmentFilterDialog({
 }) {
   // Get current filter state
   final currentFilterState = ref.read(assignmentFilterProvider);
+  final t = ref.read(translationsPod);
 
   // Initialize draft state with current values
   AssignmentFilterState draftState = currentFilterState;
 
   showAdvancedFilterDialog(
     context: context,
-    title: 'Assignment Filters',
+    title: t.assignments.filters.title,
     content: StatefulBuilder(
       builder: (context, setState) {
         // Create filter configs with draft state
         final filterConfigs = List<BaseFilterConfig>.of([
           FilterConfig<AssignmentStatus>(
-            label: 'Status',
+            label: t.assignments.filters.status,
             icon: LucideIcons.info,
             options: AssignmentStatus.values,
-            allLabel: 'All Status',
+            allLabel: t.assignments.filters.allStatus,
             allIcon: LucideIcons.list,
             selectedValue: draftState.statusFilter,
             onChanged: (value) {
@@ -49,10 +51,10 @@ void showAdvancedAssignmentFilterDialog({
             iconBuilder: (status) => AssignmentStatus.getStatusIcon(status),
           ),
           FilterConfig<GradeLevel>(
-            label: 'Grade Level',
+            label: t.assignments.filters.gradeLevel,
             icon: LucideIcons.graduationCap,
             options: GradeLevel.values,
-            allLabel: 'All Grades',
+            allLabel: t.assignments.filters.allGrades,
             allIcon: LucideIcons.list,
             selectedValue: draftState.gradeLevelFilter,
             onChanged: (value) {
@@ -63,10 +65,10 @@ void showAdvancedAssignmentFilterDialog({
             displayNameBuilder: (value) => value.displayName,
           ),
           FilterConfig<Subject>(
-            label: 'Subject',
+            label: t.assignments.filters.subject,
             icon: LucideIcons.bookOpen,
             options: Subject.values,
-            allLabel: 'All Subjects',
+            allLabel: t.assignments.filters.allSubjects,
             allIcon: LucideIcons.list,
             selectedValue: draftState.subjectFilter,
             onChanged: (value) {
@@ -82,7 +84,7 @@ void showAdvancedAssignmentFilterDialog({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter chips display
-            _buildFiltersSection(context, filterConfigs),
+            _buildFiltersSection(context, filterConfigs, t),
             const SizedBox(height: 16),
             // TODO: Add topic filter input field here if needed
           ],
@@ -105,7 +107,7 @@ void showAdvancedAssignmentFilterDialog({
       // Trigger data reload
       ref.read(assignmentsControllerProvider.notifier).refresh();
     },
-    applyButtonText: 'Apply Filters',
+    applyButtonText: t.assignments.filters.applyFilters,
   );
 }
 
@@ -113,6 +115,7 @@ void showAdvancedAssignmentFilterDialog({
 Widget _buildFiltersSection(
   BuildContext context,
   List<BaseFilterConfig> filters,
+  dynamic t,
 ) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
@@ -129,7 +132,7 @@ Widget _buildFiltersSection(
           ),
           const SizedBox(width: 8),
           Text(
-            'Quick Filters',
+            t.assignments.filters.quickFilters,
             style: theme.textTheme.titleMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,

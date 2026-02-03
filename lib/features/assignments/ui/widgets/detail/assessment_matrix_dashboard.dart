@@ -1,5 +1,7 @@
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Assessment Matrix Dashboard widget.
@@ -13,7 +15,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Summary statistics
 /// - Collapsible ExpansionTile
 /// - Material 3 design
-class AssessmentMatrixDashboard extends StatelessWidget {
+class AssessmentMatrixDashboard extends ConsumerWidget {
   final AssessmentMatrix matrix;
   final bool initiallyExpanded;
 
@@ -24,9 +26,10 @@ class AssessmentMatrixDashboard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -60,7 +63,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
             ),
           ),
           title: Text(
-            'Assessment Matrix',
+            t.assignments.matrixDashboard.title,
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
@@ -69,36 +72,41 @@ class AssessmentMatrixDashboard extends StatelessWidget {
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _buildSubtitle(),
+              _buildSubtitle(t),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
             ),
           ),
           children: [
-            _buildMatrixTable(context, theme, colorScheme),
+            _buildMatrixTable(context, theme, colorScheme, t),
             const SizedBox(height: 16),
-            _buildSummaryStats(context, theme, colorScheme),
+            _buildSummaryStats(context, theme, colorScheme, t),
           ],
         ),
       ),
     );
   }
 
-  String _buildSubtitle() {
+  String _buildSubtitle(dynamic t) {
     final totalTarget = matrix.getTotalTarget();
     final totalActual = matrix.getTotalActual();
     final matchPercentage = totalTarget > 0
         ? ((totalActual / totalTarget) * 100).toStringAsFixed(0)
         : '0';
 
-    return '$totalActual of $totalTarget questions ($matchPercentage% complete)';
+    return t.assignments.matrixDashboard.subtitle(
+      actual: totalActual,
+      target: totalTarget,
+      percentage: matchPercentage,
+    );
   }
 
   Widget _buildMatrixTable(
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -111,7 +119,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
       child: Column(
         children: [
           // Header Row
-          _buildHeaderRow(theme, colorScheme),
+          _buildHeaderRow(theme, colorScheme, t),
 
           // Divider
           Divider(
@@ -123,7 +131,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
           ...QuestionType.values.map((type) {
             return Column(
               children: [
-                _buildDataRow(type, theme, colorScheme),
+                _buildDataRow(type, theme, colorScheme, t),
                 if (type != QuestionType.values.last)
                   Divider(
                     height: 1,
@@ -137,7 +145,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderRow(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildHeaderRow(ThemeData theme, ColorScheme colorScheme, dynamic t) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -150,7 +158,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
           SizedBox(
             width: 100,
             child: Text(
-              'Type',
+              t.assignments.matrixDashboard.type,
               style: theme.textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -178,7 +186,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _getDifficultyAbbreviation(difficulty),
+                              _getDifficultyAbbreviation(difficulty, t),
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurfaceVariant,
@@ -198,7 +206,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
             width: 60,
             child: Center(
               child: Text(
-                'Total',
+                t.assignments.matrixDashboard.total,
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
@@ -215,6 +223,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
     QuestionType type,
     ThemeData theme,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     final typeColor = QuestionType.getColor(type);
 
@@ -231,7 +240,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    _getTypeAbbreviation(type),
+                    _getTypeAbbreviation(type, t),
                     style: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -400,6 +409,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     final stats = matrix.getStats();
 
@@ -424,7 +434,7 @@ class AssessmentMatrixDashboard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Summary Statistics',
+                t.assignments.matrixDashboard.summaryStatistics,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
@@ -439,14 +449,14 @@ class AssessmentMatrixDashboard extends StatelessWidget {
             children: [
               _buildStatBadge(
                 icon: LucideIcons.target,
-                label: 'Target',
+                label: t.assignments.matrixDashboard.target,
                 value: '${stats.totalTarget}',
                 color: colorScheme.primary,
                 theme: theme,
               ),
               _buildStatBadge(
                 icon: LucideIcons.check,
-                label: 'Actual',
+                label: t.assignments.matrixDashboard.actual,
                 value: '${stats.totalActual}',
                 color: stats.totalActual == stats.totalTarget
                     ? Colors.green
@@ -455,14 +465,14 @@ class AssessmentMatrixDashboard extends StatelessWidget {
               ),
               _buildStatBadge(
                 icon: LucideIcons.percent,
-                label: 'Complete',
+                label: t.assignments.matrixDashboard.complete,
                 value: '${stats.completionPercentage.toStringAsFixed(0)}%',
                 color: _getCompletionColor(stats.completionPercentage),
                 theme: theme,
               ),
               _buildStatBadge(
                 icon: LucideIcons.alignCenterHorizontal,
-                label: 'Matched',
+                label: t.assignments.matrixDashboard.matched,
                 value: '${stats.matchedCells}/${stats.totalCells}',
                 color: colorScheme.secondary,
                 theme: theme,
@@ -522,27 +532,27 @@ class AssessmentMatrixDashboard extends StatelessWidget {
     return Colors.red;
   }
 
-  String _getDifficultyAbbreviation(Difficulty difficulty) {
+  String _getDifficultyAbbreviation(Difficulty difficulty, dynamic t) {
     switch (difficulty) {
       case Difficulty.knowledge:
-        return 'Know';
+        return t.assignments.matrix.know;
       case Difficulty.comprehension:
-        return 'Comp';
+        return t.assignments.matrix.comp;
       case Difficulty.application:
-        return 'App';
+        return t.assignments.matrix.app;
     }
   }
 
-  String _getTypeAbbreviation(QuestionType type) {
+  String _getTypeAbbreviation(QuestionType type, dynamic t) {
     switch (type) {
       case QuestionType.multipleChoice:
-        return 'MC';
+        return t.assignments.matrix.mc;
       case QuestionType.matching:
-        return 'Match';
+        return t.assignments.matrix.match;
       case QuestionType.openEnded:
-        return 'Open';
+        return t.assignments.matrix.open;
       case QuestionType.fillInBlank:
-        return 'Fill';
+        return t.assignments.matrix.fill;
     }
   }
 }

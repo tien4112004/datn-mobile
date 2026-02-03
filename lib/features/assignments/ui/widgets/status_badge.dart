@@ -1,17 +1,21 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class StatusBadge extends StatelessWidget {
+class StatusBadge extends ConsumerWidget {
   final AssignmentStatus status;
 
   const StatusBadge({super.key, required this.status});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final config = _getStatusConfig(status);
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -29,7 +33,7 @@ class StatusBadge extends StatelessWidget {
           Icon(config.icon, size: 14, color: config.color),
           const SizedBox(width: 4),
           Text(
-            status.displayName,
+            status.localizedName(t),
             style: theme.textTheme.labelSmall?.copyWith(
               color: config.color,
               fontWeight: FontWeight.w600,

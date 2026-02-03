@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:AIPrimary/shared/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,14 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
     final assignmentsController = ref.read(
       assignmentsControllerProvider.notifier,
     );
+    final t = ref.watch(translationsPod);
 
     final filterConfigs = List<BaseFilterConfig>.of([
       FilterConfig<AssignmentStatus>(
-        label: 'Status',
+        label: t.assignments.filters.status,
         icon: LucideIcons.info,
         options: AssignmentStatus.values,
-        allLabel: 'All Status',
+        allLabel: t.assignments.filters.allStatus,
         allIcon: LucideIcons.list,
         selectedValue: filterState.statusFilter,
         onChanged: (value) {
@@ -40,10 +42,10 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         iconBuilder: (status) => _getStatusIcon(status),
       ),
       FilterConfig<GradeLevel>(
-        label: 'Grade Level',
+        label: t.assignments.filters.gradeLevel,
         icon: LucideIcons.graduationCap,
         options: GradeLevel.values,
-        allLabel: 'All Grades',
+        allLabel: t.assignments.filters.allGrades,
         allIcon: LucideIcons.list,
         selectedValue: filterState.gradeLevelFilter,
         onChanged: (value) {
@@ -53,10 +55,10 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         displayNameBuilder: (value) => value.displayName,
       ),
       FilterConfig<Subject>(
-        label: 'Subject',
+        label: t.assignments.filters.subject,
         icon: LucideIcons.bookOpen,
         options: Subject.values,
-        allLabel: 'All Subjects',
+        allLabel: t.assignments.filters.allSubjects,
         allIcon: LucideIcons.list,
         selectedValue: filterState.subjectFilter,
         onChanged: (value) {
@@ -78,7 +80,7 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
           CustomSearchBar(
             enabled: true,
             autoFocus: false,
-            hintText: 'Search assignments...',
+            hintText: t.assignments.filters.searchHint,
             initialValue: filterState.searchQuery,
             onSubmitted: (value) {
               final query = value.trim().isEmpty ? null : value.trim();

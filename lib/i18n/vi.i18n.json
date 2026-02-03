@@ -1016,5 +1016,269 @@
     "footer": {
       "commentsCount": "$count bình luận"
     }
+  },
+  "assignments": {
+    "title": "Quản lý bài kiểm tra",
+    "createExam": "Tạo bài kiểm tra",
+    "refresh": "Làm mới",
+    "assignmentDetails": "Chi tiết bài kiểm tra",
+    "viewMode": "Chế độ xem",
+    "editMode": "Chế độ chỉnh sửa",
+    "editAssignment": "Sửa bài kiểm tra",
+
+    "emptyState": {
+      "noAssignments": "Chưa có bài kiểm tra nào",
+      "createFirstMessage": "Tạo bài kiểm tra đầu tiên để bắt đầu",
+      "noQuestions": "Chưa có câu hỏi nào",
+      "noQuestionsViewMessage": "Bạn có thể thêm câu hỏi vào bài kiểm tra này bằng cách nhấn nút \"Thêm câu hỏi\".",
+      "addFirstQuestion": "Thêm câu hỏi đầu tiên",
+      "addFirstQuestionMessage": "Sử dụng nút hành động để thêm câu hỏi đầu tiên."
+    },
+
+    "card": {
+      "questions": "câu hỏi",
+      "points": "điểm",
+      "min": "phút",
+      "edit": "Sửa",
+      "delete": "Xóa"
+    },
+
+    "dates": {
+      "createdPrefix": "Tạo lúc",
+      "createdOn": "Tạo ngày $date",
+      "today": "hôm nay",
+      "yesterday": "hôm qua",
+      "daysAgo": "$count ngày trước"
+    },
+
+    "form": {
+      "createTitle": "Tạo bài kiểm tra mới",
+      "editTitle": "Sửa bài kiểm tra",
+      "titleLabel": "Tiêu đề bài kiểm tra *",
+      "titleHint": "VD: Bài kiểm tra Toán cuối kỳ - Lớp 1",
+      "titleRequired": "Vui lòng nhập tiêu đề bài kiểm tra",
+      "subjectLabel": "Môn học *",
+      "descriptionLabel": "Mô tả",
+      "descriptionHint": "Mô tả ngắn về bài kiểm tra",
+      "gradeLevelLabel": "Khối lớp *",
+      "timeLimitLabel": "Thời gian làm bài (phút)",
+      "timeLimitHint": "VD: 60",
+      "timeLimitInvalid": "Vui lòng nhập thời gian hợp lệ",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "create": "Tạo",
+      "createSuccess": "Đã tạo bài kiểm tra! Thêm câu hỏi để hoàn tất.",
+      "updateSuccess": "Cập nhật bài kiểm tra thành công",
+      "error": "Lỗi: $error"
+    },
+
+    "deleteDialog": {
+      "title": "Xóa bài kiểm tra",
+      "message": "Bạn có chắc chắn muốn xóa \"$title\"?",
+      "cancel": "Hủy",
+      "delete": "Xóa",
+      "success": "Đã xóa bài kiểm tra thành công"
+    },
+
+    "detail": {
+      "tabs": {
+        "info": "THÔNG TIN",
+        "questions": "CÂU HỎI",
+        "matrix": "MA TRẬN"
+      },
+      "deleteQuestion": {
+        "title": "Xóa câu hỏi",
+        "message": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "success": "Đã xóa câu hỏi"
+      },
+      "questionUpdated": "Đã cập nhật câu hỏi",
+      "questionsAdded": "Đã thêm $count câu hỏi",
+      "questionCreated": "Đã tạo và thêm câu hỏi",
+      "saveSuccess": "Lưu bài kiểm tra thành công",
+      "saveError": "Lỗi khi lưu bài kiểm tra: $error"
+    },
+
+    "metadata": {
+      "subject": "Môn học",
+      "gradeLevel": "Khối lớp",
+      "totalQuestions": "Tổng số câu hỏi",
+      "description": "Mô tả",
+      "noDescription": "Không có mô tả",
+      "shuffleQuestions": "Xáo trộn câu hỏi",
+      "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+    },
+
+    "actionDock": {
+      "cancel": "Hủy",
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+
+    "floatingMenu": {
+      "addQuestion": "Thêm câu hỏi",
+      "close": "Đóng",
+      "fromBank": "Từ ngân hàng",
+      "createNew": "Tạo mới"
+    },
+
+    "questionPicker": {
+      "title": "Thêm câu hỏi",
+      "fromBank": "Từ ngân hàng câu hỏi",
+      "fromBankDescription": "Chọn câu hỏi có sẵn",
+      "createNew": "Tạo câu hỏi mới",
+      "createNewDescription": "Tạo câu hỏi từ đầu",
+      "cancel": "Hủy"
+    },
+
+    "pointsAssignment": {
+      "title": "Gán điểm cho câu hỏi",
+      "subtitle": "Đặt điểm cho mỗi câu hỏi trong bài kiểm tra",
+      "applyAll": "Áp dụng tất cả",
+      "pts": "điểm",
+      "apply": "Áp dụng",
+      "totalPoints": "Tổng điểm",
+      "pointsValue": "$points điểm",
+      "cancel": "Hủy",
+      "addQuestions": "Thêm câu hỏi",
+      "pointsMustBeGreaterThanZero": "Điểm phải lớn hơn 0",
+      "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0"
+    },
+
+    "questionCard": {
+      "options": "Tùy chọn",
+      "optionsLabel": "Các lựa chọn",
+      "shuffled": "Đã xáo trộn",
+      "matchingPairs": "Các cặp ghép nối",
+      "blank": "Trống",
+      "expectedAnswer": "Đáp án mong đợi",
+      "maxLength(length)": "Độ dài tối đa: $length ký tự",
+      "noLengthLimit": "Không giới hạn độ dài",
+      "fillInTheBlanks": "Điền vào chỗ trống",
+      "caseSensitive": "Phân biệt chữ hoa/thường",
+      "explanation": "Giải thích",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "collapse": "Thu gọn",
+      "expand": "Mở rộng"
+    },
+
+    "filters": {
+      "title": "Bộ lọc bài kiểm tra",
+      "status": "Trạng thái",
+      "allStatus": "Tất cả trạng thái",
+      "gradeLevel": "Khối lớp",
+      "allGrades": "Tất cả khối lớp",
+      "subject": "Môn học",
+      "allSubjects": "Tất cả môn học",
+      "quickFilters": "Bộ lọc nhanh",
+      "applyFilters": "Áp dụng bộ lọc",
+      "searchHint": "Tìm kiếm bài kiểm tra..."
+    },
+
+    "matrixDashboard": {
+      "title": "Ma trận đánh giá",
+      "subtitle(actual, target, percentage)": "$actual trong $target câu hỏi ($percentage% hoàn thành)",
+      "summaryStatistics": "Thống kê tổng hợp",
+      "target": "Mục tiêu",
+      "actual": "Thực tế",
+      "complete": "Hoàn thành",
+      "matched": "Khớp",
+      "targetCount": "Số lượng mục tiêu",
+      "actualCount": "Số lượng thực tế",
+      "completion": "Hoàn thành",
+      "matchesFound": "Số lượng khớp",
+      "type": "Loại",
+      "total": "Tổng"
+    },
+
+    "questionsSection": {
+      "title": "Câu hỏi",
+      "count": "$count ${count, plural, one{câu hỏi} other{câu hỏi}}",
+      "available": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+      "generate": "Tạo tự động"
+    },
+
+    "infoHeader": {
+      "subject": "Môn học",
+      "grade": "Khối lớp",
+      "questions": "Câu hỏi",
+      "editInfo": "Sửa thông tin",
+      "shuffleQuestions": "Xáo trộn câu hỏi",
+      "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+    },
+
+    "statuses": {
+      "draft": "Bản nháp",
+      "generating": "Đang tạo",
+      "completed": "Hoàn thành",
+      "error": "Lỗi",
+      "archived": "Đã lưu trữ"
+    },
+
+    "matrix": {
+      "mc": "TN",
+      "match": "Nối",
+      "open": "TL",
+      "fill": "Điền",
+      "know": "NB",
+      "comp": "TH",
+      "app": "VD",
+      "kno": "NB",
+      "com": "TH",
+      "appAbbr": "VD"
+    },
+
+    "detail": {
+      "tabs": {
+        "info": "THÔNG TIN",
+        "questions": "CÂU HỎI",
+        "matrix": "MA TRẬN"
+      },
+      "deleteQuestion": {
+        "title": "Xóa câu hỏi",
+        "message(number)": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "success": "Đã xóa câu hỏi"
+      },
+      "questionUpdated": "Đã cập nhật câu hỏi",
+      "questionsAdded(count)": "Đã thêm $count câu hỏi",
+      "questionCreated": "Đã tạo và thêm câu hỏi",
+      "saveSuccess": "Lưu bài kiểm tra thành công",
+      "saveError(error)": "Lỗi khi lưu bài kiểm tra: $error",
+      "metadata": {
+        "createdOn(date)": "Tạo ngày $date",
+        "editAssignment": "Sửa bài kiểm tra",
+        "subject": "Môn học",
+        "gradeLevel": "Khối lớp",
+        "totalQuestions": "Tổng số câu hỏi",
+        "description": "Mô tả",
+        "noDescription": "Không có mô tả",
+        "shuffleQuestions": "Xáo trộn câu hỏi",
+        "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+      },
+      "questions": {
+        "title": "Câu hỏi",
+        "available(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+        "emptyTitle": "Chưa có câu hỏi nào",
+        "emptyMessage": "Bạn có thể thêm câu hỏi vào bài kiểm tra này bằng cách nhấn nút \"Thêm câu hỏi\".",
+        "addQuestion": "Thêm câu hỏi",
+        "emptyEditTitle": "Thêm câu hỏi đầu tiên",
+        "emptyEditMessage": "Sử dụng nút hành động để thêm câu hỏi đầu tiên."
+      },
+      "matrix": {
+        "title": "Ma trận đánh giá",
+        "distributed(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} đã phân phối",
+        "summaryStatistics": "Thống kê tổng hợp",
+        "targetCount": "Số lượng mục tiêu",
+        "actualCount": "Số lượng thực tế",
+        "completion": "Hoàn thành",
+        "matchesFound": "Số lượng khớp",
+        "typeHeader": "LOẠI",
+        "totalHeader": "TỔNG"
+      }
+    }
   }
 }

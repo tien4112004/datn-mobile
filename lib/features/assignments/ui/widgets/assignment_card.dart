@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/pages/assignment_detail_page.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/status_badge.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -17,6 +18,7 @@ class AssignmentCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -123,14 +125,14 @@ class AssignmentCard extends ConsumerWidget {
                       context,
                       icon: LucideIcons.listChecks,
                       label: '${assignment.totalQuestions}',
-                      sublabel: 'questions',
+                      sublabel: t.assignments.card.questions,
                     ),
                     const SizedBox(width: 20),
                     _buildStatItem(
                       context,
                       icon: LucideIcons.award,
                       label: '${assignment.totalPoints}',
-                      sublabel: 'points',
+                      sublabel: t.assignments.card.points,
                     ),
                     if (assignment.timeLimitMinutes != null) ...[
                       const SizedBox(width: 20),
@@ -138,7 +140,7 @@ class AssignmentCard extends ConsumerWidget {
                         context,
                         icon: LucideIcons.clock,
                         label: '${assignment.timeLimitMinutes}',
-                        sublabel: 'min',
+                        sublabel: t.assignments.card.min,
                       ),
                     ],
                   ],
@@ -166,7 +168,7 @@ class AssignmentCard extends ConsumerWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Created ${_formatDate(assignment.createdAt)}',
+                      '${t.assignments.dates.createdPrefix} ${_formatDate(assignment.createdAt, t)}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.8,
@@ -175,7 +177,7 @@ class AssignmentCard extends ConsumerWidget {
                       ),
                     ),
                     const Spacer(),
-                    _buildActionButtons(context, ref, colorScheme),
+                    _buildActionButtons(context, ref, colorScheme, t),
                   ],
                 ),
               ],
@@ -268,6 +270,7 @@ class AssignmentCard extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -276,31 +279,31 @@ class AssignmentCard extends ConsumerWidget {
           IconButton(
             onPressed: () => _showEditDialog(context),
             icon: const Icon(LucideIcons.pencil, size: 18),
-            tooltip: 'Edit',
+            tooltip: t.assignments.card.edit,
             visualDensity: VisualDensity.compact,
           ),
         // Duplicate and Archive features not supported by current API
         if (assignment.isDeletable)
           IconButton(
-            onPressed: () => _deleteAssignment(context, ref),
+            onPressed: () => _deleteAssignment(context, ref, t),
             icon: Icon(LucideIcons.trash2, size: 18, color: colorScheme.error),
-            tooltip: 'Delete',
+            tooltip: t.assignments.card.delete,
             visualDensity: VisualDensity.compact,
           ),
       ],
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, dynamic t) {
     final now = DateTime.now();
     final diff = now.difference(date);
 
     if (diff.inDays == 0) {
-      return 'today';
+      return t.assignments.dates.today;
     } else if (diff.inDays == 1) {
-      return 'yesterday';
+      return t.assignments.dates.yesterday;
     } else if (diff.inDays < 7) {
-      return '${diff.inDays} days ago';
+      return t.assignments.dates.daysAgo(count: diff.inDays);
     } else {
       return DateFormat('MMM d, yyyy').format(date);
     }
@@ -322,23 +325,29 @@ class AssignmentCard extends ConsumerWidget {
     );
   }
 
-  Future<void> _deleteAssignment(BuildContext context, WidgetRef ref) async {
+  Future<void> _deleteAssignment(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic t,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Assignment'),
-        content: Text('Are you sure you want to delete "${assignment.title}"?'),
+        title: Text(t.assignments.deleteDialog.title),
+        content: Text(
+          t.assignments.deleteDialog.message(title: assignment.title),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(t.assignments.deleteDialog.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.assignments.deleteDialog.delete),
           ),
         ],
       ),
@@ -351,7 +360,7 @@ class AssignmentCard extends ConsumerWidget {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Assignment deleted successfully')),
+          SnackBar(content: Text(t.assignments.deleteDialog.success)),
         );
       }
     }

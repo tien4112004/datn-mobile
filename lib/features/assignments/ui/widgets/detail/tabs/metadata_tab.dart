@@ -1,5 +1,7 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -22,6 +24,7 @@ class MetadataTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       color: colorScheme.surfaceContainerLowest,
@@ -47,7 +50,12 @@ class MetadataTab extends ConsumerWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Created on ${DateFormatHelper.formatMediumDate(assignment.createdAt, ref: ref)}',
+                          t.assignments.detail.metadata.createdOn(
+                            date: DateFormatHelper.formatMediumDate(
+                              assignment.createdAt,
+                              ref: ref,
+                            ),
+                          ),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -59,7 +67,7 @@ class MetadataTab extends ConsumerWidget {
                     IconButton(
                       icon: const Icon(LucideIcons.pencil, size: 20),
                       onPressed: () => _showEditDialog(context),
-                      tooltip: 'Edit Assignment',
+                      tooltip: t.assignments.detail.metadata.editAssignment,
                       style: IconButton.styleFrom(
                         backgroundColor: colorScheme.surfaceContainerHighest,
                       ),
@@ -88,17 +96,17 @@ class MetadataTab extends ConsumerWidget {
                       final metrics = [
                         (
                           icon: LucideIcons.bookOpen,
-                          label: 'Subject',
-                          value: assignment.subject.displayName,
+                          label: t.assignments.detail.metadata.subject,
+                          value: assignment.subject.localizedName(t),
                         ),
                         (
                           icon: LucideIcons.graduationCap,
-                          label: 'Grade Level',
-                          value: assignment.gradeLevel.displayName,
+                          label: t.assignments.detail.metadata.gradeLevel,
+                          value: assignment.gradeLevel.localizedName(t),
                         ),
                         (
                           icon: LucideIcons.listChecks,
-                          label: 'Total Questions',
+                          label: t.assignments.detail.metadata.totalQuestions,
                           value: '${assignment.totalQuestions}',
                         ),
                       ];
@@ -126,7 +134,7 @@ class MetadataTab extends ConsumerWidget {
               child: Row(
                 children: [
                   Text(
-                    'Description',
+                    t.assignments.detail.metadata.description,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -151,7 +159,7 @@ class MetadataTab extends ConsumerWidget {
                 child: Text(
                   (assignment.description == null ||
                           assignment.description!.isEmpty)
-                      ? 'No Description Provided'
+                      ? t.assignments.detail.metadata.noDescription
                       : assignment.description!,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
@@ -179,13 +187,13 @@ class MetadataTab extends ConsumerWidget {
                     value: assignment.shuffleQuestions,
                     onChanged: onShuffleChanged,
                     title: Text(
-                      'Shuffle Questions',
+                      t.assignments.detail.metadata.shuffleQuestions,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     subtitle: Text(
-                      'Randomize question order for each student',
+                      t.assignments.detail.metadata.shuffleDescription,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),

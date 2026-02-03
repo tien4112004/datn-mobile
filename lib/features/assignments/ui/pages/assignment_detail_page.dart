@@ -10,6 +10,7 @@ import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/matrix_tab.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -97,24 +98,27 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final t = ref.read(translationsPod);
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         icon: Icon(LucideIcons.circle, color: colorScheme.error, size: 32),
-        title: const Text('Delete Question'),
+        title: Text(t.assignments.detail.deleteQuestion.title),
         content: Text(
-          'Are you sure you want to delete question ${questionIndex + 1}? This action cannot be undone.',
+          t.assignments.detail.deleteQuestion.message(
+            number: questionIndex + 1,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(t.assignments.detail.deleteQuestion.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
-            child: const Text('Delete'),
+            child: Text(t.assignments.detail.deleteQuestion.delete),
           ),
         ],
       ),
@@ -129,8 +133,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
       if (mounted) {
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('Question deleted'),
+          SnackBar(
+            content: Text(t.assignments.detail.deleteQuestion.success),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -146,6 +150,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
       detailAssignmentControllerProvider(widget.assignmentId),
     );
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final t = ref.watch(translationsPod);
 
     return assignmentAsync.easyWhen(
       data: (assignment) {
@@ -165,7 +170,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                     onPressed: () => context.router.maybePop(),
                   ),
                   title: Text(
-                    'Assignment Details',
+                    t.assignments.assignmentDetails,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -183,7 +188,9 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                           setState(() => _isEditMode = !_isEditMode);
                         }
                       },
-                      tooltip: _isEditMode ? 'View Mode' : 'Edit Mode',
+                      tooltip: _isEditMode
+                          ? t.assignments.viewMode
+                          : t.assignments.editMode,
                     ),
                     const SizedBox(width: 8),
                   ],
@@ -238,8 +245,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
                         if (mounted) {
                           scaffoldMessenger.showSnackBar(
-                            const SnackBar(
-                              content: Text('Question deleted'),
+                            SnackBar(
+                              content: Text(
+                                t.assignments.detail.deleteQuestion.success,
+                              ),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
@@ -256,8 +265,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
                         if (mounted) {
                           scaffoldMessenger.showSnackBar(
-                            const SnackBar(
-                              content: Text('Question updated'),
+                            SnackBar(
+                              content: Text(
+                                t.assignments.detail.questionUpdated,
+                              ),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
@@ -305,7 +316,9 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                         scaffoldMessenger.showSnackBar(
                           SnackBar(
                             content: Text(
-                              'Added ${assignmentQuestions.length} question(s)',
+                              t.assignments.detail.questionsAdded(
+                                count: assignmentQuestions.length,
+                              ),
                             ),
                             behavior: SnackBarBehavior.floating,
                           ),
@@ -332,8 +345,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
                       if (mounted) {
                         scaffoldMessenger.showSnackBar(
-                          const SnackBar(
-                            content: Text('Question created and added'),
+                          SnackBar(
+                            content: Text(t.assignments.detail.questionCreated),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
@@ -403,10 +416,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                         if (!context.mounted) return;
 
                         scaffoldMessenger.showSnackBar(
-                          const SnackBar(
-                            content: Text('Assignment saved successfully'),
+                          SnackBar(
+                            content: Text(t.assignments.detail.saveSuccess),
                             behavior: SnackBarBehavior.floating,
-                            duration: Duration(seconds: 2),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                       }
@@ -418,7 +431,11 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
                         scaffoldMessenger.showSnackBar(
                           SnackBar(
-                            content: Text('Error saving assignment: $error'),
+                            content: Text(
+                              t.assignments.detail.saveError(
+                                error: error.toString(),
+                              ),
+                            ),
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: Theme.of(
                               context,
@@ -446,21 +463,21 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                     unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.normal,
                     ),
-                    tabs: const [
+                    tabs: [
                       Tab(
-                        text: 'INFO',
-                        icon: Icon(LucideIcons.info, size: 20),
-                        iconMargin: EdgeInsets.only(bottom: 4),
+                        text: t.assignments.detail.tabs.info,
+                        icon: const Icon(LucideIcons.info, size: 20),
+                        iconMargin: const EdgeInsets.only(bottom: 4),
                       ),
                       Tab(
-                        text: 'QUESTIONS',
-                        icon: Icon(LucideIcons.listOrdered, size: 20),
-                        iconMargin: EdgeInsets.only(bottom: 4),
+                        text: t.assignments.detail.tabs.questions,
+                        icon: const Icon(LucideIcons.listOrdered, size: 20),
+                        iconMargin: const EdgeInsets.only(bottom: 4),
                       ),
                       Tab(
-                        text: 'MATRIX',
-                        icon: Icon(LucideIcons.grid3x3, size: 20),
-                        iconMargin: EdgeInsets.only(bottom: 4),
+                        text: t.assignments.detail.tabs.matrix,
+                        icon: const Icon(LucideIcons.grid3x3, size: 20),
+                        iconMargin: const EdgeInsets.only(bottom: 4),
                       ),
                     ],
                   ),

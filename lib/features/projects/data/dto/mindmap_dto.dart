@@ -42,8 +42,8 @@ class MindmapDto {
   final String? description;
   final List<MindmapNodeDto> nodes;
   final List<MindmapEdgeDto> edges;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   MindmapDto({
     required this.id,
@@ -51,8 +51,8 @@ class MindmapDto {
     this.description,
     required this.nodes,
     required this.edges,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory MindmapDto.fromJson(Map<String, dynamic> json) =>

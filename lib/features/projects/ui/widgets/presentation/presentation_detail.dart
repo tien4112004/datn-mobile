@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,10 +8,15 @@ import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:AIPrimary/core/config/config.dart';
 
 /// A widget that renders a full presentation detail view using the
-/// datn-fe-presentation web app.
+/// React app's PresentationEmbedPage.
 ///
-/// This widget uses AuthenticatedWebView to display the complete presentation editor
+/// This widget uses AuthenticatedWebView to display the presentation
 /// in read-only mode for mobile devices with automatic authentication.
+///
+/// Key differences from previous implementation:
+/// - Uses React's /presentation/embed/:id route instead of Vue's /mobile/:id
+/// - React fetches presentation data via API (no postMessage needed)
+/// - Supports CommentDrawer and permission handling from React
 ///
 /// Handles loading and error states internally.
 class PresentationDetail extends ConsumerStatefulWidget {
@@ -32,7 +36,6 @@ class PresentationDetail extends ConsumerStatefulWidget {
 }
 
 class _PresentationDetailState extends ConsumerState<PresentationDetail> {
-  InAppWebViewController? _webViewController;
   bool _isWebViewLoading = true;
 
   @override
@@ -148,17 +151,30 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   }
 
   Widget _buildWebView(Presentation presentation) {
-    final url = '${Config.presentationBaseUrl}/mobile/${presentation.id}';
+    // Use React's embed route instead of Vue's mobile route
+    final locale = Localizations.localeOf(context).languageCode;
+    final url =
+        '${Config.mindmapBaseUrl}/presentation/embed/${presentation.id}?locale=$locale';
 
     return AuthenticatedWebView(
       webViewUrl: url,
       onWebViewCreated: (controller) {
-        _webViewController = controller;
-      },
-      onLoadStop: (controller, _) async {
-        // Give the Vue app a moment to initialize
-        await Future.delayed(const Duration(milliseconds: 500));
-        await _sendPresentationData(presentation);
+        // Register handler for presentationLoaded event from React
+        controller.addJavaScriptHandler(
+          handlerName: 'presentationLoaded',
+          callback: (args) {
+            if (args.isNotEmpty && args[0] is Map) {
+              final data = args[0] as Map;
+              final success = data['success'] as bool? ?? false;
+              debugPrint(
+                'Presentation loaded: success=$success, slideCount=${data['slideCount']}',
+              );
+              if (mounted) {
+                setState(() => _isWebViewLoading = false);
+              }
+            }
+          },
+        );
       },
       onReceivedError: (controller, request, error) {
         debugPrint('WebView error: $error');
@@ -167,29 +183,6 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
         }
       },
     );
-  }
-
-  Future<void> _sendPresentationData(Presentation presentation) async {
-    if (_webViewController == null) return;
-
-    try {
-      await _webViewController!.evaluateJavascript(
-        source:
-            '''
-        window.postMessage({
-          type: 'setPresentationData',
-          data: {
-            presentation: ${jsonEncode(presentation.toJson())},
-            isMobile: true
-          }
-        }, '*');
-      ''',
-      );
-
-      setState(() => _isWebViewLoading = false);
-    } catch (e) {
-      debugPrint('Error sending presentation data: $e');
-    }
   }
 
   Widget _buildCloseButton() {
@@ -210,11 +203,5 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _webViewController = null;
-    super.dispose();
   }
 }

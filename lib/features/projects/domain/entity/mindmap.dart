@@ -4,8 +4,8 @@ class Mindmap {
   final String? description;
   final List<MindmapNode> nodes;
   final List<MindmapEdge> edges;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   Mindmap({
     required this.id,
@@ -13,8 +13,8 @@ class Mindmap {
     this.description,
     required this.nodes,
     required this.edges,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   String? get thumbnail => null;

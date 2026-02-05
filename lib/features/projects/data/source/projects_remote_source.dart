@@ -4,6 +4,7 @@ import 'package:AIPrimary/features/projects/data/dto/image_project_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/image_project_minimal_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/mindmap_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/mindmap_minimal_dto.dart';
+import 'package:AIPrimary/features/projects/data/dto/create_mindmap_request_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/create_presentation_request_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/presentation_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/presentation_minimal_dto.dart';
@@ -74,6 +75,11 @@ abstract class ProjectsRemoteSource {
     @Query("sort") String sort = "desc",
     @Query("search") String? search,
   });
+
+  @POST("/mindmaps")
+  Future<ServerResponseDto<MindmapDto>> createMindmap(
+    @Body() CreateMindmapRequestDto mindmap,
+  );
 
   // Recent documents endpoints
   @GET("/recent-documents")

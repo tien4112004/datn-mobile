@@ -68,16 +68,49 @@ extension AssignmentResponseMapper on AssignmentResponse {
       parsedSubject = Subject.fromApiValue(subject);
     }
 
-    // Build questionOrder from questions array
-    // Create one QuestionOrderItem per question in the order they appear
+    // Build questionOrder from questions array.
+    // Group questions with contextId into ContextGroupOrderItem,
+    // standalone questions become QuestionOrderItem.
     QuestionOrder? questionOrder;
     if (questionEntities.isNotEmpty) {
-      final orderItems = questionEntities.map((qEntity) {
-        return QuestionOrderItem(
-          questionId: qEntity.question.id,
-          points: qEntity.points.toInt(),
-        );
-      }).toList();
+      final orderItems = <QuestionOrderItemBase>[];
+      final processedContextIds = <String>{};
+
+      for (int i = 0; i < questionEntities.length; i++) {
+        final qEntity = questionEntities[i];
+        final contextId = qEntity.contextId;
+
+        if (contextId != null && contextId.isNotEmpty) {
+          // Context question — group all with same contextId
+          if (processedContextIds.contains(contextId)) continue;
+          processedContextIds.add(contextId);
+
+          final contextQuestions = questionEntities
+              .where((q) => q.contextId == contextId)
+              .map(
+                (q) => ContextQuestion(
+                  questionId: q.question.id,
+                  points: q.points.toInt(),
+                ),
+              )
+              .toList();
+
+          orderItems.add(
+            ContextGroupOrderItem(
+              contextId: contextId,
+              questions: contextQuestions,
+            ),
+          );
+        } else {
+          // Standalone question
+          orderItems.add(
+            QuestionOrderItem(
+              questionId: qEntity.question.id,
+              points: qEntity.points.toInt(),
+            ),
+          );
+        }
+      }
 
       questionOrder = QuestionOrder(items: orderItems);
     }

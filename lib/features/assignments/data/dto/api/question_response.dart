@@ -18,6 +18,7 @@ class QuestionResponse {
   final String? grade;
   final String? chapter;
   final String? subject;
+  final String? contextId; // Context ID for questions with reading passage
   final double? point;
   final Map<String, dynamic>? data; // Polymorphic data based on type
 
@@ -31,6 +32,7 @@ class QuestionResponse {
     this.grade,
     this.chapter,
     this.subject,
+    this.contextId,
     this.point,
     this.data,
   });
@@ -53,6 +55,7 @@ extension QuestionResponseMapper on QuestionResponse {
       question: question,
       points: point ?? 0.0,
       isNewQuestion: id.startsWith('new_'),
+      contextId: contextId,
     );
   }
 

@@ -104,5 +104,6 @@ class AppRouter extends RootStackRouter {
       page: AssignmentQuestionCreateRoute.page,
       path: '/assignments/questions/create',
     ),
+    AutoRoute(page: ContextEditRoute.page, path: '/assignments/context/edit'),
   ];
 }

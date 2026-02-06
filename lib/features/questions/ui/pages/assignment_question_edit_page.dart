@@ -1,6 +1,8 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/context/context_selector_sheet.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
@@ -53,6 +55,12 @@ class _AssignmentQuestionEditPageState
   late double _initialPoints;
   bool _isInitialized = false;
 
+  /// The currently linked context entity (for display purposes).
+  /// null means no context is linked.
+  ContextEntity? _linkedContext;
+  String? _currentContextId;
+  bool _contextChanged = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +75,8 @@ class _AssignmentQuestionEditPageState
     _explanationController = TextEditingController(
       text: widget.questionEntity.question.explanation ?? '',
     );
+
+    _currentContextId = widget.questionEntity.contextId;
 
     _pointsController.addListener(() {
       final newValue = double.tryParse(_pointsController.text) ?? 0.0;
@@ -93,7 +103,7 @@ class _AssignmentQuestionEditPageState
   bool get _hasAnyUnsavedChanges {
     final pointsChanged = _currentPoints != _initialPoints;
     final contentChanged = ref.read(hasUnsavedChangesProvider);
-    return pointsChanged || contentChanged;
+    return pointsChanged || contentChanged || _contextChanged;
   }
 
   Future<bool> _onWillPop() async {
@@ -140,6 +150,8 @@ class _AssignmentQuestionEditPageState
       questionBankId: contentWasModified
           ? null
           : widget.questionEntity.questionBankId,
+      contextId: _currentContextId,
+      clearContextId: _currentContextId == null,
     );
 
     ref.read(questionFormProvider.notifier).markSaved();
@@ -379,6 +391,10 @@ class _AssignmentQuestionEditPageState
                 ),
                 const SizedBox(height: 20),
 
+                // Reading Passage section
+                _buildContextSection(theme, colorScheme),
+                const SizedBox(height: 20),
+
                 // Question Title field
                 TextField(
                   controller: _titleController,
@@ -538,6 +554,95 @@ class _AssignmentQuestionEditPageState
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContextSection(ThemeData theme, ColorScheme colorScheme) {
+    if (_currentContextId != null) {
+      // Show linked context info with unlink button
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.blue.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            left: BorderSide(color: Colors.blue.shade400, width: 3),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(LucideIcons.bookOpen, size: 20, color: Colors.blue.shade600),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Reading Passage',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: Colors.blue.shade800,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (_linkedContext != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      _linkedContext!.title.isNotEmpty
+                          ? _linkedContext!.title
+                          : 'Untitled Passage',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.blue.shade700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            IconButton(
+              icon: Icon(
+                LucideIcons.unlink,
+                size: 18,
+                color: colorScheme.error,
+              ),
+              onPressed: () {
+                setState(() {
+                  _currentContextId = null;
+                  _linkedContext = null;
+                  _contextChanged = true;
+                });
+              },
+              tooltip: 'Unlink passage',
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show "Link passage" button
+    return OutlinedButton.icon(
+      onPressed: () async {
+        final selected = await ContextSelectorSheet.show(context);
+        if (selected != null && mounted) {
+          setState(() {
+            _linkedContext = selected;
+            _currentContextId = selected.id;
+            _contextChanged = true;
+          });
+        }
+      },
+      icon: Icon(LucideIcons.bookOpen, size: 18, color: Colors.blue.shade600),
+      label: Text(
+        'Link Reading Passage',
+        style: TextStyle(color: Colors.blue.shade600),
+      ),
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: Colors.blue.shade300),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

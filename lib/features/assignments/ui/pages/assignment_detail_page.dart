@@ -4,6 +4,7 @@ import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/bottom_action_dock.dart';
@@ -142,6 +143,61 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
     }
   }
 
+  /// Handles editing a context — navigates to full-screen edit page.
+  Future<void> _handleEditContext(ContextEntity contextEntity) async {
+    final result = await context.router.push<dynamic>(
+      ContextEditRoute(context: contextEntity),
+    );
+
+    if (!mounted) return;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    if (result == 'UNLINK') {
+      // User chose to unlink from the edit page
+      await _handleUnlinkContext(contextEntity.id);
+    } else if (result is ContextEntity) {
+      // Context was updated
+      await ref
+          .read(
+            assignmentContextsControllerProvider(widget.assignmentId).notifier,
+          )
+          .updateContext(result);
+
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Reading passage updated'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+  }
+
+  /// Handles unlinking a context — clears contextId from questions and removes context.
+  Future<void> _handleUnlinkContext(String contextId) async {
+    // Clear contextId from all questions referencing this context
+    await ref
+        .read(detailAssignmentControllerProvider(widget.assignmentId).notifier)
+        .clearContextIdFromQuestions(contextId);
+
+    // Remove context from the contexts list
+    await ref
+        .read(
+          assignmentContextsControllerProvider(widget.assignmentId).notifier,
+        )
+        .removeContext(contextId);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Reading passage unlinked'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
@@ -151,6 +207,19 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
       detailAssignmentControllerProvider(widget.assignmentId),
     );
     final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Watch contexts for this assignment
+    final contextsAsync = ref.watch(
+      assignmentContextsControllerProvider(widget.assignmentId),
+    );
+
+    // Build contextsMap from loaded contexts (empty map if loading/error)
+    final contextsMap = <String, ContextEntity>{};
+    contextsAsync.whenData((contexts) {
+      for (final ctx in contexts) {
+        contextsMap[ctx.id] = ctx;
+      }
+    });
 
     return assignmentAsync.easyWhen(
       data: (assignment) {
@@ -220,6 +289,13 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                 QuestionsTab(
                   assignment: assignment,
                   isEditMode: _isEditMode,
+                  contextsMap: contextsMap,
+                  onEditContext: _isEditMode
+                      ? (contextEntity) => _handleEditContext(contextEntity)
+                      : null,
+                  onUnlinkContext: _isEditMode
+                      ? (contextId) => _handleUnlinkContext(contextId)
+                      : null,
                   onSwitchMode: () =>
                       setState(() => _isEditMode = !_isEditMode),
                   onEdit: (questionEntity, index) async {

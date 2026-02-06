@@ -36,7 +36,7 @@ final futureInitializerPod = FutureProvider.autoDispose<ProviderContainer>((
 
   ///Load device translations
   ///
-  AppLocale deviceLocale = AppLocaleUtils.findDeviceLocale();
+  AppLocale deviceLocale = AppLocale.vi;
   if (savedLocale != null) {
     deviceLocale = AppLocaleUtils.parse(savedLocale);
   } else {

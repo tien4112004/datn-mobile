@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:AIPrimary/const/resource.dart';
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/core/local_storage/app_storage.dart';
 import 'package:AIPrimary/core/secure_storage/secure_storage.dart';
 import 'package:AIPrimary/features/auth/data/dto/request/credential_signin_request.dart';
 import 'package:AIPrimary/features/auth/data/dto/request/credential_signup_request.dart';
@@ -22,8 +23,15 @@ class AuthServiceImpl implements AuthService {
 
   final AuthRemoteSource authRemoteSource;
   final SecureStorage secureStorage;
+  final AppStorage appStorage;
 
-  AuthServiceImpl(this.authRemoteSource, this.secureStorage, this.dio);
+  AuthServiceImpl(
+    this.authRemoteSource,
+    this.secureStorage,
+    this.dio,
+    this.appStorage,
+  );
+
   @override
   Future<void> signInWithEmailAndPassword({
     required String email,
@@ -162,6 +170,7 @@ class AuthServiceImpl implements AuthService {
       // Delete local tokens only if remote logout is successful
       await secureStorage.delete(key: R.ACCESS_TOKEN_KEY);
       await secureStorage.delete(key: R.REFRESH_TOKEN_KEY);
+      await appStorage.delete(key: R.USER_PROFILE_KEY);
     } catch (e) {
       if (e is APIException) {
         rethrow;

@@ -4,19 +4,48 @@ import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:AIPrimary/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_profile.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-final userControllerProvider =
-    AsyncNotifierProvider<UserController, UserProfile?>(() => UserController());
+part 'user_profile_pod.freezed.dart';
 
-class UserController extends AsyncNotifier<UserProfile?> {
+final userControllerPod = AsyncNotifierProvider<UserController, UserState?>(
+  UserController.new,
+);
+
+final userRolePod = Provider<UserRole?>((ref) {
+  return ref.watch(userControllerPod).value?.role;
+});
+
+@freezed
+abstract class UserState with _$UserState {
+  const factory UserState({
+    required String id,
+    required String name,
+    String? email,
+    String? avatarUrl,
+    UserRole? role,
+  }) = _UserState;
+
+  factory UserState.fromUserProfile(UserProfile profile) {
+    return UserState(
+      id: profile.id,
+      email: profile.email,
+      name: profile.fullName,
+      avatarUrl: null,
+      role: profile.role,
+    );
+  }
+}
+
+class UserController extends AsyncNotifier<UserState?> {
   @override
-  Future<UserProfile?> build() async {
+  Future<UserState?> build() async {
     // Try to get from local storage first
     final cachedProfile = await _getUserProfileFromStorage();
     if (cachedProfile != null) {
-      return cachedProfile;
+      return UserState.fromUserProfile(cachedProfile);
     }
 
     // If not in storage, fetch from API
@@ -28,7 +57,7 @@ class UserController extends AsyncNotifier<UserProfile?> {
   }
 
   /// Fetch user profile from API and store to local storage
-  Future<UserProfile> fetchAndStoreUserProfile() async {
+  Future<UserState> fetchAndStoreUserProfile() async {
     final repository = ref.read(userRepositoryProvider);
     final profile = await repository.getCurrentUser();
 
@@ -37,7 +66,7 @@ class UserController extends AsyncNotifier<UserProfile?> {
     // Store to local storage
     await _saveUserProfileToStorage(profile);
 
-    return profile;
+    return UserState.fromUserProfile(profile);
   }
 
   /// Update user profile with new data
@@ -48,7 +77,7 @@ class UserController extends AsyncNotifier<UserProfile?> {
       // Update in local storage
       await _saveUserProfileToStorage(updatedProfile);
 
-      return updatedProfile;
+      return UserState.fromUserProfile(updatedProfile);
     });
   }
 
@@ -61,8 +90,6 @@ class UserController extends AsyncNotifier<UserProfile?> {
       return await fetchAndStoreUserProfile();
     });
   }
-
-  bool get isStudent => state.value?.role == UserRole.student;
 
   /// Get user profile from local storage
   Future<UserProfile?> _getUserProfileFromStorage() async {
@@ -90,9 +117,4 @@ class UserController extends AsyncNotifier<UserProfile?> {
       // print('Failed to save user profile to storage: $e');
     }
   }
-
-  // Future<void> _clearCachedUser() async {
-  //   final repository = ref.read(userRepositoryProvider);
-  //   await repository.clearCachedUser();
-  // }
 }

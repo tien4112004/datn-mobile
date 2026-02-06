@@ -1,5 +1,5 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';

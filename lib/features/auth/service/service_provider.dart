@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
 import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:AIPrimary/features/auth/data/sources/auth_remote_source_provider.dart';
 import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
@@ -10,5 +11,6 @@ final authServicePod = Provider<AuthService>((ref) {
     ref.watch(authRemoteSourcePod),
     ref.watch(secureStoragePod),
     ref.read(dioPod),
+    ref.read(appStorageProvider),
   );
 });

@@ -1,7 +1,7 @@
 import 'package:AIPrimary/core/services/notification/notification_service.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/app/view/app.dart';
 import 'package:AIPrimary/bootstrap.dart';
@@ -41,7 +41,7 @@ class _SplasherState extends ConsumerState<Splasher> {
   @override
   Widget build(BuildContext context) {
     // Trigger get me for init userState
-    final userState = ref.watch(userControllerProvider);
+    final userState = ref.watch(userControllerPod);
 
     // Register FCM token if user is authenticated
     userState.whenData((user) {

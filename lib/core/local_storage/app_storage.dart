@@ -40,6 +40,8 @@ class AppStorage {
     required String key,
     required Map<String, dynamic> value,
   }) async {
+    debugPrint('Storing JSON in AppStorage: key=$key, value=$value');
+
     await appBox?.put(key, value);
   }
 

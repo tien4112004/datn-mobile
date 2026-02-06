@@ -1,6 +1,6 @@
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
@@ -160,7 +160,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     QuestionBankItemEntity questionItem,
     dynamic t,
   ) {
-    final userState = ref.watch(userControllerProvider);
+    final userState = ref.watch(userControllerPod);
     final currentUserId = userState.value?.id;
     final isOwner =
         currentUserId != null && questionItem.ownerId == currentUserId;

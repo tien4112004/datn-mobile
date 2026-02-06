@@ -1,6 +1,6 @@
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -146,8 +146,7 @@ class StudentTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   // Enhanced actions menu
-                  ref.watch(userControllerProvider).value?.role ==
-                          UserRole.student
+                  ref.watch(userRolePod) == UserRole.student
                       ? const SizedBox.shrink()
                       : Semantics(
                           label: 'More actions for ${student.fullName}',

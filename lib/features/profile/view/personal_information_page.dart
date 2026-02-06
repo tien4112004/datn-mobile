@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/data/dto/request/user_profile_update_request.dart';
 import 'package:AIPrimary/features/profile/controller/profile_controller.dart';
 import 'package:AIPrimary/features/profile/provider/avatar_provider.dart';
@@ -45,7 +45,7 @@ class _PersonalInformationPageState
   }
 
   Future<void> _loadUserProfile() async {
-    final user = await ref.read(userControllerProvider.future);
+    final user = await ref.read(userControllerPod.future);
     if (user != null && mounted) {
       await ref
           .read(profileControllerProvider.notifier)
@@ -150,7 +150,7 @@ class _PersonalInformationPageState
     setState(() => _isLoading = true);
 
     try {
-      final user = await ref.read(userControllerProvider.future);
+      final user = await ref.read(userControllerPod.future);
       final userId = user?.email ?? '';
 
       final request = UserProfileUpdateRequest(

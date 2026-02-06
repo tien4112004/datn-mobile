@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/core/router/router_pod.dart';

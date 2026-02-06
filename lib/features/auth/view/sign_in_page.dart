@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/features/auth/widgets/divider.dart';
 import 'package:AIPrimary/features/auth/widgets/sign_in_form.dart';
 import 'package:AIPrimary/features/auth/widgets/switch_page.dart';

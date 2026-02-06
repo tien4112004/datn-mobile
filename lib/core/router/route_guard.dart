@@ -18,9 +18,9 @@ class RouteGuard extends AutoRouteGuard {
 
     if (isAuthenticated) {
       final currentRoute = router.current;
-      final isNavigaingToRoot = resolver.route.name == 'MainWrapperRoute';
+      final isNavigatingToRoot = resolver.route.name == 'MainWrapperRoute';
 
-      if (isNavigaingToRoot && currentRoute.name != 'MainWrapperRoute') {
+      if (isNavigatingToRoot && currentRoute.name != 'MainWrapperRoute') {
         router.popUntil((route) => route.settings.name == '/');
       }
       resolver.next(true);

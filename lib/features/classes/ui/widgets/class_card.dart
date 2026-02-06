@@ -1,7 +1,7 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,8 +33,7 @@ class ClassCard extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
     final instructorName =
-        ref.read(userControllerProvider).value?.fullName ??
-        t.classes.card.instructor;
+        ref.read(userControllerPod).value?.name ?? t.classes.card.instructor;
 
     return Semantics(
       label: t.classes.card.semanticLabel(className: classEntity.name),

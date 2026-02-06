@@ -9,16 +9,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Header section of a post card showing author, type, and actions
 class PostHeader extends ConsumerWidget {
   final PostEntity post;
-  final VoidCallback onTogglePin;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback? onTogglePin;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const PostHeader({
     super.key,
     required this.post,
-    required this.onTogglePin,
-    required this.onEdit,
-    required this.onDelete,
+    this.onTogglePin,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -53,15 +53,17 @@ class PostHeader extends ConsumerWidget {
 
           // Post type chip
           PostTypeChip(type: post.type),
-          const SizedBox(width: 8),
 
-          // Options menu
-          PostOptionsMenu(
-            isPinned: post.isPinned,
-            onTogglePin: onTogglePin,
-            onEdit: onEdit,
-            onDelete: onDelete,
-          ),
+          // Options menu (teacher only)
+          if (onEdit != null) ...[
+            const SizedBox(width: 8),
+            PostOptionsMenu(
+              isPinned: post.isPinned,
+              onTogglePin: onTogglePin!,
+              onEdit: onEdit!,
+              onDelete: onDelete!,
+            ),
+          ],
         ],
       ),
     );

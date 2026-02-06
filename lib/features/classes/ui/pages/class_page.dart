@@ -1,6 +1,6 @@
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/states/controller_provider.dart';
@@ -19,15 +19,31 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Main page displaying the list of classes (Google Classroom style).
 @RoutePage()
-class ClassPage extends ConsumerWidget {
+class ClassPage extends ConsumerStatefulWidget {
   const ClassPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ClassPage> createState() => _ClassPageState();
+}
+
+class _ClassPageState extends ConsumerState<ClassPage> {
+  bool _didAutoRedirect = false;
+
+  @override
+  Widget build(BuildContext context) {
     final classesState = ref.watch(classesControllerProvider);
-    final isStudent =
-        ref.watch(userControllerProvider).value?.role ==
-        UserRole.student; // If role has value, the user is student
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
+
+    classesState.whenData((classes) {
+      if (isStudent && !_didAutoRedirect && classes.isNotEmpty) {
+        _didAutoRedirect = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            context.router.push(ClassDetailRoute(classId: classes[0].id));
+          }
+        });
+      }
+    });
 
     return Scaffold(
       appBar: const _ClassListAppBar(),
@@ -40,7 +56,6 @@ class ClassPage extends ConsumerWidget {
               ref.read(classesControllerProvider.notifier).refresh(),
         ),
       ),
-      // Uncomment if need
       floatingActionButton: isStudent
           ? null
           : ClassActionFab(
@@ -135,11 +150,13 @@ class _ClassListContent extends ConsumerWidget {
         icon: LucideIcons.graduationCap,
         title: t.classes.emptyState.noClasses,
         message: t.classes.emptyState.noClassesDescription,
-        actionLabel: t.classes.emptyState.getStarted,
-        onAction: () {
-          HapticFeedback.mediumImpact();
-          const CreateClassDialog().show(context, ref);
-        },
+        actionLabel: isStudent ? null : t.classes.emptyState.getStarted,
+        onAction: isStudent
+            ? null
+            : () {
+                HapticFeedback.mediumImpact();
+                const CreateClassDialog().show(context, ref);
+              },
         semanticLabel: t.classes.emptyState.semanticLabel,
       );
     }

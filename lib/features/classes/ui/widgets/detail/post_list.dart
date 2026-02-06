@@ -1,9 +1,11 @@
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/providers/post_paging_controller_pod.dart';
 import 'package:AIPrimary/features/classes/ui/pages/post_upsert_page.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/widgets/animated_list_item.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
@@ -50,6 +52,7 @@ class _PostListState extends ConsumerState<PostList> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
     final pagingController = ref.watch(
       postPagingControllerPod(widget.classEntity.id),
     );
@@ -86,8 +89,8 @@ class _PostListState extends ConsumerState<PostList> {
                     icon: LucideIcons.messageSquare,
                     title: t.classes.posts.emptyTitle,
                     message: t.classes.posts.emptyDescription,
-                    actionLabel: t.classes.posts.createFirst,
-                    onAction: _navigateToCreatePost,
+                    actionLabel: isStudent ? null : t.classes.posts.createFirst,
+                    onAction: isStudent ? null : _navigateToCreatePost,
                   ),
                   newPageProgressIndicatorBuilder: (context) => const Padding(
                     padding: EdgeInsets.all(24),
@@ -114,15 +117,17 @@ class _PostListState extends ConsumerState<PostList> {
               ),
         ),
       ),
-      floatingActionButton: Semantics(
-        label: t.classes.posts.createLabel,
-        button: true,
-        child: FloatingActionButton.extended(
-          onPressed: _navigateToCreatePost,
-          icon: const Icon(LucideIcons.plus),
-          label: Text(t.classes.posts.newPost),
-        ),
-      ),
+      floatingActionButton: isStudent
+          ? null
+          : Semantics(
+              label: t.classes.posts.createLabel,
+              button: true,
+              child: FloatingActionButton.extended(
+                onPressed: _navigateToCreatePost,
+                icon: const Icon(LucideIcons.plus),
+                label: Text(t.classes.posts.newPost),
+              ),
+            ),
     );
   }
 }

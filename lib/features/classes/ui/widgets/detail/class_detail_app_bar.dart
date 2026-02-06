@@ -30,19 +30,21 @@ class ClassDetailAppBar extends ConsumerWidget {
       backgroundColor: classEntity.headerColor,
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light,
-      leading: Semantics(
-        label: t.classes.appBar.goBack,
-        button: true,
-        hint: t.classes.appBar.returnHint,
-        child: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            context.router.maybePop();
-          },
-          tooltip: t.classes.appBar.back,
-        ),
-      ),
+      leading: isStudent
+          ? null
+          : Semantics(
+              label: t.classes.appBar.goBack,
+              button: true,
+              hint: t.classes.appBar.returnHint,
+              child: IconButton(
+                icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  context.router.maybePop();
+                },
+                tooltip: t.classes.appBar.back,
+              ),
+            ),
       actions: [
         Semantics(
           label: t.classes.appBar.classOptions,

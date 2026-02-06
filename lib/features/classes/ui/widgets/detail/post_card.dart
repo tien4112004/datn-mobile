@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
@@ -10,6 +11,7 @@ import 'package:AIPrimary/features/classes/ui/widgets/posts/post_pin_indicator.d
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_attachments_display.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resources_display.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/widgets/themed_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,6 +98,7 @@ class _PostCardState extends ConsumerState<PostCard> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ClipRect(
@@ -119,18 +122,20 @@ class _PostCardState extends ConsumerState<PostCard> {
                     // Header section
                     PostHeader(
                       post: widget.post,
-                      onTogglePin: _togglePin,
-                      onEdit: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => PostUpsertPage(
-                              classId: widget.classEntity.id,
-                              postId: widget.post.id,
-                            ),
-                          ),
-                        );
-                      },
-                      onDelete: _deletePost,
+                      onTogglePin: isStudent ? null : _togglePin,
+                      onEdit: isStudent
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => PostUpsertPage(
+                                    classId: widget.classEntity.id,
+                                    postId: widget.post.id,
+                                  ),
+                                ),
+                              );
+                            },
+                      onDelete: isStudent ? null : _deletePost,
                     ),
 
                     // Post content

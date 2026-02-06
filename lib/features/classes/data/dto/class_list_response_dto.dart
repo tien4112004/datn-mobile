@@ -1,4 +1,3 @@
-import 'package:AIPrimary/features/classes/data/dto/class_response_dto.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,18 +8,16 @@ part 'class_list_response_dto.g.dart';
 @JsonSerializable()
 class ClassListResponseDto {
   final String id;
-  final TeacherResponseDto teacher;
+  final String ownerId;
   final String name;
-  final String? joinCode;
   final bool isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   ClassListResponseDto({
     required this.id,
-    required this.teacher,
+    required this.ownerId,
     required this.name,
-    this.joinCode,
     required this.isActive,
     this.createdAt,
     this.updatedAt,
@@ -36,11 +33,10 @@ class ClassListResponseDto {
 extension ClassListResponseMapper on ClassListResponseDto {
   ClassEntity toEntity() => ClassEntity(
     id: id,
-    teacherId: teacher.id,
-    teacherName: teacher.fullName,
-    teacherEmail: teacher.email,
+    teacherId: ownerId,
+    teacherName: '', // Not provided in list response
+    teacherEmail: '', // Not provided in list response
     name: name,
-    joinCode: joinCode,
     isActive: isActive,
     createdAt: createdAt,
     updatedAt: updatedAt,

@@ -118,30 +118,6 @@ class _ClassInfoDialogContent extends ConsumerWidget {
 
                     const SizedBox(height: 16),
 
-                    // Join Code Card
-                    if (classEntity.joinCode != null)
-                      _buildInfoCard(
-                        context: context,
-                        title: t.classes.infoDialog.enrollment,
-                        icon: LucideIcons.link,
-                        children: [
-                          _buildInfoRow(
-                            context: context,
-                            label: t.classes.infoDialog.joinCode,
-                            value: classEntity.joinCode!,
-                            isMonospace: true,
-                            onCopy: () => _copyToClipboard(
-                              context,
-                              classEntity.joinCode!,
-                              t.classes.infoDialog.copiedToClipboard,
-                            ),
-                            t: t,
-                          ),
-                        ],
-                      ),
-
-                    const SizedBox(height: 16),
-
                     // Timestamps Card
                     _buildInfoCard(
                       context: context,
@@ -376,31 +352,5 @@ class _ClassInfoDialogContent extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  void _copyToClipboard(BuildContext context, String text, String message) {
-    HapticFeedback.mediumImpact();
-    Clipboard.setData(ClipboardData(text: text));
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(
-                LucideIcons.circleCheck,
-                color: Colors.white,
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Text(message),
-            ],
-          ),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      );
-    }
   }
 }

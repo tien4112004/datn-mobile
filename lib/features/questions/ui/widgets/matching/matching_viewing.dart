@@ -1,8 +1,8 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Matching Question in Viewing Mode
 class MatchingViewing extends ConsumerWidget {
@@ -19,8 +19,8 @@ class MatchingViewing extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final t = ref.watch(translationsPod);
+    final theme = Theme.of(context);
 
     return QuestionCardWrapper(
       title: question.title,

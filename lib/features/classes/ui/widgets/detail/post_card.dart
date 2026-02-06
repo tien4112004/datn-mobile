@@ -108,7 +108,7 @@ class _PostCardState extends ConsumerState<PostCard> {
           children: [
             Semantics(
               label: t.classes.posts.semanticLabel(
-                postType: widget.post.type.displayName,
+                postType: widget.post.type.getLocalizedName(t),
                 timeAgo: timeago.format(widget.post.createdAt),
               ),
               child: ThemedCard(

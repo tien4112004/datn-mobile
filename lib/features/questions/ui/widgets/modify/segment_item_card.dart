@@ -1,8 +1,10 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Card widget for displaying and editing a fill-in-blank segment
-class SegmentItemCard extends StatelessWidget {
+class SegmentItemCard extends ConsumerWidget {
   final int index;
   final SegmentType type;
   final String content;
@@ -25,9 +27,10 @@ class SegmentItemCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final isBlank = type == SegmentType.blank;
 
     return Card(
@@ -79,8 +82,8 @@ class SegmentItemCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             isBlank
-                                ? 'Blank ${index + 1}'
-                                : 'Text ${index + 1}',
+                                ? '${t.questionBank.fillInBlank.addBlank} ${index + 1}'
+                                : '${t.questionBank.fillInBlank.addText} ${index + 1}',
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: isBlank
                                   ? colorScheme.onSecondaryContainer
@@ -98,7 +101,7 @@ class SegmentItemCard extends StatelessWidget {
                     icon: Icon(Icons.delete_outline, color: colorScheme.error),
                     iconSize: 20,
                     onPressed: onRemove,
-                    tooltip: 'Remove segment',
+                    tooltip: t.common.delete,
                   ),
               ],
             ),
@@ -109,18 +112,21 @@ class SegmentItemCard extends StatelessWidget {
               TextFormField(
                 initialValue: content,
                 decoration: InputDecoration(
-                  labelText: 'Placeholder Text *',
-                  hintText: 'e.g., "answer" or "blank"',
+                  labelText: t.questionBank.fillInBlank.placeholderText,
+                  hintText: t.questionBank.fillInBlank.segmentHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   contentPadding: const EdgeInsets.all(12),
-                  helperText: 'This text will be shown in the blank space',
+                  helperText: t
+                      .questionBank
+                      .fillInBlank
+                      .blankHint, // Reusing or adding specific
                 ),
                 onChanged: onContentChanged,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Placeholder text is required';
+                    return t.questionBank.fillInBlank.addBlankWarning;
                   }
                   return null;
                 },
@@ -131,13 +137,13 @@ class SegmentItemCard extends StatelessWidget {
               TextFormField(
                 initialValue: acceptableAnswers?.join(', ') ?? '',
                 decoration: InputDecoration(
-                  labelText: 'Acceptable Answers *',
-                  hintText: 'answer1, answer2, answer3',
+                  labelText: t.questionBank.fillInBlank.acceptableAnswers,
+                  hintText: t.questionBank.fillInBlank.acceptableAnswersHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   contentPadding: const EdgeInsets.all(12),
-                  helperText: 'Separate multiple answers with commas',
+                  helperText: t.questionBank.fillInBlank.exampleHint,
                 ),
                 maxLines: 2,
                 onChanged: (value) {
@@ -150,7 +156,7 @@ class SegmentItemCard extends StatelessWidget {
                 },
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'At least one acceptable answer is required';
+                    return t.questionBank.fillInBlank.acceptableAnswers;
                   }
                   return null;
                 },
@@ -159,8 +165,8 @@ class SegmentItemCard extends StatelessWidget {
               TextFormField(
                 initialValue: content,
                 decoration: InputDecoration(
-                  labelText: 'Text Content *',
-                  hintText: 'Enter the text that appears in the question',
+                  labelText: t.questionBank.fillInBlank.textContent,
+                  hintText: t.questionBank.fillInBlank.textContentHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -170,7 +176,7 @@ class SegmentItemCard extends StatelessWidget {
                 onChanged: onContentChanged,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Text content is required';
+                    return t.questionBank.fillInBlank.textContent;
                   }
                   return null;
                 },

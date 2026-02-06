@@ -1,7 +1,9 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Add segment controls for fill in blank editing
-class AddSegmentControls extends StatelessWidget {
+class AddSegmentControls extends ConsumerWidget {
   final VoidCallback onAddText;
   final VoidCallback onAddBlank;
 
@@ -12,7 +14,8 @@ class AddSegmentControls extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
@@ -21,7 +24,7 @@ class AddSegmentControls extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: onAddText,
             icon: const Icon(Icons.text_fields),
-            label: const Text('Add Text'),
+            label: Text(t.questionBank.fillInBlank.addText),
             style: OutlinedButton.styleFrom(
               foregroundColor: colorScheme.secondary,
               side: BorderSide(color: colorScheme.secondary),
@@ -33,7 +36,7 @@ class AddSegmentControls extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: onAddBlank,
             icon: const Icon(Icons.space_bar),
-            label: const Text('Add Blank'),
+            label: Text(t.questionBank.fillInBlank.addBlank),
             style: OutlinedButton.styleFrom(
               foregroundColor: colorScheme.primary,
               side: BorderSide(color: colorScheme.primary),

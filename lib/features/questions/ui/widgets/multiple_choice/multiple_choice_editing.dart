@@ -1,9 +1,13 @@
+import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Multiple Choice Question in Editing Mode
-class MultipleChoiceEditing extends StatefulWidget {
+class MultipleChoiceEditing extends ConsumerStatefulWidget {
   final MultipleChoiceQuestion question;
   final Function(MultipleChoiceQuestion)? onUpdate;
 
@@ -14,10 +18,11 @@ class MultipleChoiceEditing extends StatefulWidget {
   });
 
   @override
-  State<MultipleChoiceEditing> createState() => _MultipleChoiceEditingState();
+  ConsumerState<MultipleChoiceEditing> createState() =>
+      _MultipleChoiceEditingState();
 }
 
-class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
+class _MultipleChoiceEditingState extends ConsumerState<MultipleChoiceEditing> {
   late List<MultipleChoiceOption> _options;
   final _titleController = TextEditingController();
 
@@ -43,11 +48,12 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
   }
 
   void _addOption() {
+    final t = ref.read(translationsPod);
     setState(() {
       _options.add(
         MultipleChoiceOption(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          text: 'New option',
+          text: t.questionBank.multipleChoice.newOption,
           isCorrect: false,
         ),
       );
@@ -64,6 +70,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return QuestionCardWrapper(
@@ -75,7 +82,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'EDITING MODE',
+            QuestionMode.editing.getLocalizedName(t).toUpperCase(),
             style: theme.textTheme.labelSmall?.copyWith(
               color: Colors.purple,
               fontWeight: FontWeight.w600,
@@ -83,7 +90,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Options (tap to mark as correct):',
+            t.questionBank.multipleChoice.subtitle,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
             ),
@@ -92,7 +99,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
           ..._options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;
-            return _buildEditableOption(option, index, theme);
+            return _buildEditableOption(option, index, theme, t);
           }),
           const SizedBox(height: 12),
           Row(
@@ -100,7 +107,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
               OutlinedButton.icon(
                 onPressed: _addOption,
                 icon: const Icon(Icons.add),
-                label: const Text('Add Option'),
+                label: Text(t.questionBank.multipleChoice.addOption),
               ),
             ],
           ),
@@ -113,6 +120,7 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
     MultipleChoiceOption option,
     int index,
     ThemeData theme,
+    Translations t,
   ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -137,9 +145,9 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
         ),
         title: TextFormField(
           initialValue: option.text,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Enter option text',
+            hintText: t.questionBank.multipleChoice.enterOptionText,
           ),
           onChanged: (value) {
             _options[index] = option.copyWith(text: value);
@@ -156,13 +164,13 @@ class _MultipleChoiceEditingState extends State<MultipleChoiceEditing> {
                 color: option.isCorrect ? Colors.green : Colors.grey,
               ),
               onPressed: () => _toggleCorrect(index),
-              tooltip: 'Mark as correct',
+              tooltip: t.questionBank.multipleChoice.markCorrect,
             ),
             if (_options.length > 2)
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => _removeOption(index),
-                tooltip: 'Remove option',
+                tooltip: t.questionBank.multipleChoice.removeTooltip,
               ),
           ],
         ),

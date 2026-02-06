@@ -1,10 +1,14 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Matching Question in Grading Mode (Teacher reviewing student answers)
 /// Enhanced with Material 3 design principles
-class MatchingGrading extends StatelessWidget {
+class MatchingGrading extends ConsumerWidget {
   final MatchingQuestion question;
   final Map<String, String>? studentAnswers; // leftItem -> selectedRightItem
 
@@ -26,7 +30,8 @@ class MatchingGrading extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final totalPairs = question.data.pairs.length;
 
@@ -59,7 +64,7 @@ class MatchingGrading extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Grading Mode',
+                      QuestionMode.grading.getLocalizedName(t),
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: Colors.orange.shade700,
                         fontWeight: FontWeight.w600,
@@ -88,7 +93,7 @@ class MatchingGrading extends StatelessWidget {
                     const Icon(Icons.assessment, size: 18, color: Colors.white),
                     const SizedBox(width: 6),
                     Text(
-                      '$_correctCount/$totalPairs Correct',
+                      '$_correctCount/$totalPairs ${t.questionBank.viewing.correct}',
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -111,6 +116,7 @@ class MatchingGrading extends StatelessWidget {
               isCorrect,
               isAnswered,
               theme,
+              t,
             );
           }),
           if (studentAnswers == null || studentAnswers!.isEmpty) ...[
@@ -132,7 +138,7 @@ class MatchingGrading extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Student did not answer this question',
+                      t.questionBank.multipleChoice.notAnswered,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.orange.shade900,
                         fontWeight: FontWeight.w500,
@@ -154,6 +160,7 @@ class MatchingGrading extends StatelessWidget {
     bool isCorrect,
     bool isAnswered,
     ThemeData theme,
+    Translations t,
   ) {
     final colorScheme = theme.colorScheme;
 
@@ -192,7 +199,7 @@ class MatchingGrading extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Left',
+                  t.questionBank.matching.leftSide,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: colorScheme.onTertiaryContainer,
                     fontWeight: FontWeight.w600,
@@ -202,7 +209,9 @@ class MatchingGrading extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  pair.left == null ? 'Not Answered' : pair.left!,
+                  pair.left == null
+                      ? t.questionBank.multipleChoice.notAnswered
+                      : pair.left!,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -234,7 +243,7 @@ class MatchingGrading extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Student Answer:',
+                          '${t.questionBank.openEnded.gradingNote}:', // Simplified reuse
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
@@ -276,7 +285,7 @@ class MatchingGrading extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Correct Answer:',
+                        '${t.questionBank.viewing.correct}:',
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: Colors.green.shade700,
                           fontWeight: FontWeight.w600,
@@ -284,7 +293,9 @@ class MatchingGrading extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        pair.right == null ? 'Not Answered' : pair.right!,
+                        pair.right == null
+                            ? t.questionBank.multipleChoice.notAnswered
+                            : pair.right!,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: Colors.green.shade900,

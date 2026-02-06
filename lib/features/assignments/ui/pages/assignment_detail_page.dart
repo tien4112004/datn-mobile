@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
@@ -95,6 +96,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
   }
 
   void _showDeleteConfirmation(BuildContext context, int questionIndex) async {
+    final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -144,6 +146,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final assignmentAsync = ref.watch(

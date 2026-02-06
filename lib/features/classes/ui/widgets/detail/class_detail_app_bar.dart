@@ -193,24 +193,6 @@ class ClassDetailAppBar extends ConsumerWidget {
             ),
             if (!isStudent) ...[
               ListTile(
-                leading: Icon(LucideIcons.copy, color: colorScheme.primary),
-                title: Text(t.classes.appBar.copyJoinCode),
-                subtitle: Text(
-                  classEntity.joinCode ?? t.classes.appBar.notAvailable,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  if (classEntity.joinCode != null) {
-                    Clipboard.setData(
-                      ClipboardData(text: classEntity.joinCode!),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(t.classes.appBar.joinCodeCopied)),
-                    );
-                  }
-                },
-              ),
-              ListTile(
                 leading: Icon(LucideIcons.settings, color: colorScheme.primary),
                 title: Text(t.classes.appBar.classSettings),
                 onTap: () {

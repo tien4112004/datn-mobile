@@ -12,7 +12,7 @@
   "navigation": {
     "home": "Home",
     "project": "Project",
-    "class": "Class",
+    "class_": "Class",
     "profile": "Profile"
   },
   "settings": {
@@ -113,7 +113,7 @@
   "recentDocuments": "Recent Documents",
   "parentTeacherMeetings": "Parent-Teacher meetings",
   "todayAt": "Today at {time}",
-  "dueDate": "Due Date: {date}",
+  "dueDate": "Due Date: $date",
   "projects": {
     "title": "Projects",
     "search_hint": "Search projects...",
@@ -204,7 +204,37 @@
     "retry": "Try Again",
     "retryLater": "Try Again Later",
     "somethingWentWrong": "Something Went Wrong!",
-    "pleaseWait": "Please Wait..."
+    "pleaseWait": "Please Wait...",
+    "clear": "Clear",
+    "clearAll": "Clear All",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "OK",
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "enterImageUrl": "Enter Image URL",
+    "imageUrlLabel": "Image URL",
+    "urlRequired": "URL is required",
+    "invalidUrl": "Please enter a valid URL",
+    "chooseFromGallery": "Choose from Gallery",
+    "selectFromPhotos": "Select from your photos",
+    "takePhoto": "Take Photo",
+    "useCamera": "Use your camera",
+    "pasteLink": "Paste a link to an image",
+    "chooseImage": "Choose Image",
+    "failedToUpload": "Failed to upload image: $error",
+    "failedToPick": "Failed to pick image: $error",
+    "failedToTakePhoto": "Failed to take photo: $error",
+    "failedToShare": "Failed to share image: $error",
+    "unsavedChanges": "Unsaved Changes",
+    "noInternet": "No Internet Connection",
+    "points": "Points",
+    "difficulty": "Difficulty",
+    "explanation": "Explanation",
+    "optional": "(Optional)"
   },
   "errors": {
     "network_error": "Network error occurred. Please try again.",
@@ -212,7 +242,7 @@
     "dio": {
       "connectionTimeout": "Connection timed out. Please check your internet connection.",
       "sendTimeout": "Unable to connect to the server. Please try again later.",
-      "receiveTimeout": "Server response timed out. Please check your internet connection.",
+      "receiveTimeout": "Server response timeout. Please check your internet connection.",
       "badCertificate": "Security certificate error. Please update your device or contact support.",
       "badResponse": "Server error occurred. Please try again later.",
       "cancel": "Request cancelled.",
@@ -322,7 +352,12 @@
       },
       "grade": "Grade Level",
       "subject": "Subject",
-      "none": "None"
+      "none": "None",
+      "cancelGeneration": "Cancel Generation",
+      "cancelGenerationMessage": "Are you sure you want to cancel the presentation generation?",
+      "cancelGenerationTitle": "Cancel Generation?",
+      "goBack": "Go Back",
+      "generating": "Generating Presentation"
     },
     "outlineEditor": {
       "title": "Edit Outline",
@@ -339,7 +374,8 @@
       "enterSlideTitle": "Enter slide title...",
       "save": "Save",
       "autoSaveFailed": "Failed to save changes. Please try again.",
-      "addSlide": "Add Slide"
+      "addSlide": "Add Slide",
+      "newSlide": "New Slide"
     },
     "presentationCustomization": {
       "title": "Customize Presentation",
@@ -457,7 +493,8 @@
       },
       "error": "Error generating image: $error",
       "selectAspectRatio": "Select Aspect Ratio",
-      "selectArtStyle": "Select Art Style"
+      "selectArtStyle": "Select Art Style",
+      "aspectRatio": "Aspect Ratio"
     },
     "imageResult": {
       "title": "Generated Image",
@@ -475,7 +512,10 @@
       "errorGeneratingImage": "Error generating image",
       "failedToLoadImage": "Failed to load image",
       "imageSavedToGallery": "Image saved to gallery!",
-      "failedToSaveImage": "Failed to save image: $error"
+      "failedToSaveImage": "Failed to save image: $error",
+      "retry": "Retry",
+      "shareFailed": "Failed to share image: $error",
+      "generateFirst": "Please try generating an image first"
     }
   },
   "questionBank": {
@@ -487,19 +527,18 @@
     "save": "Save",
     "refresh": "Refresh",
     "back": "Back",
-    "continue": "Continue",
+    "continue_": "Continue",
     "addQuestion": "Add Question",
-
+    "infoText": "This question will be created for this assignment only",
+    "editQuestionTitle": "Edit Question $number",
     "bankTypes": {
       "myQuestions": "My Questions",
       "publicBank": "Public Bank"
     },
-
     "search": {
       "hint": "Search questions...",
       "noResults": "No questions found"
     },
-
     "filters": {
       "title": "Question Filters",
       "quickFilters": "Quick Filters",
@@ -514,7 +553,6 @@
       "allDifficulties": "All Difficulties",
       "level": "Level"
     },
-
     "chapter": {
       "title": "Chapter",
       "filter": "Chapter Filter",
@@ -530,7 +568,6 @@
       "failedToLoad": "Failed to load chapters. Please try again.",
       "failedToLoadTitle": "Failed to Load Chapters"
     },
-
     "emptyState": {
       "noQuestions": "No questions yet",
       "noPublicQuestions": "No public questions found",
@@ -539,33 +576,29 @@
       "notFound": "Question Not Found",
       "notFoundMessage": "The question you are looking for does not exist."
     },
-
     "actions": {
       "view": "View",
       "edit": "Edit",
       "delete": "Delete",
       "cancel": "Cancel",
       "select": "Select",
-      "ok": "OK"
+      "ok": "OK",
+      "clearAll": "Clear All"
     },
-
     "deleteDialog": {
       "title": "Delete Question",
       "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
       "success": "Question deleted successfully"
     },
-
     "loading": {
       "question": "Loading question..."
     },
-
     "errors": {
       "saving": "Error saving question: $error",
       "loading": "Failed to load question",
       "retry": "Retry",
       "selectAtLeastOne": "Please select at least one question"
     },
-
     "form": {
       "type": "Type:",
       "titleHint": "Enter your question...",
@@ -573,15 +606,19 @@
       "addImage": "Add Image",
       "removeImage": "Remove image",
       "selectImage": "Select Question Image",
-      "questionImage": "Question Image"
+      "questionImage": "Question Image",
+      "points": "Points",
+      "pointsHint": "Points for this question",
+      "difficulty": "Difficulty",
+      "explanation": "Explanation (Optional)",
+      "explanationHint": "Explain the correct answer...",
+      "addToAssignment": "Add to Assignment"
     },
-
     "advancedSettings": {
       "title": "Advanced Settings",
       "explanation": "Explanation (Optional)",
       "explanationHint": "Explain the answer..."
     },
-
     "multipleChoice": {
       "title": "Answer Options",
       "subtitle": "Add multiple choice options (minimum 2 required)",
@@ -594,9 +631,11 @@
       "optionImage": "Option Image",
       "optionImageLabel": "Option $number Image",
       "addImageTooltip": "Add Image",
-      "removeTooltip": "Remove"
+      "removeTooltip": "Remove",
+      "notAnswered": "You did not answer this question",
+      "enterOptionText": "Enter option text",
+      "newOption": "New option"
     },
-
     "matching": {
       "title": "Matching Pairs",
       "subtitle": "Create pairs to match (minimum 2 required)",
@@ -614,9 +653,10 @@
       "required": "Required",
       "leftImage": "Left Image",
       "rightImage": "Right Image",
-      "imageHint": "Upload, take photo, or enter URL"
+      "imageHint": "Upload, take photo, or enter URL",
+      "enterLeftItem": "Enter left item",
+      "enterRightItem": "Enter right item"
     },
-
     "openEnded": {
       "title": "Open-Ended Settings",
       "subtitle": "Configure answer expectations and limits",
@@ -629,9 +669,12 @@
       "maxLengthHelper": "Leave empty or 0 for no limit",
       "invalidNumber": "Please enter a valid number",
       "gradingNote": "Grading Note",
-      "gradingNoteText": "Open-ended questions typically require manual grading. The expected answer serves as a reference guide."
+      "gradingNoteText": "Open-ended questions typically require manual grading. The expected answer serves as a reference guide.",
+      "typeAnswer": "Type your answer here...",
+      "enterExpectedAnswer": "Enter the expected/reference answer...",
+      "maxCharacters": "Max characters",
+      "maxCharactersHint": "e.g., 500"
     },
-
     "fillInBlank": {
       "title": "Fill in the Blank Question",
       "subtitle": "Use {{answer}} syntax to create blanks",
@@ -645,9 +688,17 @@
       "previewPlaceholder": "Preview will appear here",
       "caseSensitive": "Case Sensitive",
       "caseSensitiveDescription": "Answers must match exact capitalization",
-      "addBlankWarning": "Please add at least one blank using {{answer}} syntax"
+      "addBlankWarning": "Please add at least one blank using {{answer}} syntax",
+      "addText": "Add Text",
+      "addBlank": "Add Blank",
+      "segmentHint": "e.g., \"answer\" or \"blank\"",
+      "acceptableAnswers": "Acceptable Answers *",
+      "acceptableAnswersHint": "answer1, answer2, answer3",
+      "textContent": "Text Content *",
+      "textContentHint": "Enter the text that appears in the question",
+      "placeholderText": "Placeholder Text *",
+      "blankHint": "________"
     },
-
     "detail": {
       "questionTitle": "QUESTION TITLE",
       "explanation": "Explanation",
@@ -656,33 +707,27 @@
       "created": "Created: $date",
       "lastUpdated": "Last Updated: $date"
     },
-
     "picker": {
       "questionsSelected": "$count question(s) selected"
     },
-
     "selectGradeSubjectFirst": {
       "title": "Select Grade and Subject First",
       "message": "Please select both Grade and Subject before choosing a chapter."
     },
-
     "noChaptersAvailable": {
       "title": "No Chapters Available"
     },
-
     "questionTypes": {
       "multipleChoice": "Multiple Choice",
       "matching": "Matching",
       "openEnded": "Open Ended",
       "fillInBlank": "Fill in Blank"
     },
-
     "difficulties": {
       "knowledge": "Knowledge",
       "comprehension": "Comprehension",
       "application": "Application"
     },
-
     "grades": {
       "grade1": "Grade 1",
       "grade2": "Grade 2",
@@ -690,13 +735,11 @@
       "grade4": "Grade 4",
       "grade5": "Grade 5"
     },
-
     "subjects": {
       "english": "English",
       "mathematics": "Mathematics",
       "literature": "Literature"
     },
-
     "viewing": {
       "imageNotAvailable": "Image not available",
       "correctAnswerShown": "Correct answer shown",
@@ -719,7 +762,6 @@
     "title": "Classes",
     "createClass": "Create Class",
     "editClass": "Edit Class",
-    "joinClass": "Join Class",
     "save": "Save",
     "back": "Back",
     "cancel": "Cancel",
@@ -728,13 +770,11 @@
     "close": "Close",
     "update": "Update",
     "create": "Create",
-
     "tabs": {
       "stream": "STREAM",
       "classwork": "CLASSWORK",
       "students": "STUDENTS"
     },
-
     "drawer": {
       "classes": "Classes",
       "exams": "Exams",
@@ -744,14 +784,12 @@
       "appSubtitle": "Learning Management System",
       "version": "EduClass v1.0.0"
     },
-
     "emptyState": {
       "noClasses": "No Classes Yet",
       "noClassesDescription": "Create a new class or join an existing one using a class code from your instructor.",
       "getStarted": "Get Started",
       "semanticLabel": "No classes yet. Create or join a class to get started."
     },
-
     "card": {
       "viewStudents": "View Students",
       "edit": "Edit",
@@ -759,15 +797,14 @@
       "inactive": "Inactive",
       "instructor": "Instructor",
       "createJoinCode": "Create join code",
-      "semanticLabel": "Class card for $className"
+      "semanticLabel": "Class card for $className",
+      "active": "Active"
     },
-
     "deleteDialog": {
       "title": "Delete Class",
       "message": "Are you sure you want to delete \"$className\"?",
       "notImplemented": "Delete not implemented yet"
     },
-
     "editPage": {
       "title": "Edit Class",
       "saveSuccess": "Class updated successfully",
@@ -775,7 +812,6 @@
       "discardTitle": "Discard changes?",
       "discardMessage": "You have unsaved changes. Are you sure you want to leave?"
     },
-
     "appBar": {
       "back": "Back",
       "moreOptions": "More options",
@@ -789,7 +825,6 @@
       "returnHint": "Double tap to return to classes list",
       "optionsHint": "Double tap to see more options"
     },
-
     "infoDialog": {
       "title": "Class Information",
       "basicInfo": "Basic Information",
@@ -807,13 +842,12 @@
       "created": "Created",
       "lastUpdated": "Last Updated",
       "copyToClipboard": "Copy to clipboard",
-      "copyLabel": "Copy $label",
+      "copyLabel": "Copy {label}",
       "copyHint": "Double tap to copy to clipboard",
       "closeDialog": "Close dialog",
       "closeHint": "Double tap to close class information",
       "copiedToClipboard": "Join code copied to clipboard"
     },
-
     "classwork": {
       "emptyTitle": "No Classwork Yet",
       "emptyDescription": "Assignments, quizzes, and materials\nwill be posted here by your teacher.\nOrganized by date for easy access.",
@@ -825,7 +859,6 @@
       "dueDates": "Due Dates",
       "dueDatesDesc": "Never miss an assignment deadline"
     },
-
     "students": {
       "addStudent": "Add new student",
       "addHint": "Double tap to add a student to this class",
@@ -844,7 +877,6 @@
       "removeSuccess": "$studentName removed successfully",
       "removeError": "Failed to remove student: $error"
     },
-
     "comments": {
       "noComments": "No comments yet",
       "beFirst": "Be the first to comment!",
@@ -854,9 +886,12 @@
       "inputDisabledHint": "Comments are disabled",
       "sendLabel": "Send comment",
       "postError": "Failed to post comment: $error",
-      "loadError": "Failed to load comments"
+      "loadError": "Failed to load comments",
+      "deleteTitle": "Delete Comment?",
+      "deleteMessage": "This action cannot be undone.",
+      "deleteSuccess": "Comment deleted successfully",
+      "deleteError": "Failed to delete comment: $error"
     },
-
     "posts": {
       "emptyTitle": "No Posts Yet",
       "emptyDescription": "Your teacher will post announcements and updates here.",
@@ -871,7 +906,6 @@
       "pinError": "Failed to toggle pin: $error",
       "deleteError": "Failed to delete post: $error"
     },
-
     "postDialog": {
       "createTitle": "Create Post",
       "editTitle": "Edit Post",
@@ -894,7 +928,6 @@
       "deleteError": "Failed to delete post: $error",
       "deleteTooltip": "Delete post"
     },
-
     "postUpsert": {
       "createTitle": "Create Post",
       "editTitle": "Edit Post",
@@ -915,7 +948,6 @@
       "dueDate": "Due Date",
       "dueDateHint": "Tap to set due date"
     },
-
     "postOptions": {
       "label": "Post options",
       "unpin": "Unpin",
@@ -926,7 +958,6 @@
       "allowComments": "Allow comments",
       "allowCommentsDesc": "Let students comment on this post"
     },
-
     "postType": {
       "title": "Post Type",
       "post": "Post",
@@ -934,13 +965,11 @@
       "postDescription": "Share updates with attachments and resources",
       "exerciseDescription": "Link assignments for students"
     },
-
     "postEditor": {
       "content": "Content",
       "richText": "Rich Text",
       "placeholder": "Write your post content here..."
     },
-
     "postActions": {
       "uploading": "Uploading...",
       "addMore": "Add More ($count)",
@@ -950,7 +979,6 @@
       "linkResource": "Link Resource",
       "linked": "Linked ($count)"
     },
-
     "assignmentSelector": {
       "title": "Select Assignments",
       "selected": "$count selected",
@@ -963,16 +991,14 @@
       "grade": "Grade",
       "allGrades": "All Grades"
     },
-
     "editForm": {
       "editing": "Editing Class",
-      "teacher": "Teacher: $teacherName",
+      "teacher": "Teacher: {teacherName}",
       "classInfo": "Class Information",
       "classId": "Class ID",
       "created": "Created",
       "lastUpdated": "Last Updated"
     },
-
     "infoSection": {
       "title": "Class Information",
       "classNameLabel": "Class Name *",
@@ -984,7 +1010,6 @@
       "descriptionHint": "Enter class description (optional)",
       "descriptionHelper": "Add details about this class"
     },
-
     "settingsSection": {
       "title": "Settings",
       "statusLabel": "Class Status",
@@ -996,7 +1021,6 @@
       "copyJoinCode": "Copy join code",
       "joinCodeCopied": "Join code copied to clipboard"
     },
-
     "createDialog": {
       "title": "Create Class",
       "classNameLabel": "Class name",
@@ -1007,9 +1031,32 @@
       "descriptionHint": "Brief class description",
       "createSuccess": "Class created successfully"
     },
-
     "footer": {
       "commentsCount": "$count comments"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "linkedResource": {
+      "notFound": "Resource not found",
+      "unavailable": "This $type may have been deleted or is unavailable",
+      "invalid": "Invalid resource",
+      "comment": "Comment",
+      "view": "View"
+    },
+    "detail": {
+      "appBarTitle": "Assignment Details",
+      "viewMode": "View Mode",
+      "editMode": "Edit Mode",
+      "deleteQuestionTitle": "Delete Question",
+      "deleteQuestionMessage": "Are you sure you want to delete question $number? This action cannot be undone.",
+      "questionDeleted": "Question deleted",
+      "questionUpdated": "Question updated",
+      "addedQuestions": "Added $count question(s)",
+      "questionCreated": "Question created and added",
+      "assignmentSaved": "Assignment saved successfully",
+      "saveError": "Error saving assignment: $error"
     }
   },
   "assignments": {
@@ -1073,26 +1120,6 @@
       "cancel": "Cancel",
       "delete": "Delete",
       "success": "Assignment deleted successfully"
-    },
-
-    "detail": {
-      "tabs": {
-        "info": "INFO",
-        "questions": "QUESTIONS",
-        "matrix": "MATRIX"
-      },
-      "deleteQuestion": {
-        "title": "Delete Question",
-        "message": "Are you sure you want to delete question $number? This action cannot be undone.",
-        "cancel": "Cancel",
-        "delete": "Delete",
-        "success": "Question deleted"
-      },
-      "questionUpdated": "Question updated",
-      "questionsAdded": "Added $count question(s)",
-      "questionCreated": "Question created and added",
-      "saveSuccess": "Assignment saved successfully",
-      "saveError": "Error saving assignment: $error"
     },
 
     "metadata": {
@@ -1275,5 +1302,90 @@
         "totalHeader": "TOTAL"
       }
     }
+  },
+  "shared": {
+    "models": {
+      "cms_enums": {
+        "questionMode": {
+          "editing": "Editing Mode",
+          "doing": "Doing Mode",
+          "afterAssess": "After Assessment Mode"
+        },
+        "assignmentStatus": {
+          "archived": "Archived"
+        },
+        "contextType": {
+          "readingPassage": "Reading Passage",
+          "audio": "Audio",
+          "video": "Video"
+        }
+      }
+    }
+  },
+  "students": {
+    "title": "Students",
+    "list": {
+      "appBarTitle": "Students",
+      "emptyTitle": "No Students Yet",
+      "emptyMessage": "Add students to this class to get started",
+      "rosterTitle": "Student Roster"
+    },
+    "create": {
+      "appBarTitle": "Create Student"
+    },
+    "edit": {
+      "appBarTitle": "Edit Student",
+      "success": "Student updated successfully"
+    },
+    "detail": {
+      "appBarTitle": "Student Details"
+    },
+    "saveChanges": "Save Changes",
+    "createStudent": "Create Student",
+    "updateSuccess": "Student updated successfully",
+    "tile": {
+      "semanticLabel": "Student: $fullName, Email: $email",
+      "avatarSemanticLabel": "Avatar for $fullName",
+      "actionsSemanticLabel": "More actions for $fullName",
+      "actionsHint": "Double tap to open menu with edit and delete options",
+      "moreActions": "More actions",
+      "editSemanticLabel": "Edit student",
+      "deleteSemanticLabel": "Delete student",
+      "noEmail": "No email provided"
+    },
+    "info": {
+      "studentInfo": "Student Information",
+      "parentInfo": "Parent Information",
+      "enrollmentInfo": "Enrollment Information",
+      "fullName": "Full Name *",
+      "fullNameHint": "Enter student's full name",
+      "fullNameRequired": "Full name is required",
+      "dateOfBirth": "Date of Birth",
+      "gender": "Gender",
+      "genderHint": "Enter gender",
+      "parentName": "Parent Name *",
+      "parentNameHint": "Enter parent's name",
+      "parentNameRequired": "Parent name is required",
+      "parentPhone": "Parent Phone *",
+      "parentPhoneHint": "Enter parent's phone number",
+      "parentPhoneRequired": "Parent phone is required",
+      "address": "Address",
+      "addressHint": "Enter address",
+      "parentEmail": "Parent Contact Email",
+      "parentEmailHint": "Enter parent's email",
+      "invalidEmail": "Invalid email address",
+      "enrollmentDate": "Enrollment Date",
+      "selectDate": "Select date"
+    }
+  },
+  "home": {
+    "todayWorks": {
+      "lorems": "Lorems"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "retry": "Retry"
   }
 }

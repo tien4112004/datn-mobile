@@ -4,7 +4,6 @@ import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/states/controller_provider.dart';
-import 'package:AIPrimary/features/classes/ui/widgets/app_drawer.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/class_action_fab.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/class_card.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/shared/create_class_dialog.dart';
@@ -47,7 +46,6 @@ class _ClassPageState extends ConsumerState<ClassPage> {
 
     return Scaffold(
       appBar: const _ClassListAppBar(),
-      drawer: const AppDrawer(),
       body: classesState.easyWhen(
         data: (classes) => _ClassListContent(
           classes: classes,
@@ -63,58 +61,6 @@ class _ClassPageState extends ConsumerState<ClassPage> {
             ),
     );
   }
-
-  // void _showJoinClassDialog(BuildContext context, WidgetRef ref) {
-  //   final codeController = TextEditingController();
-  //   final formKey = GlobalKey<FormState>();
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (dialogContext) => AlertDialog(
-  //       title: const Text('Join Class'),
-  //       content: Form(
-  //         key: formKey,
-  //         child: TextFormField(
-  //           controller: codeController,
-  //           decoration: const InputDecoration(
-  //             labelText: 'Class code',
-  //             hintText: 'Enter the code from your instructor',
-  //           ),
-  //           validator: (value) {
-  //             if (value == null || value.isEmpty) {
-  //               return 'Please enter a class code';
-  //             }
-  //             return null;
-  //           },
-  //           autofocus: true,
-  //           textCapitalization: TextCapitalization.characters,
-  //         ),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(dialogContext),
-  //           child: const Text('Cancel'),
-  //         ),
-  //         FilledButton(
-  //           onPressed: () async {
-  //             if (formKey.currentState?.validate() ?? false) {
-  //               Navigator.pop(dialogContext);
-  //               await ref
-  //                   .read(joinClassControllerProvider.notifier)
-  //                   .joinClass(joinCode: codeController.text);
-  //               if (context.mounted) {
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   const SnackBar(content: Text('Joined class successfully')),
-  //                 );
-  //               }
-  //             }
-  //           },
-  //           child: const Text('Join'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
 
 class _ClassListAppBar extends ConsumerWidget implements PreferredSizeWidget {

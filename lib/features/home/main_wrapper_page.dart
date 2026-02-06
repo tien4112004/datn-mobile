@@ -99,13 +99,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.school,
-                            t.navigation.kClass,
+                            t.navigation.class_,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.school,
-                            t.navigation.kClass,
+                            t.navigation.class_,
                             true,
                             context,
                           ),
@@ -161,13 +161,13 @@ class MainWrapperPage extends ConsumerWidget {
                         BottomNavigationBarItem(
                           icon: _bottomItemActivated(
                             LucideIcons.school,
-                            t.navigation.kClass,
+                            t.navigation.class_,
                             false,
                             context,
                           ),
                           activeIcon: _bottomItemActivated(
                             LucideIcons.school,
-                            t.navigation.kClass,
+                            t.navigation.class_,
                             true,
                             context,
                           ),

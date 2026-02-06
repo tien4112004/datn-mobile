@@ -139,41 +139,48 @@ class AssignmentPreviewCard extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 6,
                     children: [
-                      // Subject Badge
-                      _buildMetadataBadge(
-                        context,
-                        icon: subjectIcon,
-                        label: subject.displayName,
-                        color: subjectColor,
-                        isPrimary: true,
+                      Row(
+                        children: [
+                          // Subject Badge
+                          _buildMetadataBadge(
+                            context,
+                            icon: subjectIcon,
+                            label: subject.displayName,
+                            color: subjectColor,
+                            isPrimary: true,
+                          ),
+
+                          // Grade Level
+                          if (preview.gradeLevel != null)
+                            _buildMetadataBadge(
+                              context,
+                              icon: LucideIcons.graduationCap,
+                              label: preview.gradeLevel!,
+                              color: colorScheme.secondary,
+                            ),
+                        ],
                       ),
+                      Row(
+                        children: [
+                          // Question Count
+                          if (preview.totalQuestions != null)
+                            _buildMetadataBadge(
+                              context,
+                              icon: LucideIcons.listOrdered,
+                              label: '${preview.totalQuestions} Q',
+                              color: colorScheme.tertiary,
+                            ),
 
-                      // Grade Level
-                      if (preview.gradeLevel != null)
-                        _buildMetadataBadge(
-                          context,
-                          icon: LucideIcons.graduationCap,
-                          label: preview.gradeLevel!,
-                          color: colorScheme.secondary,
-                        ),
-
-                      // Question Count
-                      if (preview.totalQuestions != null)
-                        _buildMetadataBadge(
-                          context,
-                          icon: LucideIcons.listOrdered,
-                          label: '${preview.totalQuestions} Q',
-                          color: colorScheme.tertiary,
-                        ),
-
-                      // Total Points
-                      if (preview.totalPoints != null)
-                        _buildMetadataBadge(
-                          context,
-                          icon: LucideIcons.award,
-                          label: '${preview.totalPoints} pts',
-                          color: const Color(0xFFF97316), // Orange CTA
-                        ),
+                          // Total Points
+                          if (preview.totalPoints != null)
+                            _buildMetadataBadge(
+                              context,
+                              icon: LucideIcons.award,
+                              label: '${preview.totalPoints} pts',
+                              color: const Color(0xFFF97316), // Orange CTA
+                            ),
+                        ],
+                      ),
                     ],
                   ),
                 ],

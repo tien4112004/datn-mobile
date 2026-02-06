@@ -46,12 +46,6 @@ class ClassRepositoryImpl implements ClassRepository {
   }
 
   @override
-  Future<ClassEntity> joinClass({required String joinCode}) async {
-    // TODO: Implement join class API when endpoint is available
-    throw UnimplementedError('Join class API not yet implemented');
-  }
-
-  @override
   Future<ClassEntity> getClassById(String classId) async {
     final response = await _remoteDataSource.getClassById(classId);
     return response.data!.toEntity();

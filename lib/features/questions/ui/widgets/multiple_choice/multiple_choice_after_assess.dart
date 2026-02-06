@@ -1,9 +1,12 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Multiple Choice Question in After Assessment Mode (Student reviewing their answer)
-class MultipleChoiceAfterAssess extends StatelessWidget {
+class MultipleChoiceAfterAssess extends ConsumerWidget {
   final MultipleChoiceQuestion question;
   final String? studentAnswer;
 
@@ -23,7 +26,8 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return QuestionCardWrapper(
@@ -39,7 +43,7 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
           Row(
             children: [
               Text(
-                'YOUR RESULT',
+                t.questionBank.viewing.viewingMode.toUpperCase(),
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: Colors.indigo,
                   fontWeight: FontWeight.w600,
@@ -65,7 +69,9 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      _isCorrect ? 'CORRECT' : 'INCORRECT',
+                      _isCorrect
+                          ? t.questionBank.viewing.correct.toUpperCase()
+                          : t.common.error.toUpperCase(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -83,7 +89,7 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
             final option = entry.value;
             final isStudentAnswer = studentAnswer == option.id;
 
-            return _buildResultOption(option, index, isStudentAnswer, theme);
+            return _buildResultOption(option, index, isStudentAnswer, theme, t);
           }),
           if (studentAnswer == null) ...[
             const SizedBox(height: 12),
@@ -98,7 +104,7 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
                 children: [
                   Icon(Icons.warning_amber, color: Colors.orange[700]),
                   const SizedBox(width: 8),
-                  const Text('You did not answer this question'),
+                  Text(t.questionBank.multipleChoice.notAnswered),
                 ],
               ),
             ),
@@ -113,6 +119,7 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
     int index,
     bool isStudentAnswer,
     ThemeData theme,
+    Translations t,
   ) {
     Color borderColor = Colors.grey[300]!;
     Color? backgroundColor;
@@ -163,9 +170,9 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
                   color: Colors.green,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'CORRECT',
-                  style: TextStyle(
+                child: Text(
+                  t.questionBank.viewing.correct.toUpperCase(),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -180,9 +187,10 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'YOUR ANSWER',
-                  style: TextStyle(
+                child: Text(
+                  t.questionBank.viewing.grading
+                      .toUpperCase(), // Or add specific "YOUR ANSWER"
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
@@ -198,9 +206,10 @@ class MultipleChoiceAfterAssess extends StatelessWidget {
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text(
-                  'YOUR ANSWER',
-                  style: TextStyle(
+                child: Text(
+                  t.questionBank.viewing.grading
+                      .toUpperCase(), // Or add specific "YOUR ANSWER"
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,

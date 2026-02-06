@@ -20,11 +20,15 @@ class CommentCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final userState = ref.watch(userControllerPod);
 
-    // Determine author name and if current user
-    final currentUserId = userState.value?.email;
-    final isCurrentUser =
-        currentUserId != null && comment.userId == currentUserId;
+    // Determine author name from comment's user data
     final authorName = comment.authorName ?? 'User';
+
+    // Check if current user (compare by email)
+    final currentUserEmail = userState.value?.email;
+    final isCurrentUser =
+        currentUserEmail != null &&
+        comment.authorEmail != null &&
+        currentUserEmail == comment.authorEmail;
 
     // Check if user can delete this comment
     // User can delete if: 1) it's their own comment, or 2) they are a teacher

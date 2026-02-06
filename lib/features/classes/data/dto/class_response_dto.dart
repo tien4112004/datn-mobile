@@ -35,7 +35,6 @@ class ClassResponseDto {
   final String? ownerId;
   final String name;
   final String? description;
-  final String? joinCode;
   final String? settings;
   final bool isActive;
   final DateTime? createdAt;
@@ -47,7 +46,6 @@ class ClassResponseDto {
     this.ownerId,
     required this.name,
     this.description,
-    this.joinCode,
     this.settings,
     required this.isActive,
     this.createdAt,
@@ -69,7 +67,6 @@ extension ClassResponseMapper on ClassResponseDto {
     teacherEmail: teacher?.email ?? '',
     name: name,
     description: description,
-    joinCode: joinCode,
     isActive: isActive,
     createdAt: createdAt,
     updatedAt: updatedAt,

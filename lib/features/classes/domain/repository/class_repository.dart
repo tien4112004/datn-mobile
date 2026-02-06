@@ -18,9 +18,6 @@ abstract class ClassRepository {
     String? settings,
   });
 
-  /// Joins an existing class by join code.
-  Future<ClassEntity> joinClass({required String joinCode});
-
   /// Gets a single class by ID.
   Future<ClassEntity> getClassById(String classId);
 

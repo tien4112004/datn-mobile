@@ -55,26 +55,6 @@ class CreateClassController extends AsyncNotifier<void> {
   }
 }
 
-/// Controller for joining a class.
-class JoinClassController extends AsyncNotifier<void> {
-  @override
-  FutureOr<void> build() {
-    // Initial state - no operation
-  }
-
-  /// Joins a class by join code and refreshes the list.
-  Future<void> joinClass({required String joinCode}) async {
-    state = const AsyncLoading();
-
-    state = await AsyncValue.guard(() async {
-      final repository = ref.read(classRepositoryProvider);
-      await repository.joinClass(joinCode: joinCode);
-      // Refresh the classes list
-      ref.invalidate(classesControllerProvider);
-    });
-  }
-}
-
 /// Controller for updating a class.
 class UpdateClassController extends AsyncNotifier<void> {
   @override

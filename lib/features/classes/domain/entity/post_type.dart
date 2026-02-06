@@ -1,9 +1,20 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+
 enum PostType {
   /// General posts and updates with content, attachments, and linked resources
   post,
 
   /// Exercise posts for linking assignments
   exercise;
+
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case PostType.post:
+        return t.classes.postType.post;
+      case PostType.exercise:
+        return t.classes.postType.exercise;
+    }
+  }
 
   /// Converts enum to API string format
   String get apiValue {

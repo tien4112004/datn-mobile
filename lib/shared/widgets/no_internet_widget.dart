@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -74,6 +75,7 @@ class _DefaultNoInternetState extends ConsumerState<DefaultNoInternetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final statusAsync = ref.watch(internetCheckerNotifierPod);
     ref.listen(internetCheckerNotifierPod, (previous, next) {
       if (next is AsyncData) {
@@ -93,16 +95,19 @@ class _DefaultNoInternetState extends ConsumerState<DefaultNoInternetWidget> {
                   child:
                       ((widget.noInternetWidget) ??
                       MaterialBanner(
-                        content: const Text(
-                          'No Internet Available',
-                          style: TextStyle(color: Colors.red),
+                        content: Text(
+                          t.common.noInternet,
+                          style: const TextStyle(color: Colors.red),
                         ),
                         actions: [
                           ElevatedButton(
                             onPressed: () {
                               ref.invalidate(internetCheckerNotifierPod);
                             },
-                            child: const Text('OK', key: ValueKey('OK_BUTTON')),
+                            child: Text(
+                              t.common.ok,
+                              key: const ValueKey('OK_BUTTON'),
+                            ),
                           ),
                         ],
                       )),
@@ -120,7 +125,10 @@ class _DefaultNoInternetState extends ConsumerState<DefaultNoInternetWidget> {
               onPressed: () {
                 ref.invalidate(internetCheckerNotifierPod);
               },
-              child: const Text('Retry', style: TextStyle(color: Colors.red)),
+              child: Text(
+                t.common.retry,
+                style: const TextStyle(color: Colors.red),
+              ),
             ),
           ),
         ],

@@ -1,3 +1,4 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -6,6 +7,19 @@ enum QuestionType {
   matching(),
   openEnded(),
   fillInBlank();
+
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case QuestionType.multipleChoice:
+        return t.questionBank.questionTypes.multipleChoice;
+      case QuestionType.matching:
+        return t.questionBank.questionTypes.matching;
+      case QuestionType.openEnded:
+        return t.questionBank.questionTypes.openEnded;
+      case QuestionType.fillInBlank:
+        return t.questionBank.questionTypes.fillInBlank;
+    }
+  }
 
   String get displayName {
     switch (this) {
@@ -79,6 +93,17 @@ enum Difficulty {
   knowledge,
   comprehension,
   application;
+
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case Difficulty.knowledge:
+        return t.questionBank.difficulties.knowledge;
+      case Difficulty.comprehension:
+        return t.questionBank.difficulties.comprehension;
+      case Difficulty.application:
+        return t.questionBank.difficulties.application;
+    }
+  }
 
   String get displayName {
     switch (this) {
@@ -158,6 +183,26 @@ enum QuestionMode {
   grading,
   afterAssess;
 
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case QuestionMode.editing:
+        return t
+            .shared
+            .models
+            .cms_enums
+            .questionMode
+            .editing; // Note: Need to add these to JSON
+      case QuestionMode.doing:
+        return t.shared.models.cms_enums.questionMode.doing;
+      case QuestionMode.viewing:
+        return t.questionBank.viewing.viewingMode;
+      case QuestionMode.grading:
+        return t.questionBank.viewing.grading;
+      case QuestionMode.afterAssess:
+        return t.shared.models.cms_enums.questionMode.afterAssess;
+    }
+  }
+
   String get displayName {
     switch (this) {
       case QuestionMode.editing:
@@ -178,6 +223,15 @@ enum BankType {
   personal,
   public;
 
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case BankType.personal:
+        return t.questionBank.bankTypes.myQuestions;
+      case BankType.public:
+        return t.questionBank.bankTypes.publicBank;
+    }
+  }
+
   String get displayName {
     switch (this) {
       case BankType.personal:
@@ -195,6 +249,21 @@ enum GradeLevel {
   grade3,
   grade4,
   grade5;
+
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case GradeLevel.grade1:
+        return t.questionBank.grades.grade1;
+      case GradeLevel.grade2:
+        return t.questionBank.grades.grade2;
+      case GradeLevel.grade3:
+        return t.questionBank.grades.grade3;
+      case GradeLevel.grade4:
+        return t.questionBank.grades.grade4;
+      case GradeLevel.grade5:
+        return t.questionBank.grades.grade5;
+    }
+  }
 
   String get displayName {
     switch (this) {
@@ -250,6 +319,17 @@ enum Subject {
   mathematics,
   literature;
 
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case Subject.english:
+        return t.questionBank.subjects.english;
+      case Subject.mathematics:
+        return t.questionBank.subjects.mathematics;
+      case Subject.literature:
+        return t.questionBank.subjects.literature;
+    }
+  }
+
   String get displayName {
     switch (this) {
       case Subject.english:
@@ -300,6 +380,23 @@ enum AssignmentStatus {
   error,
   archived;
 
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case AssignmentStatus.draft:
+        return t
+            .projects
+            .untitled; // Using untitled as a proxy or need to add Draft
+      case AssignmentStatus.generating:
+        return t.generate.customization.generating;
+      case AssignmentStatus.completed:
+        return t.common.save; // Placeholder
+      case AssignmentStatus.error:
+        return t.common.error;
+      case AssignmentStatus.archived:
+        return t.shared.models.cms_enums.assignmentStatus.archived;
+    }
+  }
+
   String get displayName {
     switch (this) {
       case AssignmentStatus.draft:
@@ -344,6 +441,19 @@ enum ContextType {
   image,
   audio,
   video;
+
+  String getLocalizedName(Translations t) {
+    switch (this) {
+      case ContextType.readingPassage:
+        return t.shared.models.cms_enums.contextType.readingPassage;
+      case ContextType.image:
+        return t.projects.resource_types.image;
+      case ContextType.audio:
+        return t.shared.models.cms_enums.contextType.audio;
+      case ContextType.video:
+        return t.shared.models.cms_enums.contextType.video;
+    }
+  }
 
   String get displayName {
     switch (this) {

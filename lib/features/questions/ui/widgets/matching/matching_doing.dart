@@ -1,10 +1,14 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Matching Question in Doing Mode
-class MatchingDoing extends StatefulWidget {
+class MatchingDoing extends ConsumerStatefulWidget {
   final MatchingQuestion question;
   final Map<String, String>? answers; // pairId -> selectedRightId
   final Function(Map<String, String>)? onAnswersChanged;
@@ -17,10 +21,10 @@ class MatchingDoing extends StatefulWidget {
   });
 
   @override
-  State<MatchingDoing> createState() => _MatchingDoingState();
+  ConsumerState<MatchingDoing> createState() => _MatchingDoingState();
 }
 
-class _MatchingDoingState extends State<MatchingDoing> {
+class _MatchingDoingState extends ConsumerState<MatchingDoing> {
   late Map<String, String?> _selectedAnswers;
   late List<String> _rightItems;
 
@@ -48,6 +52,7 @@ class _MatchingDoingState extends State<MatchingDoing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return QuestionCardWrapper(
@@ -59,7 +64,7 @@ class _MatchingDoingState extends State<MatchingDoing> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'DOING MODE - Match the pairs:',
+            '${QuestionMode.doing.getLocalizedName(t).toUpperCase()} - ${t.questionBank.matching.subtitle}:',
             style: theme.textTheme.labelSmall?.copyWith(
               color: Colors.orange,
               fontWeight: FontWeight.w600,
@@ -67,15 +72,19 @@ class _MatchingDoingState extends State<MatchingDoing> {
           ),
           const SizedBox(height: 12),
           ...widget.question.data.pairs.map((pair) {
-            return _buildMatchingPair(pair, theme);
+            return _buildMatchingPair(pair, theme, t);
           }),
         ],
       ),
     );
   }
 
-  Widget _buildMatchingPair(MatchingPair pair, ThemeData theme) {
-    const placeholder = 'Select match...';
+  Widget _buildMatchingPair(
+    MatchingPair pair,
+    ThemeData theme,
+    Translations t,
+  ) {
+    final placeholder = t.questionBank.matching.enterRightText;
     final currentValue =
         _selectedAnswers[pair.left == null ? "" : pair.left!] ?? placeholder;
     final dropdownItems = [placeholder, ..._rightItems];

@@ -1,10 +1,13 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fill in Blank Question in Grading Mode (Teacher reviewing student answers)
 /// Enhanced with Material 3 design principles
-class FillInBlankGrading extends StatelessWidget {
+class FillInBlankGrading extends ConsumerWidget {
   final FillInBlankQuestion question;
   final Map<String, String>? studentAnswers; // blankId -> answer
 
@@ -56,7 +59,8 @@ class FillInBlankGrading extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -89,7 +93,7 @@ class FillInBlankGrading extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Grading Mode',
+                      t.questionBank.viewing.grading,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: Colors.orange.shade700,
                         fontWeight: FontWeight.w600,
@@ -118,7 +122,7 @@ class FillInBlankGrading extends StatelessWidget {
                     const Icon(Icons.assessment, size: 18, color: Colors.white),
                     const SizedBox(width: 6),
                     Text(
-                      '$_correctCount/$_totalBlanks Correct',
+                      '$_correctCount/$_totalBlanks ${t.questionBank.viewing.correct}',
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -156,6 +160,7 @@ class FillInBlankGrading extends StatelessWidget {
                   isCorrect,
                   isAnswered,
                   theme,
+                  t,
                 );
               }
             }).toList(),
@@ -171,6 +176,7 @@ class FillInBlankGrading extends StatelessWidget {
     bool isCorrect,
     bool isAnswered,
     ThemeData theme,
+    TranslationsEn t,
   ) {
     return Container(
       constraints: const BoxConstraints(minWidth: 120, maxWidth: 200),
@@ -216,7 +222,9 @@ class FillInBlankGrading extends StatelessWidget {
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(
-                    studentAnswer.isEmpty ? 'No answer' : studentAnswer,
+                    studentAnswer.isEmpty
+                        ? t.questionBank.matching.required
+                        : studentAnswer,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isCorrect

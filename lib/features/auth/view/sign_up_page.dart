@@ -12,14 +12,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> with GlobalHelper {
+class _SignUpPageState extends ConsumerState<SignUpPage> with GlobalHelper {
   void _navigateToSignIn() {
     context.router.replace(const SignInRoute());
   }

@@ -2,6 +2,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/thumbnail.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -28,6 +29,7 @@ class AbstractResourceTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     debugPrint('Building AbstractResourceTile for $title');
     return InkWell(
       onTap: onTap,
@@ -74,7 +76,7 @@ class AbstractResourceTile extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    title.isEmpty ? t.projects.untitled : title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -109,6 +111,7 @@ class AbstractResourceTile extends ConsumerWidget {
             IconButton(
               icon: const Icon(LucideIcons.ellipsisVertical),
               onPressed: onMoreOptions,
+              tooltip: t.students.tile.moreActions,
             ),
           ],
         ),

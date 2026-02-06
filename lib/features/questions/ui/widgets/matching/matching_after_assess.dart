@@ -1,10 +1,13 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Matching Question in After Assessment Mode (Student reviewing their answers)
 /// Enhanced with Material 3 design principles
-class MatchingAfterAssess extends StatelessWidget {
+class MatchingAfterAssess extends ConsumerWidget {
   final MatchingQuestion question;
   final Map<String, String>? studentAnswers; // leftItem -> selectedRightItem
 
@@ -26,7 +29,8 @@ class MatchingAfterAssess extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final totalPairs = question.data.pairs.length;
@@ -65,7 +69,7 @@ class MatchingAfterAssess extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Your Results',
+                      t.questionBank.viewing.viewingMode,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.w600,
@@ -125,6 +129,7 @@ class MatchingAfterAssess extends StatelessWidget {
               isCorrect,
               isAnswered,
               theme,
+              t,
             );
           }),
           if (studentAnswers == null || studentAnswers!.isEmpty) ...[
@@ -146,7 +151,7 @@ class MatchingAfterAssess extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'You did not answer this question',
+                      t.questionBank.multipleChoice.notAnswered,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.orange.shade900,
                         fontWeight: FontWeight.w500,
@@ -168,6 +173,7 @@ class MatchingAfterAssess extends StatelessWidget {
     bool isCorrect,
     bool isAnswered,
     ThemeData theme,
+    Translations t,
   ) {
     final colorScheme = theme.colorScheme;
 
@@ -235,7 +241,7 @@ class MatchingAfterAssess extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Your Answer:',
+                            '${t.questionBank.openEnded.gradingNote}:', // Reuse or add specific
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.w600,
@@ -254,7 +260,7 @@ class MatchingAfterAssess extends StatelessWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              studentAnswer ?? 'No answer',
+                              studentAnswer ?? t.questionBank.matching.required,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontWeight: FontWeight.w500,
                                 color: isCorrect
@@ -273,7 +279,7 @@ class MatchingAfterAssess extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Correct:',
+                              '${t.questionBank.viewing.correct}:',
                               style: theme.textTheme.labelSmall?.copyWith(
                                 color: Colors.green.shade700,
                                 fontWeight: FontWeight.w600,

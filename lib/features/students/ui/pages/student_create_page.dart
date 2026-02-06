@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/students/states/controller_provider.dart';
 import 'package:AIPrimary/features/students/ui/widgets/student_credentials_dialog.dart';
@@ -18,10 +19,11 @@ class StudentCreatePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final isLoading = ref.watch(createStudentControllerProvider).isLoading;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Create Student'),
+      appBar: CustomAppBar(title: t.students.create.appBarTitle),
       body: Stack(
         children: [
           StudentForm(
@@ -51,7 +53,7 @@ class StudentCreatePage extends ConsumerWidget {
                   ScaffoldMessenger.of(context).clearSnackBars();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to add student: $e'),
+                      content: Text('${t.common.error}: $e'),
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                   );

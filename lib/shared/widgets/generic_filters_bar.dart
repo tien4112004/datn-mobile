@@ -1,4 +1,6 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 
@@ -104,7 +106,7 @@ class FilterConfig<T> implements BaseFilterConfig {
 ///   onClearFilters: () => setState(() { /* clear all */ }),
 /// )
 /// ```
-class GenericFiltersBar extends StatelessWidget {
+class GenericFiltersBar extends ConsumerWidget {
   final List<BaseFilterConfig> filters;
   final VoidCallback onClearFilters;
   final bool isReadOnly;
@@ -121,7 +123,8 @@ class GenericFiltersBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final hasFilters = filters.any((filter) => filter.hasSelection);
 
     final children = [
@@ -141,7 +144,7 @@ class GenericFiltersBar extends StatelessWidget {
         TextButton.icon(
           onPressed: onClearFilters,
           icon: const Icon(LucideIcons.x, size: 14),
-          label: const Text('Clear'),
+          label: Text(t.common.clear),
           style: TextButton.styleFrom(
             visualDensity: VisualDensity.compact,
             padding: const EdgeInsets.symmetric(horizontal: 12),

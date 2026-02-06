@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A generic bottom sheet for selecting from a list of options
-class OptionBottomSheet<T> extends StatefulWidget {
+class OptionBottomSheet<T> extends ConsumerStatefulWidget {
   const OptionBottomSheet({
     super.key,
     required this.title,
@@ -47,10 +47,11 @@ class OptionBottomSheet<T> extends StatefulWidget {
   final Duration overlayDelay;
 
   @override
-  State<OptionBottomSheet<T>> createState() => _OptionBottomSheetState<T>();
+  ConsumerState<OptionBottomSheet<T>> createState() =>
+      _OptionBottomSheetState<T>();
 }
 
-class _OptionBottomSheetState<T> extends State<OptionBottomSheet<T>>
+class _OptionBottomSheetState<T> extends ConsumerState<OptionBottomSheet<T>>
     with GlobalHelper<OptionBottomSheet<T>> {
   Future<void> _handleOptionTap(T option, String loadingText) async {
     if (widget.showLoadingOverlay) {
@@ -99,80 +100,73 @@ class _OptionBottomSheetState<T> extends State<OptionBottomSheet<T>>
 
   @override
   Widget build(BuildContext context) {
+    final translation = ref.watch(translationsPod);
     return SafeArea(
-      child: Consumer(
-        builder: (context, ref, child) {
-          final translation = ref.watch(translationsPod);
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
-                  ),
-                  child: Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Divider(),
-                ...widget.options.map((option) {
-                  final isSelected = option == widget.currentValue;
-                  final label =
-                      widget.getOptionLabel?.call(option) ?? option.toString();
-                  final icon = widget.getOptionIcon?.call(option);
-                  final description = widget.getOptionDescription?.call(option);
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Text(
+                widget.title,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Divider(),
+            ...widget.options.map((option) {
+              final isSelected = option == widget.currentValue;
+              final label =
+                  widget.getOptionLabel?.call(option) ?? option.toString();
+              final icon = widget.getOptionIcon?.call(option);
+              final description = widget.getOptionDescription?.call(option);
 
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    leading: icon != null
-                        ? Icon(
-                            icon,
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).iconTheme.color,
-                          )
-                        : null,
-                    title: Text(
-                      label,
-                      style: TextStyle(
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                leading: icon != null
+                    ? Icon(
+                        icon,
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
-                            : null,
-                      ),
-                    ),
-                    subtitle: description != null
-                        ? Text(
-                            description,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )
+                            : Theme.of(context).iconTheme.color,
+                      )
+                    : null,
+                title: Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
                         : null,
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_circle,
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
-                    onTap: () => _handleOptionTap(option, translation.loading),
-                  );
-                }),
-                const SizedBox(height: 8),
-              ],
-            ),
-          );
-        },
+                  ),
+                ),
+                subtitle: description != null
+                    ? Text(
+                        description,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )
+                    : null,
+                trailing: isSelected
+                    ? Icon(
+                        Icons.check_circle,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () => _handleOptionTap(option, translation.loading),
+              );
+            }),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }

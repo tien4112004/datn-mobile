@@ -1011,5 +1011,269 @@
     "footer": {
       "commentsCount": "$count comments"
     }
+  },
+  "assignments": {
+    "title": "Assignment Management",
+    "createExam": "Create Exam",
+    "refresh": "Refresh",
+    "assignmentDetails": "Assignment Details",
+    "viewMode": "View Mode",
+    "editMode": "Edit Mode",
+    "editAssignment": "Edit Assignment",
+
+    "emptyState": {
+      "noAssignments": "No assignments yet",
+      "createFirstMessage": "Create your first assignment to get started",
+      "noQuestions": "No questions yet",
+      "noQuestionsViewMessage": "You can add questions to this assignment by tapping the \"Add Question\" button.",
+      "addFirstQuestion": "Add your first Question",
+      "addFirstQuestionMessage": "Use the Floating Action Button to add your first question."
+    },
+
+    "card": {
+      "questions": "questions",
+      "points": "points",
+      "min": "min",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+
+    "dates": {
+      "createdPrefix": "Created",
+      "createdOn": "Created on $date",
+      "today": "today",
+      "yesterday": "yesterday",
+      "daysAgo": "$count days ago"
+    },
+
+    "form": {
+      "createTitle": "Create New Assignment",
+      "editTitle": "Edit Assignment",
+      "titleLabel": "Assignment Title *",
+      "titleHint": "e.g., Mathematics Final Assignment - Grade 1",
+      "titleRequired": "Please enter assignment title",
+      "subjectLabel": "Subject *",
+      "descriptionLabel": "Description",
+      "descriptionHint": "Brief description of the assignment",
+      "gradeLevelLabel": "Grade Level *",
+      "timeLimitLabel": "Time Limit (minutes)",
+      "timeLimitHint": "e.g., 60",
+      "timeLimitInvalid": "Please enter a valid time limit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create",
+      "createSuccess": "Assignment created! Add questions to complete setup.",
+      "updateSuccess": "Assignment updated successfully",
+      "error": "Error: $error"
+    },
+
+    "deleteDialog": {
+      "title": "Delete Assignment",
+      "message": "Are you sure you want to delete \"$title\"?",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "success": "Assignment deleted successfully"
+    },
+
+    "detail": {
+      "tabs": {
+        "info": "INFO",
+        "questions": "QUESTIONS",
+        "matrix": "MATRIX"
+      },
+      "deleteQuestion": {
+        "title": "Delete Question",
+        "message": "Are you sure you want to delete question $number? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "success": "Question deleted"
+      },
+      "questionUpdated": "Question updated",
+      "questionsAdded": "Added $count question(s)",
+      "questionCreated": "Question created and added",
+      "saveSuccess": "Assignment saved successfully",
+      "saveError": "Error saving assignment: $error"
+    },
+
+    "metadata": {
+      "subject": "Subject",
+      "gradeLevel": "Grade Level",
+      "totalQuestions": "Total Questions",
+      "description": "Description",
+      "noDescription": "No Description Provided",
+      "shuffleQuestions": "Shuffle Questions",
+      "shuffleDescription": "Randomize question order for each student"
+    },
+
+    "actionDock": {
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "saving": "Saving..."
+    },
+
+    "floatingMenu": {
+      "addQuestion": "Add Question",
+      "close": "Close",
+      "fromBank": "From Bank",
+      "createNew": "Create New"
+    },
+
+    "questionPicker": {
+      "title": "Add Questions",
+      "fromBank": "From Question Bank",
+      "fromBankDescription": "Select existing questions",
+      "createNew": "Create New Question",
+      "createNewDescription": "Build a question from scratch",
+      "cancel": "Cancel"
+    },
+
+    "pointsAssignment": {
+      "title": "Assign Points to Questions",
+      "subtitle": "Set points for each question in this assignment",
+      "applyAll": "Apply All",
+      "pts": "pts",
+      "apply": "Apply",
+      "totalPoints": "Total Points",
+      "pointsValue": "$points pts",
+      "cancel": "Cancel",
+      "addQuestions": "Add Questions",
+      "pointsMustBeGreaterThanZero": "Points must be greater than 0",
+      "allPointsMustBeGreaterThanZero": "All points must be greater than 0"
+    },
+
+    "questionCard": {
+      "options": "Options",
+      "optionsLabel": "Options",
+      "shuffled": "Shuffled",
+      "matchingPairs": "Matching Pairs",
+      "blank": "Blank",
+      "expectedAnswer": "Expected Answer",
+      "maxLength(length)": "Max length: $length characters",
+      "noLengthLimit": "No length limit",
+      "fillInTheBlanks": "Fill in the Blanks",
+      "caseSensitive": "Case Sensitive",
+      "explanation": "Explanation",
+      "edit": "Edit",
+      "delete": "Delete",
+      "collapse": "Collapse",
+      "expand": "Expand"
+    },
+
+    "filters": {
+      "title": "Assignment Filters",
+      "status": "Status",
+      "allStatus": "All Status",
+      "gradeLevel": "Grade Level",
+      "allGrades": "All Grades",
+      "subject": "Subject",
+      "allSubjects": "All Subjects",
+      "quickFilters": "Quick Filters",
+      "applyFilters": "Apply Filters",
+      "searchHint": "Search assignments..."
+    },
+
+    "matrixDashboard": {
+      "title": "Assessment Matrix",
+      "subtitle(actual, target, percentage)": "$actual of $target questions ($percentage% complete)",
+      "summaryStatistics": "Summary Statistics",
+      "target": "Target",
+      "actual": "Actual",
+      "complete": "Complete",
+      "matched": "Matched",
+      "targetCount": "Target Count",
+      "actualCount": "Actual Count",
+      "completion": "Completion",
+      "matchesFound": "Matches Found",
+      "type": "Type",
+      "total": "Total"
+    },
+
+    "questionsSection": {
+      "title": "Questions",
+      "count": "$count ${count, plural, one{question} other{questions}}",
+      "available": "$count ${count, plural, one{question} other{questions}} available",
+      "generate": "Generate"
+    },
+
+    "infoHeader": {
+      "subject": "Subject",
+      "grade": "Grade",
+      "questions": "Questions",
+      "editInfo": "Edit Info",
+      "shuffleQuestions": "Shuffle Questions",
+      "shuffleDescription": "Randomize question order for each student"
+    },
+
+    "statuses": {
+      "draft": "Draft",
+      "generating": "Generating",
+      "completed": "Completed",
+      "error": "Error",
+      "archived": "Archived"
+    },
+
+    "matrix": {
+      "mc": "MC",
+      "match": "Match",
+      "open": "Open",
+      "fill": "Fill",
+      "know": "Know",
+      "comp": "Comp",
+      "app": "App",
+      "kno": "KNO",
+      "com": "COM",
+      "appAbbr": "APP"
+    },
+
+    "detail": {
+      "tabs": {
+        "info": "INFO",
+        "questions": "QUESTIONS",
+        "matrix": "MATRIX"
+      },
+      "deleteQuestion": {
+        "title": "Delete Question",
+        "message(number)": "Are you sure you want to delete question $number? This action cannot be undone.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "success": "Question deleted"
+      },
+      "questionUpdated": "Question updated",
+      "questionsAdded(count)": "Added $count question(s)",
+      "questionCreated": "Question created and added",
+      "saveSuccess": "Assignment saved successfully",
+      "saveError(error)": "Error saving assignment: $error",
+      "metadata": {
+        "createdOn(date)": "Created on $date",
+        "editAssignment": "Edit Assignment",
+        "subject": "Subject",
+        "gradeLevel": "Grade Level",
+        "totalQuestions": "Total Questions",
+        "description": "Description",
+        "noDescription": "No Description Provided",
+        "shuffleQuestions": "Shuffle Questions",
+        "shuffleDescription": "Randomize question order for each student"
+      },
+      "questions": {
+        "title": "Questions",
+        "available(count)": "$count ${count, plural, one{question} other{questions}} available",
+        "emptyTitle": "No questions yet",
+        "emptyMessage": "You can add questions to this assignment by tapping the \"Add Question\" button.",
+        "addQuestion": "Add Question",
+        "emptyEditTitle": "Add your first Question",
+        "emptyEditMessage": "Use the Floating Action Button to add your first question."
+      },
+      "matrix": {
+        "title": "Assessment Matrix",
+        "distributed(count)": "$count ${count, plural, one{question} other{questions}} distributed",
+        "summaryStatistics": "Summary Statistics",
+        "targetCount": "Target Count",
+        "actualCount": "Actual Count",
+        "completion": "Completion",
+        "matchesFound": "Matches Found",
+        "typeHeader": "TYPE",
+        "totalHeader": "TOTAL"
+      }
+    }
   }
 }

@@ -1,20 +1,23 @@
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Matrix tab with clean design matching the Matrix tab reference.
 /// Features: Icon badge header, matrix table, colorful summary stats.
-class MatrixTab extends StatelessWidget {
+class MatrixTab extends ConsumerWidget {
   final AssessmentMatrix matrix;
   final bool isEditMode;
 
   const MatrixTab({super.key, required this.matrix, this.isEditMode = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
     final stats = matrix.getStats();
 
     return Container(
@@ -33,7 +36,7 @@ class MatrixTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Assessment Matrix',
+                          t.assignments.detail.matrix.title,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
@@ -42,7 +45,9 @@ class MatrixTab extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${stats.totalActual} ${stats.totalActual == 1 ? 'question' : 'questions'} distributed',
+                          t.assignments.detail.matrix.distributed(
+                            count: stats.totalActual,
+                          ),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -57,7 +62,7 @@ class MatrixTab extends StatelessWidget {
             // Type & Difficulty Matrix Card
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _buildMatrixTable(context, theme, colorScheme),
+              child: _buildMatrixTable(context, theme, colorScheme, t),
             ),
 
             const SizedBox(height: 24),
@@ -72,7 +77,7 @@ class MatrixTab extends StatelessWidget {
                     children: [
                       // Removed decorative icon container
                       Text(
-                        'Summary Statistics',
+                        t.assignments.detail.matrix.summaryStatistics,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: colorScheme.onSurface,
@@ -95,23 +100,23 @@ class MatrixTab extends StatelessWidget {
                       final metrics = [
                         (
                           icon: LucideIcons.target,
-                          label: 'Target Count',
+                          label: t.assignments.detail.matrix.targetCount,
                           value: '${stats.totalTarget}',
                         ),
                         (
                           icon: LucideIcons.check,
-                          label: 'Actual Count',
+                          label: t.assignments.detail.matrix.actualCount,
                           value: '${stats.totalActual}',
                         ),
                         (
                           icon: LucideIcons.percent,
-                          label: 'Completion',
+                          label: t.assignments.detail.matrix.completion,
                           value:
                               '${stats.completionPercentage.toStringAsFixed(1)}%',
                         ),
                         (
                           icon: LucideIcons.circleCheck,
-                          label: 'Matches Found',
+                          label: t.assignments.detail.matrix.matchesFound,
                           value: '${stats.matchedCells} / ${stats.totalCells}',
                         ),
                       ];
@@ -143,6 +148,7 @@ class MatrixTab extends StatelessWidget {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -152,13 +158,13 @@ class MatrixTab extends StatelessWidget {
       child: Column(
         children: [
           // Header Row
-          _buildHeaderRow(theme, colorScheme),
+          _buildHeaderRow(theme, colorScheme, t),
           Divider(height: 1, color: colorScheme.outlineVariant),
           // Data Rows
           ...QuestionType.values.map((type) {
             return Column(
               children: [
-                _buildDataRow(type, theme, colorScheme),
+                _buildDataRow(type, theme, colorScheme, t),
                 if (type != QuestionType.values.last)
                   Divider(
                     height: 1,
@@ -172,7 +178,7 @@ class MatrixTab extends StatelessWidget {
     );
   }
 
-  Widget _buildHeaderRow(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildHeaderRow(ThemeData theme, ColorScheme colorScheme, dynamic t) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -184,7 +190,7 @@ class MatrixTab extends StatelessWidget {
           SizedBox(
             width: 80,
             child: Text(
-              'TYPE',
+              t.assignments.detail.matrix.typeHeader,
               style: theme.textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurfaceVariant,
@@ -211,7 +217,7 @@ class MatrixTab extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _getDifficultyAbbreviation(difficulty),
+                              _getDifficultyAbbreviation(difficulty, t),
                               style: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.onSurfaceVariant,
@@ -229,7 +235,7 @@ class MatrixTab extends StatelessWidget {
             width: 60,
             child: Center(
               child: Text(
-                'TOTAL',
+                t.assignments.detail.matrix.totalHeader,
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurfaceVariant,
@@ -247,6 +253,7 @@ class MatrixTab extends StatelessWidget {
     QuestionType type,
     ThemeData theme,
     ColorScheme colorScheme,
+    dynamic t,
   ) {
     final typeColor = QuestionType.getColor(type);
 
@@ -262,7 +269,7 @@ class MatrixTab extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    _getTypeAbbreviation(type),
+                    _getTypeAbbreviation(type, t),
                     style: theme.textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
@@ -389,27 +396,27 @@ class MatrixTab extends StatelessWidget {
     );
   }
 
-  String _getDifficultyAbbreviation(Difficulty difficulty) {
+  String _getDifficultyAbbreviation(Difficulty difficulty, dynamic t) {
     switch (difficulty) {
       case Difficulty.knowledge:
-        return 'KNO';
+        return t.assignments.matrix.kno;
       case Difficulty.comprehension:
-        return 'COM';
+        return t.assignments.matrix.com;
       case Difficulty.application:
-        return 'APP';
+        return t.assignments.matrix.appAbbr;
     }
   }
 
-  String _getTypeAbbreviation(QuestionType type) {
+  String _getTypeAbbreviation(QuestionType type, dynamic t) {
     switch (type) {
       case QuestionType.multipleChoice:
-        return 'MC';
+        return t.assignments.matrix.mc;
       case QuestionType.matching:
-        return 'Match';
+        return t.assignments.matrix.match;
       case QuestionType.openEnded:
-        return 'Open';
+        return t.assignments.matrix.open;
       case QuestionType.fillInBlank:
-        return 'Fill';
+        return t.assignments.matrix.fill;
     }
   }
 }

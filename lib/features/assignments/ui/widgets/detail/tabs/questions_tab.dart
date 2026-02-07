@@ -1,13 +1,15 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/question_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Questions tab with clean design matching the Questions tab reference.
 /// Features: Icon badge header, clean question list, numbered cards.
-class QuestionsTab extends StatelessWidget {
+class QuestionsTab extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
   final Function(AssignmentQuestionEntity, int) onEdit;
@@ -24,9 +26,10 @@ class QuestionsTab extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       color: colorScheme.surfaceContainerLowest,
@@ -42,7 +45,7 @@ class QuestionsTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Questions',
+                          t.assignments.detail.questions.title,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colorScheme.onSurface,
@@ -51,7 +54,9 @@ class QuestionsTab extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${assignment.totalQuestions} ${assignment.totalQuestions == 1 ? 'question' : 'questions'} available',
+                          t.assignments.detail.questions.available(
+                            count: assignment.totalQuestions,
+                          ),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
@@ -79,17 +84,17 @@ class QuestionsTab extends StatelessWidget {
                   child: !isEditMode
                       ? EnhancedEmptyState(
                           icon: LucideIcons.inbox,
-                          title: 'No questions yet',
-                          message:
-                              'You can add questions to this assignment by tapping the "Add Question" button.',
-                          actionLabel: 'Add Question',
+                          title: t.assignments.detail.questions.emptyTitle,
+                          message: t.assignments.detail.questions.emptyMessage,
+                          actionLabel:
+                              t.assignments.detail.questions.addQuestion,
                           onAction: () => onSwitchMode(),
                         )
-                      : const EnhancedEmptyState(
+                      : EnhancedEmptyState(
                           icon: LucideIcons.plus,
-                          title: 'Add your first Question',
+                          title: t.assignments.detail.questions.emptyEditTitle,
                           message:
-                              'Use the Floating Action Button to add your first question.',
+                              t.assignments.detail.questions.emptyEditMessage,
                         ),
                 ),
               ),

@@ -1,4 +1,6 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Bottom sheet for selecting how to add questions to an assignment.
@@ -6,7 +8,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Provides two options:
 /// 1. Select from Question Bank - Choose existing questions
 /// 2. Create New Question - Build a question from scratch
-class AssignmentQuestionPickerSheet extends StatelessWidget {
+class AssignmentQuestionPickerSheet extends ConsumerWidget {
   final VoidCallback onSelectFromBank;
   final VoidCallback onCreateNew;
 
@@ -34,9 +36,10 @@ class AssignmentQuestionPickerSheet extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       decoration: BoxDecoration(
@@ -65,7 +68,7 @@ class AssignmentQuestionPickerSheet extends StatelessWidget {
 
               // Title
               Text(
-                'Add Questions',
+                t.assignments.questionPicker.title,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colorScheme.onSurface,
@@ -78,8 +81,8 @@ class AssignmentQuestionPickerSheet extends StatelessWidget {
               _OptionCard(
                 icon: LucideIcons.library,
                 iconColor: colorScheme.primary,
-                title: 'From Question Bank',
-                description: 'Select existing questions',
+                title: t.assignments.questionPicker.fromBank,
+                description: t.assignments.questionPicker.fromBankDescription,
                 onTap: () {
                   Navigator.pop(context);
                   onSelectFromBank();
@@ -91,8 +94,8 @@ class AssignmentQuestionPickerSheet extends StatelessWidget {
               _OptionCard(
                 icon: LucideIcons.pencil,
                 iconColor: colorScheme.secondary,
-                title: 'Create New Question',
-                description: 'Build a question from scratch',
+                title: t.assignments.questionPicker.createNew,
+                description: t.assignments.questionPicker.createNewDescription,
                 onTap: () {
                   Navigator.pop(context);
                   onCreateNew();
@@ -107,7 +110,7 @@ class AssignmentQuestionPickerSheet extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
-                  'Cancel',
+                  t.assignments.questionPicker.cancel,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

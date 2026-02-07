@@ -1,11 +1,14 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Header widget displaying assignment info with edit capability and shuffle toggle.
 /// Follows Material Design 3 with claymorphism styling.
-class AssignmentInfoHeader extends StatelessWidget {
+class AssignmentInfoHeader extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
   final ValueChanged<bool>? onShuffleChanged;
@@ -18,9 +21,10 @@ class AssignmentInfoHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -89,7 +93,7 @@ class AssignmentInfoHeader extends StatelessWidget {
                   IconButton.filledTonal(
                     onPressed: () => _showEditDialog(context),
                     icon: const Icon(LucideIcons.pencil, size: 18),
-                    tooltip: 'Edit Info',
+                    tooltip: t.assignments.infoHeader.editInfo,
                   ),
                 ],
               ],
@@ -102,9 +106,10 @@ class AssignmentInfoHeader extends StatelessWidget {
                 Expanded(
                   child: _buildStatItem(
                     context,
+                    ref,
                     icon: LucideIcons.bookOpen,
-                    label: 'Subject',
-                    value: assignment.subject.displayName,
+                    label: t.assignments.infoHeader.subject,
+                    value: assignment.subject.localizedName(t),
                     color: colorScheme.primary,
                   ),
                 ),
@@ -112,9 +117,10 @@ class AssignmentInfoHeader extends StatelessWidget {
                 Expanded(
                   child: _buildStatItem(
                     context,
+                    ref,
                     icon: LucideIcons.graduationCap,
-                    label: 'Grade',
-                    value: assignment.gradeLevel.displayName,
+                    label: t.assignments.infoHeader.grade,
+                    value: assignment.gradeLevel.localizedName(t),
                     color: colorScheme.tertiary,
                   ),
                 ),
@@ -122,8 +128,9 @@ class AssignmentInfoHeader extends StatelessWidget {
                 Expanded(
                   child: _buildStatItem(
                     context,
+                    ref,
                     icon: LucideIcons.listChecks,
-                    label: 'Questions',
+                    label: t.assignments.infoHeader.questions,
                     value: '${assignment.totalQuestions}',
                     color: colorScheme.secondary,
                   ),
@@ -147,13 +154,13 @@ class AssignmentInfoHeader extends StatelessWidget {
                   value: assignment.shuffleQuestions,
                   onChanged: onShuffleChanged,
                   title: Text(
-                    'Shuffle Questions',
+                    t.assignments.infoHeader.shuffleQuestions,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   subtitle: Text(
-                    'Randomize question order for each student',
+                    t.assignments.infoHeader.shuffleDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -178,7 +185,8 @@ class AssignmentInfoHeader extends StatelessWidget {
   }
 
   Widget _buildStatItem(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required IconData icon,
     required String label,
     required String value,

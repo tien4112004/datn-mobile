@@ -59,3 +59,20 @@ extension SubjectLocalization on Subject {
     }
   }
 }
+
+extension AssignmentStatusLocalization on AssignmentStatus {
+  String localizedName(Translations t) {
+    switch (this) {
+      case AssignmentStatus.draft:
+        return t.assignments.statuses.draft;
+      case AssignmentStatus.generating:
+        return t.assignments.statuses.generating;
+      case AssignmentStatus.completed:
+        return t.assignments.statuses.completed;
+      case AssignmentStatus.error:
+        return t.assignments.statuses.error;
+      case AssignmentStatus.archived:
+        return t.assignments.statuses.archived;
+    }
+  }
+}

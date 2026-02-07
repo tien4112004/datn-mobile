@@ -1,6 +1,9 @@
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Material 3 collapsible question card with type-specific content.
@@ -11,7 +14,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Edit mode with action buttons
 /// - Type-specific content rendering
 /// - Proper Material 3 surface containers
-class QuestionCard extends StatefulWidget {
+class QuestionCard extends ConsumerStatefulWidget {
   final BaseQuestion question;
   final int questionNumber;
   final bool isEditMode;
@@ -30,10 +33,10 @@ class QuestionCard extends StatefulWidget {
   });
 
   @override
-  State<QuestionCard> createState() => _QuestionCardState();
+  ConsumerState<QuestionCard> createState() => _QuestionCardState();
 }
 
-class _QuestionCardState extends State<QuestionCard>
+class _QuestionCardState extends ConsumerState<QuestionCard>
     with SingleTickerProviderStateMixin {
   late bool _isExpanded;
   late AnimationController _animationController;
@@ -130,6 +133,8 @@ class _QuestionCardState extends State<QuestionCard>
     ColorScheme colorScheme,
     Color typeColor,
   ) {
+    final t = ref.watch(translationsPod);
+
     return InkWell(
       onTap: _toggleExpanded,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -175,14 +180,14 @@ class _QuestionCardState extends State<QuestionCard>
                     children: [
                       _buildBadge(
                         icon: QuestionType.getIcon(widget.question.type),
-                        label: widget.question.type.displayName,
+                        label: widget.question.type.localizedName(t),
                         color: typeColor,
                       ),
                       _buildBadge(
                         icon: Difficulty.getDifficultyIcon(
                           widget.question.difficulty,
                         ),
-                        label: widget.question.difficulty.displayName,
+                        label: widget.question.difficulty.localizedName(t),
                         color: Difficulty.getDifficultyColor(
                           widget.question.difficulty,
                         ),
@@ -216,7 +221,7 @@ class _QuestionCardState extends State<QuestionCard>
                 if (widget.isEditMode)
                   PopupMenuButton<String>(
                     icon: const Icon(LucideIcons.ellipsisVertical, size: 20),
-                    tooltip: 'Options',
+                    tooltip: t.assignments.questionCard.options,
                     onSelected: (value) {
                       if (value == 'edit') {
                         widget.onEdit?.call();
@@ -235,7 +240,7 @@ class _QuestionCardState extends State<QuestionCard>
                               color: colorScheme.primary,
                             ),
                             const SizedBox(width: 8),
-                            const Text('Edit'),
+                            Text(t.assignments.questionCard.edit),
                           ],
                         ),
                       ),
@@ -250,7 +255,7 @@ class _QuestionCardState extends State<QuestionCard>
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Delete',
+                              t.assignments.questionCard.delete,
                               style: TextStyle(color: colorScheme.error),
                             ),
                           ],
@@ -264,7 +269,9 @@ class _QuestionCardState extends State<QuestionCard>
                   child: IconButton(
                     icon: const Icon(LucideIcons.chevronDown, size: 20),
                     onPressed: _toggleExpanded,
-                    tooltip: _isExpanded ? 'Collapse' : 'Expand',
+                    tooltip: _isExpanded
+                        ? t.assignments.questionCard.collapse
+                        : t.assignments.questionCard.expand,
                     visualDensity: VisualDensity.compact,
                   ),
                 ),
@@ -325,47 +332,52 @@ class _QuestionCardState extends State<QuestionCard>
           // Explanation (if exists)
           if (widget.question.explanation != null) ...[
             const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                ),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    LucideIcons.lightbulb,
-                    size: 18,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Explanation',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.question.explanation!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+            Consumer(
+              builder: (context, ref, child) {
+                final t = ref.watch(translationsPod);
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
                     ),
                   ),
-                ],
-              ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        LucideIcons.lightbulb,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              t.assignments.questionCard.explanation,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              widget.question.explanation!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ],
         ],
@@ -394,6 +406,8 @@ class _QuestionCardState extends State<QuestionCard>
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final t = ref.watch(translationsPod);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -402,7 +416,7 @@ class _QuestionCardState extends State<QuestionCard>
             Icon(LucideIcons.listChecks, size: 18, color: colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              'Options',
+              t.assignments.questionCard.optionsLabel,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -426,7 +440,7 @@ class _QuestionCardState extends State<QuestionCard>
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Shuffled',
+                      t.assignments.questionCard.shuffled,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSecondaryContainer,
                         fontWeight: FontWeight.w600,
@@ -539,6 +553,8 @@ class _QuestionCardState extends State<QuestionCard>
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final t = ref.watch(translationsPod);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -551,7 +567,7 @@ class _QuestionCardState extends State<QuestionCard>
             ),
             const SizedBox(width: 8),
             Text(
-              'Matching Pairs',
+              t.assignments.questionCard.matchingPairs,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -575,7 +591,7 @@ class _QuestionCardState extends State<QuestionCard>
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Shuffled',
+                      t.assignments.questionCard.shuffled,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSecondaryContainer,
                         fontWeight: FontWeight.w600,
@@ -615,7 +631,9 @@ class _QuestionCardState extends State<QuestionCard>
                       ),
                     ),
                     child: Text(
-                      pair.left == null ? "Blank" : pair.left!,
+                      pair.left == null
+                          ? t.assignments.questionCard.blank
+                          : pair.left!,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -648,7 +666,9 @@ class _QuestionCardState extends State<QuestionCard>
                       ),
                     ),
                     child: Text(
-                      pair.right == null ? "Blank" : pair.right!,
+                      pair.right == null
+                          ? t.assignments.questionCard.blank
+                          : pair.right!,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurface,
                         fontWeight: FontWeight.w500,
@@ -669,6 +689,8 @@ class _QuestionCardState extends State<QuestionCard>
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final t = ref.watch(translationsPod);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -677,7 +699,7 @@ class _QuestionCardState extends State<QuestionCard>
             Icon(LucideIcons.pencil, size: 18, color: colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              'Expected Answer',
+              t.assignments.questionCard.expectedAnswer,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -719,8 +741,10 @@ class _QuestionCardState extends State<QuestionCard>
                   const SizedBox(width: 8),
                   Text(
                     question.data.maxLength != null
-                        ? 'Max length: ${question.data.maxLength} characters'
-                        : 'No length limit',
+                        ? t.assignments.questionCard.maxLength(
+                            length: question.data.maxLength!,
+                          )
+                        : t.assignments.questionCard.noLengthLimit,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -739,6 +763,8 @@ class _QuestionCardState extends State<QuestionCard>
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final t = ref.watch(translationsPod);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -747,7 +773,7 @@ class _QuestionCardState extends State<QuestionCard>
             Icon(LucideIcons.form, size: 18, color: colorScheme.primary),
             const SizedBox(width: 8),
             Text(
-              'Fill in the Blanks',
+              t.assignments.questionCard.fillInTheBlanks,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -762,7 +788,7 @@ class _QuestionCardState extends State<QuestionCard>
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'Case Sensitive',
+                  t.assignments.questionCard.caseSensitive,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: colorScheme.onErrorContainer,
                     fontWeight: FontWeight.w600,

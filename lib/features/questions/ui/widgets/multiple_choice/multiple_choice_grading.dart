@@ -1,10 +1,14 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Multiple Choice Question in Grading Mode (Teacher reviewing student answer)
 /// Enhanced with Material 3 design principles
-class MultipleChoiceGrading extends StatelessWidget {
+class MultipleChoiceGrading extends ConsumerWidget {
   final MultipleChoiceQuestion question;
   final String? studentAnswer;
 
@@ -24,7 +28,8 @@ class MultipleChoiceGrading extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return QuestionCardWrapper(
@@ -56,7 +61,7 @@ class MultipleChoiceGrading extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Grading Mode',
+                      QuestionMode.grading.getLocalizedName(t),
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: Colors.orange.shade700,
                         fontWeight: FontWeight.w600,
@@ -86,7 +91,9 @@ class MultipleChoiceGrading extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      _isCorrect ? 'Correct' : 'Incorrect',
+                      _isCorrect
+                          ? t.questionBank.viewing.correct
+                          : t.common.error,
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -105,7 +112,13 @@ class MultipleChoiceGrading extends StatelessWidget {
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _buildGradingOption(option, index, isStudentAnswer, theme),
+              child: _buildGradingOption(
+                option,
+                index,
+                isStudentAnswer,
+                theme,
+                t,
+              ),
             );
           }),
           if (studentAnswer == null) ...[
@@ -127,7 +140,7 @@ class MultipleChoiceGrading extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Student did not answer this question',
+                      t.questionBank.multipleChoice.notAnswered,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.orange.shade900,
                         fontWeight: FontWeight.w500,
@@ -148,6 +161,7 @@ class MultipleChoiceGrading extends StatelessWidget {
     int index,
     bool isStudentAnswer,
     ThemeData theme,
+    Translations t,
   ) {
     final colorScheme = theme.colorScheme;
 
@@ -218,11 +232,26 @@ class MultipleChoiceGrading extends StatelessWidget {
             spacing: 8,
             children: [
               if (option.isCorrect)
-                _buildLabel('Correct', Colors.green, Icons.check_circle, theme),
+                _buildLabel(
+                  t.questionBank.viewing.correct,
+                  Colors.green,
+                  Icons.check_circle,
+                  theme,
+                ),
               if (isStudentAnswer && !option.isCorrect)
-                _buildLabel('Student Answer', Colors.red, Icons.person, theme),
+                _buildLabel(
+                  t.questionBank.viewing.grading,
+                  Colors.red,
+                  Icons.person,
+                  theme,
+                ), // Or specific "Student Answer"
               if (isStudentAnswer && option.isCorrect)
-                _buildLabel('Student Answer', Colors.blue, Icons.person, theme),
+                _buildLabel(
+                  t.questionBank.viewing.grading,
+                  Colors.blue,
+                  Icons.person,
+                  theme,
+                ), // Or specific "Student Answer"
             ],
           ),
         ],

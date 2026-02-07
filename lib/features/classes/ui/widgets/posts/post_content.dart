@@ -1,4 +1,6 @@
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown_editor_plus/markdown_editor_plus.dart';
@@ -31,11 +33,13 @@ class _PostContentState extends ConsumerState<PostContent> {
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: MarkdownAutoPreview(
         controller: _markdownController,
+        readOnly: isStudent,
         decoration: InputDecoration(
           labelText: t.generate.outlineEditor.slideTitle,
           hintText: t.generate.outlineEditor.enterSlideTitle,

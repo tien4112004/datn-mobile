@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/students/states/controller_provider.dart';
@@ -24,10 +25,11 @@ class StudentListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final studentsState = ref.watch(studentsControllerProvider(classId));
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Students'),
+      appBar: CustomAppBar(title: t.students.list.appBarTitle),
       body: studentsState.easyWhen(
         data: (listState) => _StudentListContent(
           classId: classId,
@@ -37,16 +39,16 @@ class StudentListPage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: Semantics(
-        label: 'Add new student',
+        label: t.classes.students.addStudent,
         button: true,
-        hint: 'Double tap to create a new student',
+        hint: t.classes.students.addHint,
         child: FloatingActionButton.extended(
           onPressed: () {
             HapticFeedback.mediumImpact();
             context.router.push(StudentCreateRoute(classId: classId));
           },
           icon: const Icon(LucideIcons.userPlus),
-          label: const Text('Add Student'),
+          label: Text(t.classes.students.addFirstStudent),
         ),
       ),
     );
@@ -66,12 +68,13 @@ class _StudentListContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     if (students.isEmpty) {
       return EnhancedEmptyState(
         icon: LucideIcons.users,
-        title: 'No Students Yet',
-        message: 'Add students to this class to get started',
-        actionLabel: 'Add First Student',
+        title: t.students.list.emptyTitle,
+        message: t.students.list.emptyMessage,
+        actionLabel: t.classes.students.addFirstStudent,
         onAction: () {
           context.router.push(StudentCreateRoute(classId: classId));
         },
@@ -83,14 +86,14 @@ class _StudentListContent extends ConsumerWidget {
         // Enhanced count header
         EnhancedCountHeader(
           icon: LucideIcons.users,
-          title: 'Student Roster',
+          title: t.students.list.rosterTitle,
           count: students.length,
-          countLabel: 'Student',
+          countLabel: t.classes.students.student,
         ),
         // Student list with animations
         Expanded(
           child: Semantics(
-            label: '${students.length} students in this class',
+            label: t.classes.students.studentCount(count: students.length),
             child: RefreshIndicator(
               onRefresh: onRefresh,
               child: ListView.builder(
@@ -129,28 +132,34 @@ class _StudentListContent extends ConsumerWidget {
   }
 
   void _showDeleteDialog(BuildContext context, WidgetRef ref, dynamic student) {
+    final t = ref.read(translationsPod);
     showDialog(
       context: context,
       builder: (dialogContext) => Semantics(
-        label: 'Delete confirmation dialog',
+        label: t.classes.students.removeSemanticLabel(
+          studentName: student.fullName,
+        ),
         child: AlertDialog(
-          title: const Text('Remove Student'),
+          title: Text(t.classes.students.removeTitle),
           content: Text(
-            'Are you sure you want to remove ${student.fullName} from this class?',
-            semanticsLabel:
-                'Are you sure you want to remove ${student.fullName} from this class? This action cannot be undone.',
+            t.classes.students.removeMessage(studentName: student.fullName),
+            semanticsLabel: t.classes.students.removeSemanticLabel(
+              studentName: student.fullName,
+            ),
           ),
           actions: [
             Semantics(
-              label: 'Cancel deletion',
+              label: t.classes.actions.cancel,
               button: true,
               child: TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Cancel'),
+                child: Text(t.classes.actions.cancel),
               ),
             ),
             Semantics(
-              label: 'Confirm deletion of ${student.fullName}',
+              label: t.classes.students.confirmRemove(
+                studentName: student.fullName,
+              ),
               button: true,
               child: FilledButton(
                 onPressed: () async {
@@ -160,19 +169,19 @@ class _StudentListContent extends ConsumerWidget {
                   // Show loading indicator
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Row(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               width: 16,
                               height: 16,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
-                            SizedBox(width: 16),
-                            Text('Removing student...'),
+                            const SizedBox(width: 16),
+                            Text(t.classes.students.removing),
                           ],
                         ),
-                        duration: Duration(seconds: 2),
+                        duration: const Duration(seconds: 2),
                       ),
                     );
                   }
@@ -187,7 +196,9 @@ class _StudentListContent extends ConsumerWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            '${student.fullName} removed successfully',
+                            t.classes.students.removeSuccess(
+                              studentName: student.fullName,
+                            ),
                           ),
                           backgroundColor: Theme.of(
                             context,
@@ -200,7 +211,9 @@ class _StudentListContent extends ConsumerWidget {
                       ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Failed to remove student: $e'),
+                          content: Text(
+                            t.classes.students.removeError(error: e.toString()),
+                          ),
                           backgroundColor: Theme.of(context).colorScheme.error,
                         ),
                       );
@@ -210,7 +223,7 @@ class _StudentListContent extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.error,
                 ),
-                child: const Text('Remove'),
+                child: Text(t.classes.students.remove),
               ),
             ),
           ],

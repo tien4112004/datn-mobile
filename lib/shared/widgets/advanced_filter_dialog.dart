@@ -1,4 +1,6 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Simple base advanced filter dialog
@@ -39,7 +41,7 @@ void showAdvancedFilterDialog({
 }
 
 /// Base advanced filter dialog widget
-class AdvancedFilterDialog extends StatelessWidget {
+class AdvancedFilterDialog extends ConsumerWidget {
   final String title;
   final Widget content;
   final VoidCallback onClearAll;
@@ -56,7 +58,8 @@ class AdvancedFilterDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -98,7 +101,7 @@ class AdvancedFilterDialog extends StatelessWidget {
                 TextButton.icon(
                   onPressed: onClearAll,
                   icon: const Icon(LucideIcons.circleX, size: 18),
-                  label: const Text('Clear All'),
+                  label: Text(t.common.clearAll),
                 ),
               ],
             ),

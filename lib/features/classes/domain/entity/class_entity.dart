@@ -8,7 +8,6 @@ class ClassEntity {
   final String teacherName;
   final String teacherEmail;
   final String name;
-  final String? joinCode;
   final bool isActive;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -22,7 +21,6 @@ class ClassEntity {
     required this.teacherName,
     required this.teacherEmail,
     required this.name,
-    this.joinCode,
     required this.isActive,
     this.createdAt,
     this.updatedAt,
@@ -54,7 +52,6 @@ class ClassEntity {
     String? teacherName,
     String? teacherEmail,
     String? name,
-    String? joinCode,
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -66,7 +63,6 @@ class ClassEntity {
       teacherName: teacherName ?? this.teacherName,
       teacherEmail: teacherEmail ?? this.teacherEmail,
       name: name ?? this.name,
-      joinCode: joinCode ?? this.joinCode,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

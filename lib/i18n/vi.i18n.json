@@ -12,7 +12,7 @@
   "navigation": {
     "home": "Trang chủ",
     "project": "Dự án",
-    "class": "Lớp học",
+    "class_": "Lớp học",
     "profile": "Hồ sơ"
   },
   "auth": {
@@ -112,7 +112,37 @@
     "retry": "Thử lại",
     "retryLater": "Thử lại sau",
     "somethingWentWrong": "Đã xảy ra lỗi!",
-    "pleaseWait": "Vui lòng chờ..."
+    "pleaseWait": "Vui lòng chờ...",
+    "clear": "Xóa",
+    "clearAll": "Xóa tất cả",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "ok": "OK",
+    "save": "Lưu",
+    "add": "Thêm",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "search": "Tìm kiếm",
+    "enterImageUrl": "Nhập URL hình ảnh",
+    "imageUrlLabel": "URL hình ảnh",
+    "urlRequired": "Vui lòng nhập URL",
+    "invalidUrl": "Vui lòng nhập URL hợp lệ",
+    "chooseFromGallery": "Chọn từ thư viện",
+    "selectFromPhotos": "Chọn từ ảnh của bạn",
+    "takePhoto": "Chụp ảnh",
+    "useCamera": "Sử dụng camera của bạn",
+    "pasteLink": "Dán liên kết hình ảnh",
+    "chooseImage": "Chọn hình ảnh",
+    "failedToUpload": "Tải hình ảnh lên thất bại: $error",
+    "failedToPick": "Chọn hình ảnh thất bại: $error",
+    "failedToTakePhoto": "Chụp ảnh thất bại: $error",
+    "failedToShare": "Chia sẻ hình ảnh thất bại: $error",
+    "unsavedChanges": "Thay đổi chưa lưu",
+    "noInternet": "Không có kết nối Internet",
+    "points": "Điểm",
+    "difficulty": "Độ khó",
+    "explanation": "Giải thích",
+    "optional": "(Tùy chọn)"
   },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",
@@ -120,8 +150,8 @@
   "myClasses": "Lớp học của tôi",
   "recentDocuments": "Tài liệu gần đây",
   "parentTeacherMeetings": "Họp phụ huynh - giáo viên",
-  "todayAt": "Hôm nay lúc {time}",
-  "dueDate": "Hạn nộp: {date}",
+  "todayAt": "Hôm nay lúc $time",
+  "dueDate": "Hạn nộp: $date",
   "projects": {
     "title": "Dự án",
     "search_hint": "Tìm kiếm dự án...",
@@ -326,7 +356,12 @@
       },
       "grade": "Cấp độ lớp",
       "subject": "Môn học",
-      "none": "Không"
+      "none": "Không",
+      "cancelGeneration": "Hủy tạo",
+      "cancelGenerationMessage": "Bạn có chắc chắn muốn hủy quá trình tạo bài thuyết trình?",
+      "cancelGenerationTitle": "Hủy tạo?",
+      "goBack": "Quay lại",
+      "generating": "Đang tạo bài thuyết trình"
     },
     "outlineEditor": {
       "title": "Chỉnh sửa dàn ý",
@@ -343,7 +378,8 @@
       "enterSlideTitle": "Nhập tiêu đề slide...",
       "save": "Lưu",
       "autoSaveFailed": "Không thể lưu thay đổi. Vui lòng thử lại.",
-      "addSlide": "Thêm slide"
+      "addSlide": "Thêm slide",
+      "newSlide": "Slide mới"
     },
     "presentationCustomization": {
       "title": "Tùy chỉnh bài thuyết trình",
@@ -462,7 +498,7 @@
       "error": "Lỗi tạo hình ảnh: $error",
       "selectAspectRatio": "Chọn tỷ lệ khung hình",
       "selectArtStyle": "Chọn phong cách nghệ thuật",
-      "advancedSettings": "Cài đặt nâng cao"
+      "aspectRatio": "Tỷ lệ khung hình"
     },
     "imageResult": {
       "title": "Hình ảnh đã tạo",
@@ -480,7 +516,10 @@
       "errorGeneratingImage": "Lỗi tạo hình ảnh",
       "failedToLoadImage": "Không thể tải hình ảnh",
       "imageSavedToGallery": "Hình ảnh đã được lưu vào thư viện!",
-      "failedToSaveImage": "Không thể lưu hình ảnh: $error"
+      "failedToSaveImage": "Không thể lưu hình ảnh: $error",
+      "retry": "Thử lại",
+      "shareFailed": "Chia sẻ hình ảnh thất bại: $error",
+      "generateFirst": "Vui lòng thử tạo một hình ảnh trước"
     }
   },
   "questionBank": {
@@ -492,19 +531,18 @@
     "save": "Lưu",
     "refresh": "Làm mới",
     "back": "Quay lại",
-    "continue": "Tiếp tục",
+    "continue_": "Tiếp tục",
     "addQuestion": "Thêm câu hỏi",
-
+    "infoText": "Câu hỏi này sẽ chỉ được tạo riêng cho bài tập này",
+    "editQuestionTitle": "Sửa câu hỏi $number",
     "bankTypes": {
       "myQuestions": "Câu hỏi của tôi",
       "publicBank": "Ngân hàng ứng dụng"
     },
-
     "search": {
       "hint": "Tìm kiếm câu hỏi...",
       "noResults": "Không tìm thấy câu hỏi"
     },
-
     "filters": {
       "title": "Bộ lọc câu hỏi",
       "quickFilters": "Bộ lọc nhanh",
@@ -519,7 +557,6 @@
       "allDifficulties": "Tất cả độ khó",
       "level": "Cấp độ"
     },
-
     "chapter": {
       "title": "Chương",
       "filter": "Lọc theo chương",
@@ -535,7 +572,6 @@
       "failedToLoad": "Không thể tải danh sách chương. Vui lòng thử lại.",
       "failedToLoadTitle": "Không thể tải chương"
     },
-
     "emptyState": {
       "noQuestions": "Chưa có câu hỏi nào",
       "noPublicQuestions": "Không tìm thấy câu hỏi công khai",
@@ -544,33 +580,29 @@
       "notFound": "Không tìm thấy câu hỏi",
       "notFoundMessage": "Câu hỏi bạn đang tìm không tồn tại."
     },
-
     "actions": {
       "view": "Xem",
       "edit": "Sửa",
       "delete": "Xóa",
       "cancel": "Hủy",
       "select": "Chọn",
-      "ok": "OK"
+      "ok": "OK",
+      "clearAll": "Xóa tất cả"
     },
-
     "deleteDialog": {
       "title": "Xóa câu hỏi",
       "message": "Bạn có chắc chắn muốn xóa \"$title\"? Hành động này không thể hoàn tác.",
       "success": "Đã xóa câu hỏi thành công"
     },
-
     "loading": {
       "question": "Đang tải câu hỏi..."
     },
-
     "errors": {
       "saving": "Lỗi khi lưu câu hỏi: $error",
       "loading": "Không thể tải câu hỏi",
       "retry": "Thử lại",
       "selectAtLeastOne": "Vui lòng chọn ít nhất một câu hỏi"
     },
-
     "form": {
       "type": "Loại:",
       "titleHint": "Nhập câu hỏi của bạn...",
@@ -578,15 +610,19 @@
       "addImage": "Thêm hình ảnh",
       "removeImage": "Xóa hình ảnh",
       "selectImage": "Chọn hình ảnh câu hỏi",
-      "questionImage": "Hình ảnh câu hỏi"
+      "questionImage": "Hình ảnh câu hỏi",
+      "points": "Điểm",
+      "pointsHint": "Điểm cho câu hỏi này",
+      "difficulty": "Độ khó",
+      "explanation": "Giải thích (Tùy chọn)",
+      "explanationHint": "Giải thích đáp án đúng...",
+      "addToAssignment": "Thêm vào bài tập"
     },
-
     "advancedSettings": {
       "title": "Cài đặt nâng cao",
       "explanation": "Giải thích (Tùy chọn)",
       "explanationHint": "Giải thích đáp án..."
     },
-
     "multipleChoice": {
       "title": "Các lựa chọn đáp án",
       "subtitle": "Thêm các lựa chọn trắc nghiệm (tối thiểu 2 lựa chọn)",
@@ -599,9 +635,11 @@
       "optionImage": "Hình ảnh lựa chọn",
       "optionImageLabel": "Hình ảnh lựa chọn $number",
       "addImageTooltip": "Thêm hình ảnh",
-      "removeTooltip": "Xóa"
+      "removeTooltip": "Xóa",
+      "notAnswered": "Bạn chưa trả lời câu hỏi này",
+      "enterOptionText": "Nhập nội dung lựa chọn",
+      "newOption": "Lựa chọn mới"
     },
-
     "matching": {
       "title": "Các cặp ghép nối",
       "subtitle": "Tạo các cặp để ghép nối (tối thiểu 2 cặp)",
@@ -619,9 +657,10 @@
       "required": "Bắt buộc",
       "leftImage": "Hình ảnh vế trái",
       "rightImage": "Hình ảnh vế phải",
-      "imageHint": "Tải lên, chụp ảnh hoặc nhập URL"
+      "imageHint": "Tải lên, chụp ảnh hoặc nhập URL",
+      "enterLeftItem": "Nhập vế trái",
+      "enterRightItem": "Nhập vế phải"
     },
-
     "openEnded": {
       "title": "Cài đặt câu hỏi mở",
       "subtitle": "Cấu hình kỳ vọng và giới hạn câu trả lời",
@@ -634,9 +673,12 @@
       "maxLengthHelper": "Để trống hoặc 0 để không giới hạn",
       "invalidNumber": "Vui lòng nhập một số hợp lệ",
       "gradingNote": "Ghi chú chấm điểm",
-      "gradingNoteText": "Câu hỏi mở thường yêu cầu chấm điểm thủ công. Đáp án mong đợi được dùng làm hướng dẫn tham khảo."
+      "gradingNoteText": "Câu hỏi mở thường yêu cầu chấm điểm thủ công. Đáp án mong đợi được dùng làm hướng dẫn tham khảo.",
+      "typeAnswer": "Nhập câu trả lời của bạn tại đây...",
+      "enterExpectedAnswer": "Nhập đáp án mong đợi/tham khảo...",
+      "maxCharacters": "Ký tự tối đa",
+      "maxCharactersHint": "VD: 500"
     },
-
     "fillInBlank": {
       "title": "Câu hỏi điền vào chỗ trống",
       "subtitle": "Sử dụng cú pháp {{đáp án}} để tạo chỗ trống",
@@ -650,9 +692,17 @@
       "previewPlaceholder": "Xem trước sẽ hiển thị ở đây",
       "caseSensitive": "Phân biệt chữ hoa/thường",
       "caseSensitiveDescription": "Đáp án phải khớp chính xác chữ hoa/thường",
-      "addBlankWarning": "Vui lòng thêm ít nhất một chỗ trống bằng cú pháp {{đáp án}}"
+      "addBlankWarning": "Vui lòng thêm ít nhất một chỗ trống bằng cú pháp {{đáp án}}",
+      "addText": "Thêm văn bản",
+      "addBlank": "Thêm chỗ trống",
+      "segmentHint": "VD: \"đáp án\" hoặc \"trống\"",
+      "acceptableAnswers": "Các đáp án chấp nhận *",
+      "acceptableAnswersHint": "đáp án1, đáp án2, đáp án3",
+      "textContent": "Nội dung văn bản *",
+      "textContentHint": "Nhập văn bản xuất hiện trong câu hỏi",
+      "placeholderText": "Văn bản giữ chỗ *",
+      "blankHint": "________"
     },
-
     "detail": {
       "questionTitle": "TIÊU ĐỀ CÂU HỎI",
       "explanation": "Giải thích",
@@ -661,33 +711,27 @@
       "created": "Ngày tạo: $date",
       "lastUpdated": "Cập nhật lần cuối: $date"
     },
-
     "picker": {
       "questionsSelected": "Đã chọn $count câu hỏi"
     },
-
     "selectGradeSubjectFirst": {
       "title": "Chọn Khối lớp và Môn học trước",
       "message": "Vui lòng chọn cả Khối lớp và Môn học trước khi chọn chương."
     },
-
     "noChaptersAvailable": {
       "title": "Không có chương nào"
     },
-
     "questionTypes": {
       "multipleChoice": "Trắc nghiệm",
       "matching": "Ghép nối",
       "openEnded": "Tự luận",
       "fillInBlank": "Điền vào chỗ trống"
     },
-
     "difficulties": {
       "knowledge": "Nhận biết",
       "comprehension": "Thông hiểu",
       "application": "Vận dụng"
     },
-
     "grades": {
       "grade1": "Lớp 1",
       "grade2": "Lớp 2",
@@ -695,13 +739,11 @@
       "grade4": "Lớp 4",
       "grade5": "Lớp 5"
     },
-
     "subjects": {
       "english": "Tiếng Anh",
       "mathematics": "Toán",
       "literature": "Ngữ văn"
     },
-
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
       "correctAnswerShown": "Hiển thị đáp án đúng",
@@ -724,7 +766,6 @@
     "title": "Lớp học",
     "createClass": "Tạo lớp học",
     "editClass": "Sửa lớp học",
-    "joinClass": "Tham gia lớp học",
     "save": "Lưu",
     "back": "Quay lại",
     "cancel": "Hủy",
@@ -733,13 +774,11 @@
     "close": "Đóng",
     "update": "Cập nhật",
     "create": "Tạo",
-
     "tabs": {
       "stream": "BẢNG TIN",
       "classwork": "BÀI TẬP",
       "students": "HỌC SINH"
     },
-
     "drawer": {
       "classes": "Lớp học",
       "exams": "Bài thi",
@@ -749,14 +788,12 @@
       "appSubtitle": "Hệ thống quản lý học tập",
       "version": "EduClass v1.0.0"
     },
-
     "emptyState": {
       "noClasses": "Chưa có lớp học nào",
       "noClassesDescription": "Tạo lớp học mới hoặc tham gia lớp học hiện có bằng mã lớp từ giáo viên của bạn.",
       "getStarted": "Bắt đầu",
       "semanticLabel": "Chưa có lớp học. Tạo hoặc tham gia lớp học để bắt đầu."
     },
-
     "card": {
       "viewStudents": "Xem học sinh",
       "edit": "Sửa",
@@ -764,15 +801,14 @@
       "inactive": "Không hoạt động",
       "instructor": "Giáo viên",
       "createJoinCode": "Tạo mã tham gia",
-      "semanticLabel": "Thẻ lớp học cho $className"
+      "semanticLabel": "Thẻ lớp học cho $className",
+      "active": "Hoạt động"
     },
-
     "deleteDialog": {
       "title": "Xóa lớp học",
       "message": "Bạn có chắc chắn muốn xóa \"$className\"?",
       "notImplemented": "Chức năng xóa chưa được triển khai"
     },
-
     "editPage": {
       "title": "Sửa lớp học",
       "saveSuccess": "Cập nhật lớp học thành công",
@@ -780,7 +816,6 @@
       "discardTitle": "Bỏ thay đổi?",
       "discardMessage": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?"
     },
-
     "appBar": {
       "back": "Quay lại",
       "moreOptions": "Tùy chọn khác",
@@ -794,7 +829,6 @@
       "returnHint": "Nhấn đúp để trở về danh sách lớp học",
       "optionsHint": "Nhấn đúp để xem thêm tùy chọn"
     },
-
     "infoDialog": {
       "title": "Thông tin lớp học",
       "basicInfo": "Thông tin cơ bản",
@@ -818,7 +852,6 @@
       "closeHint": "Nhấn đúp để đóng thông tin lớp học",
       "copiedToClipboard": "Đã sao chép mã tham gia vào clipboard"
     },
-
     "classwork": {
       "emptyTitle": "Chưa có bài tập nào",
       "emptyDescription": "Bài tập, bài kiểm tra và tài liệu\nsẽ được đăng tại đây bởi giáo viên.\nSắp xếp theo ngày để dễ truy cập.",
@@ -830,7 +863,6 @@
       "dueDates": "Hạn nộp",
       "dueDatesDesc": "Không bao giờ bỏ lỡ hạn nộp bài"
     },
-
     "students": {
       "addStudent": "Thêm học sinh mới",
       "addHint": "Nhấn đúp để thêm học sinh vào lớp này",
@@ -849,7 +881,6 @@
       "removeSuccess": "Đã xóa $studentName thành công",
       "removeError": "Không thể xóa học sinh: $error"
     },
-
     "comments": {
       "noComments": "Chưa có bình luận nào",
       "beFirst": "Hãy là người đầu tiên bình luận!",
@@ -859,9 +890,12 @@
       "inputDisabledHint": "Bình luận đã bị tắt",
       "sendLabel": "Gửi bình luận",
       "postError": "Không thể đăng bình luận: $error",
-      "loadError": "Không thể tải bình luận"
+      "loadError": "Không thể tải bình luận",
+      "deleteTitle": "Xóa bình luận?",
+      "deleteMessage": "Hành động này không thể hoàn tác.",
+      "deleteSuccess": "Đã xóa bình luận thành công",
+      "deleteError": "Không thể xóa bình luận: $error"
     },
-
     "posts": {
       "emptyTitle": "Chưa có bài đăng nào",
       "emptyDescription": "Giáo viên sẽ đăng thông báo và cập nhật tại đây.",
@@ -876,7 +910,6 @@
       "pinError": "Không thể ghim/bỏ ghim: $error",
       "deleteError": "Không thể xóa bài đăng: $error"
     },
-
     "postDialog": {
       "createTitle": "Tạo bài đăng",
       "editTitle": "Sửa bài đăng",
@@ -899,7 +932,6 @@
       "deleteError": "Không thể xóa bài đăng: $error",
       "deleteTooltip": "Xóa bài đăng"
     },
-
     "postUpsert": {
       "createTitle": "Tạo bài đăng",
       "editTitle": "Sửa bài đăng",
@@ -920,7 +952,6 @@
       "dueDate": "Hạn nộp",
       "dueDateHint": "Nhấn để đặt hạn nộp"
     },
-
     "postOptions": {
       "label": "Tùy chọn bài đăng",
       "unpin": "Bỏ ghim",
@@ -931,7 +962,6 @@
       "allowComments": "Cho phép bình luận",
       "allowCommentsDesc": "Cho phép học sinh bình luận bài đăng này"
     },
-
     "postType": {
       "title": "Loại bài đăng",
       "post": "Bài đăng",
@@ -939,13 +969,11 @@
       "postDescription": "Chia sẻ cập nhật với tệp đính kèm và tài nguyên",
       "exerciseDescription": "Liên kết bài tập cho học sinh"
     },
-
     "postEditor": {
       "content": "Nội dung",
       "richText": "Văn bản có định dạng",
       "placeholder": "Viết nội dung bài đăng tại đây..."
     },
-
     "postActions": {
       "uploading": "Đang tải lên...",
       "addMore": "Thêm ($count)",
@@ -955,7 +983,6 @@
       "linkResource": "Liên kết tài nguyên",
       "linked": "Đã liên kết ($count)"
     },
-
     "assignmentSelector": {
       "title": "Chọn bài tập",
       "selected": "Đã chọn $count",
@@ -968,7 +995,6 @@
       "grade": "Khối lớp",
       "allGrades": "Tất cả khối lớp"
     },
-
     "editForm": {
       "editing": "Đang chỉnh sửa lớp học",
       "teacher": "Giáo viên: $teacherName",
@@ -977,7 +1003,6 @@
       "created": "Ngày tạo",
       "lastUpdated": "Cập nhật lần cuối"
     },
-
     "infoSection": {
       "title": "Thông tin lớp học",
       "classNameLabel": "Tên lớp *",
@@ -989,7 +1014,6 @@
       "descriptionHint": "Nhập mô tả lớp học (tùy chọn)",
       "descriptionHelper": "Thêm chi tiết về lớp học này"
     },
-
     "settingsSection": {
       "title": "Cài đặt",
       "statusLabel": "Trạng thái lớp học",
@@ -1001,7 +1025,6 @@
       "copyJoinCode": "Sao chép mã tham gia",
       "joinCodeCopied": "Đã sao chép mã tham gia vào clipboard"
     },
-
     "createDialog": {
       "title": "Tạo lớp học",
       "classNameLabel": "Tên lớp",
@@ -1012,12 +1035,36 @@
       "descriptionHint": "Mô tả ngắn về lớp học",
       "createSuccess": "Tạo lớp học thành công"
     },
-
     "footer": {
       "commentsCount": "$count bình luận"
+    },
+    "actions": {
+      "cancel": "Hủy",
+      "delete": "Xóa"
+    },
+    "linkedResource": {
+      "notFound": "Không tìm thấy tài nguyên",
+      "unavailable": "$type này có thể đã bị xóa hoặc không khả dụng",
+      "invalid": "Tài nguyên không hợp lệ",
+      "comment": "Bình luận",
+      "view": "Xem"
+    },
+    "detail": {
+      "appBarTitle": "Chi tiết bài tập",
+      "viewMode": "Chế độ xem",
+      "editMode": "Chế độ sửa",
+      "deleteQuestionTitle": "Xóa câu hỏi",
+      "deleteQuestionMessage": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
+      "questionDeleted": "Đã xóa câu hỏi",
+      "questionUpdated": "Đã cập nhật câu hỏi",
+      "addedQuestions": "Đã thêm $count câu hỏi",
+      "questionCreated": "Đã tạo và thêm câu hỏi",
+      "assignmentSaved": "Đã lưu bài tập thành công",
+      "saveError": "Lỗi khi lưu bài tập: $error"
     }
   },
   "assignments": {
+    "pointsError": "Điểm phải lớn hơn 0",
     "title": "Quản lý bài kiểm tra",
     "createExam": "Tạo bài kiểm tra",
     "refresh": "Làm mới",
@@ -1079,27 +1126,6 @@
       "delete": "Xóa",
       "success": "Đã xóa bài kiểm tra thành công"
     },
-
-    "detail": {
-      "tabs": {
-        "info": "THÔNG TIN",
-        "questions": "CÂU HỎI",
-        "matrix": "MA TRẬN"
-      },
-      "deleteQuestion": {
-        "title": "Xóa câu hỏi",
-        "message": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
-        "cancel": "Hủy",
-        "delete": "Xóa",
-        "success": "Đã xóa câu hỏi"
-      },
-      "questionUpdated": "Đã cập nhật câu hỏi",
-      "questionsAdded": "Đã thêm $count câu hỏi",
-      "questionCreated": "Đã tạo và thêm câu hỏi",
-      "saveSuccess": "Lưu bài kiểm tra thành công",
-      "saveError": "Lỗi khi lưu bài kiểm tra: $error"
-    },
-
     "metadata": {
       "subject": "Môn học",
       "gradeLevel": "Khối lớp",
@@ -1195,8 +1221,8 @@
 
     "questionsSection": {
       "title": "Câu hỏi",
-      "count": "$count ${count, plural, one{câu hỏi} other{câu hỏi}}",
-      "available": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+      "count": "$count ",
+      "available": "$count  có sẵn",
       "generate": "Tạo tự động"
     },
 
@@ -1261,7 +1287,7 @@
       },
       "questions": {
         "title": "Câu hỏi",
-        "available(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+        "available(count)": "$count  có sẵn",
         "emptyTitle": "Chưa có câu hỏi nào",
         "emptyMessage": "Bạn có thể thêm câu hỏi vào bài kiểm tra này bằng cách nhấn nút \"Thêm câu hỏi\".",
         "addQuestion": "Thêm câu hỏi",
@@ -1270,7 +1296,7 @@
       },
       "matrix": {
         "title": "Ma trận đánh giá",
-        "distributed(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} đã phân phối",
+        "distributed(count)": "$count  đã phân phối",
         "summaryStatistics": "Thống kê tổng hợp",
         "targetCount": "Số lượng mục tiêu",
         "actualCount": "Số lượng thực tế",
@@ -1280,5 +1306,90 @@
         "totalHeader": "TỔNG"
       }
     }
+  },
+  "shared": {
+    "models": {
+      "cms_enums": {
+        "questionMode": {
+          "editing": "Chế độ chỉnh sửa",
+          "doing": "Chế độ làm bài",
+          "afterAssess": "Chế độ sau đánh giá"
+        },
+        "assignmentStatus": {
+          "archived": "Đã lưu trữ"
+        },
+        "contextType": {
+          "readingPassage": "Đoạn văn đọc",
+          "audio": "Âm thanh",
+          "video": "Video"
+        }
+      }
+    }
+  },
+  "students": {
+    "title": "Học sinh",
+    "list": {
+      "appBarTitle": "Học sinh",
+      "emptyTitle": "Chưa có học sinh nào",
+      "emptyMessage": "Thêm học sinh vào lớp này để bắt đầu",
+      "rosterTitle": "Danh sách học sinh"
+    },
+    "create": {
+      "appBarTitle": "Thêm học sinh"
+    },
+    "edit": {
+      "appBarTitle": "Sửa học sinh",
+      "success": "Cập nhật học sinh thành công"
+    },
+    "detail": {
+      "appBarTitle": "Chi tiết học sinh"
+    },
+    "saveChanges": "Lưu thay đổi",
+    "createStudent": "Thêm học sinh",
+    "updateSuccess": "Cập nhật học sinh thành công",
+    "tile": {
+      "semanticLabel": "Học sinh: $fullName, Email: $email",
+      "avatarSemanticLabel": "Ảnh đại diện của $fullName",
+      "actionsSemanticLabel": "Thêm hành động cho $fullName",
+      "actionsHint": "Nhấn đúp để mở menu với các tùy chọn sửa và xóa",
+      "moreActions": "Thêm hành động",
+      "editSemanticLabel": "Sửa học sinh",
+      "deleteSemanticLabel": "Xóa học sinh",
+      "noEmail": "Chưa cung cấp email"
+    },
+    "info": {
+      "studentInfo": "Thông tin học sinh",
+      "parentInfo": "Thông tin phụ huynh",
+      "enrollmentInfo": "Thông tin nhập học",
+      "fullName": "Họ và tên *",
+      "fullNameHint": "Nhập họ và tên học sinh",
+      "fullNameRequired": "Họ và tên là bắt buộc",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính",
+      "genderHint": "Nhập giới tính",
+      "parentName": "Tên phụ huynh *",
+      "parentNameHint": "Nhập tên phụ huynh",
+      "parentNameRequired": "Tên phụ huynh là bắt buộc",
+      "parentPhone": "SĐT phụ huynh *",
+      "parentPhoneHint": "Nhập số điện thoại phụ huynh",
+      "parentPhoneRequired": "Số điện thoại phụ huynh là bắt buộc",
+      "address": "Địa chỉ",
+      "addressHint": "Nhập địa chỉ",
+      "parentEmail": "Email liên hệ phụ huynh",
+      "parentEmailHint": "Nhập email phụ huynh",
+      "invalidEmail": "Email không hợp lệ",
+      "enrollmentDate": "Ngày nhập học",
+      "selectDate": "Chọn ngày"
+    }
+  },
+  "home": {
+    "todayWorks": {
+      "lorems": "Lorems"
+    }
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "retry": "Thử lại"
   }
 }

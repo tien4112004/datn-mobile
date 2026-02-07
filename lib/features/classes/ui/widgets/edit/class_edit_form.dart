@@ -58,7 +58,6 @@ class ClassEditForm extends ConsumerWidget {
           // Class settings section
           ClassSettingsSection(
             isActive: isActive,
-            joinCode: classEntity.joinCode,
             createdAt: classEntity.createdAt,
             updatedAt: classEntity.updatedAt,
             onActiveChanged: onActiveChanged,

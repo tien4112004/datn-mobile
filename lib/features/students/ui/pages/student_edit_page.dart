@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/students/states/controller_provider.dart';
 import 'package:AIPrimary/features/students/ui/widgets/student_form.dart';
@@ -20,21 +21,22 @@ class StudentEditPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final studentAsync = ref.watch(studentByIdProvider(studentId));
 
     // Listen to the update controller state for loading/error
     ref.listen(updateStudentControllerProvider, (prev, next) {
       next.whenOrNull(
         data: (_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Student updated successfully')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(t.students.edit.success)));
           context.router.maybePop();
         },
         error: (error, _) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $error'),
+              content: Text('${t.common.error}: $error'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
@@ -45,7 +47,7 @@ class StudentEditPage extends ConsumerWidget {
     final isLoading = ref.watch(updateStudentControllerProvider).isLoading;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Edit Student'),
+      appBar: CustomAppBar(title: t.students.edit.appBarTitle),
       body: Stack(
         children: [
           studentAsync.easyWhen(

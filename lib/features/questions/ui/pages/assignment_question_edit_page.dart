@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
@@ -109,9 +110,10 @@ class _AssignmentQuestionEditPageState
   }
 
   void _handleSave() {
+    final t = ref.read(translationsPod);
     // Validate points
     if (_currentPoints <= 0) {
-      _showErrorSnackBar('Points must be greater than 0');
+      _showErrorSnackBar(t.assignments.pointsError);
       return;
     }
 
@@ -241,6 +243,7 @@ class _AssignmentQuestionEditPageState
   }
 
   Future<void> _handleDelete() async {
+    final t = ref.read(translationsPod);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -249,19 +252,19 @@ class _AssignmentQuestionEditPageState
 
         return AlertDialog(
           icon: Icon(LucideIcons.circle, color: colorScheme.error, size: 32),
-          title: const Text('Delete Question'),
+          title: Text(t.questionBank.deleteDialog.title),
           content: Text(
             'Are you sure you want to remove question ${widget.questionNumber} from this assignment?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(t.common.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.pop(context, true),
               style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
-              child: const Text('Delete'),
+              child: Text(t.common.delete),
             ),
           ],
         );
@@ -286,6 +289,7 @@ class _AssignmentQuestionEditPageState
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final formState = ref.watch(questionFormProvider);
@@ -297,7 +301,11 @@ class _AssignmentQuestionEditPageState
       return Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: AppBar(
-          title: Text('Edit Question ${widget.questionNumber}'),
+          title: Text(
+            t.questionBank.editQuestionTitle(
+              number: widget.questionNumber.toString(),
+            ),
+          ),
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
             onPressed: () => context.router.maybePop(),
@@ -321,7 +329,11 @@ class _AssignmentQuestionEditPageState
       child: Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: AppBar(
-          title: Text('Edit Question ${widget.questionNumber}'),
+          title: Text(
+            t.questionBank.editQuestionTitle(
+              number: widget.questionNumber.toString(),
+            ),
+          ),
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
             onPressed: () async {
@@ -337,7 +349,7 @@ class _AssignmentQuestionEditPageState
             IconButton(
               icon: Icon(LucideIcons.trash2, color: colorScheme.error),
               onPressed: _handleDelete,
-              tooltip: 'Delete Question',
+              tooltip: t.questionBank.actions.delete,
             ),
           ],
         ),
@@ -358,7 +370,7 @@ class _AssignmentQuestionEditPageState
                     ),
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Points',
+                    labelText: t.common.points,
                     suffixText: 'pts',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -372,8 +384,8 @@ class _AssignmentQuestionEditPageState
                   controller: _titleController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    labelText: 'Question',
-                    hintText: 'Enter your question...',
+                    labelText: t.questionBank.form.questionImage,
+                    hintText: t.questionBank.form.titleHint,
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -415,7 +427,7 @@ class _AssignmentQuestionEditPageState
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            formState.type.displayName,
+                            formState.type.getLocalizedName(t),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: QuestionType.getColor(formState.type),
                               fontWeight: FontWeight.w500,
@@ -430,7 +442,7 @@ class _AssignmentQuestionEditPageState
                       child: DropdownButtonFormField<Difficulty>(
                         initialValue: formState.difficulty,
                         decoration: InputDecoration(
-                          labelText: 'Difficulty',
+                          labelText: t.common.difficulty,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -442,7 +454,7 @@ class _AssignmentQuestionEditPageState
                         items: Difficulty.values.map((difficulty) {
                           return DropdownMenuItem(
                             value: difficulty,
-                            child: Text(difficulty.displayName),
+                            child: Text(difficulty.getLocalizedName(t)),
                           );
                         }).toList(),
                         onChanged: (value) {
@@ -467,8 +479,8 @@ class _AssignmentQuestionEditPageState
                   controller: _explanationController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    labelText: 'Explanation (Optional)',
-                    hintText: 'Explain the correct answer...',
+                    labelText: '${t.common.explanation} ${t.common.optional}',
+                    hintText: t.questionBank.form.explanationHint,
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -510,7 +522,7 @@ class _AssignmentQuestionEditPageState
                         router.maybePop();
                       }
                     },
-                    child: const Text('Cancel'),
+                    child: Text(t.common.cancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -519,7 +531,7 @@ class _AssignmentQuestionEditPageState
                   child: FilledButton.icon(
                     onPressed: hasAnyChanges ? _handleSave : null,
                     icon: const Icon(LucideIcons.check, size: 20),
-                    label: const Text('Save Changes'),
+                    label: Text(t.students.saveChanges),
                   ),
                 ),
               ],

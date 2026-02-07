@@ -1,10 +1,12 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Multiple Choice Question in Doing Mode (Student taking exam)
 /// Enhanced with Material 3 design principles
-class MultipleChoiceDoing extends StatefulWidget {
+class MultipleChoiceDoing extends ConsumerStatefulWidget {
   final MultipleChoiceQuestion question;
   final String? selectedAnswer;
   final Function(String)? onAnswerSelected;
@@ -17,10 +19,11 @@ class MultipleChoiceDoing extends StatefulWidget {
   });
 
   @override
-  State<MultipleChoiceDoing> createState() => _MultipleChoiceDoingState();
+  ConsumerState<MultipleChoiceDoing> createState() =>
+      _MultipleChoiceDoingState();
 }
 
-class _MultipleChoiceDoingState extends State<MultipleChoiceDoing> {
+class _MultipleChoiceDoingState extends ConsumerState<MultipleChoiceDoing> {
   String? _selectedOptionId;
 
   @override
@@ -38,6 +41,7 @@ class _MultipleChoiceDoingState extends State<MultipleChoiceDoing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -65,7 +69,10 @@ class _MultipleChoiceDoingState extends State<MultipleChoiceDoing> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Select your answer',
+                  t
+                      .questionBank
+                      .viewing
+                      .viewingMode, // Or add specific "Select your answer"
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onSecondaryContainer,
                     fontWeight: FontWeight.w600,

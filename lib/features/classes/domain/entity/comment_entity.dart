@@ -8,8 +8,9 @@ class CommentEntity {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  // Optional user details (if provided by backend in future)
+  // User details from the comment response
   final String? authorName;
+  final String? authorEmail;
   final String? authorAvatarUrl;
 
   const CommentEntity({
@@ -20,6 +21,7 @@ class CommentEntity {
     this.createdAt,
     this.updatedAt,
     this.authorName,
+    this.authorEmail,
     this.authorAvatarUrl,
   });
 
@@ -32,6 +34,7 @@ class CommentEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? authorName,
+    String? authorEmail,
     String? authorAvatarUrl,
   }) {
     return CommentEntity(
@@ -42,6 +45,7 @@ class CommentEntity {
       createdAt: createdAt,
       updatedAt: updatedAt,
       authorName: authorName ?? this.authorName,
+      authorEmail: authorEmail ?? this.authorEmail,
       authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
     );
   }

@@ -39,12 +39,6 @@ final createClassControllerProvider =
       () => CreateClassController(),
     );
 
-/// Provider for joining a class.
-final joinClassControllerProvider =
-    AsyncNotifierProvider<JoinClassController, void>(
-      () => JoinClassController(),
-    );
-
 /// Provider for updating a class.
 final updateClassControllerProvider =
     AsyncNotifierProvider<UpdateClassController, void>(

@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,16 +9,16 @@ import 'dart:io';
 class ImageInputField extends ConsumerStatefulWidget {
   final String? initialValue;
   final ValueChanged<String?> onChanged;
-  final String label;
-  final String hint;
+  final String? label;
+  final String? hint;
   final bool isRequired;
 
   const ImageInputField({
     super.key,
     this.initialValue,
     required this.onChanged,
-    this.label = 'Image',
-    this.hint = 'Upload or enter URL',
+    this.label,
+    this.hint,
     this.isRequired = false,
   });
 
@@ -40,6 +41,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
   }
 
   Future<void> _pickImageFromGallery() async {
+    final t = ref.read(translationsPod);
     try {
       final XFile? image = await _picker.pickImage(
         source: ImageSource.gallery,
@@ -76,7 +78,9 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
             });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to upload image: $uploadError'),
+                content: Text(
+                  t.common.failedToUpload(error: uploadError.toString()),
+                ),
                 backgroundColor: Theme.of(context).colorScheme.error,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -91,7 +95,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to pick image: $e'),
+            content: Text(t.common.failedToPick(error: e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -101,6 +105,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
   }
 
   Future<void> _pickImageFromCamera() async {
+    final t = ref.read(translationsPod);
     try {
       final XFile? image = await _picker.pickImage(
         source: ImageSource.camera,
@@ -137,7 +142,9 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
             });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to upload image: $uploadError'),
+                content: Text(
+                  t.common.failedToUpload(error: uploadError.toString()),
+                ),
                 backgroundColor: Theme.of(context).colorScheme.error,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -152,7 +159,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to take photo: $e'),
+            content: Text(t.common.failedToTakePhoto(error: e.toString())),
             backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -162,6 +169,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
   }
 
   Future<void> _showUrlDialog() async {
+    final t = ref.read(translationsPod);
     final urlController = TextEditingController(text: _imageUrl);
     final formKey = GlobalKey<FormState>();
 
@@ -176,7 +184,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
             children: [
               Icon(Icons.link, color: colorScheme.primary),
               const SizedBox(width: 12),
-              const Text('Enter Image URL'),
+              Text(t.common.enterImageUrl),
             ],
           ),
           content: Form(
@@ -184,8 +192,8 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
             child: TextFormField(
               controller: urlController,
               decoration: InputDecoration(
-                labelText: 'Image URL',
-                hintText: widget.hint,
+                labelText: t.common.imageUrlLabel,
+                hintText: widget.hint ?? t.projects.images.search_images,
                 prefixIcon: const Icon(Icons.link),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -196,12 +204,12 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
               validator: (value) {
                 if (widget.isRequired &&
                     (value == null || value.trim().isEmpty)) {
-                  return 'URL is required';
+                  return t.common.urlRequired;
                 }
                 if (value != null && value.isNotEmpty) {
                   final uri = Uri.tryParse(value);
                   if (uri == null || !uri.hasScheme) {
-                    return 'Please enter a valid URL';
+                    return t.common.invalidUrl;
                   }
                 }
                 return null;
@@ -211,7 +219,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(t.common.cancel),
             ),
             FilledButton(
               onPressed: () {
@@ -219,7 +227,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                   Navigator.pop(context, urlController.text.trim());
                 }
               },
-              child: const Text('Add'),
+              child: Text(t.common.add),
             ),
           ],
         );
@@ -238,6 +246,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
   }
 
   void _showImageSourceDialog() {
+    final t = ref.read(translationsPod);
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -268,7 +277,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Select Image Source',
+                  t.projects.images.pick_from_gallery,
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -286,8 +295,8 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                       color: colorScheme.onPrimaryContainer,
                     ),
                   ),
-                  title: const Text('Choose from Gallery'),
-                  subtitle: const Text('Select from your photos'),
+                  title: Text(t.common.chooseFromGallery),
+                  subtitle: Text(t.common.selectFromPhotos),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImageFromGallery();
@@ -305,8 +314,8 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                       color: colorScheme.onSecondaryContainer,
                     ),
                   ),
-                  title: const Text('Take Photo'),
-                  subtitle: const Text('Use your camera'),
+                  title: Text(t.common.takePhoto),
+                  subtitle: Text(t.common.useCamera),
                   onTap: () {
                     Navigator.pop(context);
                     _pickImageFromCamera();
@@ -324,8 +333,8 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                       color: colorScheme.onTertiaryContainer,
                     ),
                   ),
-                  title: const Text('Enter Image URL'),
-                  subtitle: const Text('Paste a link to an image'),
+                  title: Text(t.common.enterImageUrl),
+                  subtitle: Text(t.common.pasteLink),
                   onTap: () {
                     Navigator.pop(context);
                     _showUrlDialog();
@@ -350,16 +359,20 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final hasImage = _localImage != null || _imageUrl != null;
+
+    final effectiveLabel = widget.label ?? t.projects.resource_types.image;
+    // final effectiveHint = widget.hint ?? t.projects.images.search_images;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label
         Text(
-          widget.label + (widget.isRequired ? ' *' : ' (Optional)'),
+          effectiveLabel + (widget.isRequired ? ' *' : ' ${t.common.optional}'),
           style: theme.textTheme.labelMedium?.copyWith(
             color: colorScheme.onSurface,
             fontWeight: FontWeight.w500,
@@ -384,7 +397,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                 CircularProgressIndicator(color: colorScheme.primary),
                 const SizedBox(height: 16),
                 Text(
-                  'Uploading image...',
+                  t.common.loading,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface,
                   ),
@@ -430,7 +443,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Failed to load image',
+                                  t.projects.images.detail.error_loading,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: colorScheme.error,
                                   ),
@@ -476,7 +489,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                           ),
                           foregroundColor: colorScheme.onSurface,
                         ),
-                        tooltip: 'Change image',
+                        tooltip: t.common.edit,
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -486,7 +499,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
                           backgroundColor: colorScheme.errorContainer,
                           foregroundColor: colorScheme.onErrorContainer,
                         ),
-                        tooltip: 'Remove image',
+                        tooltip: t.common.delete,
                       ),
                     ],
                   ),
@@ -500,7 +513,7 @@ class _ImageInputFieldState extends ConsumerState<ImageInputField> {
             child: OutlinedButton.icon(
               onPressed: _isUploading ? null : _showImageSourceDialog,
               icon: const Icon(Icons.add_photo_alternate_outlined),
-              label: const Text('Choose Image'),
+              label: Text(t.common.chooseImage),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(

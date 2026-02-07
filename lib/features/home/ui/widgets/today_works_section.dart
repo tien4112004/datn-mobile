@@ -28,7 +28,7 @@ class TodayWorksSection extends ConsumerWidget {
           iconColor: Colors.green,
           iconBgColor: Colors.green.shade50,
           title: t.parentTeacherMeetings,
-          time: t.todayAt.replaceAll('{time}', '3:00 PM'),
+          time: t.todayAt(time: '3:00 PM'),
         ),
         const SizedBox(height: 12),
         _buildWorkItem(
@@ -36,8 +36,8 @@ class TodayWorksSection extends ConsumerWidget {
           icon: LucideIcons.fileText,
           iconColor: Colors.purple,
           iconBgColor: Colors.purple.shade50,
-          title: 'Lorems',
-          time: t.todayAt.replaceAll('{time}', '3:00 PM'),
+          title: t.recentDocuments,
+          time: t.todayAt(time: '3:00 PM'),
         ),
         const SizedBox(height: 12),
         _buildWorkItem(
@@ -45,8 +45,8 @@ class TodayWorksSection extends ConsumerWidget {
           icon: LucideIcons.messageSquare,
           iconColor: Colors.purple.shade700,
           iconBgColor: Colors.purple.shade50,
-          title: 'Lorems',
-          time: t.todayAt.replaceAll('{time}', '3:00 PM'),
+          title: t.navigation.class_,
+          time: t.todayAt(time: '3:00 PM'),
         ),
         const SizedBox(height: 12),
         _buildWorkItem(
@@ -54,8 +54,8 @@ class TodayWorksSection extends ConsumerWidget {
           icon: LucideIcons.calendar,
           iconColor: Colors.orange,
           iconBgColor: Colors.orange.shade50,
-          title: 'Lorems',
-          time: t.todayAt.replaceAll('{time}', '3:00 PM'),
+          title: t.classes.drawer.exams,
+          time: t.todayAt(time: '3:00 PM'),
         ),
       ],
     );

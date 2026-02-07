@@ -81,7 +81,7 @@ class MyClassesSection extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            t.dueDate.replaceAll('{date}', dueDate),
+            t.dueDate(date: dueDate),
             style: const TextStyle(
               fontSize: 14,
               color: Colors.red,

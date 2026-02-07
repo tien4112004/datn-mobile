@@ -12,6 +12,7 @@ class LinkedResourcePreview {
   final int? totalQuestions;
   final int? totalPoints;
   final String? status;
+  final String? description;
 
   const LinkedResourcePreview({
     required this.id,
@@ -24,6 +25,7 @@ class LinkedResourcePreview {
     this.totalQuestions,
     this.totalPoints,
     this.status,
+    this.description,
   });
 
   factory LinkedResourcePreview.placeholder(String id) {

@@ -2,12 +2,12 @@ import 'package:AIPrimary/const/resource.dart';
 import 'package:AIPrimary/core/local_storage/app_storage_pod.dart';
 import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:AIPrimary/core/services/notification/notification_service.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/data/dto/request/credential_signup_request.dart';
 import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
 import 'package:AIPrimary/features/auth/service/service_provider.dart';
 import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthController extends AsyncNotifier<AuthState> {
@@ -38,9 +38,7 @@ class AuthController extends AsyncNotifier<AuthState> {
       );
 
       // Fetch and store user profile after successful login
-      await ref
-          .read(userControllerProvider.notifier)
-          .fetchAndStoreUserProfile();
+      await ref.read(userControllerPod.notifier).refreshUserProfile();
 
       // Register FCM token with backend
       await _registerFcmToken();
@@ -87,9 +85,7 @@ class AuthController extends AsyncNotifier<AuthState> {
       await _authService.handleGoogleSignInCallback(uri);
 
       // Fetch and store user profile after successful login
-      await ref
-          .read(userControllerProvider.notifier)
-          .fetchAndStoreUserProfile();
+      await ref.read(userControllerPod.notifier).refreshUserProfile();
 
       // Register FCM token with backend
       await _registerFcmToken();
@@ -105,6 +101,8 @@ class AuthController extends AsyncNotifier<AuthState> {
 
       // Clear user profile from storage
       await _clearUserProfile();
+
+      ref.invalidate(userControllerPod);
 
       return AuthState(isAuthenticated: false);
     });

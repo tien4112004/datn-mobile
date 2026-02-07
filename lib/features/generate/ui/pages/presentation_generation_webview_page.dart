@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -33,9 +34,10 @@ class _PresentationGenerationWebViewPageState
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     if (InAppWebViewPlatform.instance == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Generate Presentation')),
+        appBar: AppBar(title: Text(t.generate.presentationGenerate.title)),
         body: const Center(
           child: Text(
             'WebView is not supported on this platform.',
@@ -53,7 +55,7 @@ class _PresentationGenerationWebViewPageState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Generating Presentation'),
+        title: Text(t.generate.presentationGenerate.generating),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => _handleClose(),
@@ -92,9 +94,9 @@ class _PresentationGenerationWebViewPageState
                       color: Colors.red,
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Generation Error',
-                      style: TextStyle(
+                    Text(
+                      t.generate.customization.error,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -108,7 +110,7 @@ class _PresentationGenerationWebViewPageState
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () => context.router.pop(),
-                      child: const Text('Go Back'),
+                      child: Text(t.generate.presentationGenerate.goBack),
                     ),
                   ],
                 ),
@@ -189,6 +191,7 @@ class _PresentationGenerationWebViewPageState
   Future<void> _sendGenerationData() async {
     if (_webViewController == null) return;
 
+    final t = ref.read(translationsPod);
     final formState = ref.read(presentationFormControllerProvider);
     final formController = ref.read(
       presentationFormControllerProvider.notifier,
@@ -206,7 +209,7 @@ class _PresentationGenerationWebViewPageState
       final presentation = {
         'id': tempPresentationId,
         'title': formState.topic.isEmpty
-            ? 'Untitled Presentation'
+            ? t.projects.untitled
             : formState.topic,
         'slides': [], // Start with empty slides
         'theme': generationRequest.presentation?['theme'],
@@ -263,17 +266,16 @@ class _PresentationGenerationWebViewPageState
   }
 
   void _handleClose() {
+    final t = ref.read(translationsPod);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cancel Generation?'),
-        content: const Text(
-          'Are you sure you want to cancel the presentation generation?',
-        ),
+        title: Text(t.generate.presentationGenerate.cancelGenerationTitle),
+        content: Text(t.generate.presentationGenerate.cancelGenerationMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Continue'),
+            child: Text(t.questionBank.continue_),
           ),
           TextButton(
             onPressed: () {
@@ -281,7 +283,7 @@ class _PresentationGenerationWebViewPageState
               context.router.pop();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Cancel Generation'),
+            child: Text(t.generate.presentationGenerate.cancelGeneration),
           ),
         ],
       ),

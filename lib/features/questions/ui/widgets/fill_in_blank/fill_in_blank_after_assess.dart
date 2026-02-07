@@ -1,10 +1,13 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fill in Blank Question in After Assessment Mode (Student reviewing their answers)
 /// Enhanced with Material 3 design principles
-class FillInBlankAfterAssess extends StatelessWidget {
+class FillInBlankAfterAssess extends ConsumerWidget {
   final FillInBlankQuestion question;
   final Map<String, String>? studentAnswers; // blankId -> answer
 
@@ -56,7 +59,8 @@ class FillInBlankAfterAssess extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final percentage = _totalBlanks > 0
@@ -94,7 +98,7 @@ class FillInBlankAfterAssess extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Your Results',
+                      t.questionBank.viewing.viewingMode,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.w600,
@@ -169,6 +173,7 @@ class FillInBlankAfterAssess extends StatelessWidget {
                   isCorrect,
                   isAnswered,
                   theme,
+                  t,
                 );
               }
             }).toList(),
@@ -184,6 +189,7 @@ class FillInBlankAfterAssess extends StatelessWidget {
     bool isCorrect,
     bool isAnswered,
     ThemeData theme,
+    Translations t,
   ) {
     return Container(
       constraints: const BoxConstraints(minWidth: 120, maxWidth: 200),
@@ -229,7 +235,9 @@ class FillInBlankAfterAssess extends StatelessWidget {
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(
-                    studentAnswer.isEmpty ? 'No answer' : studentAnswer,
+                    studentAnswer.isEmpty
+                        ? t.questionBank.matching.required
+                        : studentAnswer, // Reuse matching.required or add specific
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isCorrect

@@ -1,14 +1,16 @@
 // coverage:ignore-file
 
 import 'dart:async';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flash/flash.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 ///This mixin used for showing dialogs,overlay,bootomsheet,snackbars which automatically disposed
 ///when the stateful class use this class disposes.s
-mixin GlobalHelper<T extends StatefulWidget> on State<T> {
+mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   OverlayEntry? _overlayEntry;
   AnimationController? _animationController;
   Completer completer = Completer();
@@ -125,6 +127,7 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
     List<Widget>? actions,
   }) async {
     if (context.mounted) {
+      final t = ref.read(translationsPod);
       await context.showFlash<S>(
         builder: (context, controller) => FlashBar(
           controller: controller,
@@ -137,14 +140,14 @@ mixin GlobalHelper<T extends StatefulWidget> on State<T> {
               [
                 TextButton(
                   onPressed: controller.dismiss,
-                  child: const Text('Cancel'),
+                  child: Text(t.common.cancel),
                 ),
                 TextButton(
                   onPressed: () {
                     onConfirm();
                     controller.dismiss();
                   },
-                  child: const Text('Confirm'),
+                  child: Text(t.common.confirm),
                 ),
               ],
         ),

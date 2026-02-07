@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
@@ -80,9 +81,10 @@ class _AssignmentQuestionCreatePageState
   }
 
   void _handleSave() {
+    final t = ref.read(translationsPod);
     // Validate points
     if (_currentPoints <= 0) {
-      _showErrorSnackBar('Points must be greater than 0');
+      _showErrorSnackBar(t.assignments.pointsError);
       return;
     }
 
@@ -216,6 +218,7 @@ class _AssignmentQuestionCreatePageState
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final formState = ref.watch(questionFormProvider);
@@ -235,7 +238,7 @@ class _AssignmentQuestionCreatePageState
       child: Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: CustomAppBar(
-          title: 'Create Question for Assignment',
+          title: t.questionBank.createQuestion,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -250,7 +253,7 @@ class _AssignmentQuestionCreatePageState
             IconButton(
               icon: const Icon(Icons.check_rounded),
               onPressed: _handleSave,
-              tooltip: 'Add to Assignment',
+              tooltip: t.questionBank.form.addToAssignment,
             ),
           ],
         ),
@@ -278,7 +281,7 @@ class _AssignmentQuestionCreatePageState
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'This question will be created for this assignment only',
+                          t.questionBank.infoText,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colorScheme.onPrimaryContainer,
                           ),
@@ -305,7 +308,7 @@ class _AssignmentQuestionCreatePageState
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              'Points',
+                              t.common.points,
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.w600,
                               ),
@@ -322,9 +325,9 @@ class _AssignmentQuestionCreatePageState
                             ),
                           ],
                           decoration: InputDecoration(
-                            labelText: 'Points for this question',
+                            labelText: t.questionBank.form.pointsHint,
                             suffixText: 'pts',
-                            helperText: 'Points must be greater than 0',
+                            helperText: t.assignments.pointsError,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -408,7 +411,7 @@ class _AssignmentQuestionCreatePageState
             child: FilledButton.icon(
               onPressed: _handleSave,
               icon: const Icon(LucideIcons.plus, size: 20),
-              label: const Text('Add to Assignment'),
+              label: Text(t.questionBank.form.addToAssignment),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

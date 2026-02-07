@@ -1,5 +1,5 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 // ignore: unused_import
 import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';

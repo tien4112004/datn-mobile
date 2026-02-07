@@ -1,7 +1,8 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,8 +34,7 @@ class ClassCard extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
     final instructorName =
-        ref.read(userControllerProvider).value?.fullName ??
-        t.classes.card.instructor;
+        ref.read(userControllerPod).value?.name ?? t.classes.card.instructor;
 
     return Semantics(
       label: t.classes.card.semanticLabel(className: classEntity.name),
@@ -58,7 +58,7 @@ class ClassCard extends ConsumerWidget {
               // Colored header section
               _buildHeader(context, instructorName, t),
               // Content section
-              _buildContent(context, colorScheme, t),
+              _buildContent(context, colorScheme, t, ref),
             ],
           ),
         ),
@@ -209,56 +209,74 @@ class ClassCard extends ConsumerWidget {
     BuildContext context,
     ColorScheme colorScheme,
     dynamic t,
+    WidgetRef ref,
   ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Join code chip
+          // Status badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(16),
+              color: classEntity.isActive
+                  ? colorScheme.primaryContainer
+                  : colorScheme.errorContainer,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  LucideIcons.key,
+                  classEntity.isActive
+                      ? LucideIcons.circleCheck
+                      : LucideIcons.circleX,
                   size: 14,
-                  color: colorScheme.onSurfaceVariant,
+                  color: classEntity.isActive
+                      ? colorScheme.onPrimaryContainer
+                      : colorScheme.onErrorContainer,
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  classEntity.joinCode ?? t.classes.card.createJoinCode,
+                  classEntity.isActive
+                      ? t.classes.card.active
+                      : t.classes.card.inactive,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                    color: classEntity.isActive
+                        ? colorScheme.onPrimaryContainer
+                        : colorScheme.onErrorContainer,
                   ),
                 ),
               ],
             ),
           ),
           const Spacer(),
-          // Status indicator
-          if (!classEntity.isActive)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: colorScheme.errorContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                t.classes.card.inactive,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onErrorContainer,
+          // Created date
+          if (classEntity.createdAt != null)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  LucideIcons.calendar,
+                  size: 14,
+                  color: colorScheme.onSurfaceVariant,
                 ),
-              ),
+                const SizedBox(width: 6),
+                Text(
+                  DateFormatHelper.formatRelativeDate(
+                    classEntity.createdAt!,
+                    ref: ref,
+                  ),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
         ],
       ),

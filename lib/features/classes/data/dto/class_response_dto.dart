@@ -31,10 +31,10 @@ class TeacherResponseDto {
 @JsonSerializable()
 class ClassResponseDto {
   final String id;
-  final TeacherResponseDto teacher;
+  final TeacherResponseDto? teacher;
+  final String? ownerId;
   final String name;
   final String? description;
-  final String? joinCode;
   final String? settings;
   final bool isActive;
   final DateTime? createdAt;
@@ -42,10 +42,10 @@ class ClassResponseDto {
 
   ClassResponseDto({
     required this.id,
-    required this.teacher,
+    this.teacher,
+    this.ownerId,
     required this.name,
     this.description,
-    this.joinCode,
     this.settings,
     required this.isActive,
     this.createdAt,
@@ -62,14 +62,11 @@ class ClassResponseDto {
 extension ClassResponseMapper on ClassResponseDto {
   ClassEntity toEntity() => ClassEntity(
     id: id,
-    teacherId: teacher.id,
-    teacherName: teacher.fullName,
-    teacherEmail: teacher.email,
+    teacherId: teacher?.id ?? ownerId ?? '',
+    teacherName: teacher?.fullName ?? '',
+    teacherEmail: teacher?.email ?? '',
     name: name,
     description: description,
-    joinCode: joinCode,
-    // settings field is available in DTO but currently not mapped to Entity properties directly
-    // apart from being available if needed.
     isActive: isActive,
     createdAt: createdAt,
     updatedAt: updatedAt,

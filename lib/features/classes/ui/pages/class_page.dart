@@ -1,10 +1,9 @@
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/states/controller_provider.dart';
-import 'package:AIPrimary/features/classes/ui/widgets/app_drawer.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/class_action_fab.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/class_card.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/shared/create_class_dialog.dart';
@@ -19,19 +18,34 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Main page displaying the list of classes (Google Classroom style).
 @RoutePage()
-class ClassPage extends ConsumerWidget {
+class ClassPage extends ConsumerStatefulWidget {
   const ClassPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ClassPage> createState() => _ClassPageState();
+}
+
+class _ClassPageState extends ConsumerState<ClassPage> {
+  bool _didAutoRedirect = false;
+
+  @override
+  Widget build(BuildContext context) {
     final classesState = ref.watch(classesControllerProvider);
-    final isStudent =
-        ref.watch(userControllerProvider).value?.role ==
-        UserRole.student; // If role has value, the user is student
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
+
+    classesState.whenData((classes) {
+      if (isStudent && !_didAutoRedirect && classes.isNotEmpty) {
+        _didAutoRedirect = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            context.router.push(ClassDetailRoute(classId: classes[0].id));
+          }
+        });
+      }
+    });
 
     return Scaffold(
       appBar: const _ClassListAppBar(),
-      drawer: const AppDrawer(),
       body: classesState.easyWhen(
         data: (classes) => _ClassListContent(
           classes: classes,
@@ -40,7 +54,6 @@ class ClassPage extends ConsumerWidget {
               ref.read(classesControllerProvider.notifier).refresh(),
         ),
       ),
-      // Uncomment if need
       floatingActionButton: isStudent
           ? null
           : ClassActionFab(
@@ -48,58 +61,6 @@ class ClassPage extends ConsumerWidget {
             ),
     );
   }
-
-  // void _showJoinClassDialog(BuildContext context, WidgetRef ref) {
-  //   final codeController = TextEditingController();
-  //   final formKey = GlobalKey<FormState>();
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (dialogContext) => AlertDialog(
-  //       title: const Text('Join Class'),
-  //       content: Form(
-  //         key: formKey,
-  //         child: TextFormField(
-  //           controller: codeController,
-  //           decoration: const InputDecoration(
-  //             labelText: 'Class code',
-  //             hintText: 'Enter the code from your instructor',
-  //           ),
-  //           validator: (value) {
-  //             if (value == null || value.isEmpty) {
-  //               return 'Please enter a class code';
-  //             }
-  //             return null;
-  //           },
-  //           autofocus: true,
-  //           textCapitalization: TextCapitalization.characters,
-  //         ),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(dialogContext),
-  //           child: const Text('Cancel'),
-  //         ),
-  //         FilledButton(
-  //           onPressed: () async {
-  //             if (formKey.currentState?.validate() ?? false) {
-  //               Navigator.pop(dialogContext);
-  //               await ref
-  //                   .read(joinClassControllerProvider.notifier)
-  //                   .joinClass(joinCode: codeController.text);
-  //               if (context.mounted) {
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   const SnackBar(content: Text('Joined class successfully')),
-  //                 );
-  //               }
-  //             }
-  //           },
-  //           child: const Text('Join'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
 
 class _ClassListAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -135,11 +96,13 @@ class _ClassListContent extends ConsumerWidget {
         icon: LucideIcons.graduationCap,
         title: t.classes.emptyState.noClasses,
         message: t.classes.emptyState.noClassesDescription,
-        actionLabel: t.classes.emptyState.getStarted,
-        onAction: () {
-          HapticFeedback.mediumImpact();
-          const CreateClassDialog().show(context, ref);
-        },
+        actionLabel: isStudent ? null : t.classes.emptyState.getStarted,
+        onAction: isStudent
+            ? null
+            : () {
+                HapticFeedback.mediumImpact();
+                const CreateClassDialog().show(context, ref);
+              },
         semanticLabel: t.classes.emptyState.semanticLabel,
       );
     }

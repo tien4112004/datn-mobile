@@ -1,5 +1,5 @@
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/profile/provider/avatar_provider.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +11,7 @@ class ProfilePicture extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final avatarState = ref.watch(avatarProvider);
-    final userProfileAsync = ref.watch(userControllerProvider);
+    final userProfileAsync = ref.watch(userControllerPod);
 
     final imageProvider = _getImageProvider(avatarState);
     final hasImage = imageProvider != null;
@@ -27,7 +27,7 @@ class ProfilePicture extends ConsumerWidget {
           ? userProfileAsync.maybeWhen(
               data: (profile) => profile != null
                   ? Text(
-                      _getInitials(profile.firstName, profile.lastName),
+                      _getInitials(profile.name),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: size / 2.5,
@@ -50,7 +50,11 @@ class ProfilePicture extends ConsumerWidget {
     return null;
   }
 
-  String _getInitials(String firstName, String lastName) {
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    final firstName = parts.isNotEmpty ? parts[0] : '';
+    final lastName = parts.length > 1 ? parts[parts.length - 1] : '';
+
     final firstInitial = firstName.isNotEmpty ? firstName[0].toUpperCase() : '';
     final lastInitial = lastName.isNotEmpty ? lastName[0].toUpperCase() : '';
     return '$firstInitial$lastInitial';

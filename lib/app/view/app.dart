@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';

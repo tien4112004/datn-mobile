@@ -1,10 +1,12 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fill in Blank Question in Doing Mode
 /// Enhanced with Material 3 design principles
-class FillInBlankDoing extends StatefulWidget {
+class FillInBlankDoing extends ConsumerStatefulWidget {
   final FillInBlankQuestion question;
   final Map<String, String>? answers;
   final Function(Map<String, String>)? onAnswersChanged;
@@ -17,10 +19,10 @@ class FillInBlankDoing extends StatefulWidget {
   });
 
   @override
-  State<FillInBlankDoing> createState() => _FillInBlankDoingState();
+  ConsumerState<FillInBlankDoing> createState() => _FillInBlankDoingState();
 }
 
-class _FillInBlankDoingState extends State<FillInBlankDoing> {
+class _FillInBlankDoingState extends ConsumerState<FillInBlankDoing> {
   late Map<String, TextEditingController> _controllers;
   late Map<String, FocusNode> _focusNodes;
 
@@ -60,6 +62,7 @@ class _FillInBlankDoingState extends State<FillInBlankDoing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -87,7 +90,10 @@ class _FillInBlankDoingState extends State<FillInBlankDoing> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Fill in the blanks',
+                  t
+                      .questionBank
+                      .fillInBlank
+                      .title, // Or add a specific "Fill in blanks" key
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
@@ -127,7 +133,7 @@ class _FillInBlankDoingState extends State<FillInBlankDoing> {
                       fontWeight: FontWeight.w600,
                     ),
                     decoration: InputDecoration(
-                      hintText: '________',
+                      hintText: t.questionBank.fillInBlank.blankHint,
                       hintStyle: theme.textTheme.bodyLarge?.copyWith(
                         color: colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.5,

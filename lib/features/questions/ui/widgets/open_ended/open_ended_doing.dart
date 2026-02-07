@@ -1,10 +1,12 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Open Ended Question in Doing Mode
 /// Enhanced with Material 3 design principles
-class OpenEndedDoing extends StatefulWidget {
+class OpenEndedDoing extends ConsumerStatefulWidget {
   final OpenEndedQuestion question;
   final String? answer;
   final Function(String)? onAnswerChanged;
@@ -17,10 +19,10 @@ class OpenEndedDoing extends StatefulWidget {
   });
 
   @override
-  State<OpenEndedDoing> createState() => _OpenEndedDoingState();
+  ConsumerState<OpenEndedDoing> createState() => _OpenEndedDoingState();
 }
 
-class _OpenEndedDoingState extends State<OpenEndedDoing> {
+class _OpenEndedDoingState extends ConsumerState<OpenEndedDoing> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
 
@@ -40,6 +42,7 @@ class _OpenEndedDoingState extends State<OpenEndedDoing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final maxLength = widget.question.data.maxLength;
@@ -68,7 +71,7 @@ class _OpenEndedDoingState extends State<OpenEndedDoing> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Write your answer',
+                  t.questionBank.openEnded.title, // Or specific "Write answer"
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onTertiaryContainer,
                     fontWeight: FontWeight.w600,
@@ -87,7 +90,7 @@ class _OpenEndedDoingState extends State<OpenEndedDoing> {
             onChanged: (value) => widget.onAnswerChanged?.call(value),
             style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
             decoration: InputDecoration(
-              hintText: 'Type your answer here...',
+              hintText: t.questionBank.openEnded.typeAnswer,
               hintStyle: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
               ),

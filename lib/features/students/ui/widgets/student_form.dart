@@ -2,11 +2,13 @@ import 'package:AIPrimary/features/students/data/dto/student_create_request_dto.
 import 'package:AIPrimary/features/students/data/dto/student_update_request_dto.dart';
 import 'package:AIPrimary/features/students/domain/entity/student.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A form widget for creating or editing student information.
-class StudentForm extends StatefulWidget {
+class StudentForm extends ConsumerStatefulWidget {
   /// The class ID for the student (required for creation).
   final String classId;
 
@@ -30,10 +32,10 @@ class StudentForm extends StatefulWidget {
   });
 
   @override
-  State<StudentForm> createState() => _StudentFormState();
+  ConsumerState<StudentForm> createState() => _StudentFormState();
 }
 
-class _StudentFormState extends State<StudentForm> {
+class _StudentFormState extends ConsumerState<StudentForm> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers for create mode
@@ -77,6 +79,8 @@ class _StudentFormState extends State<StudentForm> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
+
     return Form(
       key: _formKey,
       child: Column(
@@ -90,28 +94,28 @@ class _StudentFormState extends State<StudentForm> {
                 children: [
                   // Student Information Section
                   if (!widget.isEditMode) ...[
-                    const _SectionHeader(
-                      title: 'Student Information',
+                    _SectionHeader(
+                      title: t.students.info.studentInfo,
                       icon: LucideIcons.user,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _fullNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Full Name *',
-                        hintText: 'Enter student\'s full name',
-                        prefixIcon: Icon(LucideIcons.user),
+                      decoration: InputDecoration(
+                        labelText: t.students.info.fullName,
+                        hintText: t.students.info.fullNameHint,
+                        prefixIcon: const Icon(LucideIcons.user),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Full name is required';
+                          return t.students.info.fullNameRequired;
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
                     _DatePickerField(
-                      label: 'Date of Birth',
+                      label: t.students.info.dateOfBirth,
                       icon: LucideIcons.calendar,
                       value: _dateOfBirth,
                       onChanged: (date) => setState(() => _dateOfBirth = date),
@@ -119,30 +123,30 @@ class _StudentFormState extends State<StudentForm> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _genderController,
-                      decoration: const InputDecoration(
-                        labelText: 'Gender',
-                        hintText: 'Enter gender',
-                        prefixIcon: Icon(LucideIcons.users),
+                      decoration: InputDecoration(
+                        labelText: t.students.info.gender,
+                        hintText: t.students.info.genderHint,
+                        prefixIcon: const Icon(LucideIcons.users),
                       ),
                     ),
                     const SizedBox(height: 24),
 
                     // Parent Information Section
-                    const _SectionHeader(
-                      title: 'Parent Information',
+                    _SectionHeader(
+                      title: t.students.info.parentInfo,
                       icon: LucideIcons.users,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _parentNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Parent Name *',
-                        hintText: 'Enter parent\'s name',
-                        prefixIcon: Icon(LucideIcons.circleUser),
+                      decoration: InputDecoration(
+                        labelText: t.students.info.parentName,
+                        hintText: t.students.info.parentNameHint,
+                        prefixIcon: const Icon(LucideIcons.circleUser),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Parent name is required';
+                          return t.students.info.parentNameRequired;
                         }
                         return null;
                       },
@@ -150,15 +154,15 @@ class _StudentFormState extends State<StudentForm> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _parentPhoneController,
-                      decoration: const InputDecoration(
-                        labelText: 'Parent Phone *',
-                        hintText: 'Enter parent\'s phone number',
-                        prefixIcon: Icon(LucideIcons.phone),
+                      decoration: InputDecoration(
+                        labelText: t.students.info.parentPhone,
+                        hintText: t.students.info.parentPhoneHint,
+                        prefixIcon: const Icon(LucideIcons.phone),
                       ),
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Parent phone is required';
+                          return t.students.info.parentPhoneRequired;
                         }
                         return null;
                       },
@@ -167,27 +171,27 @@ class _StudentFormState extends State<StudentForm> {
                   ],
 
                   // Enrollment Information Section (both modes)
-                  const _SectionHeader(
-                    title: 'Enrollment Information',
+                  _SectionHeader(
+                    title: t.students.info.enrollmentInfo,
                     icon: LucideIcons.school,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _addressController,
-                    decoration: const InputDecoration(
-                      labelText: 'Address',
-                      hintText: 'Enter address',
-                      prefixIcon: Icon(LucideIcons.mapPin),
+                    decoration: InputDecoration(
+                      labelText: t.students.info.address,
+                      hintText: t.students.info.addressHint,
+                      prefixIcon: const Icon(LucideIcons.mapPin),
                     ),
                     maxLines: 2,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _parentEmailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Parent Contact Email',
-                      hintText: 'Enter parent\'s email',
-                      prefixIcon: Icon(LucideIcons.mail),
+                    decoration: InputDecoration(
+                      labelText: t.students.info.parentEmail,
+                      hintText: t.students.info.parentEmailHint,
+                      prefixIcon: const Icon(LucideIcons.mail),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
@@ -196,7 +200,7 @@ class _StudentFormState extends State<StudentForm> {
                           r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                         );
                         if (!emailRegex.hasMatch(value)) {
-                          return 'Invalid email address';
+                          return t.students.info.invalidEmail;
                         }
                       }
                       return null;
@@ -204,7 +208,7 @@ class _StudentFormState extends State<StudentForm> {
                   ),
                   const SizedBox(height: 16),
                   _DatePickerField(
-                    label: 'Enrollment Date',
+                    label: t.students.info.enrollmentDate,
                     icon: LucideIcons.calendarCheck,
                     value: _enrollmentDate,
                     onChanged: (date) => setState(() => _enrollmentDate = date),
@@ -225,7 +229,9 @@ class _StudentFormState extends State<StudentForm> {
                   widget.isEditMode ? LucideIcons.save : LucideIcons.userPlus,
                 ),
                 label: Text(
-                  widget.isEditMode ? 'Save Changes' : 'Create Student',
+                  widget.isEditMode
+                      ? t.students.saveChanges
+                      : t.students.createStudent,
                 ),
               ),
             ),
@@ -297,7 +303,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _DatePickerField extends StatelessWidget {
+class _DatePickerField extends ConsumerWidget {
   final String label;
   final IconData icon;
   final DateTime? value;
@@ -311,7 +317,8 @@ class _DatePickerField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return InkWell(
@@ -336,7 +343,7 @@ class _DatePickerField extends StatelessWidget {
         child: Text(
           value != null
               ? '${value!.day.toString().padLeft(2, '0')}/${value!.month.toString().padLeft(2, '0')}/${value!.year}'
-              : 'Select date',
+              : t.students.info.selectDate,
           style: TextStyle(
             color: value != null
                 ? theme.colorScheme.onSurface

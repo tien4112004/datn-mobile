@@ -7,9 +7,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 /// Provider for image paging controller with search filter support
 final imagePagingControllerPod =
     Provider.autoDispose<PagingController<int, ImageProjectMinimal>>((ref) {
-      // Don't watch here - read once to get initial state
-      final initialFilterState = ref.read(imageFilterProvider);
-
       final pagingController = PagingController<int, ImageProjectMinimal>(
         getNextPageKey: (state) {
           if (state.lastPageIsEmpty) {

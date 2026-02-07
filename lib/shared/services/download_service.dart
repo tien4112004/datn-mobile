@@ -195,7 +195,7 @@ class DownloadService {
         if (externalDir != null) {
           // Navigate to actual Downloads folder
           downloadPath = externalDir.path.replaceAll(
-            '/Android/data/com.example.datn_mobile/files',
+            '/Android/data/com.example.aiprimary/files',
             '/Download',
           );
         } else {

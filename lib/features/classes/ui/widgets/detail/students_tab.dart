@@ -1,6 +1,6 @@
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/students/states/controller_provider.dart';
 import 'package:AIPrimary/features/students/ui/widgets/student_tile.dart';
@@ -40,8 +40,7 @@ class StudentsTab extends ConsumerWidget {
         onRetry: () =>
             ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
-      floatingActionButton:
-          (ref.watch(userControllerProvider).value?.role == UserRole.student)
+      floatingActionButton: (ref.watch(userRolePod) == UserRole.student)
           ? null
           : Semantics(
               label: t.classes.students.addStudent,

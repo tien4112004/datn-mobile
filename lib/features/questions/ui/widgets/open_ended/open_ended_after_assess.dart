@@ -1,10 +1,12 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Open Ended Question in After Assessment Mode (Student reviewing their answer and score)
 /// Enhanced with Material 3 design principles
-class OpenEndedAfterAssess extends StatelessWidget {
+class OpenEndedAfterAssess extends ConsumerWidget {
   final OpenEndedQuestion question;
   final String? studentAnswer;
   final int? score; // Points received out of max points
@@ -17,7 +19,8 @@ class OpenEndedAfterAssess extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -52,7 +55,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Your Results',
+                      t.questionBank.viewing.viewingMode,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.w600,
@@ -67,7 +70,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
 
           // Student's Answer
           Text(
-            'Your Answer:',
+            '${t.questionBank.viewing.grading}:',
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
@@ -83,7 +86,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
               border: Border.all(color: colorScheme.outlineVariant, width: 1),
             ),
             child: Text(
-              studentAnswer ?? 'No answer provided',
+              studentAnswer ?? t.questionBank.matching.required,
               style: theme.textTheme.bodyMedium?.copyWith(
                 height: 1.5,
                 fontStyle: studentAnswer == null ? FontStyle.italic : null,
@@ -98,7 +101,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
           if (question.data.expectedAnswer != null) ...[
             const SizedBox(height: 16),
             Text(
-              'Expected Answer (Reference):',
+              '${t.questionBank.viewing.expectedAnswerReference}:',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.green.shade700,
@@ -125,7 +128,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Reference Answer',
+                        t.questionBank.viewing.referenceAnswer,
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: Colors.green.shade700,
                           fontWeight: FontWeight.w600,
@@ -166,7 +169,7 @@ class OpenEndedAfterAssess extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'This question is pending manual grading by your teacher.',
+                      t.questionBank.openEnded.gradingNoteText,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.orange.shade900,
                         fontWeight: FontWeight.w500,

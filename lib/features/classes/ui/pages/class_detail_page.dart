@@ -1,5 +1,6 @@
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
 import 'package:AIPrimary/features/classes/states/controller_provider.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/class_detail_app_bar.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/classwork_tab.dart';
@@ -51,10 +52,8 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
   @override
   Widget build(BuildContext context) {
     final classState = ref.watch(detailClassControllerProvider(widget.classId));
-    final userState = ref.watch(userControllerProvider);
     final t = ref.watch(translationsPod);
-    final isStudent =
-        userState.value != null; // If role has value, the user is student
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
 
     return classState.easyWhen(
       data: (classEntity) {

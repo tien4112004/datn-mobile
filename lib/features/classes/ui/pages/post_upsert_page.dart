@@ -1,3 +1,5 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/features/classes/domain/entity/attachment_metadata.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
@@ -88,7 +90,15 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
         }
       } catch (e) {
         if (mounted) {
-          _showSnackBar('Failed to load post: $e');
+          _showSnackBar(
+            context.mounted
+                ? ref
+                      .read(translationsPod)
+                      .classes
+                      .postUpsert
+                      .loadError(error: e.toString())
+                : 'Failed to load post: $e',
+          );
           Navigator.of(context).pop();
         }
       }
@@ -105,16 +115,17 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _handleSubmit() async {
+    final t = ref.read(translationsPod);
     // Extract plain text from Quill document
     final content = _quillController.document.toPlainText().trim();
 
     // Validate content
     if (content.isEmpty) {
-      _showSnackBar('Please enter post content');
+      _showSnackBar(t.classes.postDialog.contentRequired);
       return;
     }
     if (content.length < 10) {
-      _showSnackBar('Content must be at least 10 characters');
+      _showSnackBar(t.classes.postDialog.contentMinLength);
       return;
     }
 
@@ -148,7 +159,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
         if (mounted) {
           Navigator.of(context).pop(true);
-          _showSnackBar('Post updated successfully', isError: false);
+          _showSnackBar(t.classes.postUpsert.updateSuccess, isError: false);
         }
       } else {
         // Create new post
@@ -168,13 +179,17 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
         if (mounted) {
           Navigator.of(context).pop(true);
-          _showSnackBar('Post created successfully', isError: false);
+          _showSnackBar(t.classes.postUpsert.createSuccess, isError: false);
         }
       }
     } catch (e) {
       if (mounted) {
-        final action = widget.postId != null ? 'update' : 'create';
-        _showSnackBar('Failed to $action post: $e');
+        final action = widget.postId != null
+            ? t.common.edit.toLowerCase()
+            : t.classes.create.toLowerCase();
+        _showSnackBar(
+          t.classes.postUpsert.actionError(action: action, error: e.toString()),
+        );
       }
     }
   }
@@ -193,8 +208,9 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _pickAttachment() async {
+    final t = ref.read(translationsPod);
     if (_attachmentMetadata.length >= 10) {
-      _showSnackBar('Maximum 10 attachments allowed');
+      _showSnackBar(t.classes.postUpsert.maxAttachments);
       return;
     }
 
@@ -214,7 +230,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
       for (final file in pickedFiles) {
         if (_attachmentMetadata.length >= 10) {
-          _showSnackBar('Maximum 10 attachments reached');
+          _showSnackBar(t.classes.postUpsert.maxAttachmentsReached);
           break;
         }
 
@@ -242,19 +258,29 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
           }
         } catch (e) {
           if (mounted) {
-            _showSnackBar('Failed to upload ${file.name}: $e');
+            _showSnackBar(
+              t.classes.postUpsert.uploadError(
+                fileName: file.name,
+                error: e.toString(),
+              ),
+            );
           }
         }
       }
 
       if (mounted) {
         setState(() => _isUploading = false);
-        _showSnackBar('Uploaded ${pickedFiles.length} file(s)', isError: false);
+        _showSnackBar(
+          t.classes.postUpsert.uploadedCount(
+            count: pickedFiles.length.toString(),
+          ),
+          isError: false,
+        );
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isUploading = false);
-        _showSnackBar('Failed to pick files: $e');
+        _showSnackBar(t.classes.postUpsert.pickError(error: e.toString()));
       }
     }
   }
@@ -264,6 +290,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
   }
 
   Future<void> _pickLinkedResource() async {
+    final t = ref.read(translationsPod);
     final List<LinkedResourceEntity>? result;
 
     // Use dedicated assignment sheet for Exercise posts
@@ -291,16 +318,22 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
       });
 
       final resourceLabel = _selectedType == PostType.exercise
-          ? 'assignment'
-          : 'resource';
-      _showSnackBar(
-        'Linked ${result.length} $resourceLabel${result.length > 1 ? 's' : ''}',
-        isError: false,
-      );
+          ? t.classes.postUpsert.linkedCount(
+              count: result.length.toString(),
+              resource: t.classes.postActions.assignment(
+                count: result.length.toString(),
+              ),
+            )
+          : t.classes.postUpsert.linkedCount(
+              count: result.length.toString(),
+              resource: t.projects.resource_types.mindmap,
+            ); // Simplified for now
+      _showSnackBar(resourceLabel, isError: false);
     }
   }
 
   Future<void> _pickDueDate() async {
+    final t = ref.read(translationsPod);
     final now = DateTime.now();
     final initialDate = _dueDate ?? now.add(const Duration(days: 7));
 
@@ -309,7 +342,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
       initialDate: initialDate,
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
-      helpText: 'Select Due Date',
+      helpText: t.classes.postUpsert.selectDueDate,
     );
 
     if (pickedDate != null && mounted) {
@@ -319,6 +352,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final controllerProvider = widget.postId != null
@@ -337,7 +371,9 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
         backgroundColor: colorScheme.surface,
         surfaceTintColor: colorScheme.surfaceTint,
         title: Text(
-          widget.postId != null ? 'Edit Post' : 'Create Post',
+          widget.postId != null
+              ? t.classes.postDialog.editTitle
+              : t.classes.postDialog.createTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -360,8 +396,12 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                   : const Icon(LucideIcons.check, size: 18),
               label: Text(
                 isSubmitting
-                    ? (widget.postId != null ? 'Updating...' : 'Creating...')
-                    : (widget.postId != null ? 'Update' : 'Create'),
+                    ? (widget.postId != null
+                          ? t.classes.postUpsert.updating
+                          : t.classes.postUpsert.creating)
+                    : (widget.postId != null
+                          ? t.common.save
+                          : t.classes.create),
               ),
               style: FilledButton.styleFrom(
                 elevation: 0,
@@ -414,7 +454,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  'Post type cannot be changed when editing',
+                                  t.classes.postUpsert.typeCannotChange,
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: colorScheme.onSurfaceVariant,
                                     fontStyle: FontStyle.italic,
@@ -446,7 +486,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
 
                   // Due Date Section (Exercise type only)
                   if (_selectedType == PostType.exercise) ...[
-                    _buildDueDateSection(theme, colorScheme, isSubmitting),
+                    _buildDueDateSection(theme, colorScheme, isSubmitting, t),
                     const SizedBox(height: 16),
                   ],
 
@@ -509,6 +549,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
     ThemeData theme,
     ColorScheme colorScheme,
     bool isDisabled,
+    Translations t,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -544,7 +585,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Due Date',
+                        t.classes.postUpsert.dueDate,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
@@ -554,7 +595,7 @@ class _PostUpsertPageState extends ConsumerState<PostUpsertPage> {
                       Text(
                         _dueDate != null
                             ? '${_dueDate!.day}/${_dueDate!.month}/${_dueDate!.year}'
-                            : 'Tap to set due date',
+                            : t.classes.postUpsert.dueDateHint,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: _dueDate != null
                               ? colorScheme.onSurface

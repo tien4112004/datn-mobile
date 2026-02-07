@@ -1,9 +1,10 @@
-import 'package:AIPrimary/features/auth/controllers/user_controller.dart';
+import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_actions.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_author_info.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_avatar.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -17,17 +18,22 @@ class CommentCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final userState = ref.watch(userControllerProvider);
+    final userState = ref.watch(userControllerPod);
 
-    // Determine author name and if current user
-    final currentUserId = userState.value?.email;
-    final isCurrentUser =
-        currentUserId != null && comment.userId == currentUserId;
+    // Determine author name from comment's user data
     final authorName = comment.authorName ?? 'User';
+
+    // Check if current user (compare by email)
+    final currentUserEmail = userState.value?.email;
+    final isCurrentUser =
+        currentUserEmail != null &&
+        comment.authorEmail != null &&
+        currentUserEmail == comment.authorEmail;
 
     // Check if user can delete this comment
     // User can delete if: 1) it's their own comment, or 2) they are a teacher
-    final canDelete = isCurrentUser || (userState.value?.role == null);
+    final canDelete =
+        isCurrentUser || (ref.watch(userRolePod) == UserRole.teacher);
 
     return Semantics(
       label:

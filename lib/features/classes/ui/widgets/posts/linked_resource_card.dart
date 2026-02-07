@@ -1,3 +1,5 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -46,6 +48,7 @@ class LinkedResourceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     // If resource is already enriched by backend, use it directly without API call
     if (resource.title != null) {
       final preview = LinkedResourcePreview(
@@ -54,7 +57,7 @@ class LinkedResourceCard extends ConsumerWidget {
         type: resource.type,
         thumbnail: resource.thumbnail,
       );
-      return _buildResourceCard(context, preview);
+      return _buildResourceCard(context, preview, t);
     }
 
     // Otherwise fetch from API (backward compatibility)
@@ -64,10 +67,10 @@ class LinkedResourceCard extends ConsumerWidget {
       skipLoadingOnRefresh: false,
       loadingWidget: () => _buildLoadingCard(context),
       errorWidget: (error, stack) {
-        return _buildErrorCard(context, error);
+        return _buildErrorCard(context, error, t);
       },
       data: (preview) {
-        return _buildResourceCard(context, preview);
+        return _buildResourceCard(context, preview, t);
       },
     );
   }
@@ -81,7 +84,7 @@ class LinkedResourceCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildErrorCard(BuildContext context, Object error) {
+  Widget _buildErrorCard(BuildContext context, Object error, Translations t) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -101,7 +104,7 @@ class LinkedResourceCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Resource not found',
+                  t.classes.linkedResource.notFound,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.error,
                     fontWeight: FontWeight.w600,
@@ -109,7 +112,7 @@ class LinkedResourceCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'This ${resource.type} may have been deleted or is unavailable',
+                  t.classes.linkedResource.unavailable(type: resource.type),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.error.withValues(alpha: 0.7),
                   ),
@@ -122,9 +125,9 @@ class LinkedResourceCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildResourceCard(BuildContext context, preview) {
+  Widget _buildResourceCard(BuildContext context, preview, Translations t) {
     if (!preview.isValid) {
-      return _buildErrorCard(context, 'Invalid resource');
+      return _buildErrorCard(context, t.classes.linkedResource.invalid, t);
     }
 
     // Use specialized card for assignments
@@ -181,26 +184,11 @@ class LinkedResourceCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Icon(icon, size: 12, color: resourceColor),
-                      const SizedBox(width: 4),
-                      Text(
-                        preview.type[0].toUpperCase() +
-                            preview.type.substring(1),
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: resourceColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Permission badge
+                  _buildPermissionBadge(context, theme, colorScheme, t),
                 ],
               ),
             ),
-
-            // Permission badge
-            _buildPermissionBadge(context, theme, colorScheme),
 
             const SizedBox(width: 8),
 
@@ -261,6 +249,7 @@ class LinkedResourceCard extends ConsumerWidget {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
+    Translations t,
   ) {
     final isCommentPermission =
         resource.permissionLevel == PermissionLevel.comment;
@@ -285,7 +274,9 @@ class LinkedResourceCard extends ConsumerWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            isCommentPermission ? 'Comment' : 'View',
+            isCommentPermission
+                ? t.classes.linkedResource.comment
+                : t.classes.linkedResource.view,
             style: theme.textTheme.labelSmall?.copyWith(
               color: isCommentPermission
                   ? colorScheme.onPrimaryContainer

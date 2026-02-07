@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
-import 'package:AIPrimary/features/auth/controllers/auth_controller_pod.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/features/auth/widgets/divider.dart';
 import 'package:AIPrimary/features/auth/widgets/sign_in_form.dart';
 import 'package:AIPrimary/features/auth/widgets/switch_page.dart';
@@ -12,14 +12,14 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
-class SignInPage extends StatefulWidget {
+class SignInPage extends ConsumerStatefulWidget {
   const SignInPage({super.key});
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  ConsumerState<SignInPage> createState() => _SignInPageState();
 }
 
-class _SignInPageState extends State<SignInPage> with GlobalHelper {
+class _SignInPageState extends ConsumerState<SignInPage> with GlobalHelper {
   void _navigateToSignUp() {
     context.router.replace(const SignUpRoute());
   }

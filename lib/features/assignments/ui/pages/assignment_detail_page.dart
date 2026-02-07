@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
@@ -10,7 +11,6 @@ import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/matrix_tab.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,10 +95,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
   }
 
   void _showDeleteConfirmation(BuildContext context, int questionIndex) async {
+    final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final t = ref.read(translationsPod);
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -144,13 +144,13 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final assignmentAsync = ref.watch(
       detailAssignmentControllerProvider(widget.assignmentId),
     );
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final t = ref.watch(translationsPod);
 
     return assignmentAsync.easyWhen(
       data: (assignment) {

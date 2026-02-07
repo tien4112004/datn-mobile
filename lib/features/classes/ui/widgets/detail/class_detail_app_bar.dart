@@ -30,19 +30,21 @@ class ClassDetailAppBar extends ConsumerWidget {
       backgroundColor: classEntity.headerColor,
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light,
-      leading: Semantics(
-        label: t.classes.appBar.goBack,
-        button: true,
-        hint: t.classes.appBar.returnHint,
-        child: IconButton(
-          icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
-          onPressed: () {
-            HapticFeedback.lightImpact();
-            context.router.maybePop();
-          },
-          tooltip: t.classes.appBar.back,
-        ),
-      ),
+      leading: isStudent
+          ? null
+          : Semantics(
+              label: t.classes.appBar.goBack,
+              button: true,
+              hint: t.classes.appBar.returnHint,
+              child: IconButton(
+                icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  context.router.maybePop();
+                },
+                tooltip: t.classes.appBar.back,
+              ),
+            ),
       actions: [
         Semantics(
           label: t.classes.appBar.classOptions,
@@ -190,24 +192,6 @@ class ClassDetailAppBar extends ConsumerWidget {
               },
             ),
             if (!isStudent) ...[
-              ListTile(
-                leading: Icon(LucideIcons.copy, color: colorScheme.primary),
-                title: Text(t.classes.appBar.copyJoinCode),
-                subtitle: Text(
-                  classEntity.joinCode ?? t.classes.appBar.notAvailable,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  if (classEntity.joinCode != null) {
-                    Clipboard.setData(
-                      ClipboardData(text: classEntity.joinCode!),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(t.classes.appBar.joinCodeCopied)),
-                    );
-                  }
-                },
-              ),
               ListTile(
                 leading: Icon(LucideIcons.settings, color: colorScheme.primary),
                 title: Text(t.classes.appBar.classSettings),

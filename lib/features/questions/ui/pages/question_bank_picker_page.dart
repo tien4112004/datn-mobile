@@ -351,7 +351,7 @@ class _QuestionBankPickerPageState
                       ),
                       FilledButton(
                         onPressed: _handleContinue,
-                        child: Text(t.questionBank.kContinue),
+                        child: Text(t.questionBank.continue_),
                       ),
                     ],
                   ),

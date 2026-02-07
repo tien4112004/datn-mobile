@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,22 +19,23 @@ class CommentActions extends ConsumerWidget {
   });
 
   Future<void> _deleteComment(BuildContext context, WidgetRef ref) async {
+    final t = ref.read(translationsPod);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Comment?'),
-        content: const Text('This action cannot be undone.'),
+        title: Text(t.classes.comments.deleteTitle),
+        content: Text(t.classes.comments.deleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(t.classes.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(t.classes.delete),
           ),
         ],
       ),
@@ -48,7 +50,11 @@ class CommentActions extends ConsumerWidget {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to delete comment: $e')),
+            SnackBar(
+              content: Text(
+                t.classes.comments.deleteError(error: e.toString()),
+              ),
+            ),
           );
         }
       }
@@ -59,10 +65,11 @@ class CommentActions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (!canDelete) return const SizedBox.shrink();
 
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Semantics(
-      label: 'Delete comment',
+      label: t.classes.comments.deleteTitle,
       button: true,
       child: IconButton(
         onPressed: () => _deleteComment(context, ref),

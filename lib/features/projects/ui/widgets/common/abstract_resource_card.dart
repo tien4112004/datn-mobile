@@ -68,7 +68,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                   children: [
                     // Title
                     Text(
-                      title,
+                      title.isEmpty ? t.projects.untitled : title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

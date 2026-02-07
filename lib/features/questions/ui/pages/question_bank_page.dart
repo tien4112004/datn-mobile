@@ -59,7 +59,7 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
             leading: Semantics(
               label: t.questionBank.back,
               button: true,
-              hint: 'Double tap to return to previous page',
+              hint: t.classes.appBar.returnHint,
               child: IconButton(
                 icon: const Icon(LucideIcons.arrowLeft),
                 onPressed: () {

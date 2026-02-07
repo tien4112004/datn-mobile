@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
@@ -5,7 +6,6 @@ import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_re
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,9 +60,9 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final t = ref.watch(translationsPod);
 
     return Dialog(
       backgroundColor: colorScheme.surface,
@@ -231,11 +231,11 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   }
 
   Future<void> _savedAssignment() async {
+    final t = ref.read(translationsPod);
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final t = ref.read(translationsPod);
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final timeLimitText = _timeLimitController.text.trim();

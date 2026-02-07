@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
 import 'package:AIPrimary/features/notification/states/notification_controller.dart';
@@ -47,12 +48,13 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final asyncState = ref.watch(notificationControllerProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(t.notifications.title),
         actions: [
           if ((asyncState.value?.unreadCount ?? 0) > 0)
             TextButton(
@@ -61,7 +63,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                     .read(notificationControllerProvider.notifier)
                     .markAllAsRead();
               },
-              child: const Text('Mark all read'),
+              child: Text(t.notifications.markAllRead),
             ),
         ],
       ),
@@ -85,7 +87,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No notifications yet',
+                      t.classes.comments.noComments,
                       style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
@@ -132,7 +134,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                 Icon(Icons.error_outline, size: 64, color: colorScheme.error),
                 const SizedBox(height: 16),
                 Text(
-                  'Failed to load notifications',
+                  t.classes.posts.loadError,
                   style: TextStyle(color: colorScheme.error),
                 ),
                 const SizedBox(height: 8),
@@ -140,7 +142,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                   onPressed: () {
                     ref.read(notificationControllerProvider.notifier).refresh();
                   },
-                  child: const Text('Retry'),
+                  child: Text(t.notifications.retry),
                 ),
               ],
             ),

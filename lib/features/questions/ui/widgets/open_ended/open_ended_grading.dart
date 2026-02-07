@@ -1,9 +1,12 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Open Ended Question in Grading Mode
-class OpenEndedGrading extends StatefulWidget {
+class OpenEndedGrading extends ConsumerStatefulWidget {
   final OpenEndedQuestion question;
   final String? studentAnswer;
   final int? score;
@@ -18,10 +21,10 @@ class OpenEndedGrading extends StatefulWidget {
   });
 
   @override
-  State<OpenEndedGrading> createState() => _OpenEndedGradingState();
+  ConsumerState<OpenEndedGrading> createState() => _OpenEndedGradingState();
 }
 
-class _OpenEndedGradingState extends State<OpenEndedGrading> {
+class _OpenEndedGradingState extends ConsumerState<OpenEndedGrading> {
   @override
   void initState() {
     super.initState();
@@ -29,6 +32,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
 
     return QuestionCardWrapper(
@@ -40,7 +44,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'GRADING MODE',
+            QuestionMode.grading.getLocalizedName(t).toUpperCase(),
             style: theme.textTheme.labelSmall?.copyWith(
               color: Colors.orange,
               fontWeight: FontWeight.w600,
@@ -50,7 +54,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
 
           // Student's Answer
           Text(
-            'Student\'s Answer:',
+            '${t.questionBank.openEnded.infoText}:', // Reuse or add specific "Student's Answer"
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -65,7 +69,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
             ),
             width: double.infinity,
             child: Text(
-              widget.studentAnswer ?? 'No answer provided',
+              widget.studentAnswer ?? t.questionBank.matching.required,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontStyle: widget.studentAnswer == null
                     ? FontStyle.italic
@@ -78,7 +82,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
           if (widget.question.data.expectedAnswer != null) ...[
             const SizedBox(height: 16),
             Text(
-              'Expected Answer (Reference):',
+              '${t.questionBank.viewing.expectedAnswerReference}:',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -103,7 +107,7 @@ class _OpenEndedGradingState extends State<OpenEndedGrading> {
 
           // Score Selection
           Text(
-            'Assign Score:',
+            '${t.questionBank.viewing.grading}:',
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),

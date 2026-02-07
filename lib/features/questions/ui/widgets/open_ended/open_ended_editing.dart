@@ -1,20 +1,22 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Open Ended Question in Editing Mode (Teacher creating/editing)
 /// Enhanced with Material 3 design principles
-class OpenEndedEditing extends StatefulWidget {
+class OpenEndedEditing extends ConsumerStatefulWidget {
   final OpenEndedQuestion question;
   final Function(OpenEndedQuestion)? onUpdate;
 
   const OpenEndedEditing({super.key, required this.question, this.onUpdate});
 
   @override
-  State<OpenEndedEditing> createState() => _OpenEndedEditingState();
+  ConsumerState<OpenEndedEditing> createState() => _OpenEndedEditingState();
 }
 
-class _OpenEndedEditingState extends State<OpenEndedEditing> {
+class _OpenEndedEditingState extends ConsumerState<OpenEndedEditing> {
   late TextEditingController _expectedAnswerController;
   late TextEditingController _maxLengthController;
 
@@ -38,6 +40,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -65,7 +68,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Editing Mode - Configure open-ended question',
+                  t.questionBank.openEnded.subtitle,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
@@ -78,7 +81,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
 
           // Expected Answer Section
           Text(
-            'Expected Answer (Reference for Grading)',
+            t.questionBank.openEnded.expectedAnswer,
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
@@ -86,7 +89,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Provide a reference answer to guide grading. This is optional.',
+            t.questionBank.openEnded.expectedAnswerHelper,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -97,7 +100,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
             maxLines: 6,
             minLines: 4,
             decoration: InputDecoration(
-              hintText: 'Enter the expected/reference answer...',
+              hintText: t.questionBank.openEnded.expectedAnswerHint,
               filled: true,
               fillColor: colorScheme.surfaceContainerLowest,
               contentPadding: const EdgeInsets.all(16),
@@ -120,7 +123,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
 
           // Max Length Section
           Text(
-            'Character Limit',
+            t.questionBank.openEnded.maxLength,
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurface,
@@ -128,7 +131,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Set a maximum character limit for student responses (optional).',
+            t.questionBank.openEnded.maxLengthHelper,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -141,7 +144,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
                   controller: _maxLengthController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: 'Max characters',
+                    labelText: t.questionBank.openEnded.maxLength,
                     hintText: 'e.g., 500',
                     filled: true,
                     fillColor: colorScheme.surfaceContainerLowest,
@@ -210,7 +213,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Grading Tips',
+                        t.questionBank.openEnded.gradingNote,
                         style: theme.textTheme.titleSmall?.copyWith(
                           color: colorScheme.onTertiaryContainer,
                           fontWeight: FontWeight.w600,
@@ -218,7 +221,7 @@ class _OpenEndedEditingState extends State<OpenEndedEditing> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Open-ended questions require manual grading. The expected answer serves as a reference to help maintain consistent grading standards.',
+                        t.questionBank.openEnded.gradingNoteText,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onTertiaryContainer,
                           height: 1.4,

@@ -11,7 +11,6 @@ import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/matrix_tab.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,7 +99,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final t = ref.read(translationsPod);
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -153,7 +151,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
       detailAssignmentControllerProvider(widget.assignmentId),
     );
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final t = ref.watch(translationsPod);
 
     return assignmentAsync.easyWhen(
       data: (assignment) {

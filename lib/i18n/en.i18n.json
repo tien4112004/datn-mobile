@@ -112,7 +112,7 @@
   "myClasses": "My Classes",
   "recentDocuments": "Recent Documents",
   "parentTeacherMeetings": "Parent-Teacher meetings",
-  "todayAt": "Today at {time}",
+  "todayAt": "Today at $time",
   "dueDate": "Due Date: $date",
   "projects": {
     "title": "Projects",
@@ -842,7 +842,7 @@
       "created": "Created",
       "lastUpdated": "Last Updated",
       "copyToClipboard": "Copy to clipboard",
-      "copyLabel": "Copy {label}",
+      "copyLabel": "Copy $label",
       "copyHint": "Double tap to copy to clipboard",
       "closeDialog": "Close dialog",
       "closeHint": "Double tap to close class information",
@@ -993,7 +993,7 @@
     },
     "editForm": {
       "editing": "Editing Class",
-      "teacher": "Teacher: {teacherName}",
+      "teacher": "Teacher: $teacherName",
       "classInfo": "Class Information",
       "classId": "Class ID",
       "created": "Created",
@@ -1060,6 +1060,7 @@
     }
   },
   "assignments": {
+    "pointsError": "Points must be greater than 0",
     "title": "Assignment Management",
     "createExam": "Create Exam",
     "refresh": "Refresh",
@@ -1217,8 +1218,8 @@
 
     "questionsSection": {
       "title": "Questions",
-      "count": "$count ${count, plural, one{question} other{questions}}",
-      "available": "$count ${count, plural, one{question} other{questions}} available",
+      "count": "$count ",
+      "available": "$count  available",
       "generate": "Generate"
     },
 
@@ -1283,7 +1284,7 @@
       },
       "questions": {
         "title": "Questions",
-        "available(count)": "$count ${count, plural, one{question} other{questions}} available",
+        "available(count)": "$count  available",
         "emptyTitle": "No questions yet",
         "emptyMessage": "You can add questions to this assignment by tapping the \"Add Question\" button.",
         "addQuestion": "Add Question",
@@ -1292,7 +1293,7 @@
       },
       "matrix": {
         "title": "Assessment Matrix",
-        "distributed(count)": "$count ${count, plural, one{question} other{questions}} distributed",
+        "distributed(count)": "$count  distributed",
         "summaryStatistics": "Summary Statistics",
         "targetCount": "Target Count",
         "actualCount": "Actual Count",

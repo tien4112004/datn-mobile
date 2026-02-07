@@ -150,7 +150,7 @@
   "myClasses": "Lớp học của tôi",
   "recentDocuments": "Tài liệu gần đây",
   "parentTeacherMeetings": "Họp phụ huynh - giáo viên",
-  "todayAt": "Hôm nay lúc {time}",
+  "todayAt": "Hôm nay lúc $time",
   "dueDate": "Hạn nộp: $date",
   "projects": {
     "title": "Dự án",
@@ -846,7 +846,7 @@
       "created": "Ngày tạo",
       "lastUpdated": "Cập nhật lần cuối",
       "copyToClipboard": "Sao chép vào clipboard",
-      "copyLabel": "Sao chép {label}",
+      "copyLabel": "Sao chép $label",
       "copyHint": "Nhấn đúp để sao chép vào clipboard",
       "closeDialog": "Đóng hộp thoại",
       "closeHint": "Nhấn đúp để đóng thông tin lớp học",
@@ -997,7 +997,7 @@
     },
     "editForm": {
       "editing": "Đang chỉnh sửa lớp học",
-      "teacher": "Giáo viên: {teacherName}",
+      "teacher": "Giáo viên: $teacherName",
       "classInfo": "Thông tin lớp học",
       "classId": "ID lớp học",
       "created": "Ngày tạo",
@@ -1064,6 +1064,7 @@
     }
   },
   "assignments": {
+    "pointsError": "Điểm phải lớn hơn 0",
     "title": "Quản lý bài kiểm tra",
     "createExam": "Tạo bài kiểm tra",
     "refresh": "Làm mới",
@@ -1220,8 +1221,8 @@
 
     "questionsSection": {
       "title": "Câu hỏi",
-      "count": "$count ${count, plural, one{câu hỏi} other{câu hỏi}}",
-      "available": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+      "count": "$count ",
+      "available": "$count  có sẵn",
       "generate": "Tạo tự động"
     },
 
@@ -1286,7 +1287,7 @@
       },
       "questions": {
         "title": "Câu hỏi",
-        "available(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} có sẵn",
+        "available(count)": "$count  có sẵn",
         "emptyTitle": "Chưa có câu hỏi nào",
         "emptyMessage": "Bạn có thể thêm câu hỏi vào bài kiểm tra này bằng cách nhấn nút \"Thêm câu hỏi\".",
         "addQuestion": "Thêm câu hỏi",
@@ -1295,7 +1296,7 @@
       },
       "matrix": {
         "title": "Ma trận đánh giá",
-        "distributed(count)": "$count ${count, plural, one{câu hỏi} other{câu hỏi}} đã phân phối",
+        "distributed(count)": "$count  đã phân phối",
         "summaryStatistics": "Thống kê tổng hợp",
         "targetCount": "Số lượng mục tiêu",
         "actualCount": "Số lượng thực tế",

@@ -49,15 +49,6 @@ class AssignmentPreviewCard extends StatelessWidget {
     }
   }
 
-  /// Parse status from string to enum
-  AssignmentStatus _parseStatus(String? status) {
-    if (status == null) return AssignmentStatus.draft;
-    return AssignmentStatus.values.firstWhere(
-      (e) => e.displayName.toLowerCase() == status.toLowerCase(),
-      orElse: () => AssignmentStatus.draft,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -66,8 +57,6 @@ class AssignmentPreviewCard extends StatelessWidget {
     final subject = _parseSubject(preview.subject);
     final subjectColor = _getSubjectColor(subject);
     final subjectIcon = _getSubjectIcon(subject);
-    final status = _parseStatus(preview.status);
-    final statusIcon = AssignmentStatus.getStatusIcon(status);
 
     return InkWell(
       onTap: onTap,
@@ -92,7 +81,6 @@ class AssignmentPreviewCard extends StatelessWidget {
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Subject Icon Container
             Container(
@@ -118,69 +106,40 @@ class AssignmentPreviewCard extends StatelessWidget {
             // Content Column
             Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title
                   Text(
                     preview.title,
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,
-                      height: 1.3,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
 
                   const SizedBox(height: 8),
 
                   // Metadata Row
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          // Subject Badge
-                          _buildMetadataBadge(
-                            context,
-                            icon: subjectIcon,
-                            label: subject.displayName,
-                            color: subjectColor,
-                            isPrimary: true,
-                          ),
+                      // Question Count
+                      if (preview.totalQuestions != null)
+                        _buildMetadataBadge(
+                          context,
+                          label: '${preview.totalQuestions} Q',
+                          color: colorScheme.tertiary,
+                        ),
 
-                          // Grade Level
-                          if (preview.gradeLevel != null)
-                            _buildMetadataBadge(
-                              context,
-                              icon: LucideIcons.graduationCap,
-                              label: preview.gradeLevel!,
-                              color: colorScheme.secondary,
-                            ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          // Question Count
-                          if (preview.totalQuestions != null)
-                            _buildMetadataBadge(
-                              context,
-                              icon: LucideIcons.listOrdered,
-                              label: '${preview.totalQuestions} Q',
-                              color: colorScheme.tertiary,
-                            ),
-
-                          // Total Points
-                          if (preview.totalPoints != null)
-                            _buildMetadataBadge(
-                              context,
-                              icon: LucideIcons.award,
-                              label: '${preview.totalPoints} pts',
-                              color: const Color(0xFFF97316), // Orange CTA
-                            ),
-                        ],
-                      ),
+                      // Total Points
+                      if (preview.totalPoints != null)
+                        _buildMetadataBadge(
+                          context,
+                          label: '${preview.totalPoints} pts',
+                          color: const Color(0xFFF97316), // Orange CTA
+                        ),
                     ],
                   ),
                 ],
@@ -189,37 +148,11 @@ class AssignmentPreviewCard extends StatelessWidget {
 
             const SizedBox(width: 8),
 
-            // Status & Arrow Column
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Status Indicator
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(
-                      status,
-                      colorScheme,
-                    ).withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Icon(
-                    statusIcon,
-                    size: 16,
-                    color: _getStatusColor(status, colorScheme),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Arrow Icon
-                Icon(
-                  LucideIcons.arrowRight,
-                  size: 18,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ],
+            // Arrow Icon
+            Icon(
+              LucideIcons.arrowRight,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
             ),
           ],
         ),
@@ -230,7 +163,6 @@ class AssignmentPreviewCard extends StatelessWidget {
   /// Build metadata badge with icon and label
   Widget _buildMetadataBadge(
     BuildContext context, {
-    required IconData icon,
     required String label,
     required Color color,
     bool isPrimary = false,
@@ -252,8 +184,6 @@ class AssignmentPreviewCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
           Text(
             label,
             style: theme.textTheme.labelSmall?.copyWith(
@@ -267,19 +197,19 @@ class AssignmentPreviewCard extends StatelessWidget {
     );
   }
 
-  /// Get status-specific color
-  Color _getStatusColor(AssignmentStatus status, ColorScheme colorScheme) {
-    switch (status) {
-      case AssignmentStatus.completed:
-        return const Color(0xFF16A34A); // Green
-      case AssignmentStatus.draft:
-        return colorScheme.tertiary;
-      case AssignmentStatus.generating:
-        return Themes.primaryColor;
-      case AssignmentStatus.error:
-        return colorScheme.error;
-      case AssignmentStatus.archived:
-        return colorScheme.outline;
-    }
-  }
+  // /// Get status-specific color
+  // Color _getStatusColor(AssignmentStatus status, ColorScheme colorScheme) {
+  //   switch (status) {
+  //     case AssignmentStatus.completed:
+  //       return const Color(0xFF16A34A); // Green
+  //     case AssignmentStatus.draft:
+  //       return colorScheme.tertiary;
+  //     case AssignmentStatus.generating:
+  //       return Themes.primaryColor;
+  //     case AssignmentStatus.error:
+  //       return colorScheme.error;
+  //     case AssignmentStatus.archived:
+  //       return colorScheme.outline;
+  //   }
+  // }
 }

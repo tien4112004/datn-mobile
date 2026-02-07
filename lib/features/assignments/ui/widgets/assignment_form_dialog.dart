@@ -63,7 +63,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final t = ref.watch(translationsPod);
 
     return Dialog(
       backgroundColor: colorScheme.surface,
@@ -237,7 +236,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
       return;
     }
 
-    final t = ref.read(translationsPod);
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
     final timeLimitText = _timeLimitController.text.trim();

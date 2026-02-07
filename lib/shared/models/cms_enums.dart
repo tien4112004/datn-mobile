@@ -180,6 +180,7 @@ enum QuestionMode {
   editing,
   doing,
   viewing,
+  submitted,
   grading,
   afterAssess;
 
@@ -211,6 +212,8 @@ enum QuestionMode {
         return 'Doing Mode';
       case QuestionMode.viewing:
         return 'Viewing Mode';
+      case QuestionMode.submitted:
+        return 'Submitted';
       case QuestionMode.grading:
         return 'Grading Mode';
       case QuestionMode.afterAssess:

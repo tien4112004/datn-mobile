@@ -60,6 +60,7 @@ class _AssignmentQuestionEditPageState
   ContextEntity? _linkedContext;
   String? _currentContextId;
   bool _contextChanged = false;
+  bool _contextExpanded = false;
 
   @override
   void initState() {
@@ -560,9 +561,10 @@ class _AssignmentQuestionEditPageState
 
   Widget _buildContextSection(ThemeData theme, ColorScheme colorScheme) {
     if (_currentContextId != null) {
-      // Show linked context info with unlink button
+      final hasContent =
+          _linkedContext != null && _linkedContext!.content.isNotEmpty;
+
       return Container(
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.blue.shade50,
           borderRadius: BorderRadius.circular(12),
@@ -570,53 +572,111 @@ class _AssignmentQuestionEditPageState
             left: BorderSide(color: Colors.blue.shade400, width: 3),
           ),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(LucideIcons.bookOpen, size: 20, color: Colors.blue.shade600),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Reading Passage',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: Colors.blue.shade800,
-                      fontWeight: FontWeight.w600,
+            // Header row — tappable to expand/collapse
+            InkWell(
+              onTap: hasContent
+                  ? () => setState(() => _contextExpanded = !_contextExpanded)
+                  : null,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.bookOpen,
+                      size: 20,
+                      color: Colors.blue.shade600,
                     ),
-                  ),
-                  if (_linkedContext != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      _linkedContext!.title.isNotEmpty
-                          ? _linkedContext!.title
-                          : 'Untitled Passage',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.blue.shade700,
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Reading Passage',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: Colors.blue.shade800,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (_linkedContext != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              _linkedContext!.title.isNotEmpty
+                                  ? _linkedContext!.title
+                                  : 'Untitled Passage',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.blue.shade700,
+                              ),
+                              maxLines: _contextExpanded ? null : 1,
+                              overflow: _contextExpanded
+                                  ? null
+                                  : TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (hasContent)
+                      Icon(
+                        _contextExpanded
+                            ? LucideIcons.chevronUp
+                            : LucideIcons.chevronDown,
+                        size: 18,
+                        color: Colors.blue.shade600,
+                      ),
+                    IconButton(
+                      icon: Icon(
+                        LucideIcons.unlink,
+                        size: 18,
+                        color: colorScheme.error,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _currentContextId = null;
+                          _linkedContext = null;
+                          _contextChanged = true;
+                          _contextExpanded = false;
+                        });
+                      },
+                      tooltip: 'Unlink passage',
+                      constraints: const BoxConstraints(
+                        minWidth: 44,
+                        minHeight: 44,
+                      ),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
-            IconButton(
-              icon: Icon(
-                LucideIcons.unlink,
-                size: 18,
-                color: colorScheme.error,
+
+            // Expandable content
+            if (_contextExpanded && hasContent)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.shade100),
+                  ),
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: SingleChildScrollView(
+                    child: SelectableText(
+                      _linkedContext!.content,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.6,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              onPressed: () {
-                setState(() {
-                  _currentContextId = null;
-                  _linkedContext = null;
-                  _contextChanged = true;
-                });
-              },
-              tooltip: 'Unlink passage',
-              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-            ),
           ],
         ),
       );

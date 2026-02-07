@@ -93,7 +93,7 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: filterState.hasActiveFilters ? 220 : 180,
+      expandedHeight: filterState.hasActiveFilters ? 260 : 220,
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(

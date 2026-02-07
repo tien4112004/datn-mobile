@@ -197,6 +197,8 @@ enum QuestionMode {
         return t.shared.models.cms_enums.questionMode.doing;
       case QuestionMode.viewing:
         return t.questionBank.viewing.viewingMode;
+      case QuestionMode.submitted:
+        return t.assignments.statuses.completed;
       case QuestionMode.grading:
         return t.questionBank.viewing.grading;
       case QuestionMode.afterAssess:

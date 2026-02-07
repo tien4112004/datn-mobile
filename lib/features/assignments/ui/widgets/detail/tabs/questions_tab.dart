@@ -12,7 +12,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Questions tab with clean design matching the Questions tab reference.
 /// Features: Icon badge header, clean question list, numbered cards.
 /// Supports grouping questions by context (reading passage).
-class QuestionsTab extends StatelessWidget {
+class QuestionsTab extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
   final Function(AssignmentQuestionEntity, int) onEdit;

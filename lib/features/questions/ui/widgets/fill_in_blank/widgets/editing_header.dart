@@ -1,11 +1,14 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Header banner for fill in blank editing mode
-class EditingHeader extends StatelessWidget {
+class EditingHeader extends ConsumerWidget {
   const EditingHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -25,7 +28,7 @@ class EditingHeader extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            'Editing Mode - Create sentence with blanks',
+            t.questionBank.fillInBlank.editingMode,
             style: theme.textTheme.labelMedium?.copyWith(
               color: colorScheme.onPrimaryContainer,
               fontWeight: FontWeight.w600,

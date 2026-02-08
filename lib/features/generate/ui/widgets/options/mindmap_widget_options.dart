@@ -77,7 +77,7 @@ class MindmapWidgetOptions {
                 items: [null, ...GradeLevel.values.map((g) => g.apiValue)],
                 itemLabelBuilder: (v) {
                   if (v == null) return t.generate.mindmapGenerate.none;
-                  return GradeLevel.fromApiValue(v).displayName;
+                  return GradeLevel.fromApiValue(v).getLocalizedName(t);
                 },
                 onChanged: (value) {
                   formController.updateGrade(value);
@@ -106,7 +106,7 @@ class MindmapWidgetOptions {
                 items: [null, ...Subject.values.map((s) => s.apiValue)],
                 itemLabelBuilder: (v) {
                   if (v == null) return t.generate.mindmapGenerate.none;
-                  return Subject.fromApiValue(v).displayName;
+                  return Subject.fromApiValue(v).getLocalizedName(t);
                 },
                 onChanged: (value) {
                   formController.updateSubject(value);

@@ -63,6 +63,7 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
       grade: GradeLevel.fromApiValue(grade),
       chapter: chapter,
       subject: Subject.fromApiValue(subject!),
+      contextId: contextId,
     );
   }
 
@@ -86,10 +87,10 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
         (data['options'] as List<dynamic>?)
             ?.map(
               (o) => MultipleChoiceOption(
-                id: o['id'] as String,
-                text: o['text'] as String,
+                id: o['id'] as String? ?? '',
+                text: o['text'] as String? ?? '',
                 imageUrl: o['imageUrl'] as String?,
-                isCorrect: o['isCorrect'] as bool,
+                isCorrect: o['isCorrect'] as bool? ?? false,
               ),
             )
             .toList() ??
@@ -106,7 +107,7 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
         (data['pairs'] as List<dynamic>?)
             ?.map(
               (p) => MatchingPair(
-                id: p['id'] as String,
+                id: p['id'] as String? ?? '',
                 left: p['left'] as String?,
                 leftImageUrl: p['leftImageUrl'] as String?,
                 right: p['right'] as String?,
@@ -134,14 +135,15 @@ extension QuestionBankItemDtoMapper on QuestionBankItemDto {
         (data['segments'] as List<dynamic>?)
             ?.map(
               (s) => BlankSegment(
-                id: s['id'] as String,
+                id: s['id'] as String? ?? '',
                 type: s['type'] == 'BLANK'
                     ? SegmentType.blank
                     : SegmentType.text,
-                content: s['content'] as String,
+                content: s['content'] as String? ?? '',
                 acceptableAnswers: s['type'] == 'BLANK'
                     ? (s['acceptableAnswers'] as List<dynamic>?)
-                          ?.map((a) => a as String)
+                          ?.where((a) => a != null)
+                          .map((a) => a as String)
                           .toList()
                     : null,
               ),

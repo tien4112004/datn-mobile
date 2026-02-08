@@ -9,7 +9,7 @@ part 'question_response.g.dart';
 /// Matches Question structure from ASSIGNMENT_API_DOCS.md
 @JsonSerializable(fieldRename: FieldRename.none, includeIfNull: false)
 class QuestionResponse {
-  final String id;
+  final String? id;
   final String type; // MULTIPLE_CHOICE, MATCHING, OPEN_ENDED, FILL_IN_BLANK
   final String? difficulty; // KNOWLEDGE, COMPREHENSION, APPLICATION
   final String? title;
@@ -23,7 +23,7 @@ class QuestionResponse {
   final Map<String, dynamic>? data; // Polymorphic data based on type
 
   const QuestionResponse({
-    required this.id,
+    this.id,
     required this.type,
     this.difficulty,
     this.title,
@@ -49,12 +49,13 @@ extension QuestionResponseMapper on QuestionResponse {
   AssignmentQuestionEntity toEntity() {
     // Parse polymorphic data Map based on type
     final BaseQuestion question = _parseQuestionData();
+    final isNew = id == null || id!.startsWith('new_');
 
     return AssignmentQuestionEntity(
-      questionBankId: id.startsWith('new_') ? null : id,
+      questionBankId: isNew ? null : id,
       question: question,
       points: point ?? 0.0,
-      isNewQuestion: id.startsWith('new_'),
+      isNewQuestion: isNew,
       contextId: contextId,
     );
   }
@@ -66,7 +67,7 @@ extension QuestionResponseMapper on QuestionResponse {
         ? Difficulty.fromApiValue(difficulty!)
         : Difficulty.knowledge;
     final questionTitle = title ?? '';
-    final questionId = id;
+    final questionId = id ?? '';
 
     if (data == null) {
       throw Exception('Question data is null for question $id');

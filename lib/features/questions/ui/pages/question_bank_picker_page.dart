@@ -7,7 +7,11 @@ import 'package:AIPrimary/features/questions/states/question_bank_provider.dart'
 import 'package:AIPrimary/features/questions/states/question_bank_filter_state.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/enum_localizations.dart';
+import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/advanced_question_filter_dialog.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/bank_type_switcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -45,7 +49,7 @@ class _QuestionBankPickerPageState
       }
 
       ref.read(questionBankFilterProvider.notifier).state =
-          const QuestionBankFilterState(bankType: BankType.personal);
+          const QuestionBankFilterState();
       ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
     });
   }
@@ -54,21 +58,6 @@ class _QuestionBankPickerPageState
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _updateFilters({
-    String? searchQuery,
-    QuestionType? questionType,
-    Difficulty? difficulty,
-  }) {
-    final currentFilter = ref.read(questionBankFilterProvider);
-    ref.read(questionBankFilterProvider.notifier).state = currentFilter
-        .copyWith(
-          searchQuery: searchQuery,
-          questionTypeFilter: questionType,
-          difficultyFilter: difficulty,
-        );
-    ref.read(questionBankProvider.notifier).loadQuestionsWithFilter();
   }
 
   void _toggleSelection(QuestionBankItemEntity bankItem) {
@@ -158,6 +147,18 @@ class _QuestionBankPickerPageState
                   color: colorScheme.surface,
                   child: Column(
                     children: [
+                      // Bank type switcher
+                      BankTypeSwitcher(
+                        selectedType: currentFilter.bankType,
+                        onTypeChanged: (type) {
+                          ref.read(questionBankFilterProvider.notifier).state =
+                              currentFilter.copyWith(bankType: type);
+                          ref
+                              .read(questionBankProvider.notifier)
+                              .loadQuestionsWithFilter();
+                        },
+                      ),
+                      const SizedBox(height: 12),
                       // Search bar
                       TextField(
                         controller: _searchController,
@@ -175,7 +176,16 @@ class _QuestionBankPickerPageState
                                   ),
                                   onPressed: () {
                                     _searchController.clear();
-                                    _updateFilters(searchQuery: null);
+                                    ref
+                                        .read(
+                                          questionBankFilterProvider.notifier,
+                                        )
+                                        .state = currentFilter.copyWith(
+                                      searchQuery: null,
+                                    );
+                                    ref
+                                        .read(questionBankProvider.notifier)
+                                        .loadQuestionsWithFilter();
                                     setState(() {});
                                   },
                                 )
@@ -207,50 +217,133 @@ class _QuestionBankPickerPageState
                           final query = value.trim().isEmpty
                               ? null
                               : value.trim();
-                          _updateFilters(searchQuery: query);
+                          ref.read(questionBankFilterProvider.notifier).state =
+                              currentFilter.copyWith(searchQuery: query);
+                          ref
+                              .read(questionBankProvider.notifier)
+                              .loadQuestionsWithFilter();
                         },
                         textInputAction: TextInputAction.search,
                       ),
                       const SizedBox(height: 12),
 
-                      // Filter chips with Wrap
-                      Wrap(
-                        spacing: 4,
-                        runSpacing: 4,
-                        children: [
-                          // Type filters
-                          ...QuestionType.values.map((type) {
-                            final isSelected =
-                                currentFilter.questionTypeFilter == type;
-                            return FilterChip(
-                              label: Text(type.localizedName(t)),
-                              selected: isSelected,
-                              onSelected: (selected) {
-                                _updateFilters(
-                                  questionType: selected ? type : null,
-                                );
-                              },
-                            );
-                          }),
-
-                          // Difficulty filters
-                          ...[
-                            Difficulty.knowledge,
-                            Difficulty.comprehension,
-                            Difficulty.application,
-                          ].map((difficulty) {
-                            final isSelected =
-                                currentFilter.difficultyFilter == difficulty;
-                            return FilterChip(
-                              label: Text(difficulty.localizedName(t)),
-                              selected: isSelected,
-                              onSelected: (selected) {
-                                _updateFilters(
-                                  difficulty: selected ? difficulty : null,
-                                );
-                              },
-                            );
-                          }),
+                      // Filter chips bar matching Question Bank page
+                      GenericFiltersBar(
+                        filters: [
+                          FilterConfig<GradeLevel>(
+                            label: t.questionBank.filters.grade,
+                            icon: LucideIcons.graduationCap,
+                            options: GradeLevel.values,
+                            allLabel: t.questionBank.filters.allGrades,
+                            allIcon: LucideIcons.list,
+                            selectedValue: currentFilter.gradeFilter,
+                            onChanged: (value) {
+                              ref
+                                  .read(questionBankFilterProvider.notifier)
+                                  .state = currentFilter.copyWith(
+                                gradeFilter: value,
+                              );
+                              ref
+                                  .read(questionBankProvider.notifier)
+                                  .loadQuestionsWithFilter();
+                            },
+                            displayNameBuilder: (value) =>
+                                value.localizedName(t),
+                          ),
+                          FilterConfig<Subject>(
+                            label: t.questionBank.filters.subject,
+                            icon: LucideIcons.bookOpen,
+                            options: Subject.values,
+                            allLabel: t.questionBank.filters.allSubjects,
+                            allIcon: LucideIcons.list,
+                            selectedValue: currentFilter.subjectFilter,
+                            onChanged: (value) {
+                              ref
+                                  .read(questionBankFilterProvider.notifier)
+                                  .state = currentFilter.copyWith(
+                                subjectFilter: value,
+                              );
+                              ref
+                                  .read(questionBankProvider.notifier)
+                                  .loadQuestionsWithFilter();
+                            },
+                            displayNameBuilder: (value) =>
+                                value.localizedName(t),
+                          ),
+                          FilterConfig<QuestionType>(
+                            label: t.questionBank.filters.type,
+                            icon: LucideIcons.circleQuestionMark,
+                            options: QuestionType.values,
+                            allLabel: t.questionBank.filters.allTypes,
+                            allIcon: LucideIcons.list,
+                            selectedValue: currentFilter.questionTypeFilter,
+                            onChanged: (value) {
+                              ref
+                                  .read(questionBankFilterProvider.notifier)
+                                  .state = currentFilter.copyWith(
+                                questionTypeFilter: value,
+                              );
+                              ref
+                                  .read(questionBankProvider.notifier)
+                                  .loadQuestionsWithFilter();
+                            },
+                            displayNameBuilder: (value) =>
+                                value.localizedName(t),
+                          ),
+                          FilterConfig<Difficulty>(
+                            label: t.questionBank.filters.difficulty,
+                            icon: LucideIcons.gauge,
+                            options: Difficulty.values,
+                            allLabel: t.questionBank.filters.allDifficulties,
+                            allIcon: LucideIcons.list,
+                            selectedValue: currentFilter.difficultyFilter,
+                            onChanged: (value) {
+                              ref
+                                  .read(questionBankFilterProvider.notifier)
+                                  .state = currentFilter.copyWith(
+                                difficultyFilter: value,
+                              );
+                              ref
+                                  .read(questionBankProvider.notifier)
+                                  .loadQuestionsWithFilter();
+                            },
+                            displayNameBuilder: (value) =>
+                                value.localizedName(t),
+                          ),
+                        ],
+                        onClearFilters: () {
+                          HapticFeedback.lightImpact();
+                          ref.read(questionBankFilterProvider.notifier).state =
+                              currentFilter.clearFilters();
+                          ref
+                              .read(questionBankProvider.notifier)
+                              .loadQuestionsWithFilter();
+                        },
+                        useWrap: true,
+                        trailing: [
+                          InkWell(
+                            onTap: () => showAdvancedQuestionFilterDialog(
+                              context: context,
+                              ref: ref,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: colorScheme.secondaryContainer,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: colorScheme.secondary,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                LucideIcons.slidersHorizontal,
+                                size: 16,
+                                color: colorScheme.onSecondaryContainer,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -448,6 +541,12 @@ class _QuestionSelectionCard extends ConsumerWidget {
                               icon: LucideIcons.graduationCap,
                               label: bankItem.grade!.localizedName(t),
                               color: colorScheme.tertiary,
+                            ),
+                          if (bankItem.contextId != null)
+                            _InfoChip(
+                              icon: LucideIcons.bookOpen,
+                              label: t.assignments.context.readingPassage,
+                              color: colorScheme.secondary,
                             ),
                         ],
                       ),

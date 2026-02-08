@@ -41,6 +41,12 @@ class ContextGroupCard extends StatelessWidget {
   /// Callback when a question delete is requested (passes original flat-list index)
   final void Function(int index)? onDeleteQuestion;
 
+  /// Localized label for "Question(s)" count
+  final String? questionCountLabel;
+
+  /// Localized label for "Reading Passage" fallback title
+  final String? readingPassageLabel;
+
   const ContextGroupCard({
     super.key,
     required this.context,
@@ -52,6 +58,8 @@ class ContextGroupCard extends StatelessWidget {
     this.onUnlinkContext,
     this.onEditQuestion,
     this.onDeleteQuestion,
+    this.questionCountLabel,
+    this.readingPassageLabel,
   });
 
   @override
@@ -78,7 +86,7 @@ class ContextGroupCard extends StatelessWidget {
             initiallyExpanded: false,
             isEditMode: isEditMode,
             onEdit: onEditContext,
-            onUnlink: onUnlinkContext,
+            readingPassageLabel: readingPassageLabel,
           ),
 
           // Divider
@@ -98,7 +106,8 @@ class ContextGroupCard extends StatelessWidget {
                 Icon(Icons.quiz_outlined, size: 16, color: colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
-                  '${questions.length} ${questions.length == 1 ? 'Question' : 'Questions'}',
+                  questionCountLabel ??
+                      '${questions.length} ${questions.length == 1 ? 'Question' : 'Questions'}',
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w600,

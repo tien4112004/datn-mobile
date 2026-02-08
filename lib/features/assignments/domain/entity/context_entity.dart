@@ -1,3 +1,5 @@
+import 'package:AIPrimary/features/assignments/data/dto/api/context_item_request.dart';
+
 /// Domain entity for a reading passage context.
 /// Pure business object without JSON annotations.
 class ContextEntity {
@@ -97,5 +99,20 @@ class ContextEntity {
   @override
   String toString() {
     return 'ContextEntity(id: $id, title: $title, content: ${content.length > 50 ? '${content.substring(0, 50)}...' : content})';
+  }
+}
+
+/// Extension to convert ContextEntity to API request format
+extension ContextEntityMapper on ContextEntity {
+  /// Convert to ContextItemRequest for API submission.
+  /// Produces the simplified shape { id, title, content, author? }
+  /// matching the web frontend's AssignmentContext interface.
+  ContextItemRequest toRequest() {
+    return ContextItemRequest(
+      id: id,
+      title: title,
+      content: content,
+      author: author,
+    );
   }
 }

@@ -184,14 +184,19 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     );
   }
 
-  /// Sync questions to the server.
+  /// Sync questions and contexts to the server.
   Future<void> _syncQuestionsToServer(
     List<AssignmentQuestionEntity> questions,
   ) async {
     final repository = ref.read(assignmentRepositoryProvider);
 
+    final contexts =
+        ref.read(assignmentContextsControllerProvider(assignmentId)).value ??
+        [];
+
     final request = AssignmentUpdateRequest(
       questions: questions.map((q) => q.toRequest()).toList(),
+      contexts: contexts.map((c) => c.toRequest()).toList(),
     );
 
     await repository.updateAssignment(assignmentId, request);

@@ -1,7 +1,9 @@
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Full-screen page for editing context content.
@@ -13,16 +15,16 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Save/Cancel actions
 /// - Unlink option in app bar menu
 @RoutePage()
-class ContextEditPage extends StatefulWidget {
+class ContextEditPage extends ConsumerStatefulWidget {
   final ContextEntity context;
 
   const ContextEditPage({super.key, required this.context});
 
   @override
-  State<ContextEditPage> createState() => _ContextEditPageState();
+  ConsumerState<ContextEditPage> createState() => _ContextEditPageState();
 }
 
-class _ContextEditPageState extends State<ContextEditPage> {
+class _ContextEditPageState extends ConsumerState<ContextEditPage> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late TextEditingController _authorController;
@@ -75,24 +77,23 @@ class _ContextEditPageState extends State<ContextEditPage> {
   Future<bool> _onWillPop() async {
     if (!_hasChanges) return true;
 
+    final t = ref.read(translationsPod);
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Discard changes?'),
-        content: const Text(
-          'You have unsaved changes. Are you sure you want to discard them?',
-        ),
+        title: Text(t.assignments.context.discardChanges),
+        content: Text(t.assignments.context.unsavedChangesMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(t.assignments.context.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Discard'),
+            child: Text(t.assignments.context.discard),
           ),
         ],
       ),
@@ -108,24 +109,23 @@ class _ContextEditPageState extends State<ContextEditPage> {
   }
 
   void _onUnlink() async {
+    final t = ref.read(translationsPod);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Unlink context?'),
-        content: const Text(
-          'This will remove the reading passage from this question. The content will not be deleted from the library.',
-        ),
+        title: Text(t.assignments.context.unlinkContext),
+        content: Text(t.assignments.context.unlinkMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(t.assignments.context.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Unlink'),
+            child: Text(t.assignments.context.unlink),
           ),
         ],
       ),
@@ -138,6 +138,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -172,7 +173,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
             children: [
               Icon(LucideIcons.bookOpen, size: 20, color: Colors.blue.shade600),
               const SizedBox(width: 8),
-              const Text('Edit Reading Passage'),
+              Text(t.assignments.context.editReadingPassage),
             ],
           ),
           actions: [
@@ -196,7 +197,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        'Unlink from question',
+                        t.assignments.context.unlinkFromQuestion,
                         style: TextStyle(color: colorScheme.error),
                       ),
                     ],
@@ -213,7 +214,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
             children: [
               // Title field
               Text(
-                'Title',
+                t.assignments.context.title,
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
@@ -223,7 +224,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: 'Enter a title for this reading passage',
+                  hintText: t.assignments.context.titleHint,
                   filled: true,
                   fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
@@ -244,7 +245,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
 
               // Content field
               Text(
-                'Content',
+                t.assignments.context.content,
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
@@ -252,7 +253,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
               ),
               const SizedBox(height: 4),
               Text(
-                'Supports Markdown formatting',
+                t.assignments.context.supportsMarkdown,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -264,7 +265,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
                 minLines: 10,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  hintText: 'Enter the reading passage content...',
+                  hintText: t.assignments.context.contentHint,
                   filled: true,
                   fillColor: colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
@@ -286,7 +287,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
 
               // Author field
               Text(
-                'Author (Optional)',
+                t.assignments.context.authorOptional,
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
@@ -296,7 +297,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
               TextField(
                 controller: _authorController,
                 decoration: InputDecoration(
-                  hintText: 'Enter the author name',
+                  hintText: t.assignments.context.authorHint,
                   prefixIcon: Icon(
                     LucideIcons.user,
                     size: 20,
@@ -348,7 +349,7 @@ class _ContextEditPageState extends State<ContextEditPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Cancel'),
+                    child: Text(t.assignments.context.cancel),
                   ),
                 ),
 
@@ -366,12 +367,12 @@ class _ContextEditPageState extends State<ContextEditPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(LucideIcons.check, size: 20),
-                        SizedBox(width: 8),
-                        Text('Save Changes'),
+                        const Icon(LucideIcons.check, size: 20),
+                        const SizedBox(width: 8),
+                        Text(t.assignments.context.saveChanges),
                       ],
                     ),
                   ),

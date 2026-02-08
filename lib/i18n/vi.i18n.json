@@ -6,6 +6,31 @@
   "settingAppBarTitle": "Cài đặt",
   "accountSetting": "Cài đặt tài khoản",
   "personalInformation": "Thông tin cá nhân",
+  "profile": {
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "email": "Email",
+    "phoneNumber": "Số điện thoại",
+    "dateOfBirth": "Ngày sinh",
+    "selectDate": "Chọn ngày",
+    "saveChanges": "Lưu thay đổi",
+    "uploadPhoto": "Tải ảnh lên",
+    "removePhoto": "Gỡ ảnh",
+    "permissionRequired": "Yêu cầu quyền truy cập",
+    "galleryPermissionMessage": "Cần quyền truy cập thư viện để chọn ảnh. Vui lòng cấp quyền trong cài đặt.",
+    "permissionMessage": "Ứng dụng này cần quyền truy cập vào ảnh của bạn để cập nhật ảnh đại diện. Vui lòng cấp quyền trong cài đặt.",
+    "openSettings": "Mở cài đặt",
+    "updateSuccess": "Cập nhật thông tin thành công",
+    "updateError": "Cập nhật thông tin thất bại: $error",
+    "avatarUpdateSuccess": "Cập nhật ảnh đại diện thành công",
+    "avatarRemoveSuccess": "Đã gỡ ảnh đại diện",
+    "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error",
+    "noProfileData": "Không có dữ liệu hồ sơ",
+    "errorLoadingProfile": "Lỗi khi tải hồ sơ",
+    "firstNameRequired": "Vui lòng nhập tên",
+    "lastNameRequired": "Vui lòng nhập họ",
+    "invalidPhoneNumber": "Vui lòng nhập số điện thoại hợp lệ"
+  },
   "passwordAndSecurity": "Mật khẩu và bảo mật",
   "paymentMethods": "Phương thức thanh toán",
   "serverError": "Đã xảy ra lỗi máy chủ. Vui lòng thử lại.",
@@ -140,8 +165,16 @@
     "unsavedChanges": "Thay đổi chưa lưu",
     "noInternet": "Không có kết nối Internet",
     "points": "Điểm",
+    "pointsSuffix": "điểm",
     "difficulty": "Độ khó",
     "explanation": "Giải thích",
+    "usedTimes(count)": "Đã dùng $count lần",
+    "unsavedChangesDialog": {
+      "title": "Bỏ thay đổi?",
+      "message": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời đi?",
+      "cancel": "Hủy",
+      "discard": "Bỏ qua"
+    },
     "optional": "(Tùy chọn)"
   },
   "homeGreeting": "Xin chào!",
@@ -173,7 +206,17 @@
       "sort_date_created_desc": "Ngày tạo (Mới nhất)",
       "sort_name_asc": "Tên (A-Z)",
       "sort_name_desc": "Tên (Z-A)",
-      "no_results_message": "Không tìm thấy kết quả"
+      "no_results_message": "Không tìm thấy kết quả",
+      "no_items_title": "Chưa có $type",
+      "no_items_description": "Hãy tạo $type đầu tiên của bạn để bắt đầu",
+      "error_load": "Không thể tải $type",
+      "error_load_more": "Không thể tải thêm",
+      "retry": "Thử lại",
+      "failed_to_load": "Tải thất bại",
+      "filter_sort": "Sắp xếp",
+      "sort_default": "Mặc định",
+      "view_list": "Danh sách",
+      "view_grid": "Lưới"
     },
     "presentations": {
       "title": "Bài thuyết trình",
@@ -298,15 +341,6 @@
     "FORBIDDEN": "Bị cấm: Bạn không có quyền truy cập tài nguyên này",
     "INTERNAL_SERVER_ERROR": "Lỗi máy chủ nội bộ",
     "USER_PROFILE_CREATION_FAILED": "Tạo hồ sơ người dùng thất bại"
-  },
-  "loading": "Đang tải...",
-  "profile": {
-    "permissionRequired": "Yêu cầu quyền truy cập",
-    "permissionMessage": "Ứng dụng này cần quyền truy cập vào ảnh của bạn để cập nhật ảnh đại diện. Vui lòng cấp quyền trong cài đặt.",
-    "cancel": "Hủy",
-    "openSettings": "Mở cài đặt",
-    "avatarUpdatedSuccess": "Cập nhật ảnh đại diện thành công!",
-    "avatarUpdateFailed": "Không thể cập nhật ảnh đại diện: $error"
   },
   "generate": {
     "enterTopicHint": "Bạn đang nghĩ gì?",
@@ -643,6 +677,7 @@
     "matching": {
       "title": "Các cặp ghép nối",
       "subtitle": "Tạo các cặp để ghép nối (tối thiểu 2 cặp)",
+      "editingMode": "Chế độ chỉnh sửa - Tạo các cặp ghép nối",
       "addPair": "Thêm cặp",
       "shufflePairs": "Xáo trộn cặp",
       "shuffleDescription": "Xáo trộn thứ tự cặp khi hiển thị cho học sinh",
@@ -659,7 +694,9 @@
       "rightImage": "Hình ảnh vế phải",
       "imageHint": "Tải lên, chụp ảnh hoặc nhập URL",
       "enterLeftItem": "Nhập vế trái",
-      "enterRightItem": "Nhập vế phải"
+      "enterRightItem": "Nhập vế phải",
+      "leftItem": "Vế trái",
+      "rightItem": "Vế phải"
     },
     "openEnded": {
       "title": "Cài đặt câu hỏi mở",
@@ -682,6 +719,7 @@
     "fillInBlank": {
       "title": "Câu hỏi điền vào chỗ trống",
       "subtitle": "Sử dụng cú pháp {{đáp án}} để tạo chỗ trống",
+      "editingMode": "Chế độ chỉnh sửa - Tạo câu với các ô trống",
       "formatGuide": "Hướng dẫn định dạng",
       "singleAnswer": "Một đáp án:",
       "multipleAnswers": "Nhiều đáp án:",
@@ -701,7 +739,14 @@
       "textContent": "Nội dung văn bản *",
       "textContentHint": "Nhập văn bản xuất hiện trong câu hỏi",
       "placeholderText": "Văn bản giữ chỗ *",
-      "blankHint": "________"
+      "blankHint": "________",
+      "blankNumber(number)": "Ô trống $number",
+      "textSegment": "Văn bản",
+      "removeSegment": "Xóa đoạn",
+      "correctAnswer": "Đáp án đúng",
+      "enterCorrectAnswer": "Nhập đáp án đúng cho ô trống này",
+      "textContentLabel": "Nội dung văn bản",
+      "enterTextContent": "Nhập văn bản xuất hiện trong câu"
     },
     "detail": {
       "questionTitle": "TIÊU ĐỀ CÂU HỎI",
@@ -983,6 +1028,13 @@
       "linkResource": "Liên kết tài nguyên",
       "linked": "Đã liên kết ($count)"
     },
+    "resourceSelector": {
+      "selectResources": "Chọn tài nguyên",
+      "configurePermissions": "Cấu hình quyền",
+      "selectedCount": "Đã chọn $count",
+      "continue": "Tiếp tục",
+      "done": "Xong"
+    },
     "assignmentSelector": {
       "title": "Chọn bài tập",
       "selected": "Đã chọn $count",
@@ -1169,7 +1221,8 @@
       "cancel": "Hủy",
       "addQuestions": "Thêm câu hỏi",
       "pointsMustBeGreaterThanZero": "Điểm phải lớn hơn 0",
-      "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0"
+      "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0",
+      "contextBanner(count)": "$count đoạn văn đọc sẽ được nhập kèm"
     },
 
     "questionCard": {
@@ -1258,9 +1311,10 @@
 
     "detail": {
       "tabs": {
-        "info": "THÔNG TIN",
-        "questions": "CÂU HỎI",
-        "matrix": "MA TRẬN"
+        "info": "Thông tin",
+        "questions": "Câu hỏi",
+        "passages": "Đọc hiểu",
+        "matrix": "Ma trận"
       },
       "deleteQuestion": {
         "title": "Xóa câu hỏi",
@@ -1305,6 +1359,58 @@
         "typeHeader": "LOẠI",
         "totalHeader": "TỔNG"
       }
+    },
+
+    "context": {
+      "readingPassage": "Đoạn văn đọc",
+      "untitledContext": "Chưa có tiêu đề",
+      "untitledPassage": "Đoạn văn chưa đặt tên",
+      "questionCount(count)": "$count Câu hỏi",
+      "selectReadingPassage": "Chọn đoạn văn đọc",
+      "searchContexts": "Tìm kiếm đoạn văn...",
+      "noContextsFound": "Không tìm thấy đoạn văn nào",
+      "tryDifferentSearch": "Thử từ khóa tìm kiếm khác",
+      "failedToLoad": "Không thể tải đoạn văn",
+      "retry": "Thử lại",
+      "editReadingPassage": "Sửa đoạn văn đọc",
+      "discardChanges": "Hủy thay đổi?",
+      "unsavedChangesMessage": "Bạn có thay đổi chưa lưu. Bạn có chắc muốn hủy bỏ?",
+      "unlinkContext": "Hủy liên kết đoạn văn?",
+      "unlinkMessage": "Thao tác này sẽ xóa đoạn văn đọc khỏi câu hỏi. Nội dung sẽ không bị xóa khỏi thư viện.",
+      "unlink": "Hủy liên kết",
+      "unlinkFromQuestion": "Hủy liên kết khỏi câu hỏi",
+      "title": "Tiêu đề",
+      "titleHint": "Nhập tiêu đề cho đoạn văn đọc",
+      "content": "Nội dung",
+      "supportsMarkdown": "Hỗ trợ định dạng Markdown",
+      "contentHint": "Nhập nội dung đoạn văn đọc...",
+      "authorOptional": "Tác giả (Tùy chọn)",
+      "authorHint": "Nhập tên tác giả",
+      "saveChanges": "Lưu thay đổi",
+      "passageUpdated": "Đã cập nhật đoạn văn đọc",
+      "passageUnlinked": "Đã hủy liên kết đoạn văn đọc",
+      "unlinkPassage": "Hủy liên kết đoạn văn",
+      "linkReadingPassage": "Liên kết đoạn văn đọc",
+      "deleteQuestionConfirm(number)": "Bạn có chắc muốn xóa câu hỏi $number khỏi bài kiểm tra này?",
+      "cancel": "Hủy",
+      "discard": "Hủy bỏ",
+      "panelTitle": "Đoạn văn đọc",
+      "panelDescription": "Tạo và quản lý đoạn văn đọc có thể dùng chung cho nhiều câu hỏi.",
+      "addReadingPassage": "Thêm đoạn văn đọc",
+      "emptyState": "Chưa có đoạn văn đọc nào. Tạo đoạn văn để gắn vào câu hỏi.",
+      "create": "Tạo",
+      "usedByQuestions(count)": "Được sử dụng bởi $count câu hỏi",
+      "deletePassageTitle": "Xóa đoạn văn đọc",
+      "deletePassageMessage(title)": "Bạn có chắc muốn xóa \"$title\"?",
+      "deletePassageWarning(count)": "Đoạn văn này được tham chiếu bởi $count câu hỏi. Xóa sẽ hủy liên kết các câu hỏi đó.",
+      "delete": "Xóa",
+      "passageCreated": "Đã tạo đoạn văn đọc",
+      "passageDeleted": "Đã xóa đoạn văn đọc",
+      "importFromLibrary": "Nhập từ thư viện",
+      "passageImported": "Đã nhập đoạn văn đọc",
+      "selectLocalPassage": "Chọn đoạn văn",
+      "noLocalPassages": "Chưa có đoạn văn nào. Hãy nhập đoạn văn trong mục Đọc hiểu.",
+      "added": "Đã thêm"
     }
   },
   "shared": {

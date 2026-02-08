@@ -75,6 +75,12 @@ class _QuestionPointsAssignmentDialogState
 
   double get _totalPoints => _points.values.fold(0.0, (sum, val) => sum + val);
 
+  int get _contextCount => widget.selectedQuestions
+      .where((q) => q.contextId != null)
+      .map((q) => q.contextId!)
+      .toSet()
+      .length;
+
   void _applyAllPoints() {
     final t = ref.read(translationsPod);
     final value = double.tryParse(_applyAllController.text) ?? 10.0;
@@ -116,7 +122,8 @@ class _QuestionPointsAssignmentDialogState
         questionBankId: bankItem.id,
         question: bankItem.question,
         points: _points[bankItem.id] ?? 10.0,
-        isNewQuestion: false,
+        isNewQuestion: true,
+        contextId: bankItem.contextId,
       );
     }).toList();
 
@@ -198,6 +205,41 @@ class _QuestionPointsAssignmentDialogState
             // Divider
             Divider(color: colorScheme.outlineVariant),
             const SizedBox(height: 16),
+
+            // Context import banner
+            if (_contextCount > 0) ...[
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.bookOpen,
+                      size: 18,
+                      color: colorScheme.onSecondaryContainer,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        t.assignments.pointsAssignment.contextBanner(
+                          count: _contextCount.toString(),
+                        ),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
 
             // Questions list
             Expanded(

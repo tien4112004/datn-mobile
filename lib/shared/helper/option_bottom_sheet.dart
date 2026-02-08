@@ -161,7 +161,8 @@ class _OptionBottomSheetState<T> extends ConsumerState<OptionBottomSheet<T>>
                         color: Theme.of(context).colorScheme.primary,
                       )
                     : null,
-                onTap: () => _handleOptionTap(option, translation.loading),
+                onTap: () =>
+                    _handleOptionTap(option, translation.common.loading),
               );
             }),
             const SizedBox(height: 8),

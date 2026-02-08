@@ -1,8 +1,10 @@
 import 'package:AIPrimary/features/classes/states/resrouce_selection_state.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class SheetHeader extends StatelessWidget {
+class SheetHeader extends ConsumerWidget {
   final SelectionStep currentStep;
   final int selectedCount;
   final VoidCallback onClose;
@@ -21,7 +23,8 @@ class SheetHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -52,8 +55,8 @@ class SheetHeader extends StatelessWidget {
               children: [
                 Text(
                   currentStep == SelectionStep.pickResources
-                      ? 'Select Resources'
-                      : 'Configure Permissions',
+                      ? t.classes.resourceSelector.selectResources
+                      : t.classes.resourceSelector.configurePermissions,
                   key: ValueKey(currentStep),
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
@@ -61,7 +64,9 @@ class SheetHeader extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '$selectedCount selected',
+                  t.classes.resourceSelector.selectedCount(
+                    count: selectedCount,
+                  ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -71,18 +76,18 @@ class SheetHeader extends StatelessWidget {
           ),
 
           // Trailing action button
-          _buildTrailingButton(context),
+          _buildTrailingButton(context, t),
         ],
       ),
     );
   }
 
-  Widget _buildTrailingButton(BuildContext context) {
+  Widget _buildTrailingButton(BuildContext context, dynamic t) {
     if (currentStep == SelectionStep.pickResources) {
       return FilledButton.icon(
         onPressed: selectedCount == 0 ? null : onContinue,
         icon: const Icon(LucideIcons.arrowRight, size: 18),
-        label: const Text('Continue'),
+        label: Text(t.classes.resourceSelector.continue_),
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         ),
@@ -91,7 +96,7 @@ class SheetHeader extends StatelessWidget {
       return FilledButton.icon(
         onPressed: onDone,
         icon: const Icon(LucideIcons.check, size: 18),
-        label: const Text('Done'),
+        label: Text(t.classes.resourceSelector.done),
         style: FilledButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         ),

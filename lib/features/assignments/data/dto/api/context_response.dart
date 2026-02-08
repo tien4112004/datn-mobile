@@ -11,6 +11,7 @@ class ContextResponse {
   final String title;
   final String content;
   final String? subject;
+  @JsonKey(fromJson: _gradeFromJson)
   final int? grade;
   final String? author;
   final bool? fromBook;
@@ -35,6 +36,13 @@ class ContextResponse {
       _$ContextResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ContextResponseToJson(this);
+}
+
+int? _gradeFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
 }
 
 /// Extension to map ContextResponse to ContextEntity

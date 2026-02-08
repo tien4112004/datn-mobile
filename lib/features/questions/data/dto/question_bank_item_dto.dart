@@ -37,6 +37,7 @@ class QuestionBankItemDto {
   final String grade;
   final String? chapter;
   final String? subject;
+  final String? contextId;
 
   QuestionBankItemDto({
     required this.id,
@@ -52,6 +53,7 @@ class QuestionBankItemDto {
     required this.grade,
     this.chapter,
     this.subject,
+    this.contextId,
   });
 
   factory QuestionBankItemDto.fromJson(Map<String, dynamic> json) =>

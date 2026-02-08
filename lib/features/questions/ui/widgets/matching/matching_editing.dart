@@ -1,20 +1,22 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 
 /// Matching Question in Editing Mode (Teacher creating/editing)
 /// Enhanced with Material 3 design principles
-class MatchingEditing extends StatefulWidget {
+class MatchingEditing extends ConsumerStatefulWidget {
   final MatchingQuestion question;
   final Function(MatchingQuestion)? onUpdate;
 
   const MatchingEditing({super.key, required this.question, this.onUpdate});
 
   @override
-  State<MatchingEditing> createState() => _MatchingEditingState();
+  ConsumerState<MatchingEditing> createState() => _MatchingEditingState();
 }
 
-class _MatchingEditingState extends State<MatchingEditing> {
+class _MatchingEditingState extends ConsumerState<MatchingEditing> {
   late List<MatchingPair> _pairs;
   final Map<String, TextEditingController> _leftControllers = {};
   final Map<String, TextEditingController> _rightControllers = {};
@@ -69,6 +71,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -96,7 +99,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Editing Mode - Create matching pairs',
+                  t.questionBank.matching.editingMode,
                   style: theme.textTheme.labelMedium?.copyWith(
                     color: colorScheme.onTertiaryContainer,
                     fontWeight: FontWeight.w600,
@@ -109,13 +112,13 @@ class _MatchingEditingState extends State<MatchingEditing> {
           ..._pairs.asMap().entries.map((entry) {
             final index = entry.key;
             final pair = entry.value;
-            return _buildEditablePair(pair, index, theme);
+            return _buildEditablePair(pair, index, theme, t);
           }),
           const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: _addPair,
             icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Add Pair'),
+            label: Text(t.questionBank.matching.addPair),
             style: OutlinedButton.styleFrom(
               foregroundColor: colorScheme.primary,
               side: BorderSide(color: colorScheme.primary),
@@ -126,7 +129,12 @@ class _MatchingEditingState extends State<MatchingEditing> {
     );
   }
 
-  Widget _buildEditablePair(MatchingPair pair, int index, ThemeData theme) {
+  Widget _buildEditablePair(
+    MatchingPair pair,
+    int index,
+    ThemeData theme,
+    dynamic t,
+  ) {
     final colorScheme = theme.colorScheme;
 
     return Container(
@@ -152,7 +160,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Pair ${index + 1}',
+                  t.questionBank.matching.pairNumber(number: index + 1),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: colorScheme.onTertiaryContainer,
                     fontWeight: FontWeight.w600,
@@ -164,7 +172,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                 IconButton(
                   icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
                   onPressed: () => _removePair(index),
-                  tooltip: 'Remove pair',
+                  tooltip: t.questionBank.matching.removePair,
                 ),
             ],
           ),
@@ -176,7 +184,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Left Item',
+                      t.questionBank.matching.leftItem,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -186,7 +194,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                     TextField(
                       controller: _leftControllers[pair.id],
                       decoration: InputDecoration(
-                        hintText: 'Enter left item',
+                        hintText: t.questionBank.matching.enterLeftItem,
                         filled: true,
                         fillColor: colorScheme.surfaceContainerLowest,
                         contentPadding: const EdgeInsets.symmetric(
@@ -226,7 +234,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Right Item',
+                      t.questionBank.matching.rightItem,
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -236,7 +244,7 @@ class _MatchingEditingState extends State<MatchingEditing> {
                     TextField(
                       controller: _rightControllers[pair.id],
                       decoration: InputDecoration(
-                        hintText: 'Enter right item',
+                        hintText: t.questionBank.matching.enterRightItem,
                         filled: true,
                         fillColor: colorScheme.surfaceContainerLowest,
                         contentPadding: const EdgeInsets.symmetric(

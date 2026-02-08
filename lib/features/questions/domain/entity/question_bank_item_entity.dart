@@ -11,6 +11,7 @@ class QuestionBankItemEntity {
   final GradeLevel? grade;
   final String? chapter;
   final Subject? subject;
+  final String? contextId;
 
   const QuestionBankItemEntity({
     required this.id,
@@ -21,6 +22,7 @@ class QuestionBankItemEntity {
     this.grade,
     this.chapter,
     this.subject,
+    this.contextId,
   });
 
   QuestionBankItemEntity copyWith({
@@ -32,6 +34,7 @@ class QuestionBankItemEntity {
     GradeLevel? grade,
     String? chapter,
     Subject? subject,
+    String? contextId,
   }) {
     return QuestionBankItemEntity(
       id: id ?? this.id,
@@ -42,6 +45,7 @@ class QuestionBankItemEntity {
       grade: grade ?? this.grade,
       chapter: chapter ?? this.chapter,
       subject: subject ?? this.subject,
+      contextId: contextId ?? this.contextId,
     );
   }
 }

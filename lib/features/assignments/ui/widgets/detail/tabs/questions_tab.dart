@@ -25,9 +25,6 @@ class QuestionsTab extends ConsumerWidget {
   /// Callback when context edit is requested
   final void Function(ContextEntity context)? onEditContext;
 
-  /// Callback when context unlink is requested
-  final void Function(String contextId)? onUnlinkContext;
-
   const QuestionsTab({
     super.key,
     required this.assignment,
@@ -37,7 +34,6 @@ class QuestionsTab extends ConsumerWidget {
     required this.onSwitchMode,
     this.contextsMap = const {},
     this.onEditContext,
-    this.onUnlinkContext,
   });
 
   /// Groups ALL questions by contextId (not just consecutive ones).
@@ -130,31 +126,21 @@ class QuestionsTab extends ConsumerWidget {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          t.assignments.detail.questions.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          t.assignments.detail.questions.available(
-                            count: assignment.totalQuestions,
-                          ),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    t.assignments.detail.questions.title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '(${assignment.totalQuestions})',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -224,11 +210,12 @@ class QuestionsTab extends ConsumerWidget {
                       onEditContext: onEditContext != null
                           ? () => onEditContext!(groupItem.context!)
                           : null,
-                      onUnlinkContext: onUnlinkContext != null
-                          ? () => onUnlinkContext!(groupItem.context!.id)
-                          : null,
                       onEditQuestion: (question, idx) => onEdit(question, idx),
                       onDeleteQuestion: (idx) => onDelete(idx),
+                      questionCountLabel: t.assignments.context.questionCount(
+                        count: groupItem.groupQuestions!.length,
+                      ),
+                      readingPassageLabel: t.assignments.context.readingPassage,
                     );
                   }
                 }, childCount: groupedItems.length),

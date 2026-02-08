@@ -1,13 +1,15 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/projects/domain/entity/image_project_minimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ImageGalleryView extends StatelessWidget {
+class ImageGalleryView extends ConsumerWidget {
   final PagingController<int, ImageProjectMinimal> pagingController;
   final Function(ImageProjectMinimal)? onImageTap;
   final Function(ImageProjectMinimal)? onMoreOptions;
@@ -20,7 +22,9 @@ class ImageGalleryView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     return PagingListener(
       controller: pagingController,
       builder: (context, state, fetchNextPage) {
@@ -39,13 +43,15 @@ class ImageGalleryView extends StatelessWidget {
                 onMoreOptions: onMoreOptions != null
                     ? () => onMoreOptions!(item)
                     : null,
+                t: t,
               );
             },
             firstPageErrorIndicatorBuilder: (context) => _ErrorIndicator(
               error: state.error.toString(),
               onRetry: () => pagingController.refresh(),
+              t: t,
             ),
-            noItemsFoundIndicatorBuilder: (context) => const _EmptyIndicator(),
+            noItemsFoundIndicatorBuilder: (context) => _EmptyIndicator(t: t),
             newPageProgressIndicatorBuilder: (context) => const Padding(
               padding: EdgeInsets.all(24),
               child: Center(
@@ -57,7 +63,7 @@ class ImageGalleryView extends StatelessWidget {
               ),
             ),
             newPageErrorIndicatorBuilder: (context) =>
-                _NewPageErrorIndicator(onRetry: fetchNextPage),
+                _NewPageErrorIndicator(onRetry: fetchNextPage, t: t),
           ),
         );
       },
@@ -69,11 +75,13 @@ class _ImageGalleryTile extends StatelessWidget {
   final ImageProjectMinimal image;
   final VoidCallback? onTap;
   final VoidCallback? onMoreOptions;
+  final dynamic t;
 
   const _ImageGalleryTile({
     required this.image,
     this.onTap,
     this.onMoreOptions,
+    required this.t,
   });
 
   @override
@@ -131,7 +139,7 @@ class _ImageGalleryTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Failed to load',
+                        t.projects.common_list.failed_to_load,
                         style: TextStyle(
                           color: colorScheme.onErrorContainer,
                           fontSize: 12,
@@ -174,7 +182,8 @@ class _ImageGalleryTile extends StatelessWidget {
 }
 
 class _EmptyIndicator extends StatelessWidget {
-  const _EmptyIndicator();
+  final dynamic t;
+  const _EmptyIndicator({required this.t});
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +196,9 @@ class _EmptyIndicator extends StatelessWidget {
           Icon(LucideIcons.image, size: 64, color: colorScheme.outline),
           const SizedBox(height: 16),
           Text(
-            'No images yet',
+            t.projects.common_list.no_items_title(
+              type: t.projects.images.title,
+            ),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -196,7 +207,9 @@ class _EmptyIndicator extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Create your first image to get started',
+            t.projects.common_list.no_items_description(
+              type: t.projects.images.title,
+            ),
             style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
           ),
         ],
@@ -208,8 +221,13 @@ class _EmptyIndicator extends StatelessWidget {
 class _ErrorIndicator extends StatelessWidget {
   final String error;
   final VoidCallback onRetry;
+  final dynamic t;
 
-  const _ErrorIndicator({required this.error, required this.onRetry});
+  const _ErrorIndicator({
+    required this.error,
+    required this.onRetry,
+    required this.t,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +240,7 @@ class _ErrorIndicator extends StatelessWidget {
           Icon(LucideIcons.circleAlert, size: 64, color: colorScheme.error),
           const SizedBox(height: 16),
           Text(
-            'Failed to load images',
+            t.projects.common_list.error_load(type: t.projects.images.title),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -239,7 +257,7 @@ class _ErrorIndicator extends StatelessWidget {
           FilledButton.icon(
             onPressed: onRetry,
             icon: const Icon(LucideIcons.refreshCw),
-            label: const Text('Retry'),
+            label: Text(t.projects.common_list.retry),
           ),
         ],
       ),
@@ -249,8 +267,9 @@ class _ErrorIndicator extends StatelessWidget {
 
 class _NewPageErrorIndicator extends StatelessWidget {
   final VoidCallback onRetry;
+  final dynamic t;
 
-  const _NewPageErrorIndicator({required this.onRetry});
+  const _NewPageErrorIndicator({required this.onRetry, required this.t});
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +281,7 @@ class _NewPageErrorIndicator extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Failed to load more',
+              t.projects.common_list.error_load_more,
               style: TextStyle(
                 fontSize: 14,
                 color: colorScheme.onSurfaceVariant,
@@ -272,7 +291,7 @@ class _NewPageErrorIndicator extends StatelessWidget {
             TextButton.icon(
               onPressed: onRetry,
               icon: const Icon(LucideIcons.refreshCw, size: 16),
-              label: const Text('Retry'),
+              label: Text(t.projects.common_list.retry),
             ),
           ],
         ),

@@ -71,13 +71,19 @@ class AssignmentContextsController extends AsyncNotifier<List<ContextEntity>> {
   }
 
   Future<List<ContextEntity>> _loadContextsForAssignment() async {
-    // Get the assignment details to find questions with contexts
+    // Get the assignment details
     final assignmentController = ref.read(
       detailAssignmentControllerProvider(assignmentId).notifier,
     );
     final assignment = await assignmentController.future;
 
-    // Extract unique context IDs from questions
+    // Prefer embedded contexts from the assignment response
+    if (assignment.contexts.isNotEmpty) {
+      return assignment.contexts;
+    }
+
+    // Fallback: extract context IDs from questions and fetch separately
+    // (backward compatibility for assignments without embedded contexts)
     final contextIds = assignment.questions
         .where((q) => q.contextId != null)
         .map((q) => q.contextId!)

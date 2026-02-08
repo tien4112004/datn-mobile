@@ -6,6 +6,31 @@
   "settingAppBarTitle": "Settings",
   "accountSetting": "Account Setting",
   "personalInformation": "Personal Information",
+  "profile": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "dateOfBirth": "Date of Birth",
+    "selectDate": "Select date",
+    "saveChanges": "Save Changes",
+    "uploadPhoto": "Upload Photo",
+    "removePhoto": "Remove Photo",
+    "permissionRequired": "Permission Required",
+    "galleryPermissionMessage": "Gallery access is required to select photos. Please grant permission in settings.",
+    "permissionMessage": "This app needs access to your photos to update your profile picture. Please grant permission in settings.",
+    "openSettings": "Open Settings",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Failed to update profile: $error",
+    "avatarUpdateSuccess": "Avatar updated successfully",
+    "avatarRemoveSuccess": "Avatar removed successfully",
+    "avatarUpdateFailed": "Failed to update avatar: $error",
+    "noProfileData": "No profile data",
+    "errorLoadingProfile": "Error loading profile",
+    "firstNameRequired": "Please enter your first name",
+    "lastNameRequired": "Please enter your last name",
+    "invalidPhoneNumber": "Please enter a valid phone number"
+  },
   "passwordAndSecurity": "Password and Security",
   "paymentMethods": "Payment Methods",
   "serverError": "Server error occurred. Please try again.",
@@ -135,7 +160,17 @@
       "sort_date_created_desc": "Date Created (Newest First)",
       "sort_name_asc": "Name (A-Z)",
       "sort_name_desc": "Name (Z-A)",
-      "no_results_message": "No results found"
+      "no_results_message": "No results found",
+      "no_items_title": "No $type yet",
+      "no_items_description": "Create your first $type to get started",
+      "error_load": "Failed to load $type",
+      "error_load_more": "Failed to load more",
+      "retry": "Retry",
+      "failed_to_load": "Failed to load",
+      "filter_sort": "Sort",
+      "sort_default": "Default Sort",
+      "view_list": "List View",
+      "view_grid": "Grid View"
     },
     "presentations": {
       "title": "Presentation",
@@ -232,9 +267,17 @@
     "unsavedChanges": "Unsaved Changes",
     "noInternet": "No Internet Connection",
     "points": "Points",
+    "pointsSuffix": "pts",
     "difficulty": "Difficulty",
     "explanation": "Explanation",
-    "optional": "(Optional)"
+    "usedTimes(count)": "Used $count time(s)",
+    "optional": "(Optional)",
+    "unsavedChangesDialog": {
+      "title": "Discard changes?",
+      "message": "You have unsaved changes. Are you sure you want to leave?",
+      "cancel": "Cancel",
+      "discard": "Discard"
+    }
   },
   "errors": {
     "network_error": "Network error occurred. Please try again.",
@@ -294,15 +337,6 @@
     "FORBIDDEN": "Forbidden: You don't have permission to access this resource",
     "INTERNAL_SERVER_ERROR": "Internal server error",
     "USER_PROFILE_CREATION_FAILED": "Failed to create user profile"
-  },
-  "loading": "Loading...",
-  "profile": {
-    "permissionRequired": "Permission Required",
-    "permissionMessage": "This app needs access to your photos to update your profile picture. Please grant permission in settings.",
-    "cancel": "Cancel",
-    "openSettings": "Open Settings",
-    "avatarUpdatedSuccess": "Avatar updated successfully!",
-    "avatarUpdateFailed": "Failed to update avatar: $error"
   },
   "generate": {
     "enterTopicHint": "What is on your mind?",
@@ -639,6 +673,7 @@
     "matching": {
       "title": "Matching Pairs",
       "subtitle": "Create pairs to match (minimum 2 required)",
+      "editingMode": "Editing Mode - Create matching pairs",
       "addPair": "Add Pair",
       "shufflePairs": "Shuffle Pairs",
       "shuffleDescription": "Randomize pair order when displayed to students",
@@ -655,7 +690,9 @@
       "rightImage": "Right Image",
       "imageHint": "Upload, take photo, or enter URL",
       "enterLeftItem": "Enter left item",
-      "enterRightItem": "Enter right item"
+      "enterRightItem": "Enter right item",
+      "leftItem": "Left Item",
+      "rightItem": "Right Item"
     },
     "openEnded": {
       "title": "Open-Ended Settings",
@@ -678,6 +715,7 @@
     "fillInBlank": {
       "title": "Fill in the Blank Question",
       "subtitle": "Use {{answer}} syntax to create blanks",
+      "editingMode": "Editing Mode - Create sentence with blanks",
       "formatGuide": "Format Guide",
       "singleAnswer": "Single answer:",
       "multipleAnswers": "Multiple answers:",
@@ -697,7 +735,14 @@
       "textContent": "Text Content *",
       "textContentHint": "Enter the text that appears in the question",
       "placeholderText": "Placeholder Text *",
-      "blankHint": "________"
+      "blankHint": "________",
+      "blankNumber(number)": "Blank $number",
+      "textSegment": "Text",
+      "removeSegment": "Remove segment",
+      "correctAnswer": "Correct answer",
+      "enterCorrectAnswer": "Enter the correct answer for this blank",
+      "textContentLabel": "Text content",
+      "enterTextContent": "Enter text that appears in the sentence"
     },
     "detail": {
       "questionTitle": "QUESTION TITLE",
@@ -979,6 +1024,13 @@
       "linkResource": "Link Resource",
       "linked": "Linked ($count)"
     },
+    "resourceSelector": {
+      "selectResources": "Select Resources",
+      "configurePermissions": "Configure Permissions",
+      "selectedCount": "$count selected",
+      "continue": "Continue",
+      "done": "Done"
+    },
     "assignmentSelector": {
       "title": "Select Assignments",
       "selected": "$count selected",
@@ -1166,7 +1218,8 @@
       "cancel": "Cancel",
       "addQuestions": "Add Questions",
       "pointsMustBeGreaterThanZero": "Points must be greater than 0",
-      "allPointsMustBeGreaterThanZero": "All points must be greater than 0"
+      "allPointsMustBeGreaterThanZero": "All points must be greater than 0",
+      "contextBanner(count)": "$count reading passage(s) will also be imported"
     },
 
     "questionCard": {
@@ -1255,9 +1308,10 @@
 
     "detail": {
       "tabs": {
-        "info": "INFO",
-        "questions": "QUESTIONS",
-        "matrix": "MATRIX"
+        "info": "Info",
+        "questions": "Questions",
+        "passages": "Passages",
+        "matrix": "Matrix"
       },
       "deleteQuestion": {
         "title": "Delete Question",
@@ -1302,6 +1356,58 @@
         "typeHeader": "TYPE",
         "totalHeader": "TOTAL"
       }
+    },
+
+    "context": {
+      "readingPassage": "Reading Passage",
+      "untitledContext": "Untitled Context",
+      "untitledPassage": "Untitled Passage",
+      "questionCount(count)": "$count Question(s)",
+      "selectReadingPassage": "Select Reading Passage",
+      "searchContexts": "Search contexts...",
+      "noContextsFound": "No contexts found",
+      "tryDifferentSearch": "Try a different search term",
+      "failedToLoad": "Failed to load contexts",
+      "retry": "Retry",
+      "editReadingPassage": "Edit Reading Passage",
+      "discardChanges": "Discard changes?",
+      "unsavedChangesMessage": "You have unsaved changes. Are you sure you want to discard them?",
+      "unlinkContext": "Unlink context?",
+      "unlinkMessage": "This will remove the reading passage from this question. The content will not be deleted from the library.",
+      "unlink": "Unlink",
+      "unlinkFromQuestion": "Unlink from question",
+      "title": "Title",
+      "titleHint": "Enter a title for this reading passage",
+      "content": "Content",
+      "supportsMarkdown": "Supports Markdown formatting",
+      "contentHint": "Enter the reading passage content...",
+      "authorOptional": "Author (Optional)",
+      "authorHint": "Enter the author name",
+      "saveChanges": "Save Changes",
+      "passageUpdated": "Reading passage updated",
+      "passageUnlinked": "Reading passage unlinked",
+      "unlinkPassage": "Unlink passage",
+      "linkReadingPassage": "Link Reading Passage",
+      "deleteQuestionConfirm(number)": "Are you sure you want to remove question $number from this assignment?",
+      "cancel": "Cancel",
+      "discard": "Discard",
+      "panelTitle": "Reading Passages",
+      "panelDescription": "Create and manage reading passages that can be shared across questions.",
+      "addReadingPassage": "Add Reading Passage",
+      "emptyState": "No reading passages yet. Create one to attach to questions.",
+      "create": "Create",
+      "usedByQuestions(count)": "Used by $count question(s)",
+      "deletePassageTitle": "Delete Reading Passage",
+      "deletePassageMessage(title)": "Are you sure you want to delete \"$title\"?",
+      "deletePassageWarning(count)": "This passage is referenced by $count question(s). Deleting it will unlink those questions.",
+      "delete": "Delete",
+      "passageCreated": "Reading passage created",
+      "passageDeleted": "Reading passage deleted",
+      "importFromLibrary": "Import from Library",
+      "passageImported": "Reading passage imported",
+      "selectLocalPassage": "Select Passage",
+      "noLocalPassages": "No passages available. Import passages in the Passages tab.",
+      "added": "Added"
     }
   },
   "shared": {

@@ -270,21 +270,6 @@ enum GradeLevel {
     }
   }
 
-  String get displayName {
-    switch (this) {
-      case GradeLevel.grade1:
-        return 'Grade 1';
-      case GradeLevel.grade2:
-        return 'Grade 2';
-      case GradeLevel.grade3:
-        return 'Grade 3';
-      case GradeLevel.grade4:
-        return 'Grade 4';
-      case GradeLevel.grade5:
-        return 'Grade 5';
-    }
-  }
-
   String get apiValue {
     switch (this) {
       case GradeLevel.grade1:
@@ -332,17 +317,6 @@ enum Subject {
         return t.questionBank.subjects.mathematics;
       case Subject.literature:
         return t.questionBank.subjects.literature;
-    }
-  }
-
-  String get displayName {
-    switch (this) {
-      case Subject.english:
-        return 'English';
-      case Subject.mathematics:
-        return 'Mathematics';
-      case Subject.literature:
-        return 'Literature';
     }
   }
 
@@ -399,21 +373,6 @@ enum AssignmentStatus {
         return t.common.error;
       case AssignmentStatus.archived:
         return t.shared.models.cms_enums.assignmentStatus.archived;
-    }
-  }
-
-  String get displayName {
-    switch (this) {
-      case AssignmentStatus.draft:
-        return 'Draft';
-      case AssignmentStatus.generating:
-        return 'Generating';
-      case AssignmentStatus.completed:
-        return 'Completed';
-      case AssignmentStatus.error:
-        return 'Error';
-      case AssignmentStatus.archived:
-        return 'Archived';
     }
   }
 

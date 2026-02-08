@@ -104,13 +104,13 @@ class AssignmentCard extends ConsumerWidget {
                     _buildInfoChip(
                       context,
                       icon: LucideIcons.bookOpen,
-                      label: assignment.subject.displayName,
+                      label: assignment.subject.getLocalizedName(t),
                       color: colorScheme.primary,
                     ),
                     _buildInfoChip(
                       context,
                       icon: LucideIcons.graduationCap,
-                      label: assignment.gradeLevel.displayName,
+                      label: assignment.gradeLevel.getLocalizedName(t),
                       color: colorScheme.tertiary,
                     ),
                   ],

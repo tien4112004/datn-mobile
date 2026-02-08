@@ -16,7 +16,10 @@ class ContextDisplayCard extends StatefulWidget {
   final bool initiallyExpanded;
   final VoidCallback? onEdit;
   final VoidCallback? onUnlink;
+  final VoidCallback? onDelete;
+  final Widget? badge;
   final bool isEditMode;
+  final String? readingPassageLabel;
 
   const ContextDisplayCard({
     super.key,
@@ -25,6 +28,9 @@ class ContextDisplayCard extends StatefulWidget {
     this.onEdit,
     this.onUnlink,
     this.isEditMode = false,
+    this.readingPassageLabel,
+    this.onDelete,
+    this.badge,
   });
 
   @override
@@ -149,7 +155,7 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
                   Text(
                     widget.context.title.isNotEmpty
                         ? widget.context.title
-                        : 'Reading Passage',
+                        : (widget.readingPassageLabel ?? 'Reading Passage'),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.blue.shade900,
@@ -184,40 +190,62 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
                 ],
               ),
             ),
+            if (widget.badge != null) ...[
+              widget.badge!,
+              const SizedBox(width: 8),
+            ],
             if (widget.isEditMode) ...[
+              const SizedBox(width: 4),
               if (widget.onEdit != null)
-                IconButton(
-                  icon: Icon(
-                    LucideIcons.pencil,
-                    size: 18,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  onPressed: widget.onEdit,
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
+                GestureDetector(
+                  onTap: widget.onEdit,
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      LucideIcons.pencil,
+                      size: 16,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               if (widget.onUnlink != null)
-                IconButton(
-                  icon: Icon(
-                    LucideIcons.unlink,
-                    size: 18,
-                    color: colorScheme.error,
-                  ),
-                  onPressed: widget.onUnlink,
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
+                GestureDetector(
+                  onTap: widget.onUnlink,
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      LucideIcons.unlink,
+                      size: 16,
+                      color: colorScheme.error,
+                    ),
                   ),
                 ),
+              if (widget.onDelete != null)
+                GestureDetector(
+                  onTap: widget.onDelete,
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      LucideIcons.trash2,
+                      size: 16,
+                      color: colorScheme.error,
+                    ),
+                  ),
+                ),
+              const SizedBox(width: 4),
             ],
             RotationTransition(
               turns: _rotationAnimation,
-              child: Icon(
-                LucideIcons.chevronDown,
-                size: 20,
-                color: colorScheme.onSurfaceVariant,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  LucideIcons.chevronDown,
+                  size: 20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ),
           ],

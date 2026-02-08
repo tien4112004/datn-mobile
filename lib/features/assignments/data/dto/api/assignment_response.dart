@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/assignments/data/dto/api/context_response.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/question_response.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -17,6 +18,7 @@ class AssignmentResponse {
   final String subject;
   final String? grade;
   final List<QuestionResponse>? questions;
+  final List<ContextResponse>? contexts;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -29,6 +31,7 @@ class AssignmentResponse {
     required this.subject,
     this.grade,
     this.questions,
+    this.contexts,
     required this.createdAt,
     this.updatedAt,
   });
@@ -44,6 +47,9 @@ extension AssignmentResponseMapper on AssignmentResponse {
   AssignmentEntity toEntity() {
     // Map questions to domain entities
     final questionEntities = questions?.map((q) => q.toEntity()).toList() ?? [];
+
+    // Map contexts to domain entities
+    final contextEntities = contexts?.map((c) => c.toEntity()).toList() ?? [];
 
     // Calculate totals from questions if available
     final totalQuestions = questionEntities.length;
@@ -131,6 +137,7 @@ extension AssignmentResponseMapper on AssignmentResponse {
       createdAt: createdAt,
       updatedAt: updatedAt,
       questions: questionEntities,
+      contexts: contextEntities,
     );
   }
 }

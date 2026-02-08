@@ -2,7 +2,7 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
-import 'package:AIPrimary/features/assignments/ui/widgets/context/context_selector_sheet.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/context/local_context_selector_sheet.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
@@ -34,10 +34,14 @@ class AssignmentQuestionEditPage extends ConsumerStatefulWidget {
   /// Question number for display (1-indexed)
   final int questionNumber;
 
+  /// Local contexts available in this assignment for linking
+  final List<ContextEntity> assignmentContexts;
+
   const AssignmentQuestionEditPage({
     super.key,
     required this.questionEntity,
     required this.questionNumber,
+    this.assignmentContexts = const [],
   });
 
   @override
@@ -78,6 +82,13 @@ class _AssignmentQuestionEditPageState
     );
 
     _currentContextId = widget.questionEntity.contextId;
+
+    // Resolve linked context from assignment's local contexts
+    if (_currentContextId != null) {
+      _linkedContext = widget.assignmentContexts
+          .where((c) => c.id == _currentContextId)
+          .firstOrNull;
+    }
 
     _pointsController.addListener(() {
       final newValue = double.tryParse(_pointsController.text) ?? 0.0;
@@ -267,7 +278,9 @@ class _AssignmentQuestionEditPageState
           icon: Icon(LucideIcons.circle, color: colorScheme.error, size: 32),
           title: Text(t.questionBank.deleteDialog.title),
           content: Text(
-            'Are you sure you want to remove question ${widget.questionNumber} from this assignment?',
+            t.assignments.context.deleteQuestionConfirm(
+              number: widget.questionNumber,
+            ),
           ),
           actions: [
             TextButton(
@@ -384,7 +397,7 @@ class _AssignmentQuestionEditPageState
                   ],
                   decoration: InputDecoration(
                     labelText: t.common.points,
-                    suffixText: 'pts',
+                    suffixText: t.common.pointsSuffix,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -549,6 +562,10 @@ class _AssignmentQuestionEditPageState
                     onPressed: hasAnyChanges ? _handleSave : null,
                     icon: const Icon(LucideIcons.check, size: 20),
                     label: Text(t.students.saveChanges),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ],
@@ -560,16 +577,17 @@ class _AssignmentQuestionEditPageState
   }
 
   Widget _buildContextSection(ThemeData theme, ColorScheme colorScheme) {
+    final t = ref.watch(translationsPod);
     if (_currentContextId != null) {
       final hasContent =
           _linkedContext != null && _linkedContext!.content.isNotEmpty;
 
       return Container(
         decoration: BoxDecoration(
-          color: Colors.blue.shade50,
+          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(12),
           border: Border(
-            left: BorderSide(color: Colors.blue.shade400, width: 3),
+            left: BorderSide(color: colorScheme.primary, width: 3),
           ),
         ),
         child: Column(
@@ -588,7 +606,7 @@ class _AssignmentQuestionEditPageState
                     Icon(
                       LucideIcons.bookOpen,
                       size: 20,
-                      color: Colors.blue.shade600,
+                      color: colorScheme.primary,
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -596,9 +614,9 @@ class _AssignmentQuestionEditPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Reading Passage',
+                            t.assignments.context.readingPassage,
                             style: theme.textTheme.labelMedium?.copyWith(
-                              color: Colors.blue.shade800,
+                              color: colorScheme.primary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -607,9 +625,11 @@ class _AssignmentQuestionEditPageState
                             Text(
                               _linkedContext!.title.isNotEmpty
                                   ? _linkedContext!.title
-                                  : 'Untitled Passage',
+                                  : t.assignments.context.untitledPassage,
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.blue.shade700,
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.8,
+                                ),
                               ),
                               maxLines: _contextExpanded ? null : 1,
                               overflow: _contextExpanded
@@ -626,7 +646,7 @@ class _AssignmentQuestionEditPageState
                             ? LucideIcons.chevronUp
                             : LucideIcons.chevronDown,
                         size: 18,
-                        color: Colors.blue.shade600,
+                        color: colorScheme.primary,
                       ),
                     IconButton(
                       icon: Icon(
@@ -642,7 +662,7 @@ class _AssignmentQuestionEditPageState
                           _contextExpanded = false;
                         });
                       },
-                      tooltip: 'Unlink passage',
+                      tooltip: t.assignments.context.unlinkPassage,
                       constraints: const BoxConstraints(
                         minWidth: 44,
                         minHeight: 44,
@@ -663,7 +683,7 @@ class _AssignmentQuestionEditPageState
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.shade100),
+                    border: Border.all(color: colorScheme.primaryContainer),
                   ),
                   constraints: const BoxConstraints(maxHeight: 200),
                   child: SingleChildScrollView(
@@ -685,7 +705,11 @@ class _AssignmentQuestionEditPageState
     // Show "Link passage" button
     return OutlinedButton.icon(
       onPressed: () async {
-        final selected = await ContextSelectorSheet.show(context);
+        final selected = await LocalContextSelectorSheet.show(
+          context,
+          contexts: widget.assignmentContexts,
+          currentContextId: _currentContextId,
+        );
         if (selected != null && mounted) {
           setState(() {
             _linkedContext = selected;
@@ -694,13 +718,13 @@ class _AssignmentQuestionEditPageState
           });
         }
       },
-      icon: Icon(LucideIcons.bookOpen, size: 18, color: Colors.blue.shade600),
+      icon: Icon(LucideIcons.bookOpen, size: 18, color: colorScheme.primary),
       label: Text(
-        'Link Reading Passage',
-        style: TextStyle(color: Colors.blue.shade600),
+        t.assignments.context.linkReadingPassage,
+        style: TextStyle(color: colorScheme.primary),
       ),
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: Colors.blue.shade300),
+        side: BorderSide(color: colorScheme.primary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),

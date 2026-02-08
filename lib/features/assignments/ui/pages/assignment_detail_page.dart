@@ -7,10 +7,10 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_question
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
-import 'package:AIPrimary/features/assignments/ui/widgets/detail/bottom_action_dock.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/contexts_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/matrix_tab.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 3,
+      length: 4,
       vsync: this,
       initialIndex: 1, // Start on Questions tab
     );
@@ -99,8 +99,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
     final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -131,15 +129,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
             detailAssignmentControllerProvider(widget.assignmentId).notifier,
           )
           .removeQuestion(questionIndex);
-
-      if (mounted) {
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(t.assignments.detail.deleteQuestion.success),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
     }
   }
 
@@ -150,7 +139,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
     );
 
     if (!mounted) return;
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     if (result == 'UNLINK') {
       // User chose to unlink from the edit page
@@ -162,15 +150,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
             assignmentContextsControllerProvider(widget.assignmentId).notifier,
           )
           .updateContext(result);
-
-      if (mounted) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('Reading passage updated'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
     }
   }
 
@@ -187,14 +166,66 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
           assignmentContextsControllerProvider(widget.assignmentId).notifier,
         )
         .removeContext(contextId);
+  }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Reading passage unlinked'),
-          behavior: SnackBarBehavior.floating,
-        ),
+  void _handleCancel() {
+    setState(() => _isEditMode = false);
+    ref
+        .read(detailAssignmentControllerProvider(widget.assignmentId).notifier)
+        .refresh();
+  }
+
+  Future<void> _handleSave(AssignmentEntity assignment) async {
+    setState(() => _isSaving = true);
+
+    try {
+      final contexts =
+          ref
+              .read(assignmentContextsControllerProvider(widget.assignmentId))
+              .value ??
+          [];
+
+      final request = AssignmentUpdateRequest(
+        title: assignment.title,
+        description: assignment.description,
+        duration: assignment.timeLimitMinutes,
+        subject: assignment.subject.apiValue,
+        grade: assignment.gradeLevel.apiValue,
+        questions: assignment.questions.map((q) => q.toRequest()).toList(),
+        contexts: contexts.map((c) => c.toRequest()).toList(),
       );
+
+      await ref
+          .read(updateAssignmentControllerProvider.notifier)
+          .updateAssignment(widget.assignmentId, request);
+
+      await ref
+          .read(
+            detailAssignmentControllerProvider(widget.assignmentId).notifier,
+          )
+          .refresh();
+
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _isEditMode = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() => _isSaving = false);
+
+        final t = ref.read(translationsPod);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              t.assignments.detail.saveError(error: error.toString()),
+            ),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
     }
   }
 
@@ -244,25 +275,51 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  actions: [
-                    // Edit Mode Toggle
-                    IconButton(
-                      icon: Icon(
-                        _isEditMode ? LucideIcons.eye : LucideIcons.pencil,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        if (!_isSaving) {
-                          HapticFeedback.lightImpact();
-                          setState(() => _isEditMode = !_isEditMode);
-                        }
-                      },
-                      tooltip: _isEditMode
-                          ? t.assignments.viewMode
-                          : t.assignments.editMode,
-                    ),
-                    const SizedBox(width: 8),
-                  ],
+                  actions: _isEditMode
+                      ? [
+                          IconButton(
+                            icon: const Icon(LucideIcons.x, size: 20),
+                            onPressed: _isSaving ? null : _handleCancel,
+                            tooltip: t.assignments.actionDock.cancel,
+                          ),
+                          _isSaving
+                              ? Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: colorScheme.primary,
+                                    ),
+                                  ),
+                                )
+                              : IconButton(
+                                  icon: Icon(
+                                    LucideIcons.save,
+                                    size: 20,
+                                    color: colorScheme.primary,
+                                  ),
+                                  onPressed: () => _handleSave(assignment),
+                                  tooltip: t.assignments.actionDock.saveChanges,
+                                ),
+                          const SizedBox(width: 4),
+                        ]
+                      : [
+                          IconButton(
+                            icon: Icon(
+                              LucideIcons.pencil,
+                              size: 20,
+                              color: colorScheme.primary,
+                            ),
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              setState(() => _isEditMode = true);
+                            },
+                            tooltip: t.assignments.editMode,
+                          ),
+                          const SizedBox(width: 4),
+                        ],
                 ),
               ];
             },
@@ -293,9 +350,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                   onEditContext: _isEditMode
                       ? (contextEntity) => _handleEditContext(contextEntity)
                       : null,
-                  onUnlinkContext: _isEditMode
-                      ? (contextId) => _handleUnlinkContext(contextId)
-                      : null,
                   onSwitchMode: () =>
                       setState(() => _isEditMode = !_isEditMode),
                   onEdit: (questionEntity, index) async {
@@ -304,6 +358,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                       AssignmentQuestionEditRoute(
                         questionEntity: questionEntity,
                         questionNumber: index + 1,
+                        assignmentContexts: contextsMap.values.toList(),
                       ),
                     );
 
@@ -318,17 +373,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                               ).notifier,
                             )
                             .removeQuestion(index);
-
-                        if (mounted) {
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                t.assignments.detail.deleteQuestion.success,
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        }
                       } else if (result is AssignmentQuestionEntity) {
                         // Question was updated
                         await ref
@@ -338,22 +382,64 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                               ).notifier,
                             )
                             .updateQuestion(index, result);
-
-                        if (mounted) {
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                t.assignments.detail.questionUpdated,
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        }
                       }
                     }
                   },
                   onDelete: (index) {
                     _showDeleteConfirmation(context, index);
+                  },
+                ),
+                // Contexts (Passages) Tab
+                ContextsTab(
+                  assignment: assignment,
+                  contexts: contextsMap.values.toList(),
+                  isEditMode: _isEditMode,
+                  onCreateContext: (contextEntity) async {
+                    await ref
+                        .read(
+                          assignmentContextsControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .addContext(contextEntity);
+                  },
+                  onImportContext: (sourceContext) async {
+                    final cloned = ref
+                        .read(
+                          assignmentContextsControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .cloneContext(sourceContext);
+
+                    await ref
+                        .read(
+                          assignmentContextsControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .addContext(cloned);
+                  },
+                  onEditContext: (contextEntity) =>
+                      _handleEditContext(contextEntity),
+                  onDeleteContext: (contextId) async {
+                    // Clear contextId from all questions referencing this context
+                    await ref
+                        .read(
+                          detailAssignmentControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .clearContextIdFromQuestions(contextId);
+
+                    // Remove context from the contexts list
+                    await ref
+                        .read(
+                          assignmentContextsControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .removeContext(contextId);
                   },
                 ),
                 // Matrix Tab
@@ -369,17 +455,25 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
           floatingActionButton: _isEditMode && _tabController.index == 1
               ? FloatingActionMenu(
                   onAddFromBank: () async {
-                    // Capture context before async operations
                     final navigator = context.router;
 
-                    // Navigate to question bank picker (now returns AssignmentQuestionEntity with points)
+                    // Navigate to question bank picker
                     final assignmentQuestions = await navigator
                         .push<List<AssignmentQuestionEntity>>(
                           const QuestionBankPickerRoute(),
                         );
 
-                    if (assignmentQuestions != null && mounted) {
-                      // Add questions to assignment
+                    if (assignmentQuestions == null || !mounted) return;
+
+                    // Extract unique contextIds from selected questions
+                    final contextIds = assignmentQuestions
+                        .where((q) => q.contextId != null)
+                        .map((q) => q.contextId!)
+                        .toSet()
+                        .toList();
+
+                    // No contexts — add questions directly
+                    if (contextIds.isEmpty) {
                       await ref
                           .read(
                             detailAssignmentControllerProvider(
@@ -387,26 +481,74 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                             ).notifier,
                           )
                           .addQuestions(assignmentQuestions);
+                      return;
+                    }
 
+                    // Contexts exist — fetch and clone them
+                    List<ContextEntity> fetchedContexts;
+                    try {
+                      final repository = ref.read(contextRepositoryProvider);
+                      fetchedContexts = await repository.getContextsByIds(
+                        contextIds,
+                      );
+                    } catch (e) {
                       if (mounted) {
                         scaffoldMessenger.showSnackBar(
                           SnackBar(
                             content: Text(
-                              t.assignments.detail.questionsAdded(
-                                count: assignmentQuestions.length,
-                              ),
+                              'Failed to fetch context details: $e',
                             ),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       }
+                      return;
                     }
+
+                    if (!mounted) return;
+
+                    // Clone contexts and build ID mapping
+                    final contextIdMap = <String, String>{};
+                    final contextController = ref.read(
+                      assignmentContextsControllerProvider(
+                        widget.assignmentId,
+                      ).notifier,
+                    );
+
+                    for (final sourceContext in fetchedContexts) {
+                      final cloned = contextController.cloneContext(
+                        sourceContext,
+                      );
+                      await contextController.addContext(cloned);
+                      contextIdMap[sourceContext.id] = cloned.id;
+                    }
+
+                    // Remap contextIds in questions
+                    final remappedQuestions = assignmentQuestions.map((q) {
+                      if (q.contextId != null &&
+                          contextIdMap.containsKey(q.contextId)) {
+                        return q.copyWith(contextId: contextIdMap[q.contextId]);
+                      }
+                      return q;
+                    }).toList();
+
+                    // Add questions with remapped contextIds
+                    await ref
+                        .read(
+                          detailAssignmentControllerProvider(
+                            widget.assignmentId,
+                          ).notifier,
+                        )
+                        .addQuestions(remappedQuestions);
                   },
                   onCreateNew: () async {
                     // Navigate to question create page for assignment
                     final result = await context.router
                         .push<AssignmentQuestionEntity>(
-                          AssignmentQuestionCreateRoute(defaultPoints: 10.0),
+                          AssignmentQuestionCreateRoute(
+                            defaultPoints: 10.0,
+                            assignmentContexts: contextsMap.values.toList(),
+                          ),
                         );
 
                     if (result != null && mounted) {
@@ -418,148 +560,51 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                             ).notifier,
                           )
                           .addQuestions([result]);
-
-                      if (mounted) {
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(t.assignments.detail.questionCreated),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
                     }
                   },
                 )
               : null,
 
-          // Bottom Navigation Bar with TabBar and conditional BottomActionDock
-          bottomNavigationBar: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Bottom Action Dock (only in edit mode)
-              if (_isEditMode)
-                BottomActionDock(
-                  onCancel: () {
-                    setState(() => _isEditMode = false);
-                    // Refresh to discard any local optimistic changes
-                    ref
-                        .read(
-                          detailAssignmentControllerProvider(
-                            widget.assignmentId,
-                          ).notifier,
-                        )
-                        .refresh();
-                  },
-                  onSave: () async {
-                    setState(() => _isSaving = true);
-
-                    try {
-                      // Get current assignment state to sync all fields
-                      final currentAssignment = assignment;
-
-                      // Create update request with all current values including questions
-                      final request = AssignmentUpdateRequest(
-                        title: currentAssignment.title,
-                        description: currentAssignment.description,
-                        duration: currentAssignment.timeLimitMinutes,
-                        subject: currentAssignment.subject.apiValue,
-                        grade: currentAssignment.gradeLevel.apiValue,
-                        questions: currentAssignment.questions
-                            .map((q) => q.toRequest())
-                            .toList(),
-                      );
-
-                      // Sync to server
-                      await ref
-                          .read(updateAssignmentControllerProvider.notifier)
-                          .updateAssignment(widget.assignmentId, request);
-
-                      // Refresh to get latest server state
-                      await ref
-                          .read(
-                            detailAssignmentControllerProvider(
-                              widget.assignmentId,
-                            ).notifier,
-                          )
-                          .refresh();
-
-                      if (mounted) {
-                        setState(() {
-                          _isSaving = false;
-                          _isEditMode = false;
-                        });
-
-                        if (!context.mounted) return;
-
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(t.assignments.detail.saveSuccess),
-                            behavior: SnackBarBehavior.floating,
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      }
-                    } catch (error) {
-                      if (mounted) {
-                        setState(() => _isSaving = false);
-
-                        if (!context.mounted) return;
-
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              t.assignments.detail.saveError(
-                                error: error.toString(),
-                              ),
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.error,
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  isSaving: _isSaving,
+          // Bottom Navigation Bar with TabBar only
+          bottomNavigationBar: Container(
+            color: colorScheme.surface,
+            child: SafeArea(
+              child: TabBar(
+                controller: _tabController,
+                indicatorColor: colorScheme.primary,
+                labelColor: colorScheme.primary,
+                unselectedLabelColor: colorScheme.onSurfaceVariant,
+                labelStyle: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
-              // TabBar (always visible)
-              Container(
-                color: colorScheme.surface,
-                child: SafeArea(
-                  child: TabBar(
-                    controller: _tabController,
-                    indicatorColor: colorScheme.primary,
-                    labelColor: colorScheme.primary,
-                    unselectedLabelColor: colorScheme.onSurfaceVariant,
-                    labelStyle: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                    unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
-                    ),
-                    tabs: [
-                      Tab(
-                        text: t.assignments.detail.tabs.info,
-                        icon: const Icon(LucideIcons.info, size: 20),
-                        iconMargin: const EdgeInsets.only(bottom: 4),
-                      ),
-                      Tab(
-                        text: t.assignments.detail.tabs.questions,
-                        icon: const Icon(LucideIcons.listOrdered, size: 20),
-                        iconMargin: const EdgeInsets.only(bottom: 4),
-                      ),
-                      Tab(
-                        text: t.assignments.detail.tabs.matrix,
-                        icon: const Icon(LucideIcons.grid3x3, size: 20),
-                        iconMargin: const EdgeInsets.only(bottom: 4),
-                      ),
-                    ],
+                unselectedLabelStyle: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
+                ),
+                tabs: [
+                  Tab(
+                    text: t.assignments.detail.tabs.info,
+                    icon: const Icon(LucideIcons.info, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
                   ),
-                ),
+                  Tab(
+                    text: t.assignments.detail.tabs.questions,
+                    icon: const Icon(LucideIcons.listOrdered, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
+                  ),
+                  Tab(
+                    text: t.assignments.detail.tabs.passages,
+                    icon: const Icon(LucideIcons.bookOpen, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
+                  ),
+                  Tab(
+                    text: t.assignments.detail.tabs.matrix,
+                    icon: const Icon(LucideIcons.grid3x3, size: 20),
+                    iconMargin: const EdgeInsets.only(bottom: 4),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },

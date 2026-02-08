@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Domain entity for an exam.
@@ -22,6 +23,9 @@ class AssignmentEntity {
   /// Questions in this assignment with point values
   final List<AssignmentQuestionEntity> questions;
 
+  /// Contexts (reading passages) embedded in this assignment
+  final List<ContextEntity> contexts;
+
   const AssignmentEntity({
     required this.assignmentId,
     required this.teacherId,
@@ -38,6 +42,7 @@ class AssignmentEntity {
     this.questionOrder,
     this.updatedAt,
     this.questions = const [],
+    this.contexts = const [],
   });
 
   /// Check if the exam is editable (draft or error status).
@@ -66,6 +71,7 @@ class AssignmentEntity {
     DateTime? updatedAt,
     bool? shuffleQuestions,
     List<AssignmentQuestionEntity>? questions,
+    List<ContextEntity>? contexts,
   }) {
     return AssignmentEntity(
       assignmentId: assignmentId ?? this.assignmentId,
@@ -83,6 +89,7 @@ class AssignmentEntity {
       updatedAt: updatedAt ?? this.updatedAt,
       shuffleQuestions: shuffleQuestions ?? this.shuffleQuestions,
       questions: questions ?? this.questions,
+      contexts: contexts ?? this.contexts,
     );
   }
 }

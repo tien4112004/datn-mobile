@@ -82,53 +82,44 @@ class _PersonalInformationPageState
       final deviceInfo = DeviceInfoPlugin();
       final androidInfo = await deviceInfo.androidInfo;
 
-      // For Android 13+ (API 33+), use photos permission
       if (androidInfo.version.sdkInt >= 33) {
         return Permission.photos;
-      }
-      // For Android 12 and below, use storage permission
-      else {
+      } else {
         return Permission.storage;
       }
     }
-    // For iOS
     return Permission.photos;
   }
 
   Future<bool> _requestPermission() async {
+    final t = ref.read(translationsPod);
     final permission = await _getRequiredPermission();
 
-    // Check current status
     var status = await permission.status;
 
-    // If already granted, return true
     if (status.isGranted) {
       return true;
     }
 
-    // If denied but not permanently, request permission
     if (status.isDenied) {
       status = await permission.request();
     }
 
-    // If still denied after request or permanently denied, show dialog
     if (status.isDenied || status.isPermanentlyDenied) {
       if (mounted) {
         final shouldOpenSettings = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Permission Required'),
-            content: const Text(
-              'Gallery access is required to select photos. Please grant permission in settings.',
-            ),
+            title: Text(t.profile.permissionRequired),
+            content: Text(t.profile.galleryPermissionMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: Text(t.common.cancel),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Open Settings'),
+                child: Text(t.profile.openSettings),
               ),
             ],
           ),
@@ -147,11 +138,12 @@ class _PersonalInformationPageState
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final t = ref.read(translationsPod);
     setState(() => _isLoading = true);
 
     try {
       final user = await ref.read(userControllerPod.future);
-      final userId = user?.email ?? '';
+      final userId = user?.id ?? '';
 
       final request = UserProfileUpdateRequest(
         firstName: _firstNameController.text,
@@ -166,8 +158,8 @@ class _PersonalInformationPageState
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully'),
+          SnackBar(
+            content: Text(t.profile.updateSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -177,7 +169,7 @@ class _PersonalInformationPageState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update profile: $e'),
+            content: Text(t.profile.updateError(error: e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -190,13 +182,11 @@ class _PersonalInformationPageState
   }
 
   Future<void> _pickAndUploadAvatar() async {
+    final t = ref.read(translationsPod);
     try {
-      // Check and request permission
       final hasPermission = await _requestPermission();
-
       if (!hasPermission) return;
 
-      // Permission granted, open image picker
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
@@ -206,14 +196,12 @@ class _PersonalInformationPageState
       );
 
       if (image != null && mounted) {
-        // Update avatar with the selected image
         await ref.read(avatarProvider.notifier).updateAvatar(image.path);
 
-        // Show success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Avatar updated successfully'),
+            SnackBar(
+              content: Text(t.profile.avatarUpdateSuccess),
               backgroundColor: Colors.green,
             ),
           );
@@ -223,7 +211,7 @@ class _PersonalInformationPageState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to upload avatar: $e'),
+            content: Text(t.profile.avatarUpdateFailed(error: e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -232,14 +220,14 @@ class _PersonalInformationPageState
   }
 
   Future<void> _removeAvatar() async {
+    final t = ref.read(translationsPod);
     try {
-      // Clear the avatar from avatar provider
       await ref.read(avatarProvider.notifier).clearAvatar();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Avatar removed successfully'),
+          SnackBar(
+            content: Text(t.profile.avatarRemoveSuccess),
             backgroundColor: Colors.green,
           ),
         );
@@ -248,7 +236,7 @@ class _PersonalInformationPageState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to remove avatar: $e'),
+            content: Text(t.profile.avatarUpdateFailed(error: e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -292,7 +280,7 @@ class _PersonalInformationPageState
       body: profileState.when(
         data: (profile) {
           if (profile == null) {
-            return const Center(child: Text('No profile data'));
+            return Center(child: Text(t.profile.noProfileData));
           }
 
           return SingleChildScrollView(
@@ -335,27 +323,27 @@ class _PersonalInformationPageState
                                   return [
                                     PopupMenuItem(
                                       onTap: _pickAndUploadAvatar,
-                                      child: const Row(
+                                      child: Row(
                                         children: [
-                                          Icon(LucideIcons.upload),
-                                          SizedBox(width: 12),
-                                          Text('Upload Photo'),
+                                          const Icon(LucideIcons.upload),
+                                          const SizedBox(width: 12),
+                                          Text(t.profile.uploadPhoto),
                                         ],
                                       ),
                                     ),
                                     if (hasAvatar)
                                       PopupMenuItem(
                                         onTap: _removeAvatar,
-                                        child: const Row(
+                                        child: Row(
                                           children: [
-                                            Icon(
+                                            const Icon(
                                               LucideIcons.trash2,
                                               color: Colors.red,
                                             ),
-                                            SizedBox(width: 12),
+                                            const SizedBox(width: 12),
                                             Text(
-                                              'Remove Photo',
-                                              style: TextStyle(
+                                              t.profile.removePhoto,
+                                              style: const TextStyle(
                                                 color: Colors.red,
                                               ),
                                             ),
@@ -374,7 +362,7 @@ class _PersonalInformationPageState
 
                   // Personal Information Section
                   Text(
-                    'Personal Information',
+                    t.personalInformation,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -387,16 +375,16 @@ class _PersonalInformationPageState
                   TextFormField(
                     controller: _firstNameController,
                     enabled: _isEditing,
-                    decoration: const InputDecoration(
-                      labelText: 'First Name',
-                      prefixIcon: Icon(LucideIcons.user),
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: t.profile.firstName,
+                      prefixIcon: const Icon(LucideIcons.user),
+                      border: const OutlineInputBorder(
                         borderRadius: Themes.boxRadius,
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your first name';
+                        return t.profile.firstNameRequired;
                       }
                       return null;
                     },
@@ -407,16 +395,16 @@ class _PersonalInformationPageState
                   TextFormField(
                     controller: _lastNameController,
                     enabled: _isEditing,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Name',
-                      prefixIcon: Icon(LucideIcons.user),
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: t.profile.lastName,
+                      prefixIcon: const Icon(LucideIcons.user),
+                      border: const OutlineInputBorder(
                         borderRadius: Themes.boxRadius,
                       ),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your last name';
+                        return t.profile.lastNameRequired;
                       }
                       return null;
                     },
@@ -428,7 +416,7 @@ class _PersonalInformationPageState
                     controller: _emailController,
                     enabled: false,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: t.profile.email,
                       prefixIcon: const Icon(LucideIcons.mail),
                       border: const OutlineInputBorder(
                         borderRadius: Themes.boxRadius,
@@ -444,17 +432,17 @@ class _PersonalInformationPageState
                     controller: _phoneNumberController,
                     enabled: _isEditing,
                     keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      prefixIcon: Icon(LucideIcons.phone),
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: t.profile.phoneNumber,
+                      prefixIcon: const Icon(LucideIcons.phone),
+                      border: const OutlineInputBorder(
                         borderRadius: Themes.boxRadius,
                       ),
                     ),
                     validator: (value) {
                       if (value != null && value.isNotEmpty) {
                         if (!RegExp(r'^\+?[\d\s\-\(\)]+$').hasMatch(value)) {
-                          return 'Please enter a valid phone number';
+                          return t.profile.invalidPhoneNumber;
                         }
                       }
                       return null;
@@ -467,7 +455,7 @@ class _PersonalInformationPageState
                     onTap: _isEditing ? () => _selectDate(context) : null,
                     child: InputDecorator(
                       decoration: InputDecoration(
-                        labelText: 'Date of Birth',
+                        labelText: t.profile.dateOfBirth,
                         prefixIcon: const Icon(LucideIcons.calendar),
                         border: const OutlineInputBorder(
                           borderRadius: Themes.boxRadius,
@@ -479,7 +467,7 @@ class _PersonalInformationPageState
                             ? DateFormat(
                                 'yyyy-MM-dd',
                               ).format(_selectedDateOfBirth!)
-                            : 'Select date',
+                            : t.profile.selectDate,
                         style: TextStyle(
                           fontSize: 16,
                           color: _selectedDateOfBirth != null
@@ -514,9 +502,9 @@ class _PersonalInformationPageState
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Save Changes',
-                                style: TextStyle(
+                            : Text(
+                                t.profile.saveChanges,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -536,7 +524,7 @@ class _PersonalInformationPageState
               const Icon(LucideIcons.circleAlert, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
-                'Error loading profile',
+                t.profile.errorLoadingProfile,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -553,7 +541,7 @@ class _PersonalInformationPageState
               ElevatedButton.icon(
                 onPressed: _loadUserProfile,
                 icon: const Icon(LucideIcons.refreshCw),
-                label: const Text('Retry'),
+                label: Text(t.common.retry),
               ),
             ],
           ),

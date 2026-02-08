@@ -1,22 +1,24 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A reusable dialog for confirming when users want to discard unsaved changes.
 ///
 /// This provides a consistent UX across the app for handling unsaved changes
 /// in forms and edit pages.
-class UnsavedChangesDialog extends StatelessWidget {
-  final String title;
-  final String content;
-  final String cancelLabel;
-  final String discardLabel;
+class UnsavedChangesDialog extends ConsumerWidget {
+  final String? title;
+  final String? content;
+  final String? cancelLabel;
+  final String? discardLabel;
   final VoidCallback? onDiscard;
 
   const UnsavedChangesDialog({
     super.key,
-    this.title = 'Discard changes?',
-    this.content = 'You have unsaved changes. Are you sure you want to leave?',
-    this.cancelLabel = 'Cancel',
-    this.discardLabel = 'Discard',
+    this.title,
+    this.content,
+    this.cancelLabel,
+    this.discardLabel,
     this.onDiscard,
   });
 
@@ -26,11 +28,10 @@ class UnsavedChangesDialog extends StatelessWidget {
   /// if dismissed without action.
   static Future<bool?> show(
     BuildContext context, {
-    String title = 'Discard changes?',
-    String content =
-        'You have unsaved changes. Are you sure you want to leave?',
-    String cancelLabel = 'Cancel',
-    String discardLabel = 'Discard',
+    String? title,
+    String? content,
+    String? cancelLabel,
+    String? discardLabel,
     VoidCallback? onDiscard,
   }) {
     return showDialog<bool>(
@@ -46,21 +47,23 @@ class UnsavedChangesDialog extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     return AlertDialog(
-      title: Text(title),
-      content: Text(content),
+      title: Text(title ?? t.common.unsavedChangesDialog.title),
+      content: Text(content ?? t.common.unsavedChangesDialog.message),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(cancelLabel),
+          child: Text(cancelLabel ?? t.common.unsavedChangesDialog.cancel),
         ),
         FilledButton(
           onPressed: () {
             onDiscard?.call();
             Navigator.of(context).pop(true);
           },
-          child: Text(discardLabel),
+          child: Text(discardLabel ?? t.common.unsavedChangesDialog.discard),
         ),
       ],
     );

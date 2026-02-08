@@ -95,12 +95,12 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
               _buildSpeedDialItem(
                 icon: LucideIcons.library,
                 label: t.assignments.floatingMenu.fromBank,
-                color: colorScheme.secondary,
+                color: colorScheme.primary,
                 delay: 0,
                 onTap: () => _handleAction(widget.onAddFromBank),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // Create New Option
               _buildSpeedDialItem(
@@ -188,20 +188,14 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
           Material(
             elevation: 2,
             borderRadius: BorderRadius.circular(16),
+            color: color,
             child: InkWell(
               onTap: onTap,
               borderRadius: BorderRadius.circular(16),
-              child: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: color.withValues(alpha: 1),
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(icon, color: color, size: 24),
+              child: SizedBox(
+                width: 48,
+                height: 48,
+                child: Icon(icon, color: colorScheme.onPrimary, size: 22),
               ),
             ),
           ),

@@ -1222,7 +1222,7 @@
       "addQuestions": "Thêm câu hỏi",
       "pointsMustBeGreaterThanZero": "Điểm phải lớn hơn 0",
       "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0",
-      "contextBanner(count)": "$count đoạn văn đọc sẽ được nhập kèm"
+      "contextBannerTitle(count)": "$count đoạn văn đọc sẽ được nhập kèm:"
     },
 
     "questionCard": {

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/question_points_assignment_dialog.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -81,10 +82,31 @@ class _QuestionBankPickerPageState
 
     final selectedQuestions = _selectedQuestions.values.toList();
 
+    // Fetch context titles for questions that have contextId
+    final contextIds = selectedQuestions
+        .where((q) => q.contextId != null)
+        .map((q) => q.contextId!)
+        .toSet()
+        .toList();
+
+    List<String> contextTitles = [];
+    if (contextIds.isNotEmpty) {
+      try {
+        final repository = ref.read(contextRepositoryProvider);
+        final contexts = await repository.getContextsByIds(contextIds);
+        contextTitles = contexts.map((c) => c.title).toList();
+      } catch (_) {
+        // If fetch fails, show dialog without titles
+      }
+    }
+
+    if (!mounted) return;
+
     // Show points assignment dialog
     final assignmentQuestions = await QuestionPointsAssignmentDialog.show(
       context,
       selectedQuestions,
+      contextTitles: contextTitles,
     );
 
     // Only pop if user confirmed (didn't cancel the dialog)

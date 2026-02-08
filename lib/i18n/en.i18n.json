@@ -1219,7 +1219,7 @@
       "addQuestions": "Add Questions",
       "pointsMustBeGreaterThanZero": "Points must be greater than 0",
       "allPointsMustBeGreaterThanZero": "All points must be greater than 0",
-      "contextBanner(count)": "$count reading passage(s) will also be imported"
+      "contextBannerTitle(count)": "$count reading passage(s) will also be imported:"
     },
 
     "questionCard": {

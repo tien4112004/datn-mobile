@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/pages/assignment_detail_page.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
@@ -7,7 +8,6 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:intl/intl.dart';
 
 class AssignmentCard extends ConsumerWidget {
   final AssignmentEntity assignment;
@@ -168,7 +168,7 @@ class AssignmentCard extends ConsumerWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      '${t.assignments.dates.createdPrefix} ${_formatDate(assignment.createdAt, t)}',
+                      '${t.assignments.dates.createdPrefix} ${DateFormatHelper.formatRelativeDate(assignment.createdAt, ref: ref)}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.8,
@@ -292,21 +292,6 @@ class AssignmentCard extends ConsumerWidget {
           ),
       ],
     );
-  }
-
-  String _formatDate(DateTime date, dynamic t) {
-    final now = DateTime.now();
-    final diff = now.difference(date);
-
-    if (diff.inDays == 0) {
-      return t.assignments.dates.today;
-    } else if (diff.inDays == 1) {
-      return t.assignments.dates.yesterday;
-    } else if (diff.inDays < 7) {
-      return t.assignments.dates.daysAgo(count: diff.inDays);
-    } else {
-      return DateFormat('MMM d, yyyy').format(date);
-    }
   }
 
   void _navigateToDetail(BuildContext context) {

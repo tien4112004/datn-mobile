@@ -14,22 +14,27 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Provides a quick "Apply All" action to set the same points for all questions.
 class QuestionPointsAssignmentDialog extends ConsumerStatefulWidget {
   final List<QuestionBankItemEntity> selectedQuestions;
+  final List<String> contextTitles;
 
   const QuestionPointsAssignmentDialog({
     super.key,
     required this.selectedQuestions,
+    this.contextTitles = const [],
   });
 
   /// Show the points assignment dialog
   static Future<List<AssignmentQuestionEntity>?> show(
     BuildContext context,
-    List<QuestionBankItemEntity> selectedQuestions,
-  ) {
+    List<QuestionBankItemEntity> selectedQuestions, {
+    List<String> contextTitles = const [],
+  }) {
     return showDialog<List<AssignmentQuestionEntity>>(
       context: context,
       barrierDismissible: false,
-      builder: (context) =>
-          QuestionPointsAssignmentDialog(selectedQuestions: selectedQuestions),
+      builder: (context) => QuestionPointsAssignmentDialog(
+        selectedQuestions: selectedQuestions,
+        contextTitles: contextTitles,
+      ),
     );
   }
 
@@ -74,12 +79,6 @@ class _QuestionPointsAssignmentDialogState
   }
 
   double get _totalPoints => _points.values.fold(0.0, (sum, val) => sum + val);
-
-  int get _contextCount => widget.selectedQuestions
-      .where((q) => q.contextId != null)
-      .map((q) => q.contextId!)
-      .toSet()
-      .length;
 
   void _applyAllPoints() {
     final t = ref.read(translationsPod);
@@ -207,31 +206,48 @@ class _QuestionPointsAssignmentDialogState
             const SizedBox(height: 16),
 
             // Context import banner
-            if (_contextCount > 0) ...[
+            if (widget.contextTitles.isNotEmpty) ...[
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
+                padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: colorScheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      LucideIcons.bookOpen,
-                      size: 18,
-                      color: colorScheme.onSecondaryContainer,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        t.assignments.pointsAssignment.contextBanner(
-                          count: _contextCount.toString(),
-                        ),
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                    Row(
+                      children: [
+                        Icon(
+                          LucideIcons.bookOpen,
+                          size: 18,
                           color: colorScheme.onSecondaryContainer,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            t.assignments.pointsAssignment.contextBannerTitle(
+                              count: widget.contextTitles.length.toString(),
+                            ),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSecondaryContainer,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    ...widget.contextTitles.map(
+                      (title) => Padding(
+                        padding: const EdgeInsets.only(left: 28, bottom: 4),
+                        child: Text(
+                          title,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSecondaryContainer,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),

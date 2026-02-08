@@ -8,6 +8,7 @@ import 'package:AIPrimary/features/assignments/data/dto/api/question_item_reques
 /// - Points assigned for this question in this assignment
 /// - Origin tracking (created directly vs selected from bank)
 /// - Optional question bank ID for tracking source
+/// - Optional context ID for questions with reading passages
 class AssignmentQuestionEntity {
   /// Question bank ID if from bank, null if created directly
   final String? questionBankId;
@@ -22,25 +23,36 @@ class AssignmentQuestionEntity {
   /// or selected from question bank (false)
   final bool isNewQuestion;
 
+  /// Context ID for questions with reading passage, null if standalone
+  final String? contextId;
+
   const AssignmentQuestionEntity({
     this.questionBankId,
     required this.question,
     required this.points,
     required this.isNewQuestion,
+    this.contextId,
   });
 
-  /// Create a copy with updated fields
+  /// Create a copy with updated fields.
+  ///
+  /// Pass [clearContextId] = true to explicitly set contextId to null.
+  /// This is needed because the standard `contextId` parameter can't
+  /// distinguish between "not provided" and "set to null".
   AssignmentQuestionEntity copyWith({
     String? questionBankId,
     BaseQuestion? question,
     double? points,
     bool? isNewQuestion,
+    String? contextId,
+    bool clearContextId = false,
   }) {
     return AssignmentQuestionEntity(
       questionBankId: questionBankId ?? this.questionBankId,
       question: question ?? this.question,
       points: points ?? this.points,
       isNewQuestion: isNewQuestion ?? this.isNewQuestion,
+      contextId: clearContextId ? null : (contextId ?? this.contextId),
     );
   }
 
@@ -52,18 +64,26 @@ class AssignmentQuestionEntity {
         other.questionBankId == questionBankId &&
         other.question == question &&
         other.points == points &&
-        other.isNewQuestion == isNewQuestion;
+        other.isNewQuestion == isNewQuestion &&
+        other.contextId == contextId;
   }
 
   @override
   int get hashCode {
-    return Object.hash(questionBankId, question, points, isNewQuestion);
+    return Object.hash(
+      questionBankId,
+      question,
+      points,
+      isNewQuestion,
+      contextId,
+    );
   }
 
   @override
   String toString() {
     return 'AssignmentQuestionEntity(questionBankId: $questionBankId, '
-        'question: ${question.title}, points: $points, isNewQuestion: $isNewQuestion)';
+        'question: ${question.title}, points: $points, isNewQuestion: $isNewQuestion, '
+        'contextId: $contextId)';
   }
 }
 
@@ -78,6 +98,7 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       explanation: question.explanation,
+      contextId: contextId,
       point: points,
       data: _questionToDataMap(question),
     );

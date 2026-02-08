@@ -1,6 +1,8 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/context/local_context_selector_sheet.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
@@ -32,10 +34,14 @@ class AssignmentQuestionEditPage extends ConsumerStatefulWidget {
   /// Question number for display (1-indexed)
   final int questionNumber;
 
+  /// Local contexts available in this assignment for linking
+  final List<ContextEntity> assignmentContexts;
+
   const AssignmentQuestionEditPage({
     super.key,
     required this.questionEntity,
     required this.questionNumber,
+    this.assignmentContexts = const [],
   });
 
   @override
@@ -53,6 +59,13 @@ class _AssignmentQuestionEditPageState
   late double _initialPoints;
   bool _isInitialized = false;
 
+  /// The currently linked context entity (for display purposes).
+  /// null means no context is linked.
+  ContextEntity? _linkedContext;
+  String? _currentContextId;
+  bool _contextChanged = false;
+  bool _contextExpanded = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +80,15 @@ class _AssignmentQuestionEditPageState
     _explanationController = TextEditingController(
       text: widget.questionEntity.question.explanation ?? '',
     );
+
+    _currentContextId = widget.questionEntity.contextId;
+
+    // Resolve linked context from assignment's local contexts
+    if (_currentContextId != null) {
+      _linkedContext = widget.assignmentContexts
+          .where((c) => c.id == _currentContextId)
+          .firstOrNull;
+    }
 
     _pointsController.addListener(() {
       final newValue = double.tryParse(_pointsController.text) ?? 0.0;
@@ -93,7 +115,7 @@ class _AssignmentQuestionEditPageState
   bool get _hasAnyUnsavedChanges {
     final pointsChanged = _currentPoints != _initialPoints;
     final contentChanged = ref.read(hasUnsavedChangesProvider);
-    return pointsChanged || contentChanged;
+    return pointsChanged || contentChanged || _contextChanged;
   }
 
   Future<bool> _onWillPop() async {
@@ -140,6 +162,8 @@ class _AssignmentQuestionEditPageState
       questionBankId: contentWasModified
           ? null
           : widget.questionEntity.questionBankId,
+      contextId: _currentContextId,
+      clearContextId: _currentContextId == null,
     );
 
     ref.read(questionFormProvider.notifier).markSaved();
@@ -254,7 +278,9 @@ class _AssignmentQuestionEditPageState
           icon: Icon(LucideIcons.circle, color: colorScheme.error, size: 32),
           title: Text(t.questionBank.deleteDialog.title),
           content: Text(
-            'Are you sure you want to remove question ${widget.questionNumber} from this assignment?',
+            t.assignments.context.deleteQuestionConfirm(
+              number: widget.questionNumber,
+            ),
           ),
           actions: [
             TextButton(
@@ -371,12 +397,16 @@ class _AssignmentQuestionEditPageState
                   ],
                   decoration: InputDecoration(
                     labelText: t.common.points,
-                    suffixText: 'pts',
+                    suffixText: t.common.pointsSuffix,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+
+                // Reading Passage section
+                _buildContextSection(theme, colorScheme),
                 const SizedBox(height: 20),
 
                 // Question Title field
@@ -532,12 +562,171 @@ class _AssignmentQuestionEditPageState
                     onPressed: hasAnyChanges ? _handleSave : null,
                     icon: const Icon(LucideIcons.check, size: 20),
                     label: Text(t.students.saveChanges),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContextSection(ThemeData theme, ColorScheme colorScheme) {
+    final t = ref.watch(translationsPod);
+    if (_currentContextId != null) {
+      final hasContent =
+          _linkedContext != null && _linkedContext!.content.isNotEmpty;
+
+      return Container(
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            left: BorderSide(color: colorScheme.primary, width: 3),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header row — tappable to expand/collapse
+            InkWell(
+              onTap: hasContent
+                  ? () => setState(() => _contextExpanded = !_contextExpanded)
+                  : null,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.bookOpen,
+                      size: 20,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            t.assignments.context.readingPassage,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (_linkedContext != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              _linkedContext!.title.isNotEmpty
+                                  ? _linkedContext!.title
+                                  : t.assignments.context.untitledPassage,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.8,
+                                ),
+                              ),
+                              maxLines: _contextExpanded ? null : 1,
+                              overflow: _contextExpanded
+                                  ? null
+                                  : TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    if (hasContent)
+                      Icon(
+                        _contextExpanded
+                            ? LucideIcons.chevronUp
+                            : LucideIcons.chevronDown,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
+                    IconButton(
+                      icon: Icon(
+                        LucideIcons.unlink,
+                        size: 18,
+                        color: colorScheme.error,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _currentContextId = null;
+                          _linkedContext = null;
+                          _contextChanged = true;
+                          _contextExpanded = false;
+                        });
+                      },
+                      tooltip: t.assignments.context.unlinkPassage,
+                      constraints: const BoxConstraints(
+                        minWidth: 44,
+                        minHeight: 44,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Expandable content
+            if (_contextExpanded && hasContent)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: colorScheme.primaryContainer),
+                  ),
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: SingleChildScrollView(
+                    child: SelectableText(
+                      _linkedContext!.content,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.6,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    // Show "Link passage" button
+    return OutlinedButton.icon(
+      onPressed: () async {
+        final selected = await LocalContextSelectorSheet.show(
+          context,
+          contexts: widget.assignmentContexts,
+          currentContextId: _currentContextId,
+        );
+        if (selected != null && mounted) {
+          setState(() {
+            _linkedContext = selected;
+            _currentContextId = selected.id;
+            _contextChanged = true;
+          });
+        }
+      },
+      icon: Icon(LucideIcons.bookOpen, size: 18, color: colorScheme.primary),
+      label: Text(
+        t.assignments.context.linkReadingPassage,
+        style: TextStyle(color: colorScheme.primary),
+      ),
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: colorScheme.primary),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

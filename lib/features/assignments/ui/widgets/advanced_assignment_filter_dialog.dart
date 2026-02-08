@@ -47,7 +47,7 @@ void showAdvancedAssignmentFilterDialog({
                 draftState = draftState.copyWith(statusFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.getLocalizedName(t),
             iconBuilder: (status) => AssignmentStatus.getStatusIcon(status),
           ),
           FilterConfig<GradeLevel>(
@@ -62,7 +62,7 @@ void showAdvancedAssignmentFilterDialog({
                 draftState = draftState.copyWith(gradeLevelFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.getLocalizedName(t),
           ),
           FilterConfig<Subject>(
             label: t.assignments.filters.subject,
@@ -76,7 +76,7 @@ void showAdvancedAssignmentFilterDialog({
                 draftState = draftState.copyWith(subjectFilter: value);
               });
             },
-            displayNameBuilder: (value) => value.displayName,
+            displayNameBuilder: (value) => value.getLocalizedName(t),
           ),
         ]);
 

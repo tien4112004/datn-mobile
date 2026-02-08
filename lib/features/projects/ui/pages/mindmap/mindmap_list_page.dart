@@ -166,7 +166,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                           child: GenericFiltersBar(
                             filters: [
                               FilterConfig<SortOption>(
-                                label: 'Sort',
+                                label: t.projects.common_list.filter_sort,
                                 icon: LucideIcons.arrowUpDown,
                                 selectedValue: _sortOption,
                                 options: SortOption.values,
@@ -188,7 +188,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                       .read(mindmapProvider.notifier)
                                       .loadMindmapsWithFilter();
                                 },
-                                allLabel: 'Default Sort',
+                                allLabel: t.projects.common_list.sort_default,
                                 allIcon: LucideIcons.list,
                               ),
                             ],
@@ -218,8 +218,8 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                 .toggle();
                           },
                           tooltip: viewPreferenceAsync
-                              ? 'List view'
-                              : 'Grid view',
+                              ? t.projects.common_list.view_list
+                              : t.projects.common_list.view_grid,
                         ),
                       ],
                     ),
@@ -257,8 +257,10 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
           skeletonGridBuilder: () => const ProjectGridSkeletonLoader(),
           skeletonListBuilder: () => const ProjectListSkeletonLoader(),
           emptyIcon: LucideIcons.brain,
-          emptyTitle: 'No mindmaps available',
-          emptyMessage: 'Create your first mindmap to get started',
+          emptyTitle: t.projects.no_mindmaps,
+          emptyMessage: t.projects.common_list.no_items_description(
+            type: t.projects.mindmaps.title,
+          ),
           onRefresh: () {
             ref.read(mindmapProvider.notifier).loadMindmapsWithFilter();
           },
@@ -268,6 +270,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   }
 
   void _showMoreOptions(BuildContext context, MindmapMinimal mindmap) {
+    final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -280,7 +283,10 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
           children: [
             ListTile(
               leading: Icon(LucideIcons.trash2, color: colorScheme.error),
-              title: Text('Delete', style: TextStyle(color: colorScheme.error)),
+              title: Text(
+                t.common.delete,
+                style: TextStyle(color: colorScheme.error),
+              ),
               onTap: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);

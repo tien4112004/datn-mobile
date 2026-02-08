@@ -168,7 +168,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                           child: GenericFiltersBar(
                             filters: [
                               FilterConfig<SortOption>(
-                                label: 'Sort',
+                                label: t.projects.common_list.filter_sort,
                                 icon: LucideIcons.arrowUpDown,
                                 selectedValue: _sortOption,
                                 options: SortOption.values,
@@ -190,7 +190,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                       .read(presentationProvider.notifier)
                                       .loadPresentationsWithFilter();
                                 },
-                                allLabel: 'Default Sort',
+                                allLabel: t.projects.common_list.sort_default,
                                 allIcon: LucideIcons.list,
                               ),
                             ],
@@ -220,8 +220,8 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                 .toggle();
                           },
                           tooltip: viewPreferenceAsync
-                              ? 'List view'
-                              : 'Grid view',
+                              ? t.projects.common_list.view_list
+                              : t.projects.common_list.view_grid,
                         ),
                       ],
                     ),
@@ -262,7 +262,9 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
           skeletonListBuilder: () => const ProjectListSkeletonLoader(),
           emptyIcon: LucideIcons.presentation,
           emptyTitle: t.projects.no_presentations,
-          emptyMessage: 'Create your first presentation to get started',
+          emptyMessage: t.projects.common_list.no_items_description(
+            type: t.projects.presentations.title,
+          ),
           onRefresh: () {
             ref
                 .read(presentationProvider.notifier)
@@ -277,6 +279,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
     BuildContext context,
     PresentationMinimal presentation,
   ) {
+    final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -289,7 +292,10 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
           children: [
             ListTile(
               leading: Icon(LucideIcons.trash2, color: colorScheme.error),
-              title: Text('Delete', style: TextStyle(color: colorScheme.error)),
+              title: Text(
+                t.common.delete,
+                style: TextStyle(color: colorScheme.error),
+              ),
               onTap: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);

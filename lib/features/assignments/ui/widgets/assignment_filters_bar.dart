@@ -1,9 +1,11 @@
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class ExamFiltersBar extends StatelessWidget {
+class ExamFiltersBar extends ConsumerWidget {
   final AssignmentStatus? selectedStatus;
   final GradeLevel? selectedGradeLevel;
   final ValueChanged<AssignmentStatus?> onStatusChanged;
@@ -20,7 +22,9 @@ class ExamFiltersBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     return GenericFiltersBar(
       filters: [
         FilterConfig<AssignmentStatus>(
@@ -28,7 +32,7 @@ class ExamFiltersBar extends StatelessWidget {
           icon: LucideIcons.info,
           selectedValue: selectedStatus,
           options: AssignmentStatus.values,
-          displayNameBuilder: (status) => status.displayName,
+          displayNameBuilder: (status) => status.getLocalizedName(t),
           iconBuilder: (status) => _getStatusIcon(status),
           onChanged: onStatusChanged,
           allLabel: 'All Status',
@@ -39,7 +43,7 @@ class ExamFiltersBar extends StatelessWidget {
           icon: LucideIcons.graduationCap,
           selectedValue: selectedGradeLevel,
           options: GradeLevel.values,
-          displayNameBuilder: (grade) => grade.displayName,
+          displayNameBuilder: (grade) => grade.getLocalizedName(t),
           onChanged: onGradeLevelChanged,
           allLabel: 'All Grades',
           allIcon: LucideIcons.list,

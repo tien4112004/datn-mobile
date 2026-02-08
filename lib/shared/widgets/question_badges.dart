@@ -109,7 +109,7 @@ class DifficultyBadge extends ConsumerWidget {
 }
 
 /// Badge displaying points value
-class PointsBadge extends StatelessWidget {
+class PointsBadge extends ConsumerWidget {
   final int points;
   final double iconSize;
   final double fontSize;
@@ -124,9 +124,10 @@ class PointsBadge extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Container(
       padding:
@@ -149,7 +150,7 @@ class PointsBadge extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            '$points pts',
+            '$points ${t.common.pointsSuffix}',
             style: theme.textTheme.labelSmall?.copyWith(
               color: colorScheme.onTertiaryContainer,
               fontWeight: FontWeight.w600,
@@ -163,7 +164,7 @@ class PointsBadge extends StatelessWidget {
 }
 
 /// Badge displaying usage statistics
-class UsageStatsBadge extends StatelessWidget {
+class UsageStatsBadge extends ConsumerWidget {
   final int usageCount;
   final double iconSize;
   final double fontSize;
@@ -180,10 +181,11 @@ class UsageStatsBadge extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final effectiveTextColor = textColor ?? colorScheme.onSurfaceVariant;
+    final t = ref.watch(translationsPod);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -191,7 +193,7 @@ class UsageStatsBadge extends StatelessWidget {
         Icon(Icons.history_rounded, size: iconSize, color: effectiveTextColor),
         const SizedBox(width: 4),
         Text(
-          'Used $usageCount time${usageCount != 1 ? 's' : ''}',
+          t.common.usedTimes(count: usageCount),
           style: theme.textTheme.bodySmall?.copyWith(
             color: effectiveTextColor,
             fontWeight: FontWeight.w500,

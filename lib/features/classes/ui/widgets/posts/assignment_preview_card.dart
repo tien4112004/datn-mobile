@@ -1,12 +1,14 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Material 3 preview card for assignment resources
 /// Displays assignment metadata with subject-specific color coding
-class AssignmentPreviewCard extends StatelessWidget {
+class AssignmentPreviewCard extends ConsumerWidget {
   final LinkedResourcePreview preview;
   final VoidCallback onTap;
 
@@ -16,13 +18,9 @@ class AssignmentPreviewCard extends StatelessWidget {
     required this.onTap,
   });
 
-  /// Parse subject from string to enum
   Subject _parseSubject(String? subject) {
     if (subject == null) return Subject.english;
-    return Subject.values.firstWhere(
-      (e) => e.displayName.toLowerCase() == subject.toLowerCase(),
-      orElse: () => Subject.english,
-    );
+    return Subject.fromApiValue(subject);
   }
 
   /// Get subject color for visual distinction
@@ -50,9 +48,10 @@ class AssignmentPreviewCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     final subject = _parseSubject(preview.subject);
     final subjectColor = _getSubjectColor(subject);
@@ -137,7 +136,8 @@ class AssignmentPreviewCard extends StatelessWidget {
                       if (preview.totalPoints != null)
                         _buildMetadataBadge(
                           context,
-                          label: '${preview.totalPoints} pts',
+                          label:
+                              '${preview.totalPoints} ${t.common.pointsSuffix}',
                           color: const Color(0xFFF97316), // Orange CTA
                         ),
                     ],

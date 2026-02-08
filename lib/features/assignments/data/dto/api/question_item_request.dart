@@ -15,6 +15,8 @@ class QuestionItemRequest {
   final String? grade;
   final String? chapter;
   final String? subject;
+  final String?
+  contextId; // Optional context ID for questions with reading passage
   final double? point;
   final Map<String, dynamic>? data; // Polymorphic data based on type
 
@@ -28,6 +30,7 @@ class QuestionItemRequest {
     this.grade,
     this.chapter,
     this.subject,
+    this.contextId,
     this.point,
     this.data,
   });

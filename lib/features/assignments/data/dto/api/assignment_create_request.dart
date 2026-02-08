@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/assignments/data/dto/api/context_item_request.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/question_item_request.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,6 +14,7 @@ class AssignmentCreateRequest {
   final String? subject;
   final String? grade;
   final List<QuestionItemRequest>? questions;
+  final List<ContextItemRequest>? contexts;
 
   const AssignmentCreateRequest({
     required this.title,
@@ -21,6 +23,7 @@ class AssignmentCreateRequest {
     this.subject,
     this.grade,
     this.questions,
+    this.contexts,
   });
 
   factory AssignmentCreateRequest.fromJson(Map<String, dynamic> json) =>

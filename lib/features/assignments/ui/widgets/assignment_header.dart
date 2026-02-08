@@ -38,7 +38,7 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
           filterNotifier.state = filterState.copyWith(statusFilter: value);
           assignmentsController.loadAssignmentsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.getLocalizedName(t),
         iconBuilder: (status) => _getStatusIcon(status),
       ),
       FilterConfig<GradeLevel>(
@@ -52,7 +52,7 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
           filterNotifier.state = filterState.copyWith(gradeLevelFilter: value);
           assignmentsController.loadAssignmentsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.getLocalizedName(t),
       ),
       FilterConfig<Subject>(
         label: t.assignments.filters.subject,
@@ -65,7 +65,7 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
           filterNotifier.state = filterState.copyWith(subjectFilter: value);
           assignmentsController.loadAssignmentsWithFilter();
         },
-        displayNameBuilder: (value) => value.displayName,
+        displayNameBuilder: (value) => value.getLocalizedName(t),
       ),
     ]);
 

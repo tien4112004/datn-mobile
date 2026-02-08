@@ -152,6 +152,20 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     await _syncQuestionsToServer(updatedQuestions);
   }
 
+  /// Clears contextId from all questions that reference the given contextId.
+  /// Used when a context is unlinked from the assignment.
+  Future<void> clearContextIdFromQuestions(String contextId) async {
+    final currentAssignment = await future;
+    final updatedQuestions = currentAssignment.questions.map((q) {
+      if (q.contextId == contextId) {
+        return q.copyWith(clearContextId: true);
+      }
+      return q;
+    }).toList();
+
+    state = AsyncData(currentAssignment.copyWith(questions: updatedQuestions));
+  }
+
   /// Update shuffle questions setting.
   Future<void> updateShuffleQuestions(bool shuffle) async {
     final currentAssignment = await future;
@@ -170,14 +184,19 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     );
   }
 
-  /// Sync questions to the server.
+  /// Sync questions and contexts to the server.
   Future<void> _syncQuestionsToServer(
     List<AssignmentQuestionEntity> questions,
   ) async {
     final repository = ref.read(assignmentRepositoryProvider);
 
+    final contexts =
+        ref.read(assignmentContextsControllerProvider(assignmentId)).value ??
+        [];
+
     final request = AssignmentUpdateRequest(
       questions: questions.map((q) => q.toRequest()).toList(),
+      contexts: contexts.map((c) => c.toRequest()).toList(),
     );
 
     await repository.updateAssignment(assignmentId, request);

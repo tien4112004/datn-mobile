@@ -1,6 +1,8 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/context/local_context_selector_sheet.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
@@ -28,7 +30,14 @@ class AssignmentQuestionCreatePage extends ConsumerStatefulWidget {
   /// Default points value for the question
   final double defaultPoints;
 
-  const AssignmentQuestionCreatePage({super.key, this.defaultPoints = 10.0});
+  /// Local contexts available in this assignment for linking
+  final List<ContextEntity> assignmentContexts;
+
+  const AssignmentQuestionCreatePage({
+    super.key,
+    this.defaultPoints = 10.0,
+    this.assignmentContexts = const [],
+  });
 
   @override
   ConsumerState<AssignmentQuestionCreatePage> createState() =>
@@ -40,6 +49,9 @@ class _AssignmentQuestionCreatePageState
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _pointsController;
   late double _currentPoints;
+
+  ContextEntity? _linkedContext;
+  String? _currentContextId;
 
   @override
   void initState() {
@@ -106,6 +118,7 @@ class _AssignmentQuestionCreatePageState
       question: question,
       points: _currentPoints,
       isNewQuestion: true,
+      contextId: _currentContextId,
     );
 
     // Mark as saved and return the question entity
@@ -326,7 +339,7 @@ class _AssignmentQuestionCreatePageState
                           ],
                           decoration: InputDecoration(
                             labelText: t.questionBank.form.pointsHint,
-                            suffixText: 'pts',
+                            suffixText: t.common.pointsSuffix,
                             helperText: t.assignments.pointsError,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -387,6 +400,13 @@ class _AssignmentQuestionCreatePageState
                 // ),
                 const SizedBox(height: 16),
 
+                // Reading Passage section
+                if (widget.assignmentContexts.isNotEmpty)
+                  _buildContextSection(theme, colorScheme),
+
+                if (widget.assignmentContexts.isNotEmpty)
+                  const SizedBox(height: 16),
+
                 // Type-specific sections
                 _buildTypeSpecificSection(formState),
 
@@ -414,10 +434,103 @@ class _AssignmentQuestionCreatePageState
               label: Text(t.questionBank.form.addToAssignment),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContextSection(ThemeData theme, ColorScheme colorScheme) {
+    final t = ref.watch(translationsPod);
+
+    if (_currentContextId != null && _linkedContext != null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            left: BorderSide(color: colorScheme.primary, width: 3),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Icon(LucideIcons.bookOpen, size: 20, color: colorScheme.primary),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.assignments.context.readingPassage,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _linkedContext!.title.isNotEmpty
+                          ? _linkedContext!.title
+                          : t.assignments.context.untitledPassage,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.primary.withValues(alpha: 0.8),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  LucideIcons.unlink,
+                  size: 18,
+                  color: colorScheme.error,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _currentContextId = null;
+                    _linkedContext = null;
+                  });
+                },
+                tooltip: t.assignments.context.unlinkPassage,
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return OutlinedButton.icon(
+      onPressed: () async {
+        final selected = await LocalContextSelectorSheet.show(
+          context,
+          contexts: widget.assignmentContexts,
+          currentContextId: _currentContextId,
+        );
+        if (selected != null && mounted) {
+          setState(() {
+            _linkedContext = selected;
+            _currentContextId = selected.id;
+          });
+        }
+      },
+      icon: Icon(LucideIcons.bookOpen, size: 18, color: colorScheme.primary),
+      label: Text(
+        t.assignments.context.linkReadingPassage,
+        style: TextStyle(color: colorScheme.primary),
+      ),
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: colorScheme.primary),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

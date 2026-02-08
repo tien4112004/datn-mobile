@@ -60,7 +60,7 @@ class SettingProfilePicture extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: Text(t.profile.cancel),
+                child: Text(t.common.cancel),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -105,7 +105,7 @@ class SettingProfilePicture extends ConsumerWidget {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(t.profile.avatarUpdatedSuccess),
+              content: Text(t.profile.avatarUpdateSuccess),
               backgroundColor: Colors.green,
             ),
           );

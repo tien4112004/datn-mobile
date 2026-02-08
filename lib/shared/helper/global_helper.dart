@@ -45,6 +45,11 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     required BuildContext context,
     required WidgetBuilder builder,
   }) {
+    hideOverlay();
+    _insertOverlayEntry(context, builder);
+  }
+
+  void _insertOverlayEntry(BuildContext context, WidgetBuilder builder) {
     _overlayEntry = OverlayEntry(
       builder: (context) => SafeArea(child: Builder(builder: builder)),
     );
@@ -56,11 +61,12 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     required BuildContext context,
     required TickerProvider vsync,
   }) {
+    hideOverlay();
     _animationController = AnimationController(vsync: vsync, value: 0);
 
-    showCustomOverlay(
-      context: context,
-      builder: (context) => ColoredBox(
+    _insertOverlayEntry(
+      context,
+      (context) => ColoredBox(
         color: Colors.black54,
         child: Center(
           child: AnimatedBuilder(
@@ -91,8 +97,14 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 
   void hideOverlay() {
-    _overlayEntry?.remove();
+    if (_overlayEntry != null) {
+      if (_overlayEntry!.mounted) {
+        _overlayEntry!.remove();
+      }
+      _overlayEntry = null;
+    }
     _animationController?.dispose();
+    _animationController = null;
   }
 
   Future<T?> showCustomBottomSheet({

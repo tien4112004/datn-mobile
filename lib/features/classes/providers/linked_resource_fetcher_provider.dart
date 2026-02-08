@@ -49,11 +49,11 @@ final linkedResourceFetcherProvider =
               title: assignment.title,
               type: 'assignment',
               updatedAt: assignment.updatedAt,
-              subject: assignment.subject.displayName,
-              gradeLevel: assignment.gradeLevel.displayName,
+              subject: assignment.subject.apiValue,
+              gradeLevel: assignment.gradeLevel.apiValue,
               totalQuestions: assignment.totalQuestions,
               totalPoints: assignment.totalPoints,
-              status: assignment.status.displayName,
+              status: assignment.status.name,
             );
           default:
             // Unknown resource type

@@ -70,7 +70,7 @@ class PresentationWidgetOptions {
                 items: [null, ...GradeLevel.values.map((g) => g.apiValue)],
                 itemLabelBuilder: (v) {
                   if (v == null) return t.generate.presentationGenerate.none;
-                  return GradeLevel.fromApiValue(v).displayName;
+                  return GradeLevel.fromApiValue(v).getLocalizedName(t);
                 },
                 onChanged: (value) {
                   formController.updateGrade(value);
@@ -101,7 +101,7 @@ class PresentationWidgetOptions {
                 items: [null, ...Subject.values.map((s) => s.apiValue)],
                 itemLabelBuilder: (v) {
                   if (v == null) return t.generate.presentationGenerate.none;
-                  return Subject.fromApiValue(v).displayName;
+                  return Subject.fromApiValue(v).getLocalizedName(t);
                 },
                 onChanged: (value) {
                   formController.updateSubject(value);

@@ -132,7 +132,8 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       FlexDropdownField<Subject>(
                         value: _selectedSubject,
                         items: Subject.values,
-                        itemLabelBuilder: (subject) => subject.displayName,
+                        itemLabelBuilder: (subject) =>
+                            subject.getLocalizedName(t),
                         onChanged: (value) {
                           setState(() => _selectedSubject = value);
                         },
@@ -169,7 +170,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       FlexDropdownField<GradeLevel>(
                         value: _selectedGradeLevel,
                         items: GradeLevel.values,
-                        itemLabelBuilder: (grade) => grade.displayName,
+                        itemLabelBuilder: (grade) => grade.getLocalizedName(t),
                         onChanged: (value) {
                           setState(() => _selectedGradeLevel = value);
                         },

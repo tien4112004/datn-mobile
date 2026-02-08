@@ -1,8 +1,10 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Individual segment card for fill in blank editing
-class SegmentItem extends StatelessWidget {
+class SegmentItem extends ConsumerWidget {
   final BlankSegment segment;
   final int index;
   final int blankNumber;
@@ -21,7 +23,8 @@ class SegmentItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isBlank = segment.type == SegmentType.blank;
@@ -69,7 +72,11 @@ class SegmentItem extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      isBlank ? 'Blank $blankNumber' : 'Text',
+                      isBlank
+                          ? t.questionBank.fillInBlank.blankNumber(
+                              number: blankNumber,
+                            )
+                          : t.questionBank.fillInBlank.textSegment,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: isBlank
                             ? colorScheme.onPrimary
@@ -85,7 +92,7 @@ class SegmentItem extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.delete_outline, color: Colors.red.shade400),
                   onPressed: onRemove,
-                  tooltip: 'Remove segment',
+                  tooltip: t.questionBank.fillInBlank.removeSegment,
                 ),
             ],
           ),
@@ -94,10 +101,12 @@ class SegmentItem extends StatelessWidget {
             controller: controller,
             maxLines: isBlank ? 1 : 3,
             decoration: InputDecoration(
-              labelText: isBlank ? 'Correct answer' : 'Text content',
+              labelText: isBlank
+                  ? t.questionBank.fillInBlank.correctAnswer
+                  : t.questionBank.fillInBlank.textContentLabel,
               hintText: isBlank
-                  ? 'Enter the correct answer for this blank'
-                  : 'Enter text that appears in the sentence',
+                  ? t.questionBank.fillInBlank.enterCorrectAnswer
+                  : t.questionBank.fillInBlank.enterTextContent,
               filled: true,
               fillColor: colorScheme.surfaceContainerLowest,
               contentPadding: const EdgeInsets.symmetric(

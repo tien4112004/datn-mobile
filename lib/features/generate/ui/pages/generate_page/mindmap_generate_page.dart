@@ -10,7 +10,7 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_op
 import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
-import 'package:AIPrimary/features/generate/ui/widgets/suggestions/mindmap_suggestions.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
@@ -270,7 +270,9 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
           ),
           const SizedBox(height: 20),
           // Quick Suggestions
-          MindmapSuggestions(
+          ExamplePromptSuggestions(
+            type: 'MINDMAP',
+            headerText: t.generate.mindmapGenerate.tryTheseTopics,
             onSuggestionTap: (suggestion) {
               _topicController.text = suggestion;
             },

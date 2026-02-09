@@ -4,7 +4,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
-import 'package:AIPrimary/features/generate/ui/widgets/suggestions/image_suggestions.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
@@ -253,7 +253,9 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
           ),
           const SizedBox(height: 40),
           // Image Suggestions
-          ImageSuggestions(
+          ExamplePromptSuggestions(
+            type: 'IMAGE',
+            headerText: t.generate.imageGenerate.tryThesePrompts,
             onSuggestionTap: (suggestion) {
               _promptController.text = suggestion;
               ref

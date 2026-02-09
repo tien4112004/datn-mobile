@@ -10,7 +10,7 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/presentation_widg
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
-import 'package:AIPrimary/features/generate/ui/widgets/suggestions/topic_suggestions.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
@@ -274,7 +274,9 @@ class _PresentationGeneratePageState
           ),
           const SizedBox(height: 20),
           // Quick Suggestions
-          TopicSuggestions(
+          ExamplePromptSuggestions(
+            type: 'PRESENTATION',
+            headerText: t.generate.presentationGenerate.tryTheseTopics,
             onSuggestionTap: (suggestion) {
               _topicController.text = suggestion;
             },

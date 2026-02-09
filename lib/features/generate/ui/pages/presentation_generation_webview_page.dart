@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:AIPrimary/features/generate/data/dto/slide_theme_dto.dart';
+import 'package:AIPrimary/features/generate/states/theme/theme_provider.dart';
+import 'package:AIPrimary/features/projects/data/dto/create_presentation_request_dto.dart';
+import 'package:AIPrimary/features/projects/data/source/projects_remote_source_provider.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
@@ -175,13 +179,7 @@ class _PresentationGenerationWebViewPageState
   Widget _buildWebViewScaffold(String? url) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< HEAD
         title: Text(t.generate.presentationGenerate.generating),
-=======
-        title: Text(
-          _isGenerationComplete ? 'Presentation' : 'Generating Presentation',
-        ),
->>>>>>> e89d14e (feat: wip)
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () =>

@@ -17,26 +17,6 @@ class FillInBlankAfterAssess extends ConsumerWidget {
     this.studentAnswers,
   });
 
-  int get _correctCount {
-    if (studentAnswers == null) return 0;
-    int count = 0;
-    for (var segment in question.data.segments) {
-      if (segment.type == SegmentType.blank) {
-        final studentAnswer = studentAnswers![segment.id] ?? '';
-        if (_isCorrectAnswer(segment, studentAnswer)) {
-          count++;
-        }
-      }
-    }
-    return count;
-  }
-
-  int get _totalBlanks {
-    return question.data.segments
-        .where((s) => s.type == SegmentType.blank)
-        .length;
-  }
-
   bool _isCorrectAnswer(BlankSegment segment, String answer) {
     final caseSensitive = question.data.caseSensitive;
     final correctAnswer = caseSensitive
@@ -63,9 +43,6 @@ class FillInBlankAfterAssess extends ConsumerWidget {
     final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final percentage = _totalBlanks > 0
-        ? (_correctCount / _totalBlanks * 100).round()
-        : 0;
 
     return QuestionCardWrapper(
       title: question.title,

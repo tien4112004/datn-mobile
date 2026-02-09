@@ -57,6 +57,7 @@ extension QuestionResponseMapper on QuestionResponse {
       points: point ?? 0.0,
       isNewQuestion: isNew,
       contextId: contextId,
+      topicId: chapter,
     );
   }
 
@@ -151,9 +152,9 @@ extension QuestionResponseMapper on QuestionResponse {
       final pairMap = pair as Map<String, dynamic>;
       return MatchingPair(
         id: pairMap['id']?.toString() ?? '',
-        left: pairMap['leftText']?.toString() ?? '',
+        left: (pairMap['leftText'] ?? pairMap['left'])?.toString() ?? '',
         leftImageUrl: pairMap['leftImageUrl']?.toString(),
-        right: pairMap['rightText']?.toString() ?? '',
+        right: (pairMap['rightText'] ?? pairMap['right'])?.toString() ?? '',
         rightImageUrl: pairMap['rightImageUrl']?.toString(),
       );
     }).toList();

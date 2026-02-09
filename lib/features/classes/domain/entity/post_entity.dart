@@ -13,7 +13,7 @@ class PostEntity {
   final PostType type;
   final List<String> attachments;
   final List<LinkedResourceEntity> linkedResources;
-  final String? linkedLessonId;
+  final String? assignmentId;
   final DateTime? dueDate; // For exercise type posts
   final bool isPinned;
   final bool allowComments;
@@ -31,7 +31,7 @@ class PostEntity {
     required this.type,
     required this.attachments,
     required this.linkedResources,
-    this.linkedLessonId,
+    this.assignmentId,
     this.dueDate,
     required this.isPinned,
     required this.allowComments,
@@ -69,7 +69,7 @@ class PostEntity {
       type: type ?? this.type,
       attachments: attachments ?? this.attachments,
       linkedResources: linkedResources ?? this.linkedResources,
-      linkedLessonId: linkedLessonId ?? this.linkedLessonId,
+      assignmentId: linkedLessonId ?? assignmentId,
       dueDate: dueDate ?? this.dueDate,
       isPinned: isPinned ?? this.isPinned,
       allowComments: allowComments ?? this.allowComments,

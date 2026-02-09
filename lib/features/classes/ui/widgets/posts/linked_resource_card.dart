@@ -7,7 +7,6 @@ import 'package:AIPrimary/features/classes/providers/linked_resource_fetcher_pro
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:AIPrimary/features/classes/domain/entity/permission_level.dart';
-import 'package:AIPrimary/features/classes/ui/widgets/posts/assignment_preview_card.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/skeleton_card.dart';
@@ -18,8 +17,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Card widget that displays a linked resource with details fetched by ID
 class LinkedResourceCard extends ConsumerWidget {
   final LinkedResourceEntity resource;
+  final String postId; // Post ID for submission context
 
-  const LinkedResourceCard({super.key, required this.resource});
+  const LinkedResourceCard({
+    super.key,
+    required this.resource,
+    required this.postId,
+  });
 
   ResourceType? _getResourceType(String type) {
     try {
@@ -29,7 +33,12 @@ class LinkedResourceCard extends ConsumerWidget {
     }
   }
 
-  void _navigateToDetail(BuildContext context, String type, String id) {
+  void _navigateToDetail(
+    BuildContext context,
+    WidgetRef ref,
+    String type,
+    String id,
+  ) {
     switch (type) {
       case 'presentation':
         context.router.push(PresentationDetailRoute(presentationId: id));
@@ -39,9 +48,6 @@ class LinkedResourceCard extends ConsumerWidget {
         break;
       case 'image':
         context.router.push(ImageDetailRoute(imageId: id));
-        break;
-      case 'assignment':
-        context.router.push(AssignmentDetailRoute(assignmentId: id));
         break;
     }
   }
@@ -57,7 +63,7 @@ class LinkedResourceCard extends ConsumerWidget {
         type: resource.type,
         thumbnail: resource.thumbnail,
       );
-      return _buildResourceCard(context, preview, t);
+      return _buildResourceCard(context, preview, ref, t);
     }
 
     // Otherwise fetch from API (backward compatibility)
@@ -70,7 +76,7 @@ class LinkedResourceCard extends ConsumerWidget {
         return _buildErrorCard(context, error, t);
       },
       data: (preview) {
-        return _buildResourceCard(context, preview, t);
+        return _buildResourceCard(context, preview, ref, t);
       },
     );
   }
@@ -125,17 +131,14 @@ class LinkedResourceCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildResourceCard(BuildContext context, preview, Translations t) {
+  Widget _buildResourceCard(
+    BuildContext context,
+    LinkedResourcePreview preview,
+    WidgetRef ref,
+    Translations t,
+  ) {
     if (!preview.isValid) {
       return _buildErrorCard(context, t.classes.linkedResource.invalid, t);
-    }
-
-    // Use specialized card for assignments
-    if (preview.type == 'assignment') {
-      return AssignmentPreviewCard(
-        preview: preview,
-        onTap: () => _navigateToDetail(context, preview.type, preview.id),
-      );
     }
 
     final theme = Theme.of(context);
@@ -147,7 +150,7 @@ class LinkedResourceCard extends ConsumerWidget {
     final icon = resourceType?.icon ?? LucideIcons.fileText;
 
     return InkWell(
-      onTap: () => _navigateToDetail(context, preview.type, preview.id),
+      onTap: () => _navigateToDetail(context, ref, preview.type, preview.id),
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(12),

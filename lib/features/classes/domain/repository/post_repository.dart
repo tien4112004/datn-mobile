@@ -22,8 +22,18 @@ abstract class PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    String? assignmentId,
     DateTime? dueDate,
     bool? allowComments,
+    // Assignment settings (only for Homework type posts)
+    int? maxSubmissions,
+    bool? allowRetake,
+    bool? shuffleQuestions,
+    bool? showCorrectAnswers,
+    bool? showScoreImmediately,
+    double? passingScore,
+    DateTime? availableFrom,
+    DateTime? availableUntil,
   });
 
   /// Fetches a single post by its ID

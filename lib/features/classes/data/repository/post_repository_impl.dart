@@ -42,8 +42,17 @@ class PostRepositoryImpl implements PostRepository {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    String? assignmentId,
     DateTime? dueDate,
     bool? allowComments,
+    int? maxSubmissions,
+    bool? allowRetake,
+    bool? shuffleQuestions,
+    bool? showCorrectAnswers,
+    bool? showScoreImmediately,
+    double? passingScore,
+    DateTime? availableFrom,
+    DateTime? availableUntil,
   }) async {
     final request = PostCreateRequestDto(
       content: content,
@@ -51,8 +60,17 @@ class PostRepositoryImpl implements PostRepository {
       attachments: attachments,
       linkedResources: linkedResources?.map((e) => e.toDto()).toList(),
       linkedLessonId: linkedLessonId,
+      assignmentId: assignmentId,
       dueDate: dueDate,
       allowComments: allowComments,
+      maxSubmissions: maxSubmissions,
+      allowRetake: allowRetake,
+      shuffleQuestions: shuffleQuestions,
+      showCorrectAnswers: showCorrectAnswers,
+      showScoreImmediately: showScoreImmediately,
+      passingScore: passingScore,
+      availableFrom: availableFrom,
+      availableUntil: availableUntil,
     );
     final response = await _remoteDataSource.createPost(classId, request);
     return response.data!.toEntity();

@@ -1,7 +1,6 @@
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_preview.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 import 'package:AIPrimary/features/projects/service/service_provider.dart';
-import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider that fetches resource details using known type (optimized, no cascading)
@@ -38,23 +37,22 @@ final linkedResourceFetcherProvider =
               thumbnail: mindmap.thumbnail,
               updatedAt: mindmap.updatedAt,
             );
-
-          case 'assignment':
-            final assignment = await ref
-                .read(assignmentRepositoryProvider)
-                .getAssignmentById(resource.id);
-
-            return LinkedResourcePreview(
-              id: assignment.assignmentId,
-              title: assignment.title,
-              type: 'assignment',
-              updatedAt: assignment.updatedAt,
-              subject: assignment.subject.apiValue,
-              gradeLevel: assignment.gradeLevel.apiValue,
-              totalQuestions: assignment.totalQuestions,
-              totalPoints: assignment.totalPoints,
-              status: assignment.status.name,
-            );
+          // No assignment resource type
+          // case 'assignment':
+          //   final assignment = await ref
+          //       .read(assignmentRepositoryProvider)
+          //       .getAssignmentById(resource.id);
+          //   return LinkedResourcePreview(
+          //     id: assignment.assignmentId,
+          //     title: assignment.title,
+          //     type: 'assignment',
+          //     updatedAt: assignment.updatedAt,
+          //     subject: assignment.subject.displayName,
+          //     gradeLevel: assignment.gradeLevel.displayName,
+          //     totalQuestions: assignment.totalQuestions,
+          //     totalPoints: assignment.totalPoints,
+          //     status: assignment.status.displayName,
+          //   );
           default:
             // Unknown resource type
             return LinkedResourcePreview.error(resource.id);

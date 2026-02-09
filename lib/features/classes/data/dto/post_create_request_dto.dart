@@ -11,8 +11,19 @@ class PostCreateRequestDto {
   final List<String>? attachments;
   final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
+  final String? assignmentId;
   final DateTime? dueDate;
   final bool? allowComments;
+
+  // Assignment settings (only for Homework type posts)
+  final int? maxSubmissions;
+  final bool? allowRetake;
+  final bool? shuffleQuestions;
+  final bool? showCorrectAnswers;
+  final bool? showScoreImmediately;
+  final double? passingScore;
+  final DateTime? availableFrom;
+  final DateTime? availableUntil;
 
   const PostCreateRequestDto({
     required this.content,
@@ -20,8 +31,17 @@ class PostCreateRequestDto {
     this.attachments,
     this.linkedResources,
     this.linkedLessonId,
+    this.assignmentId,
     this.dueDate,
     this.allowComments,
+    this.maxSubmissions,
+    this.allowRetake,
+    this.shuffleQuestions,
+    this.showCorrectAnswers,
+    this.showScoreImmediately,
+    this.passingScore,
+    this.availableFrom,
+    this.availableUntil,
   });
 
   factory PostCreateRequestDto.fromJson(Map<String, dynamic> json) =>

@@ -20,9 +20,9 @@ enum PostType {
   String get apiValue {
     switch (this) {
       case PostType.post:
-        return 'Post';
+        return 'post';
       case PostType.exercise:
-        return 'Exercise';
+        return 'exercise';
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/providers/post_paging_controller_pod.dart';
-import 'package:AIPrimary/features/classes/ui/pages/post_upsert_page.dart';
+import 'package:AIPrimary/features/posts/ui/pages/create_post_page.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -36,7 +36,7 @@ class _PostListState extends ConsumerState<PostList> {
     HapticFeedback.mediumImpact();
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
-        builder: (context) => PostUpsertPage(classId: widget.classEntity.id),
+        builder: (context) => CreatePostPage(classId: widget.classEntity.id),
       ),
     );
 

@@ -1,9 +1,11 @@
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
+import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
-import 'package:AIPrimary/features/classes/ui/pages/post_upsert_page.dart';
+import 'package:AIPrimary/features/posts/ui/pages/update_post_page.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_section.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/posts/assignment_preview_card.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_content.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_footer.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_header.dart';
@@ -128,7 +130,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                           : () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => PostUpsertPage(
+                                  builder: (_) => UpdatePostPage(
                                     classId: widget.classEntity.id,
                                     postId: widget.post.id,
                                   ),
@@ -147,10 +149,19 @@ class _PostCardState extends ConsumerState<PostCard> {
                         attachments: widget.post.attachments,
                       ),
 
-                    // Linked Resources (if any)
-                    if (widget.post.linkedResources.isNotEmpty)
+                    if (widget.post.type == PostType.post)
                       LinkedResourcesDisplay(
                         linkedResources: widget.post.linkedResources,
+                        postId: widget.post.id,
+                      ),
+
+                    if (widget.post.type == PostType.exercise)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: AssignmentPreviewCard(postId: widget.post.id),
                       ),
 
                     // Footer section

@@ -100,6 +100,8 @@ class _AssignmentSelectorSheetState
   }
 
   void _handleDone(List<AssignmentEntity> allAssignments) {
+    debugPrint('Selected IDs: $_selectedIds');
+
     final selectedResources = allAssignments
         .where((a) => _selectedIds.contains(a.assignmentId))
         .map(
@@ -110,8 +112,18 @@ class _AssignmentSelectorSheetState
           ),
         )
         .toList();
+    debugPrint('Selected resources: $selectedResources');
 
-    Navigator.of(context).pop(selectedResources);
+    // Handle single select vs multi select
+    if (widget.singleSelect) {
+      // Return single entity or null if none selected
+      Navigator.of(
+        context,
+      ).pop(selectedResources.isNotEmpty ? selectedResources.first : null);
+    } else {
+      // Return list of entities
+      Navigator.of(context).pop(selectedResources);
+    }
   }
 
   @override
@@ -171,11 +183,11 @@ class _AssignmentSelectorSheetState
                 ),
                 // Done button
                 FilledButton(
-                  onPressed: () {
-                    assignmentsAsync.whenData((result) {
-                      _handleDone(result.assignments);
-                    });
-                  },
+                  onPressed: assignmentsAsync.maybeWhen(
+                    data: (result) =>
+                        () => _handleDone(result.assignments),
+                    orElse: () => null, // Disabled if loading or error
+                  ),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -226,7 +238,7 @@ class _AssignmentSelectorSheetState
                 icon: LucideIcons.book,
                 selectedValue: _filterSubject,
                 options: Subject.values,
-                displayNameBuilder: (subject) => subject.getLocalizedName(t),
+                displayNameBuilder: (subject) => subject.displayName,
                 iconBuilder: (subject) => _getSubjectIcon(subject),
                 onChanged: (subject) =>
                     setState(() => _filterSubject = subject),
@@ -238,7 +250,7 @@ class _AssignmentSelectorSheetState
                 icon: LucideIcons.graduationCap,
                 selectedValue: _filterGrade,
                 options: GradeLevel.values,
-                displayNameBuilder: (grade) => grade.getLocalizedName(t),
+                displayNameBuilder: (grade) => grade.displayName,
                 onChanged: (grade) => setState(() => _filterGrade = grade),
                 allLabel: t.classes.assignmentSelector.allGrades,
                 allIcon: LucideIcons.graduationCap,
@@ -324,7 +336,7 @@ class _AssignmentSelectorSheetState
 }
 
 /// Individual assignment tile with selection state
-class _AssignmentSelectionTile extends ConsumerWidget {
+class _AssignmentSelectionTile extends StatelessWidget {
   final AssignmentEntity assignment;
   final bool isSelected;
   final VoidCallback onTap;
@@ -358,10 +370,9 @@ class _AssignmentSelectionTile extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final t = ref.watch(translationsPod);
     final subjectColor = _getSubjectColor(assignment.subject);
 
     return Material(
@@ -434,13 +445,13 @@ class _AssignmentSelectionTile extends ConsumerWidget {
                         _buildBadge(
                           context,
                           icon: _getSubjectIcon(assignment.subject),
-                          label: assignment.subject.getLocalizedName(t),
+                          label: assignment.subject.displayName,
                           color: subjectColor,
                         ),
                         _buildBadge(
                           context,
                           icon: LucideIcons.graduationCap,
-                          label: assignment.gradeLevel.getLocalizedName(t),
+                          label: assignment.gradeLevel.displayName,
                           color: colorScheme.secondary,
                         ),
                         _buildBadge(

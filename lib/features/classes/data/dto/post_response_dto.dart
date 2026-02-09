@@ -38,7 +38,7 @@ class PostResponseDto {
   final String type;
   final List<String>? attachments;
   final List<LinkedResourceDto>? linkedResources;
-  final String? linkedLessonId;
+  final String? assignmentId;
   final DateTime? dueDate;
   final bool isPinned;
   final bool allowComments;
@@ -54,7 +54,7 @@ class PostResponseDto {
     required this.type,
     this.attachments,
     this.linkedResources,
-    this.linkedLessonId,
+    this.assignmentId,
     this.dueDate,
     required this.isPinned,
     required this.allowComments,
@@ -82,7 +82,7 @@ extension PostResponseMapper on PostResponseDto {
     attachments: attachments ?? [],
     linkedResources:
         linkedResources?.map((dto) => dto.toEntity()).toList() ?? [],
-    linkedLessonId: linkedLessonId,
+    assignmentId: assignmentId,
     dueDate: dueDate,
     isPinned: isPinned,
     allowComments: allowComments,

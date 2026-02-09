@@ -1,5 +1,7 @@
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/matrix_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -557,21 +559,34 @@ class AssessmentMatrixDashboard extends ConsumerWidget {
   }
 }
 
-// TODO: Refactor this class. Since this AssesmentMatrix is currently dont match the design, we need to do some adjustments.
 /// Assessment matrix data model.
+///
+/// Supports two modes:
+/// - **Topic-based** (from API matrix): target counts per subtopic × difficulty × questionType
+/// - **Flat** (computed from questions): actual counts per type × difficulty
 class AssessmentMatrix {
   final Map<String, int> _targetMatrix;
   final Map<String, int> _actualMatrix;
 
+  /// Per-subtopic actual counts: "subtopicId:difficultyApi:questionTypeApi" → count
+  final Map<String, int> _subtopicActualMatrix;
+  final ApiMatrixEntity? apiMatrix;
+
   AssessmentMatrix({
     required Map<String, int> targetMatrix,
     required Map<String, int> actualMatrix,
+    Map<String, int>? subtopicActualMatrix,
+    this.apiMatrix,
   }) : _targetMatrix = targetMatrix,
-       _actualMatrix = actualMatrix;
+       _actualMatrix = actualMatrix,
+       _subtopicActualMatrix = subtopicActualMatrix ?? {};
 
   factory AssessmentMatrix.empty() {
     return AssessmentMatrix(targetMatrix: {}, actualMatrix: {});
   }
+
+  /// Whether this matrix has topic-based data from the API.
+  bool get hasTopicMatrix => apiMatrix != null;
 
   String _getKey(QuestionType type, Difficulty difficulty) {
     return '${type.name}_${difficulty.name}';
@@ -602,11 +617,82 @@ class AssessmentMatrix {
   }
 
   int getTotalTarget() {
+    if (apiMatrix != null) return apiMatrix!.totalQuestions;
     return _targetMatrix.values.fold(0, (sum, val) => sum + val);
   }
 
   int getTotalActual() {
     return _actualMatrix.values.fold(0, (sum, val) => sum + val);
+  }
+
+  /// Get target count for a specific subtopic × difficulty from the API matrix.
+  /// Sums across all question types for that cell.
+  int getSubtopicTarget(int subtopicIndex, int difficultyIndex) {
+    if (apiMatrix == null) return 0;
+    final row = apiMatrix!.matrix;
+    if (subtopicIndex >= row.length) return 0;
+    if (difficultyIndex >= row[subtopicIndex].length) return 0;
+
+    int total = 0;
+    for (final cellValue in row[subtopicIndex][difficultyIndex]) {
+      total += parseCellValue(cellValue).count;
+    }
+    return total;
+  }
+
+  /// Get total target count for a specific subtopic (sum across all difficulties).
+  int getSubtopicTotalTarget(int subtopicIndex) {
+    if (apiMatrix == null) return 0;
+    final row = apiMatrix!.matrix;
+    if (subtopicIndex >= row.length) return 0;
+
+    int total = 0;
+    for (int d = 0; d < row[subtopicIndex].length; d++) {
+      for (final cellValue in row[subtopicIndex][d]) {
+        total += parseCellValue(cellValue).count;
+      }
+    }
+    return total;
+  }
+
+  /// Get actual count for a specific sub-cell (subtopic × difficulty × questionType).
+  int getSubtopicCellActual(
+    int subtopicIndex,
+    int difficultyIndex,
+    int questionTypeIndex,
+  ) {
+    if (apiMatrix == null) return 0;
+    final dims = apiMatrix!.dimensions;
+    final subtopics = dims.flatSubtopics;
+    if (subtopicIndex >= subtopics.length) return 0;
+    if (difficultyIndex >= dims.difficulties.length) return 0;
+    if (questionTypeIndex >= dims.questionTypes.length) return 0;
+
+    final key =
+        '${subtopics[subtopicIndex].id}:${dims.difficulties[difficultyIndex]}:${dims.questionTypes[questionTypeIndex]}';
+    return _subtopicActualMatrix[key] ?? 0;
+  }
+
+  /// Get actual count for a subtopic × difficulty (sum across question types).
+  int getSubtopicDiffActual(int subtopicIndex, int difficultyIndex) {
+    if (apiMatrix == null) return 0;
+    final dims = apiMatrix!.dimensions;
+    int total = 0;
+    for (int q = 0; q < dims.questionTypes.length; q++) {
+      total += getSubtopicCellActual(subtopicIndex, difficultyIndex, q);
+    }
+    return total;
+  }
+
+  /// Get actual count for a subtopic (sum across all difficulties and question types).
+  int getSubtopicTotalActual(int subtopicIndex) {
+    if (apiMatrix == null) return 0;
+    final dims = apiMatrix!.dimensions;
+    int total = 0;
+    for (int d = 0; d < dims.difficulties.length; d++) {
+      total += getSubtopicDiffActual(subtopicIndex, d);
+    }
+    return total;
   }
 
   MatrixStats getStats() {

@@ -175,7 +175,8 @@
       "cancel": "Hủy",
       "discard": "Bỏ qua"
     },
-    "optional": "(Tùy chọn)"
+    "optional": "(Tùy chọn)",
+    "none": "Không"
   },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",
@@ -1117,6 +1118,9 @@
   },
   "assignments": {
     "pointsError": "Điểm phải lớn hơn 0",
+    "subtopic": "Chủ đề con",
+    "metadataTab": "Thông tin",
+    "contentTab": "Nội dung",
     "title": "Quản lý bài kiểm tra",
     "createExam": "Tạo bài kiểm tra",
     "refresh": "Làm mới",
@@ -1357,7 +1361,13 @@
         "completion": "Hoàn thành",
         "matchesFound": "Số lượng khớp",
         "typeHeader": "LOẠI",
-        "totalHeader": "TỔNG"
+        "totalHeader": "TỔNG",
+        "editCell": "Chỉnh sửa ô",
+        "countLabel": "Số lượng",
+        "pointsLabel": "Điểm",
+        "clearCell": "Xóa",
+        "cancel": "Hủy",
+        "save": "Lưu"
       }
     },
 

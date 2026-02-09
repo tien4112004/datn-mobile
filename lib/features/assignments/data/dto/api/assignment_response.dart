@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/assignments/data/dto/api/api_matrix_dto.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/context_response.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/question_response.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
@@ -19,6 +20,7 @@ class AssignmentResponse {
   final String? grade;
   final List<QuestionResponse>? questions;
   final List<ContextResponse>? contexts;
+  final ApiMatrixDto? matrix;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -32,6 +34,7 @@ class AssignmentResponse {
     this.grade,
     this.questions,
     this.contexts,
+    this.matrix,
     required this.createdAt,
     this.updatedAt,
   });
@@ -138,6 +141,7 @@ extension AssignmentResponseMapper on AssignmentResponse {
       updatedAt: updatedAt,
       questions: questionEntities,
       contexts: contextEntities,
+      matrix: matrix?.toEntity(),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Minimal Metadata Footer - Displays technical details at the bottom
@@ -23,7 +23,6 @@ class QuestionMetadataSection extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final dateFormat = DateFormat('MMM dd, yyyy — hh:mm a');
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
@@ -53,12 +52,18 @@ class QuestionMetadataSection extends ConsumerWidget {
                   Text(t.questionBank.detail.chapter(chapter: chapter!)),
                 Text(
                   t.questionBank.detail.created(
-                    date: dateFormat.format(createdAt),
+                    date: DateFormatHelper.formatFullDateTime(
+                      createdAt,
+                      ref: ref,
+                    ),
                   ),
                 ),
                 Text(
                   t.questionBank.detail.lastUpdated(
-                    date: dateFormat.format(updatedAt),
+                    date: DateFormatHelper.formatFullDateTime(
+                      updatedAt,
+                      ref: ref,
+                    ),
                   ),
                 ),
               ],

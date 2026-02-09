@@ -1,45 +1,85 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'mindmap.g.dart';
-
-@JsonSerializable()
 class Mindmap {
   final String id;
   final String title;
   final String? description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String? thumbnail;
+  final List<MindmapNode> nodes;
+  final List<MindmapEdge> edges;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   Mindmap({
     required this.id,
     required this.title,
     this.description,
-    required this.createdAt,
-    required this.updatedAt,
-    this.thumbnail,
+    required this.nodes,
+    required this.edges,
+    this.createdAt,
+    this.updatedAt,
   });
+
+  String? get thumbnail => null;
 
   Mindmap copyWith({
     String? id,
     String? title,
     String? description,
+    List<MindmapNode>? nodes,
+    List<MindmapEdge>? edges,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? thumbnail,
   }) {
     return Mindmap(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      nodes: nodes ?? this.nodes,
+      edges: edges ?? this.edges,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      thumbnail: thumbnail ?? this.thumbnail,
     );
   }
+}
 
-  factory Mindmap.fromJson(Map<String, dynamic> json) =>
-      _$MindmapFromJson(json);
+class MindmapNode {
+  final String id;
+  final String type;
+  final Map<String, dynamic> extraFields;
 
-  Map<String, dynamic> toJson() => _$MindmapToJson(this);
+  MindmapNode({
+    required this.id,
+    required this.type,
+    required this.extraFields,
+  });
+
+  MindmapNode copyWith({
+    String? id,
+    String? type,
+    Map<String, dynamic>? extraFields,
+  }) {
+    return MindmapNode(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      extraFields: extraFields ?? this.extraFields,
+    );
+  }
+}
+
+class MindmapEdge {
+  final String id;
+  final String type;
+  final Map<String, dynamic>? extraFields;
+
+  MindmapEdge({required this.id, required this.type, this.extraFields});
+
+  MindmapEdge copyWith({
+    String? id,
+    String? type,
+    Map<String, dynamic>? extraFields,
+  }) {
+    return MindmapEdge(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      extraFields: extraFields ?? this.extraFields,
+    );
+  }
 }

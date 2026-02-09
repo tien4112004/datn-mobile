@@ -35,8 +35,6 @@ class ExamFiltersBar extends ConsumerWidget {
           displayNameBuilder: (status) => status.getLocalizedName(t),
           iconBuilder: (status) => _getStatusIcon(status),
           onChanged: onStatusChanged,
-          allLabel: 'All Status',
-          allIcon: LucideIcons.list,
         ),
         FilterConfig<GradeLevel>(
           label: 'Grade Level',
@@ -45,8 +43,6 @@ class ExamFiltersBar extends ConsumerWidget {
           options: GradeLevel.values,
           displayNameBuilder: (grade) => grade.getLocalizedName(t),
           onChanged: onGradeLevelChanged,
-          allLabel: 'All Grades',
-          allIcon: LucideIcons.list,
         ),
       ],
       onClearFilters: onClearFilters,

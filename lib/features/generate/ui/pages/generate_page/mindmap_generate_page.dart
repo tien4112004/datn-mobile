@@ -12,7 +12,6 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_op
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
-import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
@@ -84,30 +83,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    // Listen for generation completion
-    ref.listen(mindmapGenerateControllerProvider, (previous, next) {
-      next.when(
-        data: (state) {
-          if (state.generatedMindmap != null) {
-            // Navigate to result page
-            ref.read(loadingOverlayPod.notifier).state = false;
-            context.router.push(const MindmapResultRoute());
-          }
-        },
-        loading: () {
-          ref.read(loadingOverlayPod.notifier).state = true;
-        },
-        error: (error, stackTrace) {
-          ref.read(loadingOverlayPod.notifier).state = false;
-          if (context.mounted) {
-            SnackbarUtils.showError(
-              context,
-              t.generate.mindmapGenerate.error(error: error.toString()),
-            );
-          }
-        },
-      );
-    });
+    // Note: Generation is now handled by WebView page, no listener needed here
 
     return Scaffold(
       backgroundColor: context.isDarkMode
@@ -284,6 +260,21 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
 
   void _handleGenerate() {
     _topicFocusNode.unfocus();
-    ref.read(mindmapGenerateControllerProvider.notifier).generateMindmap();
+    // Validate form before navigating
+    final formState = ref.read(mindmapFormControllerProvider);
+    if (!formState.isValid) {
+      // Form requires topic and model to be set
+      if (formState.topic.trim().isEmpty) {
+        SnackbarUtils.showError(context, t.generate.enterTopicHint);
+      } else if (formState.selectedModel == null) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.mindmapGenerate.selectModel,
+        );
+      }
+      return;
+    }
+    // Navigate to WebView generation page
+    context.router.push(const MindmapGenerationWebViewRoute());
   }
 }

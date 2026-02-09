@@ -9,6 +9,7 @@ abstract interface class PresentationService {
 
   Future<List<PresentationMinimal>> fetchPresentationMinimalsPaged(
     int pageKey, {
+    int pageSize = 20,
     String? search,
     SortOption? sort,
   });

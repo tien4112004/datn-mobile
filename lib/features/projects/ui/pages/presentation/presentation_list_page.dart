@@ -4,17 +4,18 @@ import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.d
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/enum/sort_option.dart';
 import 'package:AIPrimary/features/projects/states/presentation_provider.dart';
+import 'package:AIPrimary/features/projects/states/presentation_paging_controller_pod.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/presentation/presentation_tile.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/presentation/presentation_grid_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/view_preference_pod.dart';
-import 'package:AIPrimary/shared/riverpod_ext/async_value_transform.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
-import 'package:AIPrimary/shared/widgets/unified_resource_list.dart';
+import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'dart:async';
 
@@ -29,18 +30,18 @@ class PresentationListPage extends ConsumerStatefulWidget {
 
 class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   SortOption? _sortOption;
-  String _searchQuery = '';
   late TextEditingController _searchController;
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _sortOption = SortOption.nameAsc;
+    _sortOption = SortOption.dateCreatedDesc;
     _searchController = TextEditingController();
-    // Load initial data
+    // Initialize filter with default sort
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(presentationProvider.notifier).loadPresentationsWithFilter();
+      ref.read(presentationFilterProvider.notifier).state =
+          PresentationFilterState(sortOption: _sortOption);
     });
   }
 
@@ -54,20 +55,21 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      setState(() {
-        _searchQuery = query;
-      });
-      // Update filter and reload
-      ref.read(presentationFilterProvider.notifier).state =
-          PresentationFilterState(searchQuery: query, sortOption: _sortOption);
-      ref.read(presentationProvider.notifier).loadPresentationsWithFilter();
+      // Update filter state which will trigger the paging controller to refresh
+      final currentFilter = ref.read(presentationFilterProvider);
+      ref
+          .read(presentationFilterProvider.notifier)
+          .state = PresentationFilterState(
+        searchQuery: query,
+        sortOption: currentFilter.sortOption,
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final t = ref.watch(translationsPod);
-    final presentationState = ref.watch(presentationProvider);
+    final pagingController = ref.watch(presentationPagingControllerPod);
     final viewPreferenceAsync = ref.watch(
       viewPreferenceNotifierPod(ResourceType.presentation.name),
     );
@@ -103,9 +105,7 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                 tooltip: 'Refresh',
                 onPressed: () {
                   HapticFeedback.lightImpact();
-                  ref
-                      .read(presentationProvider.notifier)
-                      .loadPresentationsWithFilter();
+                  pagingController.refresh();
                 },
               ),
             ],
@@ -133,9 +133,17 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                 icon: const Icon(LucideIcons.x, size: 20),
                                 onPressed: () {
                                   _searchController.clear();
-                                  setState(() {
-                                    _searchQuery = '';
-                                  });
+                                  setState(() {});
+                                  // Update filter and the paging controller will auto-refresh
+                                  final currentFilter = ref.read(
+                                    presentationFilterProvider,
+                                  );
+                                  ref
+                                      .read(presentationFilterProvider.notifier)
+                                      .state = PresentationFilterState(
+                                    searchQuery: '',
+                                    sortOption: currentFilter.sortOption,
+                                  );
                                 },
                               )
                             : null,
@@ -179,19 +187,17 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
                                   setState(() {
                                     _sortOption = value;
                                   });
-                                  // Update filter and reload
+                                  // Update filter state with sort option
+                                  final currentFilter = ref.read(
+                                    presentationFilterProvider,
+                                  );
                                   ref
                                       .read(presentationFilterProvider.notifier)
                                       .state = PresentationFilterState(
-                                    searchQuery: _searchQuery,
+                                    searchQuery: currentFilter.searchQuery,
                                     sortOption: value,
                                   );
-                                  ref
-                                      .read(presentationProvider.notifier)
-                                      .loadPresentationsWithFilter();
                                 },
-                                allLabel: t.projects.common_list.sort_default,
-                                allIcon: LucideIcons.list,
                               ),
                             ],
                             onClearFilters: () {
@@ -231,45 +237,150 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
             ),
           ),
         ],
-        body: UnifiedResourceList<PresentationMinimal>(
-          asyncItems: presentationState.mapData((state) => state.presentations),
-          isGridView: viewPreferenceAsync,
-          gridCardBuilder: (item) => PresentationGridCard(
-            presentation: item,
-            onTap: () {
-              HapticFeedback.lightImpact();
-              context.router.push(
-                PresentationDetailRoute(presentationId: item.id),
-              );
-            },
-            onMoreOptions: () {
-              _showMoreOptions(context, item);
-            },
-          ),
-          listTileBuilder: (item) => PresentationTile(
-            presentation: item,
-            onTap: () {
-              HapticFeedback.lightImpact();
-              context.router.push(
-                PresentationDetailRoute(presentationId: item.id),
-              );
-            },
-            onMoreOptions: () {
-              _showMoreOptions(context, item);
+        body: RefreshIndicator(
+          onRefresh: () async {
+            pagingController.refresh();
+          },
+          child: PagingListener(
+            controller: pagingController,
+            builder: (context, state, fetchNextPage) {
+              if (viewPreferenceAsync) {
+                return _buildPagedListView(state, fetchNextPage);
+              } else {
+                return _buildPagedGridView(state, fetchNextPage);
+              }
             },
           ),
-          skeletonGridBuilder: () => const ProjectGridSkeletonLoader(),
-          skeletonListBuilder: () => const ProjectListSkeletonLoader(),
-          emptyIcon: LucideIcons.presentation,
-          emptyTitle: t.projects.no_presentations,
-          emptyMessage: t.projects.common_list.no_items_description(
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPagedGridView(
+    PagingState<int, PresentationMinimal> state,
+    VoidCallback fetchNextPage,
+  ) {
+    final t = ref.watch(translationsPod);
+
+    return PagedGridView<int, PresentationMinimal>(
+      state: state,
+      fetchNextPage: fetchNextPage,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.95,
+      ),
+      builderDelegate: PagedChildBuilderDelegate<PresentationMinimal>(
+        itemBuilder: (context, item, index) => PresentationGridCard(
+          presentation: item,
+          onTap: () {
+            HapticFeedback.lightImpact();
+            context.router.push(
+              PresentationDetailRoute(presentationId: item.id),
+            );
+          },
+          onMoreOptions: () {
+            _showMoreOptions(context, item);
+          },
+        ),
+        firstPageProgressIndicatorBuilder: (context) =>
+            const ProjectGridSkeletonLoader(),
+        newPageProgressIndicatorBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+        noItemsFoundIndicatorBuilder: (context) => EnhancedEmptyState(
+          icon: LucideIcons.presentation,
+          title: t.projects.no_presentations,
+          message: t.projects.common_list.no_items_description(
             type: t.projects.presentations.title,
           ),
-          onRefresh: () {
-            ref
-                .read(presentationProvider.notifier)
-                .loadPresentationsWithFilter();
+        ),
+        firstPageErrorIndicatorBuilder: (context) => _ErrorIndicator(
+          error: state.error.toString(),
+          onRetry: () => ref.read(presentationPagingControllerPod).refresh(),
+        ),
+        newPageErrorIndicatorBuilder: (context) =>
+            _NewPageErrorIndicator(onRetry: fetchNextPage),
+        noMoreItemsIndicatorBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(
+            child: Text(
+              'No more presentations',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPagedListView(
+    PagingState<int, PresentationMinimal> state,
+    VoidCallback fetchNextPage,
+  ) {
+    final t = ref.watch(translationsPod);
+
+    return PagedListView<int, PresentationMinimal>.separated(
+      state: state,
+      fetchNextPage: fetchNextPage,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      separatorBuilder: (context, index) =>
+          const SizedBox(child: Divider(indent: 154, height: 1)),
+      builderDelegate: PagedChildBuilderDelegate<PresentationMinimal>(
+        itemBuilder: (context, item, index) => PresentationTile(
+          presentation: item,
+          onTap: () {
+            HapticFeedback.lightImpact();
+            context.router.push(
+              PresentationDetailRoute(presentationId: item.id),
+            );
           },
+          onMoreOptions: () {
+            _showMoreOptions(context, item);
+          },
+        ),
+        firstPageProgressIndicatorBuilder: (context) =>
+            const ProjectListSkeletonLoader(),
+        newPageProgressIndicatorBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(24),
+          child: Center(
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+        noItemsFoundIndicatorBuilder: (context) => EnhancedEmptyState(
+          icon: LucideIcons.presentation,
+          title: t.projects.no_presentations,
+          message: t.projects.common_list.no_items_description(
+            type: t.projects.presentations.title,
+          ),
+        ),
+        firstPageErrorIndicatorBuilder: (context) => _ErrorIndicator(
+          error: state.error.toString(),
+          onRetry: () => ref.read(presentationPagingControllerPod).refresh(),
+        ),
+        newPageErrorIndicatorBuilder: (context) =>
+            _NewPageErrorIndicator(onRetry: fetchNextPage),
+        noMoreItemsIndicatorBuilder: (context) => const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(
+            child: Text(
+              'No more presentations',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
         ),
       ),
     );
@@ -303,6 +414,65 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorIndicator extends StatelessWidget {
+  final String error;
+  final VoidCallback onRetry;
+
+  const _ErrorIndicator({required this.error, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(LucideIcons.circleAlert, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load presentations',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(LucideIcons.refreshCw),
+              label: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NewPageErrorIndicator extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _NewPageErrorIndicator({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: TextButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(LucideIcons.refreshCw, size: 16),
+          label: const Text('Tap to retry'),
         ),
       ),
     );

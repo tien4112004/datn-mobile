@@ -1,9 +1,12 @@
 import 'dart:convert';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/const/resource.dart';
 import 'package:AIPrimary/core/config/config.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/projects/data/dto/create_mindmap_request_dto.dart';
+import 'package:AIPrimary/features/projects/data/source/projects_remote_source_provider.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
@@ -11,76 +14,74 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Page that embeds the Vue app's /generation/:id route for real-time presentation generation
+/// Page that embeds the React app's /mindmap/embed/:id?mode=generate route
+/// for AI-powered mindmap generation.
 ///
 /// Flow:
-/// 1. Creates presentation via API (hidden behind loading)
-/// 2. Opens WebView (hidden behind loading)
+/// 1. Creates empty mindmap via API
+/// 2. Opens WebView with generation mode
 /// 3. Stores generation request in localStorage
-/// 4. Waits for Vue to signal 'generationViewReady'
-/// 5. Shows WebView with Vue's streaming UI
+/// 4. Waits for React to signal 'mindmapGenerationViewReady'
+/// 5. Shows WebView with React's generation UI
+/// 6. React calls generate API, converts to nodes, updates mindmap
+/// 7. React signals 'mindmapGenerationCompleted'
 @RoutePage()
-class PresentationGenerationWebViewPage extends ConsumerStatefulWidget {
-  const PresentationGenerationWebViewPage({super.key});
+class MindmapGenerationWebViewPage extends ConsumerStatefulWidget {
+  const MindmapGenerationWebViewPage({super.key});
 
   @override
-  ConsumerState<PresentationGenerationWebViewPage> createState() =>
-      _PresentationGenerationWebViewPageState();
+  ConsumerState<MindmapGenerationWebViewPage> createState() =>
+      _MindmapGenerationWebViewPageState();
 }
 
-class _PresentationGenerationWebViewPageState
-    extends ConsumerState<PresentationGenerationWebViewPage> {
-  bool _isVueReady = false;
+class _MindmapGenerationWebViewPageState
+    extends ConsumerState<MindmapGenerationWebViewPage> {
+  bool _isReactReady = false;
   bool _isGenerationComplete = false;
   String? _error;
-  String? _presentationId;
+  String? _mindmapId;
+  String? _accessToken;
 
   @override
   void initState() {
     super.initState();
-    _createPresentation();
+    _initializeAndCreateMindmap();
   }
 
-  Future<void> _createPresentation() async {
+  Future<void> _initializeAndCreateMindmap() async {
+    // Load access token first
+    final secureStorage = ref.read(secureStoragePod);
+    _accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
+    debugPrint('[MindmapGeneration] Token loaded: ${_accessToken != null}');
+
+    // Then create mindmap
+    await _createMindmap();
+  }
+
+  /// Create an empty mindmap to get an ID for the WebView URL
+  Future<void> _createMindmap() async {
     try {
-      final formState = ref.read(presentationFormControllerProvider);
+      final formState = ref.read(mindmapFormControllerProvider);
 
-      // Get the selected theme from the themes provider
-      SlideThemeDto? selectedTheme;
-      final themeId = formState.themeId;
-      if (themeId != null) {
-        final themesValue = ref.read(slideThemesProvider);
-        final themes = themesValue.asData?.value;
-        if (themes != null && themes.isNotEmpty) {
-          selectedTheme = themes.firstWhere(
-            (t) => t.id == themeId,
-            orElse: () => themes.first,
-          );
-        }
-      }
-
-      // Create presentation request DTO
-      final createRequest = CreatePresentationRequestDto(
-        title: formState.topic.isEmpty
-            ? 'Untitled Presentation'
-            : formState.topic,
-        slides: [],
-        isParsed: false,
-        viewport: {'width': 1000.0, 'height': 562.5},
-        theme: selectedTheme,
+      // Create empty mindmap request
+      final createRequest = CreateMindmapRequestDto(
+        title: formState.topic.isEmpty ? 'Untitled Mindmap' : formState.topic,
+        description: '',
+        nodes: [],
+        edges: [],
       );
 
-      // Create presentation via API
+      // Create mindmap via API
       final remoteSource = ref.read(projectsRemoteSourceProvider);
-      final response = await remoteSource.createPresentation(createRequest);
+      final response = await remoteSource.createMindmap(createRequest);
 
       if (mounted) {
         setState(() {
-          _presentationId = response.data?.id;
+          _mindmapId = response.data?.id;
         });
       }
     } catch (e) {
-      debugPrint('Error creating presentation: $e');
+      debugPrint('Error creating mindmap: $e');
       if (mounted) {
         setState(() {
           _error = e.toString();
@@ -91,10 +92,10 @@ class _PresentationGenerationWebViewPageState
 
   @override
   Widget build(BuildContext context) {
-    final t = ref.watch(translationsPod);
+    // Check platform support
     if (InAppWebViewPlatform.instance == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(t.generate.presentationGenerate.title)),
+        appBar: AppBar(title: const Text('Generate Mindmap')),
         body: const Center(
           child: Text(
             'WebView is not supported on this platform.',
@@ -104,20 +105,23 @@ class _PresentationGenerationWebViewPageState
       );
     }
 
-    // Show error if presentation creation failed
+    // Show error if mindmap creation failed
     if (_error != null) {
       return _buildErrorView();
     }
 
-    // Build the main scaffold with WebView (hidden until Vue ready)
-    // Get current locale to pass to WebView
+    // Build the main scaffold with WebView (hidden until React ready)
     final locale = ref.read(translationsPod).$meta.locale.languageCode;
-    final url = _presentationId != null
-        ? '${Config.presentationBaseUrl}/generation/$_presentationId?locale=$locale'
-        : null;
+    String? url;
+    if (_mindmapId != null) {
+      // Include token in URL so React can use it before localStorage is ready
+      final tokenParam = _accessToken != null ? '&token=$_accessToken' : '';
+      url =
+          '${Config.mindmapBaseUrl}/mindmap/embed/$_mindmapId?mode=generate&locale=$locale$tokenParam';
+    }
 
     if (kDebugMode && url != null) {
-      debugPrint('Opening generation webview: $url');
+      debugPrint('Opening mindmap generation webview: $url');
     }
 
     return _buildWebViewScaffold(url);
@@ -141,7 +145,7 @@ class _PresentationGenerationWebViewPageState
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               const Text(
-                'Failed to Create Presentation',
+                'Failed to Create Mindmap',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -156,7 +160,7 @@ class _PresentationGenerationWebViewPageState
                   setState(() {
                     _error = null;
                   });
-                  _createPresentation();
+                  _createMindmap();
                 },
                 child: const Text('Retry'),
               ),
@@ -175,13 +179,7 @@ class _PresentationGenerationWebViewPageState
   Widget _buildWebViewScaffold(String? url) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< HEAD
-        title: Text(t.generate.presentationGenerate.generating),
-=======
-        title: Text(
-          _isGenerationComplete ? 'Presentation' : 'Generating Presentation',
-        ),
->>>>>>> e89d14e (feat: wip)
+        title: Text(_isGenerationComplete ? 'Mindmap' : 'Generating Mindmap'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () =>
@@ -190,10 +188,10 @@ class _PresentationGenerationWebViewPageState
       ),
       body: Stack(
         children: [
-          // WebView - hidden until Vue signals ready
+          // WebView - use Offstage instead of Opacity to prevent rendering when hidden
           if (url != null)
-            Opacity(
-              opacity: _isVueReady ? 1.0 : 0.0,
+            Offstage(
+              offstage: !_isReactReady,
               child: AuthenticatedWebView(
                 webViewUrl: url,
                 enableZoom: false,
@@ -202,20 +200,20 @@ class _PresentationGenerationWebViewPageState
                 },
                 onLoadStop: (controller, url) async {
                   debugPrint('WebView page loaded');
-                  // Store generation request in localStorage for Vue to access
+                  // Store generation request in localStorage for React to access
                   await _storeGenerationRequest(controller);
                 },
                 onReceivedError: (controller, request, error) {
                   debugPrint('WebView error: ${error.description}');
                 },
                 onConsoleMessage: (controller, message) {
-                  debugPrint('[Generation] ${message.message}');
+                  debugPrint('[MindmapGeneration] ${message.message}');
                 },
               ),
             ),
 
-          // Single loading indicator - shown until Vue is ready
-          if (!_isVueReady)
+          // Single loading indicator - shown until React is ready
+          if (!_isReactReady)
             Container(
               color: Theme.of(context).scaffoldBackgroundColor,
               child: const Center(
@@ -235,29 +233,29 @@ class _PresentationGenerationWebViewPageState
   }
 
   void _registerHandlers(InAppWebViewController controller) {
-    // Handler: Vue is ready to show content
+    // Handler: React is ready to show content
     controller.addJavaScriptHandler(
-      handlerName: 'generationViewReady',
+      handlerName: 'mindmapGenerationViewReady',
       callback: (args) {
-        debugPrint('Vue generation view ready');
+        debugPrint('React mindmap generation view ready');
         if (mounted) {
           setState(() {
-            _isVueReady = true;
+            _isReactReady = true;
           });
         }
       },
     );
 
-    // Handler: Generation completed (from Vue after processing all slides)
+    // Handler: Generation completed (from React after processing)
     controller.addJavaScriptHandler(
-      handlerName: 'generationCompleted',
+      handlerName: 'mindmapGenerationCompleted',
       callback: (args) {
         final data = args.isNotEmpty ? args[0] as Map<String, dynamic> : {};
-        debugPrint('Generation completed: $data');
+        debugPrint('Mindmap generation completed: $data');
 
         if (data['success'] == true) {
-          final slideCount = data['slideCount'] as int?;
-          debugPrint('Successfully generated $slideCount slides');
+          final nodeCount = data['nodeCount'] as int?;
+          debugPrint('Successfully generated mindmap with $nodeCount nodes');
           if (mounted) {
             setState(() {
               _isGenerationComplete = true;
@@ -274,71 +272,45 @@ class _PresentationGenerationWebViewPageState
     );
   }
 
-  Future<void> _sendGenerationData() async {
-    if (_webViewController == null) return;
-
-    final t = ref.read(translationsPod);
-    final formState = ref.read(presentationFormControllerProvider);
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
-
-    // Build the generation request
+  /// Store generation request in localStorage for React to access
+  Future<void> _storeGenerationRequest(
+    InAppWebViewController controller,
+  ) async {
     try {
-      final generationRequest = formController.toPresentationRequest();
+      final formState = ref.read(mindmapFormControllerProvider);
 
-      // Create a temporary presentation ID (will be replaced by backend)
-      final tempPresentationId =
-          'temp_${DateTime.now().millisecondsSinceEpoch}';
-
-      // Build the presentation object structure
-      final presentation = {
-        'id': tempPresentationId,
-        'title': formState.topic.isEmpty
-            ? t.projects.untitled
-            : formState.topic,
-        'slides': [], // Start with empty slides
-        'theme': generationRequest.presentation?['theme'],
-        'viewport': generationRequest.presentation?['viewport'],
+      // Build request body matching MindmapMobileGenerationRequest
+      final requestBody = {
+        'mindmapId': _mindmapId,
+        'topic': formState.topic,
+        'model': formState.selectedModel?.name ?? '',
+        'provider': formState.selectedModel?.provider ?? '',
+        'language':
+            formState.language.toLowerCase() == 'vietnamese' ||
+                formState.language.toLowerCase() == 'vi'
+            ? 'vi'
+            : 'en',
+        'maxDepth': formState.maxDepth,
+        'maxBranchesPerNode': formState.maxBranchesPerNode,
+        if (formState.grade != null) 'grade': formState.grade,
+        if (formState.subject != null) 'subject': formState.subject,
       };
 
-      // Build the complete generation request payload
-      final generationPayload = {
-        'presentationId': tempPresentationId,
-        'outline': generationRequest.outline,
-        'model': {
-          'name': generationRequest.model,
-          'provider': generationRequest.provider,
-        },
-        'slideCount': generationRequest.slideCount,
-        'language': generationRequest.language,
-        'presentation': generationRequest.presentation,
-        'others': generationRequest.others,
-      };
+      final jsonString = jsonEncode(requestBody);
 
-      // Send data to Vue app using the setGenerationData function
-      await _webViewController!.evaluateJavascript(
+      // Escape for JavaScript
+      final escapedJson = jsonString
+          .replaceAll('\\', '\\\\')
+          .replaceAll("'", "\\'")
+          .replaceAll('\n', '\\n')
+          .replaceAll('\r', '\\r');
+
+      await controller.evaluateJavascript(
         source:
-            '''
-            (function() {
-              try {
-                if (window.setGenerationData) {
-                  window.setGenerationData(
-                    ${jsonEncode(presentation)},
-                    ${jsonEncode(generationPayload)}
-                  );
-                  return 'Data sent successfully';
-                } else {
-                  return 'setGenerationData not available yet';
-                }
-              } catch (error) {
-                console.error('Error sending generation data:', error);
-                return 'Error: ' + error.message;
-              }
-            })();
-          ''',
+            "localStorage.setItem('mindmapGenerationRequest', '$escapedJson');",
       );
-      debugPrint('Generation data sent to Vue app');
+
+      debugPrint('[Flutter] Stored mindmap generation request in localStorage');
     } catch (e) {
       debugPrint('[Flutter] Error storing generation request: $e');
     }
@@ -353,16 +325,17 @@ class _PresentationGenerationWebViewPageState
   }
 
   void _handleClose() {
-    final t = ref.read(translationsPod);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(t.generate.presentationGenerate.cancelGenerationTitle),
-        content: Text(t.generate.presentationGenerate.cancelGenerationMessage),
+        title: const Text('Cancel Generation?'),
+        content: const Text(
+          'Are you sure you want to cancel the mindmap generation?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(t.questionBank.continue_),
+            child: const Text('Continue'),
           ),
           TextButton(
             onPressed: () {
@@ -370,7 +343,7 @@ class _PresentationGenerationWebViewPageState
               context.router.pop();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text(t.generate.presentationGenerate.cancelGeneration),
+            child: const Text('Cancel Generation'),
           ),
         ],
       ),

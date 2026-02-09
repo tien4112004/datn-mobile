@@ -42,8 +42,6 @@ void showAdvancedQuestionFilterDialog({
             label: t.questionBank.filters.grade,
             icon: LucideIcons.graduationCap,
             options: GradeLevel.values,
-            allLabel: t.questionBank.filters.allGrades,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.gradeFilter,
             onChanged: (value) {
               setState(() {
@@ -56,8 +54,6 @@ void showAdvancedQuestionFilterDialog({
             label: t.questionBank.filters.subject,
             icon: LucideIcons.bookOpen,
             options: Subject.values,
-            allLabel: t.questionBank.filters.allSubjects,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.subjectFilter,
             onChanged: (value) {
               setState(() {
@@ -70,8 +66,6 @@ void showAdvancedQuestionFilterDialog({
             label: t.questionBank.filters.type,
             icon: LucideIcons.circleQuestionMark,
             options: QuestionType.values,
-            allLabel: t.questionBank.filters.allTypes,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.questionTypeFilter,
             onChanged: (value) {
               setState(() {
@@ -84,8 +78,6 @@ void showAdvancedQuestionFilterDialog({
             label: t.questionBank.filters.difficulty,
             icon: LucideIcons.gauge,
             options: Difficulty.values,
-            allLabel: t.questionBank.filters.allDifficulties,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.difficultyFilter,
             onChanged: (value) {
               setState(() {
@@ -100,7 +92,7 @@ void showAdvancedQuestionFilterDialog({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter chips display
-            _buildFiltersSection(context, filterConfigs, t),
+            _buildFiltersSection(context, filterConfigs, t, ref),
             const SizedBox(height: 16),
             const Divider(),
             const SizedBox(height: 16),
@@ -144,6 +136,7 @@ Widget _buildFiltersSection(
   BuildContext context,
   List<BaseFilterConfig> filters,
   dynamic t,
+  WidgetRef ref,
 ) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;
@@ -176,7 +169,7 @@ Widget _buildFiltersSection(
           return FilterChipButton(
             filter: filter,
             onTap: () {
-              FilterChipButton.showFilterPicker(context, filter);
+              FilterChipButton.showFilterPicker(context, filter, ref);
             },
           );
         }).toList(),

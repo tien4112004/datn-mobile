@@ -175,7 +175,9 @@
       "cancel": "Hủy",
       "discard": "Bỏ qua"
     },
-    "optional": "(Tùy chọn)"
+    "optional": "(Tùy chọn)".,
+    "all": "Tất cả",
+    "filterBy": "Lọc theo $label"
   },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",

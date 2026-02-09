@@ -546,7 +546,7 @@ class _AssignmentQuestionCreatePageState
       ),
       items: [
         DropdownMenuItem<String>(
-          value: null,
+          value: "",
           child: Text(
             t.common.none,
             style: TextStyle(color: colorScheme.onSurfaceVariant),

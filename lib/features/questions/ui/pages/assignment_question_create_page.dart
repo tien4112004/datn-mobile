@@ -1,5 +1,6 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/context/local_context_selector_sheet.dart';
@@ -11,8 +12,8 @@ import 'package:AIPrimary/features/questions/ui/pages/modify/fill_in_blank_secti
 import 'package:AIPrimary/features/questions/ui/pages/modify/matching_section.dart';
 import 'package:AIPrimary/features/questions/ui/pages/modify/multiple_choice_section.dart';
 import 'package:AIPrimary/features/questions/ui/pages/modify/open_ended_section.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/modify/question_title_input.dart';
 import 'package:AIPrimary/shared/widgets/unsaved_changes_dialog.dart';
-import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Page for creating a new question specifically for an assignment.
 ///
 /// Features:
-/// - Full question creation form
+/// - Two tabs: Metadata (points, subtopic, info) and Content (context, type-specific, explanation)
 /// - Points input field
 /// - Returns AssignmentQuestionEntity (not saved to question bank)
 /// - Used when teachers want to create assignment-specific questions
@@ -33,10 +34,14 @@ class AssignmentQuestionCreatePage extends ConsumerStatefulWidget {
   /// Local contexts available in this assignment for linking
   final List<ContextEntity> assignmentContexts;
 
+  /// Available subtopics from the assignment matrix for topic assignment
+  final List<MatrixSubtopic> availableSubtopics;
+
   const AssignmentQuestionCreatePage({
     super.key,
     this.defaultPoints = 10.0,
     this.assignmentContexts = const [],
+    this.availableSubtopics = const [],
   });
 
   @override
@@ -45,17 +50,21 @@ class AssignmentQuestionCreatePage extends ConsumerStatefulWidget {
 }
 
 class _AssignmentQuestionCreatePageState
-    extends ConsumerState<AssignmentQuestionCreatePage> {
+    extends ConsumerState<AssignmentQuestionCreatePage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  late TabController _tabController;
   late TextEditingController _pointsController;
   late double _currentPoints;
 
   ContextEntity? _linkedContext;
   String? _currentContextId;
+  String? _currentTopicId;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _currentPoints = widget.defaultPoints;
     _pointsController = TextEditingController(
       text: _currentPoints.toStringAsFixed(0),
@@ -74,6 +83,7 @@ class _AssignmentQuestionCreatePageState
 
   @override
   void dispose() {
+    _tabController.dispose();
     _pointsController.dispose();
     super.dispose();
   }
@@ -119,6 +129,7 @@ class _AssignmentQuestionCreatePageState
       points: _currentPoints,
       isNewQuestion: true,
       contextId: _currentContextId,
+      topicId: _currentTopicId,
     );
 
     // Mark as saved and return the question entity
@@ -250,8 +261,8 @@ class _AssignmentQuestionCreatePageState
       },
       child: Scaffold(
         backgroundColor: colorScheme.surface,
-        appBar: CustomAppBar(
-          title: t.questionBank.createQuestion,
+        appBar: AppBar(
+          title: Text(t.questionBank.createQuestion),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -269,150 +280,28 @@ class _AssignmentQuestionCreatePageState
               tooltip: t.questionBank.form.addToAssignment,
             ),
           ],
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(
+                icon: const Icon(LucideIcons.settings2, size: 18),
+                text: t.assignments.metadataTab,
+              ),
+              Tab(
+                icon: const Icon(LucideIcons.fileText, size: 18),
+                text: t.assignments.contentTab,
+              ),
+            ],
+          ),
         ),
         body: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Info banner
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        LucideIcons.info,
-                        color: colorScheme.onPrimaryContainer,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          t.questionBank.infoText,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onPrimaryContainer,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Points Section
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              LucideIcons.target,
-                              color: colorScheme.primary,
-                              size: 24,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              t.common.points,
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _pointsController,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,2}'),
-                            ),
-                          ],
-                          decoration: InputDecoration(
-                            labelText: t.questionBank.form.pointsHint,
-                            suffixText: t.common.pointsSuffix,
-                            helperText: t.assignments.pointsError,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(LucideIcons.hash),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // // Basic Information Section
-                // QuestionBasicInfoSection(
-                //   title: formState.title,
-                //   selectedType: formState.type,
-                //   selectedDifficulty: formState.difficulty,
-                //   titleImageUrl: formState.titleImageUrl,
-                //   explanation: formState.explanation,
-                //   grade: formState.grade,
-                //   chapter: formState.chapter,
-                //   subject: formState.subject,
-                //   onTitleChanged: (value) {
-                //     ref.read(questionFormProvider.notifier).updateTitle(value);
-                //   },
-                //   onTypeChanged: (type) {
-                //     ref.read(questionFormProvider.notifier).updateType(type);
-                //   },
-                //   onDifficultyChanged: (difficulty) {
-                //     ref
-                //         .read(questionFormProvider.notifier)
-                //         .updateDifficulty(difficulty);
-                //   },
-                //   onTitleImageChanged: (url) {
-                //     ref
-                //         .read(questionFormProvider.notifier)
-                //         .updateTitleImageUrl(url);
-                //   },
-                //   onExplanationChanged: (value) {
-                //     ref
-                //         .read(questionFormProvider.notifier)
-                //         .updateExplanation(value);
-                //   },
-                //   onGradeChanged: (value) {
-                //     ref.read(questionFormProvider.notifier).updateGrade(value);
-                //   },
-                //   onChapterChanged: (value) {
-                //     ref
-                //         .read(questionFormProvider.notifier)
-                //         .updateChapter(value);
-                //   },
-                //   onSubjectChanged: (value) {
-                //     ref
-                //         .read(questionFormProvider.notifier)
-                //         .updateSubject(value);
-                //   },
-                // ),
-                const SizedBox(height: 16),
-
-                // Reading Passage section
-                if (widget.assignmentContexts.isNotEmpty)
-                  _buildContextSection(theme, colorScheme),
-
-                if (widget.assignmentContexts.isNotEmpty)
-                  const SizedBox(height: 16),
-
-                // Type-specific sections
-                _buildTypeSpecificSection(formState),
-
-                const SizedBox(height: 80), // Space for bottom button
-              ],
-            ),
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildMetadataTab(theme, colorScheme, formState),
+              _buildContentTab(theme, colorScheme, formState),
+            ],
           ),
         ),
         bottomNavigationBar: Container(
@@ -441,6 +330,240 @@ class _AssignmentQuestionCreatePageState
           ),
         ),
       ),
+    );
+  }
+
+  // ── Metadata Tab ──────────────────────────────────────────────────────
+
+  Widget _buildMetadataTab(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    QuestionFormState formState,
+  ) {
+    final t = ref.watch(translationsPod);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Info banner
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  LucideIcons.info,
+                  color: colorScheme.onPrimaryContainer,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    t.questionBank.infoText,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Points Section
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        LucideIcons.target,
+                        color: colorScheme.primary,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        t.common.points,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _pointsController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}'),
+                      ),
+                    ],
+                    decoration: InputDecoration(
+                      labelText: t.questionBank.form.pointsHint,
+                      suffixText: t.common.pointsSuffix,
+                      helperText: t.assignments.pointsError,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(LucideIcons.hash),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Type & Difficulty row
+          Row(
+            children: [
+              // Question Type selector
+              Expanded(
+                child: DropdownButtonFormField<QuestionType>(
+                  initialValue: formState.type,
+                  decoration: InputDecoration(
+                    labelText: t.questionBank.form.type,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  items: QuestionType.values.map((type) {
+                    return DropdownMenuItem(
+                      value: type,
+                      child: Text(type.getLocalizedName(t)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      ref.read(questionFormProvider.notifier).updateType(value);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Difficulty Selector
+              Expanded(
+                child: DropdownButtonFormField<Difficulty>(
+                  initialValue: formState.difficulty,
+                  decoration: InputDecoration(
+                    labelText: t.common.difficulty,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  items: Difficulty.values.map((difficulty) {
+                    return DropdownMenuItem(
+                      value: difficulty,
+                      child: Text(difficulty.getLocalizedName(t)),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      ref
+                          .read(questionFormProvider.notifier)
+                          .updateDifficulty(value);
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Subtopic selector
+          if (widget.availableSubtopics.isNotEmpty)
+            _buildSubtopicSelector(theme, colorScheme),
+        ],
+      ),
+    );
+  }
+
+  // ── Content Tab ───────────────────────────────────────────────────────
+
+  Widget _buildContentTab(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    QuestionFormState formState,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Reading Passage section
+          if (widget.assignmentContexts.isNotEmpty)
+            _buildContextSection(theme, colorScheme),
+          if (widget.assignmentContexts.isNotEmpty) const SizedBox(height: 16),
+
+          // Question Title with image button
+          QuestionTitleInput(
+            title: formState.title,
+            onTitleChanged: (value) =>
+                ref.read(questionFormProvider.notifier).updateTitle(value),
+            titleImageUrl: formState.titleImageUrl,
+            onTitleImageChanged: (value) => ref
+                .read(questionFormProvider.notifier)
+                .updateTitleImageUrl(value),
+          ),
+          const SizedBox(height: 24),
+
+          // Type-specific sections
+          _buildTypeSpecificSection(formState),
+
+          const SizedBox(height: 80), // Space for bottom button
+        ],
+      ),
+    );
+  }
+
+  // ── Helper Widgets ────────────────────────────────────────────────────
+
+  Widget _buildSubtopicSelector(ThemeData theme, ColorScheme colorScheme) {
+    final t = ref.watch(translationsPod);
+    return DropdownButtonFormField<String>(
+      initialValue: _currentTopicId,
+      decoration: InputDecoration(
+        labelText: t.assignments.subtopic,
+        prefixIcon: const Icon(LucideIcons.bookmark, size: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      items: [
+        DropdownMenuItem<String>(
+          value: "",
+          child: Text(
+            t.common.none,
+            style: TextStyle(color: colorScheme.onSurfaceVariant),
+          ),
+        ),
+        ...widget.availableSubtopics.map((subtopic) {
+          return DropdownMenuItem<String>(
+            value: subtopic.id,
+            child: Text(subtopic.name),
+          );
+        }),
+      ],
+      onChanged: (value) {
+        setState(() {
+          _currentTopicId = value;
+        });
+      },
     );
   }
 

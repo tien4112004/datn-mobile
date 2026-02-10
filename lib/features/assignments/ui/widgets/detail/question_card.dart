@@ -21,6 +21,7 @@ class QuestionCard extends ConsumerStatefulWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final bool initiallyExpanded;
+  final String? subtopicName;
 
   const QuestionCard({
     super.key,
@@ -30,6 +31,7 @@ class QuestionCard extends ConsumerStatefulWidget {
     this.onEdit,
     this.onDelete,
     this.initiallyExpanded = false,
+    this.subtopicName,
   });
 
   @override
@@ -173,7 +175,7 @@ class _QuestionCardState extends ConsumerState<QuestionCard>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Type and Difficulty Badges
+                  // Type, Difficulty, and Subtopic Badges
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
@@ -192,6 +194,12 @@ class _QuestionCardState extends ConsumerState<QuestionCard>
                           widget.question.difficulty,
                         ),
                       ),
+                      if (widget.subtopicName != null)
+                        _buildBadge(
+                          icon: LucideIcons.bookmark,
+                          label: widget.subtopicName!,
+                          color: colorScheme.tertiary,
+                        ),
                     ],
                   ),
 

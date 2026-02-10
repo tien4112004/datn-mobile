@@ -1,4 +1,8 @@
+import 'package:AIPrimary/features/assignments/data/dto/api/api_matrix_dto.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/matrix_utils.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
@@ -8,6 +12,7 @@ import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/matrix_cell_editor_sheet.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/contexts_tab.dart';
@@ -75,23 +80,50 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
   /// Calculate assessment matrix from assignment questions.
   AssessmentMatrix _calculateAssessmentMatrix(AssignmentEntity assignment) {
-    // Count actual questions by type and difficulty
+    // Count actual questions by type and difficulty (flat)
     final Map<String, int> actualMatrix = {};
-
     for (final questionEntity in assignment.questions) {
       final question = questionEntity.question;
       final key = '${question.type.name}_${question.difficulty.name}';
-
       actualMatrix[key] = (actualMatrix[key] ?? 0) + 1;
     }
 
-    // For now, targetMatrix is empty since there's no UI to set targets yet
-    // In the future, this should come from assignment.targetMatrix or similar
+    // Build per-subtopic actual counts using topicId (= chapter from API)
+    final Map<String, int> subtopicActualMatrix = {};
+    if (assignment.matrix != null) {
+      for (final qEntity in assignment.questions) {
+        final topicId = qEntity.topicId;
+        if (topicId == null) continue;
+        final diffApi = qEntity.question.difficulty.apiValue;
+        final typeApi = qEntity.question.type.apiValue;
+        final key = '$topicId:$diffApi:$typeApi';
+        subtopicActualMatrix[key] = (subtopicActualMatrix[key] ?? 0) + 1;
+      }
+    }
+
+    // Populate flat targetMatrix by aggregating apiMatrix across subtopics
     final Map<String, int> targetMatrix = {};
+    if (assignment.matrix != null) {
+      final apiMatrix = assignment.matrix!;
+      final dims = apiMatrix.dimensions;
+      for (int s = 0; s < apiMatrix.matrix.length; s++) {
+        for (int d = 0; d < dims.difficulties.length; d++) {
+          for (int q = 0; q < dims.questionTypes.length; q++) {
+            final parsed = parseCellValue(apiMatrix.matrix[s][d][q]);
+            final type = QuestionType.fromApiValue(dims.questionTypes[q]);
+            final diff = Difficulty.fromApiValue(dims.difficulties[d]);
+            final key = '${type.name}_${diff.name}';
+            targetMatrix[key] = (targetMatrix[key] ?? 0) + parsed.count;
+          }
+        }
+      }
+    }
 
     return AssessmentMatrix(
       targetMatrix: targetMatrix,
       actualMatrix: actualMatrix,
+      subtopicActualMatrix: subtopicActualMatrix,
+      apiMatrix: assignment.matrix,
     );
   }
 
@@ -168,6 +200,46 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
         .removeContext(contextId);
   }
 
+  /// Opens the matrix cell editor bottom sheet for a specific cell.
+  void _showMatrixCellEditor(
+    BuildContext context,
+    AssignmentEntity assignment,
+    int subtopicIndex,
+    int difficultyIndex,
+    int questionTypeIndex,
+  ) {
+    final matrixData = assignment.matrix!;
+    final cellValue =
+        matrixData.matrix[subtopicIndex][difficultyIndex][questionTypeIndex];
+    final subtopic = matrixData.dimensions.flatSubtopics[subtopicIndex];
+    final difficulty = Difficulty.fromApiValue(
+      matrixData.dimensions.difficulties[difficultyIndex],
+    );
+    final questionType = QuestionType.fromApiValue(
+      matrixData.dimensions.questionTypes[questionTypeIndex],
+    );
+
+    showMatrixCellEditor(
+      context: context,
+      subtopicName: subtopic.name,
+      difficulty: difficulty,
+      questionType: questionType,
+      cellValue: cellValue,
+      onSave: (count, points) {
+        ref
+            .read(
+              detailAssignmentControllerProvider(widget.assignmentId).notifier,
+            )
+            .updateMatrixCell(
+              subtopicIndex,
+              difficultyIndex,
+              questionTypeIndex,
+              serializeCellValue(count, points),
+            );
+      },
+    );
+  }
+
   void _handleCancel() {
     setState(() => _isEditMode = false);
     ref
@@ -193,6 +265,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
         grade: assignment.gradeLevel.apiValue,
         questions: assignment.questions.map((q) => q.toRequest()).toList(),
         contexts: contexts.map((c) => c.toRequest()).toList(),
+        matrix: assignment.matrix?.toDto(),
       );
 
       await ref
@@ -347,6 +420,12 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                   assignment: assignment,
                   isEditMode: _isEditMode,
                   contextsMap: contextsMap,
+                  subtopicNameMap: {
+                    for (final s
+                        in assignment.matrix?.dimensions.flatSubtopics ??
+                            <MatrixSubtopic>[])
+                      s.id: s.name,
+                  },
                   onEditContext: _isEditMode
                       ? (contextEntity) => _handleEditContext(contextEntity)
                       : null,
@@ -359,6 +438,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                         questionEntity: questionEntity,
                         questionNumber: index + 1,
                         assignmentContexts: contextsMap.values.toList(),
+                        availableSubtopics:
+                            assignment.matrix?.dimensions.flatSubtopics ?? [],
                       ),
                     );
 
@@ -446,6 +527,15 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                 MatrixTab(
                   matrix: _calculateAssessmentMatrix(assignment),
                   isEditMode: _isEditMode,
+                  onCellTap: _isEditMode && assignment.matrix != null
+                      ? (subIdx, diffIdx, qTypeIdx) => _showMatrixCellEditor(
+                          context,
+                          assignment,
+                          subIdx,
+                          diffIdx,
+                          qTypeIdx,
+                        )
+                      : null,
                 ),
               ],
             ),
@@ -548,6 +638,9 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                           AssignmentQuestionCreateRoute(
                             defaultPoints: 10.0,
                             assignmentContexts: contextsMap.values.toList(),
+                            availableSubtopics:
+                                assignment.matrix?.dimensions.flatSubtopics ??
+                                [],
                           ),
                         );
 

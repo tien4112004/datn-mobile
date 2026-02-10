@@ -166,6 +166,44 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     state = AsyncData(currentAssignment.copyWith(questions: updatedQuestions));
   }
 
+  /// Update a single cell in the matrix (optimistic local update only).
+  /// Server sync happens when the user presses Save.
+  Future<void> updateMatrixCell(
+    int subtopicIndex,
+    int difficultyIndex,
+    int questionTypeIndex,
+    String cellValue,
+  ) async {
+    final currentAssignment = await future;
+    if (currentAssignment.matrix == null) return;
+
+    final newMatrix = currentAssignment.matrix!.deepCopyMatrix();
+    newMatrix[subtopicIndex][difficultyIndex][questionTypeIndex] = cellValue;
+
+    // Recalculate totals from all cells
+    int totalCount = 0;
+    double totalPts = 0.0;
+    for (final subtopic in newMatrix) {
+      for (final difficulty in subtopic) {
+        for (final cell in difficulty) {
+          final parsed = parseCellValue(cell);
+          totalCount += parsed.count;
+          totalPts += parsed.points;
+        }
+      }
+    }
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        matrix: currentAssignment.matrix!.copyWith(
+          matrix: newMatrix,
+          totalQuestions: totalCount,
+          totalPoints: totalPts.toInt(),
+        ),
+      ),
+    );
+  }
+
   /// Update shuffle questions setting.
   Future<void> updateShuffleQuestions(bool shuffle) async {
     final currentAssignment = await future;

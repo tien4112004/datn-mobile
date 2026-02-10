@@ -26,12 +26,17 @@ class AssignmentQuestionEntity {
   /// Context ID for questions with reading passage, null if standalone
   final String? contextId;
 
+  /// Topic/subtopic ID this question belongs to (from API `chapter` field).
+  /// Used to compute per-cell actual counts in the matrix.
+  final String? topicId;
+
   const AssignmentQuestionEntity({
     this.questionBankId,
     required this.question,
     required this.points,
     required this.isNewQuestion,
     this.contextId,
+    this.topicId,
   });
 
   /// Create a copy with updated fields.
@@ -46,6 +51,7 @@ class AssignmentQuestionEntity {
     bool? isNewQuestion,
     String? contextId,
     bool clearContextId = false,
+    String? topicId,
   }) {
     return AssignmentQuestionEntity(
       questionBankId: questionBankId ?? this.questionBankId,
@@ -53,6 +59,7 @@ class AssignmentQuestionEntity {
       points: points ?? this.points,
       isNewQuestion: isNewQuestion ?? this.isNewQuestion,
       contextId: clearContextId ? null : (contextId ?? this.contextId),
+      topicId: topicId ?? this.topicId,
     );
   }
 
@@ -65,7 +72,8 @@ class AssignmentQuestionEntity {
         other.question == question &&
         other.points == points &&
         other.isNewQuestion == isNewQuestion &&
-        other.contextId == contextId;
+        other.contextId == contextId &&
+        other.topicId == topicId;
   }
 
   @override
@@ -76,6 +84,7 @@ class AssignmentQuestionEntity {
       points,
       isNewQuestion,
       contextId,
+      topicId,
     );
   }
 
@@ -83,7 +92,7 @@ class AssignmentQuestionEntity {
   String toString() {
     return 'AssignmentQuestionEntity(questionBankId: $questionBankId, '
         'question: ${question.title}, points: $points, isNewQuestion: $isNewQuestion, '
-        'contextId: $contextId)';
+        'contextId: $contextId, topicId: $topicId)';
   }
 }
 
@@ -98,6 +107,7 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
       title: question.title,
       titleImageUrl: question.titleImageUrl,
       explanation: question.explanation,
+      chapter: topicId,
       contextId: contextId,
       point: points,
       data: _questionToDataMap(question),

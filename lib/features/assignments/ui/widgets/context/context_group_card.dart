@@ -47,6 +47,9 @@ class ContextGroupCard extends StatelessWidget {
   /// Localized label for "Reading Passage" fallback title
   final String? readingPassageLabel;
 
+  /// Map of subtopic IDs to display names
+  final Map<String, String> subtopicNameMap;
+
   const ContextGroupCard({
     super.key,
     required this.context,
@@ -60,6 +63,7 @@ class ContextGroupCard extends StatelessWidget {
     this.onDeleteQuestion,
     this.questionCountLabel,
     this.readingPassageLabel,
+    this.subtopicNameMap = const {},
   });
 
   @override
@@ -128,6 +132,9 @@ class ContextGroupCard extends StatelessWidget {
                     question: questions[i].question,
                     questionNumber: startingDisplayNumber + i,
                     isEditMode: isEditMode,
+                    subtopicName: questions[i].topicId != null
+                        ? subtopicNameMap[questions[i].topicId!]
+                        : null,
                     onEdit: onEditQuestion != null
                         ? () => onEditQuestion!(questions[i], startIndex + i)
                         : null,

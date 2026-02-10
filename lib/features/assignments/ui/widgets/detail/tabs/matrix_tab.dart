@@ -1,24 +1,48 @@
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/matrix_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
 
-/// Matrix tab with clean design matching the Matrix tab reference.
-/// Features: Icon badge header, matrix table, colorful summary stats.
-class MatrixTab extends ConsumerWidget {
+/// Matrix tab with expandable difficulty columns and cell editing.
+///
+/// Two display modes:
+/// - **Topic-based** (when API matrix is available): rows = topics/subtopics,
+///   columns = difficulties (expandable to show question type sub-cells)
+/// - **Flat** (fallback): rows = question types, columns = difficulties (read-only)
+class MatrixTab extends ConsumerStatefulWidget {
   final AssessmentMatrix matrix;
   final bool isEditMode;
 
-  const MatrixTab({super.key, required this.matrix, this.isEditMode = false});
+  /// Called when a sub-cell is tapped in edit mode.
+  /// Parameters: (subtopicIndex, difficultyIndex, questionTypeIndex)
+  final void Function(int, int, int)? onCellTap;
+
+  const MatrixTab({
+    super.key,
+    required this.matrix,
+    this.isEditMode = false,
+    this.onCellTap,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MatrixTab> createState() => _MatrixTabState();
+}
+
+class _MatrixTabState extends ConsumerState<MatrixTab> {
+  /// Which difficulty column is expanded (null = all collapsed).
+  int? _expandedDifficultyIndex;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final stats = matrix.getStats();
+    final stats = widget.matrix.getStats();
 
     return Container(
       color: colorScheme.surfaceContainerLowest,
@@ -26,43 +50,39 @@ class MatrixTab extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Clean header with icon badge (like in reference)
+            // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          t.assignments.detail.matrix.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          t.assignments.detail.matrix.distributed(
-                            count: stats.totalActual,
-                          ),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    t.assignments.detail.matrix.title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    t.assignments.detail.matrix.distributed(
+                      count: stats.totalActual,
+                    ),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Type & Difficulty Matrix Card
+            // Matrix table — topic-based or flat
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: _buildMatrixTable(context, theme, colorScheme, t),
+              child: widget.matrix.hasTopicMatrix
+                  ? _buildTopicMatrixTable(context, theme, colorScheme, t)
+                  : _buildFlatMatrixTable(context, theme, colorScheme, t),
             ),
 
             const SizedBox(height: 24),
@@ -73,58 +93,41 @@ class MatrixTab extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      // Removed decorative icon container
-                      Text(
-                        t.assignments.detail.matrix.summaryStatistics,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    t.assignments.detail.matrix.summaryStatistics,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: 4,
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        indent: 0,
-                        height: 1,
-                        color: colorScheme.outlineVariant,
-                      );
-                    },
+                    separatorBuilder: (context, index) =>
+                        Divider(height: 1, color: colorScheme.outlineVariant),
                     itemBuilder: (context, index) {
                       final metrics = [
                         (
-                          icon: LucideIcons.target,
                           label: t.assignments.detail.matrix.targetCount,
                           value: '${stats.totalTarget}',
                         ),
                         (
-                          icon: LucideIcons.check,
                           label: t.assignments.detail.matrix.actualCount,
                           value: '${stats.totalActual}',
                         ),
                         (
-                          icon: LucideIcons.percent,
                           label: t.assignments.detail.matrix.completion,
                           value:
                               '${stats.completionPercentage.toStringAsFixed(1)}%',
                         ),
                         (
-                          icon: LucideIcons.circleCheck,
                           label: t.assignments.detail.matrix.matchesFound,
                           value: '${stats.matchedCells} / ${stats.totalCells}',
                         ),
                       ];
-
                       final metric = metrics[index];
                       return _buildMetricRow(
-                        context,
-                        icon: metric.icon,
                         label: metric.label,
                         value: metric.value,
                         theme: theme,
@@ -137,14 +140,567 @@ class MatrixTab extends ConsumerWidget {
             ),
 
             // Bottom padding
-            SizedBox(height: isEditMode ? 174.0 : 88.0),
+            SizedBox(height: widget.isEditMode ? 174.0 : 88.0),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMatrixTable(
+  // ============================================================================
+  // Topic-based matrix (from API matrix) with expandable difficulty columns
+  // ============================================================================
+
+  Widget _buildTopicMatrixTable(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic t,
+  ) {
+    final apiMatrix = widget.matrix.apiMatrix!;
+    final topics = apiMatrix.dimensions.topics;
+    final difficulties = apiMatrix.dimensions.difficulties;
+    final questionTypes = apiMatrix.dimensions.questionTypes;
+
+    return Column(
+      children: [
+        // Difficulty toggle chips
+        _buildDifficultyToggleRow(difficulties, theme, colorScheme, t),
+        const SizedBox(height: 12),
+
+        Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              // Header row
+              _buildTopicHeaderRow(
+                theme,
+                colorScheme,
+                t,
+                difficulties,
+                questionTypes,
+              ),
+              Divider(height: 1, color: colorScheme.outlineVariant),
+
+              // Topic groups with subtopics
+              ...topics.asMap().entries.expand((topicEntry) {
+                final topic = topicEntry.value;
+                int subtopicStartIndex = 0;
+                for (int i = 0; i < topicEntry.key; i++) {
+                  subtopicStartIndex += topics[i].subtopics.length;
+                }
+
+                return [
+                  _buildTopicGroupHeader(topic.name, theme, colorScheme),
+                  Divider(
+                    height: 1,
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  ),
+                  ...topic.subtopics.asMap().entries.expand((subEntry) {
+                    final subtopicIndex = subtopicStartIndex + subEntry.key;
+                    final subtopic = subEntry.value;
+                    return [
+                      _buildSubtopicRow(
+                        subtopic,
+                        subtopicIndex,
+                        difficulties,
+                        questionTypes,
+                        theme,
+                        colorScheme,
+                      ),
+                      if (subEntry.key < topic.subtopics.length - 1 ||
+                          topicEntry.key < topics.length - 1)
+                        Divider(
+                          height: 1,
+                          color: colorScheme.outlineVariant.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                    ];
+                  }),
+                ];
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDifficultyToggleRow(
+    List<String> difficulties,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic t,
+  ) {
+    return Row(
+      children: difficulties.asMap().entries.map((entry) {
+        final diffIndex = entry.key;
+        final diffStr = entry.value;
+        final difficulty = Difficulty.fromApiValue(diffStr);
+        final isSelected = _expandedDifficultyIndex == diffIndex;
+        final diffColor = Difficulty.getDifficultyColor(difficulty);
+
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: diffIndex == 0 ? 0 : 4,
+              right: diffIndex == difficulties.length - 1 ? 0 : 4,
+            ),
+            child: Material(
+              color: isSelected
+                  ? diffColor.withValues(alpha: 0.15)
+                  : colorScheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() {
+                    _expandedDifficultyIndex = isSelected ? null : diffIndex;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? diffColor.withValues(alpha: 0.5)
+                          : colorScheme.outlineVariant.withValues(alpha: 0.3),
+                      width: isSelected ? 1.5 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Difficulty.getDifficultyIcon(difficulty),
+                        size: 16,
+                        color: isSelected
+                            ? diffColor
+                            : colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          _getDifficultyAbbreviation(difficulty, t),
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.w600,
+                            color: isSelected
+                                ? diffColor
+                                : colorScheme.onSurfaceVariant,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        isSelected
+                            ? LucideIcons.chevronUp
+                            : LucideIcons.chevronDown,
+                        size: 14,
+                        color: isSelected
+                            ? diffColor
+                            : colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.5,
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildTopicHeaderRow(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic t,
+    List<String> difficulties,
+    List<String> questionTypes,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      child: Row(
+        children: [
+          // Label column
+          SizedBox(
+            width: 70,
+            child: Text(
+              t.assignments.detail.matrix.typeHeader,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurfaceVariant,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          // Difficulty columns (expandable)
+          ...difficulties.asMap().entries.map((entry) {
+            final diffIndex = entry.key;
+            final diffStr = entry.value;
+            final difficulty = Difficulty.fromApiValue(diffStr);
+            final isExpanded = _expandedDifficultyIndex == diffIndex;
+
+            return Expanded(
+              flex: isExpanded ? 4 : 1,
+              child: isExpanded
+                  ? _buildExpandedDifficultyHeader(
+                      difficulty,
+                      questionTypes,
+                      theme,
+                      colorScheme,
+                    )
+                  : _buildCollapsedDifficultyHeader(
+                      difficulty,
+                      theme,
+                      colorScheme,
+                      t,
+                    ),
+            );
+          }),
+          // Total column
+          SizedBox(
+            width: 50,
+            child: Center(
+              child: Text(
+                t.assignments.detail.matrix.totalHeader,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurfaceVariant,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCollapsedDifficultyHeader(
+    Difficulty difficulty,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic t,
+  ) {
+    final isAnyExpanded = _expandedDifficultyIndex != null;
+    final diffColor = Difficulty.getDifficultyColor(difficulty);
+
+    return Center(
+      child: Column(
+        children: [
+          Icon(
+            Difficulty.getDifficultyIcon(difficulty),
+            size: 14,
+            color: diffColor,
+          ),
+          if (!isAnyExpanded) ...[
+            const SizedBox(height: 2),
+            Text(
+              _getDifficultyAbbreviation(difficulty, t),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurfaceVariant,
+                fontSize: 10,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExpandedDifficultyHeader(
+    Difficulty difficulty,
+    List<String> questionTypes,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Row(
+      children: questionTypes.map((qtStr) {
+        final qType = QuestionType.fromApiValue(qtStr);
+        return Expanded(
+          child: Center(
+            child: Icon(
+              QuestionType.getIcon(qType),
+              size: 14,
+              color: QuestionType.getColor(qType),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildTopicGroupHeader(
+    String topicName,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
+      child: Row(
+        children: [
+          Icon(LucideIcons.folder, size: 14, color: colorScheme.primary),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              topicName,
+              style: theme.textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubtopicRow(
+    MatrixSubtopic subtopic,
+    int subtopicIndex,
+    List<String> difficulties,
+    List<String> questionTypes,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    final totalTarget = widget.matrix.getSubtopicTotalTarget(subtopicIndex);
+    final totalActual = widget.matrix.getSubtopicTotalActual(subtopicIndex);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      child: Row(
+        children: [
+          // Subtopic label
+          SizedBox(
+            width: 70,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Text(
+                subtopic.name,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
+          ),
+          // Difficulty cells (collapsed or expanded)
+          ...difficulties.asMap().entries.map((entry) {
+            final diffIndex = entry.key;
+            final isExpanded = _expandedDifficultyIndex == diffIndex;
+
+            if (isExpanded) {
+              return Expanded(
+                flex: 4,
+                child: _buildExpandedDifficultyCell(
+                  subtopicIndex,
+                  diffIndex,
+                  questionTypes,
+                  theme,
+                  colorScheme,
+                ),
+              );
+            }
+
+            final target = widget.matrix.getSubtopicTarget(
+              subtopicIndex,
+              diffIndex,
+            );
+            final actual = widget.matrix.getSubtopicDiffActual(
+              subtopicIndex,
+              diffIndex,
+            );
+
+            return Expanded(
+              flex: 1,
+              child: Center(
+                child: _buildStatusCell(
+                  actual: actual,
+                  target: target,
+                  theme: theme,
+                  colorScheme: colorScheme,
+                ),
+              ),
+            );
+          }),
+          // Total
+          SizedBox(
+            width: 50,
+            child: Center(
+              child: _buildStatusCell(
+                actual: totalActual,
+                target: totalTarget,
+                theme: theme,
+                colorScheme: colorScheme,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Renders 4 question-type sub-cells for an expanded difficulty column.
+  Widget _buildExpandedDifficultyCell(
+    int subtopicIndex,
+    int difficultyIndex,
+    List<String> questionTypes,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    final apiMatrix = widget.matrix.apiMatrix!;
+
+    return Row(
+      children: questionTypes.asMap().entries.map((entry) {
+        final qTypeIndex = entry.key;
+        final cellValue =
+            apiMatrix.matrix[subtopicIndex][difficultyIndex][qTypeIndex];
+        final target = parseCellValue(cellValue).count;
+        final actual = widget.matrix.getSubtopicCellActual(
+          subtopicIndex,
+          difficultyIndex,
+          qTypeIndex,
+        );
+        final isEditable = widget.isEditMode && widget.onCellTap != null;
+
+        return Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: isEditable
+                ? () => widget.onCellTap!(
+                    subtopicIndex,
+                    difficultyIndex,
+                    qTypeIndex,
+                  )
+                : null,
+            child: Center(
+              child: _buildSubCell(
+                actual: actual,
+                target: target,
+                isEditable: isEditable,
+                theme: theme,
+                colorScheme: colorScheme,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  /// A single question-type sub-cell within an expanded difficulty column.
+  Widget _buildSubCell({
+    required int actual,
+    required int target,
+    required bool isEditable,
+    required ThemeData theme,
+    required ColorScheme colorScheme,
+  }) {
+    if (target == 0 && actual == 0 && isEditable) {
+      // Empty editable cell — show "+" affordance
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Center(
+          child: Icon(
+            LucideIcons.plus,
+            size: 14,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+          ),
+        ),
+      );
+    }
+
+    if (target == 0 && actual == 0) {
+      // Empty non-editable cell
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Center(
+          child: Text(
+            '-',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Cell with value — show actual/target with status color
+    final (bgColor, textColor) = _getStatusColors(actual, target, colorScheme);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 1),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6),
+        border: isEditable
+            ? Border.all(color: textColor.withValues(alpha: 0.4))
+            : null,
+      ),
+      child: Center(
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: '$actual',
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+              ),
+              TextSpan(
+                text: '/$target',
+                style: TextStyle(color: textColor.withValues(alpha: 0.6)),
+              ),
+            ],
+          ),
+          style: theme.textTheme.labelSmall?.copyWith(fontSize: 10),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  // ============================================================================
+  // Flat matrix (fallback — question type × difficulty, read-only)
+  // ============================================================================
+
+  Widget _buildFlatMatrixTable(
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
@@ -157,14 +713,12 @@ class MatrixTab extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          // Header Row
-          _buildHeaderRow(theme, colorScheme, t),
+          _buildFlatHeaderRow(theme, colorScheme, t),
           Divider(height: 1, color: colorScheme.outlineVariant),
-          // Data Rows
           ...QuestionType.values.map((type) {
             return Column(
               children: [
-                _buildDataRow(type, theme, colorScheme, t),
+                _buildFlatDataRow(type, theme, colorScheme, t),
                 if (type != QuestionType.values.last)
                   Divider(
                     height: 1,
@@ -178,7 +732,11 @@ class MatrixTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeaderRow(ThemeData theme, ColorScheme colorScheme, dynamic t) {
+  Widget _buildFlatHeaderRow(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic t,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -249,7 +807,7 @@ class MatrixTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildDataRow(
+  Widget _buildFlatDataRow(
     QuestionType type,
     ThemeData theme,
     ColorScheme colorScheme,
@@ -288,10 +846,16 @@ class MatrixTab extends ConsumerWidget {
                     Difficulty.comprehension,
                     Difficulty.application,
                   ].map((difficulty) {
-                    final actual = matrix.getActual(type, difficulty);
+                    final actual = widget.matrix.getActual(type, difficulty);
+                    final target = widget.matrix.getTarget(type, difficulty);
                     return Expanded(
                       child: Center(
-                        child: _buildMatrixCell(actual, theme, colorScheme),
+                        child: _buildStatusCell(
+                          actual: actual,
+                          target: target,
+                          theme: theme,
+                          colorScheme: colorScheme,
+                        ),
                       ),
                     );
                   }).toList(),
@@ -300,10 +864,11 @@ class MatrixTab extends ConsumerWidget {
           SizedBox(
             width: 60,
             child: Center(
-              child: _buildTotalCell(
-                matrix.getTypeActualTotal(type),
-                theme,
-                colorScheme,
+              child: _buildStatusCell(
+                actual: widget.matrix.getTypeActualTotal(type),
+                target: widget.matrix.getTypeTargetTotal(type),
+                theme: theme,
+                colorScheme: colorScheme,
               ),
             ),
           ),
@@ -312,67 +877,80 @@ class MatrixTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildMatrixCell(
-    int actual,
-    ThemeData theme,
-    ColorScheme colorScheme,
-  ) {
-    Color backgroundColor;
-    Color textColor;
+  // ============================================================================
+  // Shared cell widgets
+  // ============================================================================
 
-    if (actual == 0) {
-      backgroundColor = colorScheme.surfaceContainerHigh.withValues(alpha: 0.5);
-      textColor = colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
-    } else {
-      backgroundColor = const Color(0xFFFFF4E5); // Light orange
-      textColor = const Color(0xFFFF8B00); // Orange
+  /// Status-colored cell showing actual/target in a single line.
+  Widget _buildStatusCell({
+    required int actual,
+    required int target,
+    required ThemeData theme,
+    required ColorScheme colorScheme,
+  }) {
+    if (target == 0 && actual == 0) {
+      return Text(
+        '0',
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+        ),
+        textAlign: TextAlign.center,
+      );
     }
 
+    final (bgColor, textColor) = _getStatusColors(actual, target, colorScheme);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6),
       ),
-      child: Text(
-        '$actual',
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: textColor,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '$actual',
+              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+            ),
+            TextSpan(
+              text: '/$target',
+              style: TextStyle(color: textColor.withValues(alpha: 0.6)),
+            ),
+          ],
         ),
+        style: theme.textTheme.labelSmall,
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _buildTotalCell(int total, ThemeData theme, ColorScheme colorScheme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        '$total',
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: colorScheme.onSurface,
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
+  /// Returns (backgroundColor, textColor) based on fulfillment status.
+  (Color, Color) _getStatusColors(
+    int actual,
+    int target,
+    ColorScheme colorScheme,
+  ) {
+    if (actual == target && target > 0) {
+      // Fulfilled
+      return (Colors.green.withValues(alpha: 0.15), Colors.green.shade700);
+    } else if (actual > target) {
+      // Excess
+      return (Colors.orange.withValues(alpha: 0.15), Colors.orange.shade700);
+    } else {
+      // Lack (actual < target)
+      return (Colors.red.withValues(alpha: 0.15), Colors.red.shade700);
+    }
   }
 
-  Widget _buildMetricRow(
-    BuildContext context, {
-    required IconData icon,
+  Widget _buildMetricRow({
     required String label,
     required String value,
     required ThemeData theme,
     required ColorScheme colorScheme,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Row(
         children: [
           Expanded(

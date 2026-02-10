@@ -25,6 +25,9 @@ class QuestionsTab extends ConsumerWidget {
   /// Callback when context edit is requested
   final void Function(ContextEntity context)? onEditContext;
 
+  /// Map of subtopic IDs to display names (from matrix dimensions)
+  final Map<String, String> subtopicNameMap;
+
   const QuestionsTab({
     super.key,
     required this.assignment,
@@ -34,6 +37,7 @@ class QuestionsTab extends ConsumerWidget {
     required this.onSwitchMode,
     this.contextsMap = const {},
     this.onEditContext,
+    this.subtopicNameMap = const {},
   });
 
   /// Groups ALL questions by contextId (not just consecutive ones).
@@ -187,11 +191,15 @@ class QuestionsTab extends ConsumerWidget {
 
                   if (groupItem.isStandalone) {
                     // Standalone question
+                    final topicId = groupItem.standaloneQuestion!.topicId;
                     return QuestionCard(
                       key: ValueKey(groupItem.standaloneQuestion!.question.id),
                       question: groupItem.standaloneQuestion!.question,
                       questionNumber: groupItem.displayNumber!,
                       isEditMode: isEditMode,
+                      subtopicName: topicId != null
+                          ? subtopicNameMap[topicId]
+                          : null,
                       onEdit: () => onEdit(
                         groupItem.standaloneQuestion!,
                         groupItem.standaloneIndex!,
@@ -207,6 +215,7 @@ class QuestionsTab extends ConsumerWidget {
                       startIndex: groupItem.groupOriginalIndices!.first,
                       startingDisplayNumber: groupItem.groupDisplayStart!,
                       isEditMode: isEditMode,
+                      subtopicNameMap: subtopicNameMap,
                       onEditContext: onEditContext != null
                           ? () => onEditContext!(groupItem.context!)
                           : null,

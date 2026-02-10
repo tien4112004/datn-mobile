@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -26,6 +27,9 @@ class AssignmentEntity {
   /// Contexts (reading passages) embedded in this assignment
   final List<ContextEntity> contexts;
 
+  /// Matrix specification (topic × difficulty × questionType) from API
+  final ApiMatrixEntity? matrix;
+
   const AssignmentEntity({
     required this.assignmentId,
     required this.teacherId,
@@ -43,6 +47,7 @@ class AssignmentEntity {
     this.updatedAt,
     this.questions = const [],
     this.contexts = const [],
+    this.matrix,
   });
 
   /// Check if the exam is editable (draft or error status).
@@ -72,6 +77,7 @@ class AssignmentEntity {
     bool? shuffleQuestions,
     List<AssignmentQuestionEntity>? questions,
     List<ContextEntity>? contexts,
+    ApiMatrixEntity? matrix,
   }) {
     return AssignmentEntity(
       assignmentId: assignmentId ?? this.assignmentId,
@@ -90,6 +96,7 @@ class AssignmentEntity {
       shuffleQuestions: shuffleQuestions ?? this.shuffleQuestions,
       questions: questions ?? this.questions,
       contexts: contexts ?? this.contexts,
+      matrix: matrix ?? this.matrix,
     );
   }
 }

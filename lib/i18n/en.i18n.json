@@ -272,6 +272,7 @@
     "explanation": "Explanation",
     "usedTimes(count)": "Used $count time(s)",
     "optional": "(Optional)",
+    "none": "None",
     "unsavedChangesDialog": {
       "title": "Discard changes?",
       "message": "You have unsaved changes. Are you sure you want to leave?",
@@ -1113,6 +1114,9 @@
   },
   "assignments": {
     "pointsError": "Points must be greater than 0",
+    "subtopic": "Subtopic",
+    "metadataTab": "Metadata",
+    "contentTab": "Content",
     "title": "Assignment Management",
     "createExam": "Create Exam",
     "refresh": "Refresh",
@@ -1354,7 +1358,13 @@
         "completion": "Completion",
         "matchesFound": "Matches Found",
         "typeHeader": "TYPE",
-        "totalHeader": "TOTAL"
+        "totalHeader": "TOTAL",
+        "editCell": "Edit Cell",
+        "countLabel": "Count",
+        "pointsLabel": "Points",
+        "clearCell": "Clear",
+        "cancel": "Cancel",
+        "save": "Save"
       }
     },
 

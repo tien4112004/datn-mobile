@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
-import '_matching_content_widget.dart';
+import 'matching_content_widget.dart';
 
 /// Matching Question in Viewing Mode
 class MatchingViewing extends ConsumerWidget {

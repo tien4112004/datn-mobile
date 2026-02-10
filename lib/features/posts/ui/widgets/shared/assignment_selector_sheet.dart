@@ -238,7 +238,7 @@ class _AssignmentSelectorSheetState
                 icon: LucideIcons.book,
                 selectedValue: _filterSubject,
                 options: Subject.values,
-                displayNameBuilder: (subject) => subject.displayName,
+                displayNameBuilder: (subject) => subject.getLocalizedName(t),
                 iconBuilder: (subject) => _getSubjectIcon(subject),
                 onChanged: (subject) =>
                     setState(() => _filterSubject = subject),
@@ -250,7 +250,7 @@ class _AssignmentSelectorSheetState
                 icon: LucideIcons.graduationCap,
                 selectedValue: _filterGrade,
                 options: GradeLevel.values,
-                displayNameBuilder: (grade) => grade.displayName,
+                displayNameBuilder: (grade) => grade.getLocalizedName(t),
                 onChanged: (grade) => setState(() => _filterGrade = grade),
                 allLabel: t.classes.assignmentSelector.allGrades,
                 allIcon: LucideIcons.graduationCap,
@@ -336,7 +336,7 @@ class _AssignmentSelectorSheetState
 }
 
 /// Individual assignment tile with selection state
-class _AssignmentSelectionTile extends StatelessWidget {
+class _AssignmentSelectionTile extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isSelected;
   final VoidCallback onTap;
@@ -370,10 +370,11 @@ class _AssignmentSelectionTile extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final subjectColor = _getSubjectColor(assignment.subject);
+    final t = ref.watch(translationsPod);
 
     return Material(
       color: Colors.transparent,
@@ -445,13 +446,13 @@ class _AssignmentSelectionTile extends StatelessWidget {
                         _buildBadge(
                           context,
                           icon: _getSubjectIcon(assignment.subject),
-                          label: assignment.subject.displayName,
+                          label: assignment.subject.getLocalizedName(t),
                           color: subjectColor,
                         ),
                         _buildBadge(
                           context,
                           icon: LucideIcons.graduationCap,
-                          label: assignment.gradeLevel.displayName,
+                          label: assignment.gradeLevel.getLocalizedName(t),
                           color: colorScheme.secondary,
                         ),
                         _buildBadge(

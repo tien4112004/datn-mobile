@@ -1,5 +1,6 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,6 +42,7 @@ class AssignmentSelectionSection extends ConsumerWidget {
         assignment.subject,
         assignment.gradeLevel,
         assignment.totalQuestions,
+        t,
       ),
       loading: () => _buildLoading(theme, colorScheme),
       error: (error, stack) =>
@@ -200,6 +202,7 @@ class AssignmentSelectionSection extends ConsumerWidget {
     Subject subject,
     GradeLevel gradeLevel,
     int totalQuestions,
+    Translations t,
   ) {
     final subjectColor = _getSubjectColor(subject);
     final subjectIcon = _getSubjectIcon(subject);
@@ -268,13 +271,13 @@ class AssignmentSelectionSection extends ConsumerWidget {
                         children: [
                           _buildBadge(
                             theme,
-                            label: subject.displayName,
+                            label: subject.getLocalizedName(t),
                             color: subjectColor,
                           ),
                           const SizedBox(width: 6),
                           _buildBadge(
                             theme,
-                            label: gradeLevel.displayName,
+                            label: gradeLevel.getLocalizedName(t),
                             color: colorScheme.secondary,
                           ),
                           const SizedBox(width: 6),

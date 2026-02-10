@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '_matching_content_widget.dart';
+import 'matching_content_widget.dart';
 
 /// Matching Question in After Assessment Mode (Student reviewing their answers)
 /// Enhanced with Material 3 design principles

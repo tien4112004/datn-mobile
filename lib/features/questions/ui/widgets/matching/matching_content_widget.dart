@@ -55,11 +55,14 @@ class MatchingContentWidget extends StatelessWidget {
 
   /// Build text-only content
   Widget _buildTextOnly(ThemeData theme) {
-    return Text(
-      text!,
-      style: isCompact
-          ? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)
-          : theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        text!,
+        style: isCompact
+            ? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)
+            : theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+      ),
     );
   }
 

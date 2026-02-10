@@ -27,18 +27,6 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
     final t = ref.watch(translationsPod);
 
     final filterConfigs = List<BaseFilterConfig>.of([
-      FilterConfig<AssignmentStatus>(
-        label: t.assignments.filters.status,
-        icon: LucideIcons.info,
-        options: AssignmentStatus.values,
-        selectedValue: filterState.statusFilter,
-        onChanged: (value) {
-          filterNotifier.state = filterState.copyWith(statusFilter: value);
-          assignmentsController.loadAssignmentsWithFilter();
-        },
-        displayNameBuilder: (value) => value.getLocalizedName(t),
-        iconBuilder: (status) => _getStatusIcon(status),
-      ),
       FilterConfig<GradeLevel>(
         label: t.assignments.filters.gradeLevel,
         icon: LucideIcons.graduationCap,
@@ -102,18 +90,4 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
     );
   }
 
-  IconData _getStatusIcon(AssignmentStatus status) {
-    switch (status) {
-      case AssignmentStatus.draft:
-        return LucideIcons.file;
-      case AssignmentStatus.generating:
-        return LucideIcons.loader;
-      case AssignmentStatus.completed:
-        return LucideIcons.circleCheck;
-      case AssignmentStatus.error:
-        return LucideIcons.circleX;
-      case AssignmentStatus.archived:
-        return LucideIcons.archive;
-    }
-  }
 }

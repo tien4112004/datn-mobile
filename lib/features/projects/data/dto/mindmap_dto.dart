@@ -81,8 +81,8 @@ extension MindmapMapper on MindmapDto {
           extraFields: edgeDto.extraFields,
         );
       }).toList(),
-      createdAt: createdAt,
-      updatedAt: updatedAt,
+      createdAt: createdAt?.toLocal(),
+      updatedAt: updatedAt?.toLocal(),
     );
   }
 }

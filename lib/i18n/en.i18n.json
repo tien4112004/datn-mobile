@@ -402,6 +402,7 @@
       "goBack": "Go Back",
       "generating": "Generating Presentation",
       "startingGeneration": "Starting generation...",
+      "generatingSubtitle": "This could take some time",
       "error": "Error",
       "failedToCreatePresentation": "Failed to Create Presentation",
       "unknownError": "Unknown error occurred",
@@ -1267,8 +1268,6 @@
 
     "filters": {
       "title": "Assignment Filters",
-      "status": "Status",
-      "allStatus": "All Status",
       "gradeLevel": "Grade Level",
       "allGrades": "All Grades",
       "subject": "Subject",

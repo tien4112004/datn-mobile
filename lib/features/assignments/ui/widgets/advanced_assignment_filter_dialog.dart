@@ -35,19 +35,6 @@ void showAdvancedAssignmentFilterDialog({
       builder: (context, setState) {
         // Create filter configs with draft state
         final filterConfigs = List<BaseFilterConfig>.of([
-          FilterConfig<AssignmentStatus>(
-            label: t.assignments.filters.status,
-            icon: LucideIcons.info,
-            options: AssignmentStatus.values,
-            selectedValue: draftState.statusFilter,
-            onChanged: (value) {
-              setState(() {
-                draftState = draftState.copyWith(statusFilter: value);
-              });
-            },
-            displayNameBuilder: (value) => value.getLocalizedName(t),
-            iconBuilder: (status) => AssignmentStatus.getStatusIcon(status),
-          ),
           FilterConfig<GradeLevel>(
             label: t.assignments.filters.gradeLevel,
             icon: LucideIcons.graduationCap,

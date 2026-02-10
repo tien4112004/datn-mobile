@@ -33,8 +33,8 @@ extension MindmapMinimalMapper on MindmapMinimalDto {
       id: id,
       title: title,
       description: description,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
+      createdAt: createdAt?.toLocal(),
+      updatedAt: updatedAt?.toLocal(),
       thumbnail: thumbnail,
     );
   }

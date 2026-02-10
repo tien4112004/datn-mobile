@@ -157,6 +157,11 @@ class _PresentationGenerationWebViewPageState
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(t.generate.presentationGenerate.startingGeneration),
+            const SizedBox(height: 8),
+            Text(
+              t.generate.presentationGenerate.generatingSubtitle,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       ),
@@ -344,6 +349,23 @@ class _PresentationGenerationWebViewPageState
               _isGenerationComplete = true;
               // Clear any previous errors on success
               _error = null;
+            });
+
+            // Navigate to presentation detail page after a brief delay
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted && _presentationId != null) {
+                context.router.replaceAll([
+                  MainWrapperRoute(
+                    children: [
+                      ProjectsRoute(
+                        children: [
+                          PresentationDetailRoute(presentationId: _presentationId!),
+                        ],
+                      ),
+                    ],
+                  ),
+                ]);
+              }
             });
           }
         } else {

@@ -48,8 +48,8 @@ class PresentationDto {
               ?.map((e) => SlideDto.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      createdAt: createdAtStr != null ? DateTime.parse(createdAtStr) : now,
-      updatedAt: updatedAtStr != null ? DateTime.parse(updatedAtStr) : now,
+      createdAt: createdAtStr != null ? DateTime.parse(createdAtStr).toLocal() : now,
+      updatedAt: updatedAtStr != null ? DateTime.parse(updatedAtStr).toLocal() : now,
       isParsed: json['parsed'] as bool? ?? json['isParsed'] as bool? ?? false,
       viewport:
           (json['viewport'] as Map<String, dynamic>?)?.map(
@@ -76,8 +76,8 @@ extension PresentationMapper on PresentationDto {
   Presentation toEntity() => Presentation(
     id: id,
     title: title,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
+    createdAt: createdAt.toLocal(),
+    updatedAt: updatedAt.toLocal(),
     isParsed: isParsed,
     slides: slides.map((e) => e.toEntity()).toList(),
     metaData: metaData,

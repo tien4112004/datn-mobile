@@ -30,8 +30,8 @@ extension ImageProjectMinimalMapper on ImageProjectMinimalDto {
     id: id.toString(),
     title: originalFilename, // Map originalFilename to title for UI
     url: url, // Map url to imageUrl for UI
-    createdAt: createdAt != null ? DateTime.parse(createdAt!) : null,
-    updatedAt: updatedAt != null ? DateTime.parse(updatedAt!) : null,
+    createdAt: createdAt != null ? DateTime.parse(createdAt!).toLocal() : null,
+    updatedAt: updatedAt != null ? DateTime.parse(updatedAt!).toLocal() : null,
   );
 }
 

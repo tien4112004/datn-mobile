@@ -402,6 +402,7 @@
       "goBack": "Quay lại",
       "generating": "Đang tạo bài thuyết trình",
       "startingGeneration": "Bắt đầu tạo...",
+      "generatingSubtitle": "Điều này có thể mất một chút thời gian",
       "error": "Lỗi",
       "failedToCreatePresentation": "Không thể tạo bài thuyết trình",
       "unknownError": "Đã xảy ra lỗi không xác định",
@@ -805,7 +806,7 @@
     "subjects": {
       "english": "Tiếng Anh",
       "mathematics": "Toán",
-      "vietnamese": "Tiếng Việt"
+      "literature": "Tiếng Việt"
     },
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
@@ -1265,8 +1266,6 @@
 
     "filters": {
       "title": "Bộ lọc bài kiểm tra",
-      "status": "Trạng thái",
-      "allStatus": "Tất cả trạng thái",
       "gradeLevel": "Khối lớp",
       "allGrades": "Tất cả khối lớp",
       "subject": "Môn học",

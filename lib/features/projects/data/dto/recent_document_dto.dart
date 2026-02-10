@@ -35,7 +35,7 @@ extension RecentDocumentMapper on RecentDocumentDto {
       documentType: documentType,
       title: title,
       thumbnail: thumbnail,
-      lastVisited: lastVisited,
+      lastVisited: lastVisited.toLocal(),
     );
   }
 }

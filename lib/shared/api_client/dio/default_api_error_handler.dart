@@ -33,7 +33,6 @@ Future<void> defaultAPIErrorHandler(
         ),
       );
     case DioExceptionType.badResponse:
-      final statusCode = err.response?.statusCode;
       final data = err.response?.data;
       String detail = 'unknown error';
 
@@ -57,12 +56,12 @@ Future<void> defaultAPIErrorHandler(
         }
       }
 
-      handler.resolve(
-        Response(
-          data: {if (data is Map<String, dynamic>) ...data, 'message': detail},
+      handler.reject(
+        DioException(
           requestOptions: err.requestOptions,
-          statusCode: statusCode,
-          statusMessage: err.response?.statusMessage,
+          response: err.response,
+          type: err.type,
+          error: detail,
         ),
       );
     case DioExceptionType.cancel:

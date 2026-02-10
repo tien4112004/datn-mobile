@@ -38,6 +38,7 @@ class _MindmapGenerationWebViewPageState
     extends ConsumerState<MindmapGenerationWebViewPage> {
   bool _isReactReady = false;
   bool _isGenerationComplete = false;
+  bool _isLoading = false;
   String? _error;
   String? _mindmapId;
   String? _accessToken;
@@ -60,6 +61,13 @@ class _MindmapGenerationWebViewPageState
 
   /// Create an empty mindmap to get an ID for the WebView URL
   Future<void> _createMindmap() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
       final formState = ref.read(mindmapFormControllerProvider);
 
@@ -72,21 +80,24 @@ class _MindmapGenerationWebViewPageState
       );
 
       // Create mindmap via API
+      // Error handling is centralized in DefaultAPIInterceptor
       final remoteSource = ref.read(projectsRemoteSourceProvider);
       final response = await remoteSource.createMindmap(createRequest);
 
-      if (mounted) {
-        setState(() {
-          _mindmapId = response.data?.id;
-        });
-      }
+      if (!mounted) return;
+
+      setState(() {
+        _mindmapId = response.data?.id;
+        _isLoading = false;
+      });
     } catch (e) {
       debugPrint('Error creating mindmap: $e');
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-        });
-      }
+      if (!mounted) return;
+
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
     }
   }
 
@@ -110,21 +121,44 @@ class _MindmapGenerationWebViewPageState
       return _buildErrorView();
     }
 
-    // Build the main scaffold with WebView (hidden until React ready)
-    final locale = ref.read(translationsPod).$meta.locale.languageCode;
-    String? url;
-    if (_mindmapId != null) {
-      // Include token in URL so React can use it before localStorage is ready
-      final tokenParam = _accessToken != null ? '&token=$_accessToken' : '';
-      url =
-          '${Config.mindmapBaseUrl}/mindmap/embed/$_mindmapId?mode=generate&locale=$locale$tokenParam';
+    // Show loading while waiting for mindmap ID
+    if (_isLoading || _mindmapId == null) {
+      return _buildLoadingScaffold();
     }
 
-    if (kDebugMode && url != null) {
+    // Build WebView once we have the ID
+    final locale = ref.read(translationsPod).$meta.locale.languageCode;
+    final tokenParam = _accessToken != null ? '&token=$_accessToken' : '';
+    final url =
+        '${Config.mindmapBaseUrl}/mindmap/embed/$_mindmapId?mode=generate&locale=$locale$tokenParam';
+
+    if (kDebugMode) {
       debugPrint('Opening mindmap generation webview: $url');
     }
 
     return _buildWebViewScaffold(url);
+  }
+
+  Widget _buildLoadingScaffold() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Generate Mindmap'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.router.pop(),
+        ),
+      ),
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Creating mindmap...'),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildErrorView() {
@@ -259,12 +293,19 @@ class _MindmapGenerationWebViewPageState
           if (mounted) {
             setState(() {
               _isGenerationComplete = true;
+              // Clear any previous errors on success
+              _error = null;
             });
           }
         } else {
+          // Generation failed - set error and clear loading state
+          final errorMessage = data['error'] as String? ?? 'Generation failed';
+          debugPrint('Generation error: $errorMessage');
           if (mounted) {
             setState(() {
-              _error = data['error'] as String? ?? 'Generation failed';
+              _error = errorMessage;
+              _isReactReady =
+                  false; // Reset React ready state so error view shows properly
             });
           }
         }

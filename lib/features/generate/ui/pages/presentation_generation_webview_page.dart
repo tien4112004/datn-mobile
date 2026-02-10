@@ -35,6 +35,7 @@ class _PresentationGenerationWebViewPageState
     extends ConsumerState<PresentationGenerationWebViewPage> {
   bool _isVueReady = false;
   bool _isGenerationComplete = false;
+  bool _isLoading = false;
   String? _error;
   String? _presentationId;
 
@@ -45,6 +46,13 @@ class _PresentationGenerationWebViewPageState
   }
 
   Future<void> _createPresentation() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
       final formState = ref.read(presentationFormControllerProvider);
 
@@ -74,21 +82,24 @@ class _PresentationGenerationWebViewPageState
       );
 
       // Create presentation via API
+      // Error handling is centralized in DefaultAPIInterceptor
       final remoteSource = ref.read(projectsRemoteSourceProvider);
       final response = await remoteSource.createPresentation(createRequest);
 
-      if (mounted) {
-        setState(() {
-          _presentationId = response.data?.id;
-        });
-      }
+      if (!mounted) return;
+
+      setState(() {
+        _presentationId = response.data?.id;
+        _isLoading = false;
+      });
     } catch (e) {
       debugPrint('Error creating presentation: $e');
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-        });
-      }
+      if (!mounted) return;
+
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
     }
   }
 
@@ -112,24 +123,51 @@ class _PresentationGenerationWebViewPageState
       return _buildErrorView();
     }
 
-    // Build the main scaffold with WebView (hidden until Vue ready)
-    // Get current locale to pass to WebView
-    final locale = ref.read(translationsPod).$meta.locale.languageCode;
-    final url = _presentationId != null
-        ? '${Config.presentationBaseUrl}/generation/$_presentationId?locale=$locale'
-        : null;
+    // Show loading while waiting for presentation ID
+    if (_isLoading || _presentationId == null) {
+      return _buildLoadingScaffold();
+    }
 
-    if (kDebugMode && url != null) {
+    // Build WebView once we have the ID
+    final locale = ref.read(translationsPod).$meta.locale.languageCode;
+    final url =
+        '${Config.presentationBaseUrl}/generation/$_presentationId?locale=$locale';
+
+    if (kDebugMode) {
       debugPrint('Opening generation webview: $url');
     }
 
     return _buildWebViewScaffold(url);
   }
 
-  Widget _buildErrorView() {
+  Widget _buildLoadingScaffold() {
+    final t = ref.watch(translationsPod);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Error'),
+        title: Text(t.generate.presentationGenerate.title),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => context.router.pop(),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(t.generate.presentationGenerate.startingGeneration),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorView() {
+    final t = ref.watch(translationsPod);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(t.generate.presentationGenerate.error),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.router.pop(),
@@ -143,13 +181,16 @@ class _PresentationGenerationWebViewPageState
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              const Text(
-                'Failed to Create Presentation',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                t.generate.presentationGenerate.failedToCreatePresentation,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                _error ?? 'Unknown error occurred',
+                _error ?? t.generate.presentationGenerate.unknownError,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey),
               ),
@@ -161,12 +202,12 @@ class _PresentationGenerationWebViewPageState
                   });
                   _createPresentation();
                 },
-                child: const Text('Retry'),
+                child: Text(t.generate.presentationGenerate.retry),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => context.router.pop(),
-                child: const Text('Go Back'),
+                child: Text(t.generate.presentationGenerate.goBack),
               ),
             ],
           ),
@@ -216,13 +257,13 @@ class _PresentationGenerationWebViewPageState
           if (!_isVueReady)
             Container(
               color: Theme.of(context).scaffoldBackgroundColor,
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Starting generation...'),
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(t.generate.presentationGenerate.startingGeneration),
                   ],
                 ),
               ),
@@ -301,12 +342,19 @@ class _PresentationGenerationWebViewPageState
           if (mounted) {
             setState(() {
               _isGenerationComplete = true;
+              // Clear any previous errors on success
+              _error = null;
             });
           }
         } else {
+          // Generation failed - set error and clear loading state
+          final errorMessage = data['error'] as String? ?? 'Generation failed';
+          debugPrint('Generation error: $errorMessage');
           if (mounted) {
             setState(() {
-              _error = data['error'] as String? ?? 'Generation failed';
+              _error = errorMessage;
+              _isVueReady =
+                  false; // Reset Vue ready state so error view shows properly
             });
           }
         }

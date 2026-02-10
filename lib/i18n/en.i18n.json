@@ -400,7 +400,12 @@
       "cancelGenerationMessage": "Are you sure you want to cancel the presentation generation?",
       "cancelGenerationTitle": "Cancel Generation?",
       "goBack": "Go Back",
-      "generating": "Generating Presentation"
+      "generating": "Generating Presentation",
+      "startingGeneration": "Starting generation...",
+      "error": "Error",
+      "failedToCreatePresentation": "Failed to Create Presentation",
+      "unknownError": "Unknown error occurred",
+      "retry": "Retry"
     },
     "outlineEditor": {
       "title": "Edit Outline",

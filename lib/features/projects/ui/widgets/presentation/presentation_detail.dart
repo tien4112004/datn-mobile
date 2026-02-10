@@ -37,7 +37,6 @@ class PresentationDetail extends ConsumerStatefulWidget {
 
 class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   bool _isWebViewLoading = true;
-  double? _webViewHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +66,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
       body: SafeArea(
         child: Stack(
           children: [
-            SizedBox(
-              height: _webViewHeight,
-              child: _buildWebView(presentation),
-            ),
+            _buildWebView(presentation),
             if (_isWebViewLoading)
               Container(
                 color: Colors.white,
@@ -179,25 +175,6 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
               }
             }
           },
-        );
-
-        // Register handler to receive the actual viewport height from JS
-        controller.addJavaScriptHandler(
-          handlerName: 'ResizeHandler',
-          callback: (args) {
-            final newHeight = (args[0] as num).toDouble();
-            if (mounted && _webViewHeight != newHeight) {
-              setState(() => _webViewHeight = newHeight);
-            }
-          },
-        );
-      },
-      onLoadStop: (controller, url) async {
-        // Ask the WebView for its actual viewport height
-        await controller.evaluateJavascript(
-          source: '''
-          window.flutter_inappwebview.callHandler('ResizeHandler', window.innerHeight);
-        ''',
         );
       },
       onReceivedError: (controller, request, error) {

@@ -229,7 +229,9 @@
     "mindmaps": {
       "title": "Sơ đồ tư duy",
       "search_mindmaps": "Tìm kiếm sơ đồ tư duy...",
-      "all_mindmaps": "Tất cả sơ đồ tư duy"
+      "all_mindmaps": "Tất cả sơ đồ tư duy",
+      "webViewNotSupported": "WebView không được hỗ trợ trên nền tảng này.",
+      "loadingMindmap": "Đang tải sơ đồ tư duy..."
     },
     "images": {
       "title": "Hình ảnh",

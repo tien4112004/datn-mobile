@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'presentation_dto.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class PresentationDto {
   @JsonKey(defaultValue: '')
   String id;

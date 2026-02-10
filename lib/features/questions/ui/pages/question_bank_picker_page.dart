@@ -256,8 +256,6 @@ class _QuestionBankPickerPageState
                             label: t.questionBank.filters.grade,
                             icon: LucideIcons.graduationCap,
                             options: GradeLevel.values,
-                            allLabel: t.questionBank.filters.allGrades,
-                            allIcon: LucideIcons.list,
                             selectedValue: currentFilter.gradeFilter,
                             onChanged: (value) {
                               ref
@@ -276,8 +274,6 @@ class _QuestionBankPickerPageState
                             label: t.questionBank.filters.subject,
                             icon: LucideIcons.bookOpen,
                             options: Subject.values,
-                            allLabel: t.questionBank.filters.allSubjects,
-                            allIcon: LucideIcons.list,
                             selectedValue: currentFilter.subjectFilter,
                             onChanged: (value) {
                               ref
@@ -296,8 +292,6 @@ class _QuestionBankPickerPageState
                             label: t.questionBank.filters.type,
                             icon: LucideIcons.circleQuestionMark,
                             options: QuestionType.values,
-                            allLabel: t.questionBank.filters.allTypes,
-                            allIcon: LucideIcons.list,
                             selectedValue: currentFilter.questionTypeFilter,
                             onChanged: (value) {
                               ref
@@ -316,8 +310,6 @@ class _QuestionBankPickerPageState
                             label: t.questionBank.filters.difficulty,
                             icon: LucideIcons.gauge,
                             options: Difficulty.values,
-                            allLabel: t.questionBank.filters.allDifficulties,
-                            allIcon: LucideIcons.list,
                             selectedValue: currentFilter.difficultyFilter,
                             onChanged: (value) {
                               ref

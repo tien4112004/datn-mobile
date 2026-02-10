@@ -2,7 +2,6 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/filter_chip_button.dart';
 
 /// Base class for type-erased filter configuration

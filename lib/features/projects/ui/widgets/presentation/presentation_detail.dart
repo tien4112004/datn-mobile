@@ -37,6 +37,7 @@ class PresentationDetail extends ConsumerStatefulWidget {
 
 class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   bool _isWebViewLoading = true;
+  double? _webViewHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +63,14 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
 
   Widget _buildContent(Presentation presentation) {
     return Scaffold(
-      appBar: AppBar(title: Text(presentation.title)),
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
-            _buildWebView(presentation),
+            SizedBox(
+              height: _webViewHeight,
+              child: _buildWebView(presentation),
+            ),
             if (_isWebViewLoading)
               Container(
                 color: Colors.white,
@@ -158,6 +162,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
 
     return AuthenticatedWebView(
       webViewUrl: url,
+      transparentBackground: true,
       onWebViewCreated: (controller) {
         // Register handler for presentationLoaded event from React
         controller.addJavaScriptHandler(
@@ -175,6 +180,25 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
             }
           },
         );
+
+        // Register handler to receive the actual viewport height from JS
+        controller.addJavaScriptHandler(
+          handlerName: 'ResizeHandler',
+          callback: (args) {
+            final newHeight = (args[0] as num).toDouble();
+            if (mounted && _webViewHeight != newHeight) {
+              setState(() => _webViewHeight = newHeight);
+            }
+          },
+        );
+      },
+      onLoadStop: (controller, url) async {
+        // Ask the WebView for its actual viewport height
+        await controller.evaluateJavascript(
+          source: '''
+          window.flutter_inappwebview.callHandler('ResizeHandler', window.innerHeight);
+        ''',
+        );
       },
       onReceivedError: (controller, request, error) {
         debugPrint('WebView error: $error');
@@ -187,8 +211,8 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
 
   Widget _buildCloseButton() {
     return Positioned(
-      top: !_isWebViewLoading ? 48 : 8,
-      right: 8,
+      top: 16,
+      left: 16,
       child: Material(
         color: Colors.white.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(20),

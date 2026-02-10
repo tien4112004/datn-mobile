@@ -8,7 +8,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/config/config.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -177,6 +176,7 @@ class _PresentationGenerationWebViewPageState
   }
 
   Widget _buildWebViewScaffold(String? url) {
+    final t = ref.watch(translationsPod);
     return Scaffold(
       appBar: AppBar(
         title: Text(t.generate.presentationGenerate.generating),
@@ -232,6 +232,48 @@ class _PresentationGenerationWebViewPageState
     );
   }
 
+  Future<void> _storeGenerationRequest(
+    InAppWebViewController controller,
+  ) async {
+    try {
+      final formController = ref.read(
+        presentationFormControllerProvider.notifier,
+      );
+      final request = formController.toPresentationRequest();
+
+      // Build request body
+      final requestBody = {
+        'presentationId': _presentationId,
+        'model': request.model,
+        'provider': request.provider,
+        'language': request.language,
+        'slideCount': request.slideCount,
+        'outline': request.outline,
+        'presentation': request.presentation,
+        'others': request.others,
+        if (request.grade != null) 'grade': request.grade,
+        if (request.subject != null) 'subject': request.subject,
+      };
+
+      final jsonString = jsonEncode(requestBody);
+
+      // Escape for JavaScript
+      final escapedJson = jsonString
+          .replaceAll('\\', '\\\\')
+          .replaceAll("'", "\\'")
+          .replaceAll('\n', '\\n')
+          .replaceAll('\r', '\\r');
+
+      await controller.evaluateJavascript(
+        source: "localStorage.setItem('generationRequest', '$escapedJson');",
+      );
+
+      debugPrint('[Flutter] Stored generation request in localStorage');
+    } catch (e) {
+      debugPrint('[Flutter] Error storing generation request: $e');
+    }
+  }
+
   void _registerHandlers(InAppWebViewController controller) {
     // Handler: Vue is ready to show content
     controller.addJavaScriptHandler(
@@ -270,76 +312,6 @@ class _PresentationGenerationWebViewPageState
         }
       },
     );
-  }
-
-  Future<void> _sendGenerationData() async {
-    if (_webViewController == null) return;
-
-    final t = ref.read(translationsPod);
-    final formState = ref.read(presentationFormControllerProvider);
-    final formController = ref.read(
-      presentationFormControllerProvider.notifier,
-    );
-
-    // Build the generation request
-    try {
-      final generationRequest = formController.toPresentationRequest();
-
-      // Create a temporary presentation ID (will be replaced by backend)
-      final tempPresentationId =
-          'temp_${DateTime.now().millisecondsSinceEpoch}';
-
-      // Build the presentation object structure
-      final presentation = {
-        'id': tempPresentationId,
-        'title': formState.topic.isEmpty
-            ? t.projects.untitled
-            : formState.topic,
-        'slides': [], // Start with empty slides
-        'theme': generationRequest.presentation?['theme'],
-        'viewport': generationRequest.presentation?['viewport'],
-      };
-
-      // Build the complete generation request payload
-      final generationPayload = {
-        'presentationId': tempPresentationId,
-        'outline': generationRequest.outline,
-        'model': {
-          'name': generationRequest.model,
-          'provider': generationRequest.provider,
-        },
-        'slideCount': generationRequest.slideCount,
-        'language': generationRequest.language,
-        'presentation': generationRequest.presentation,
-        'others': generationRequest.others,
-      };
-
-      // Send data to Vue app using the setGenerationData function
-      await _webViewController!.evaluateJavascript(
-        source:
-            '''
-            (function() {
-              try {
-                if (window.setGenerationData) {
-                  window.setGenerationData(
-                    ${jsonEncode(presentation)},
-                    ${jsonEncode(generationPayload)}
-                  );
-                  return 'Data sent successfully';
-                } else {
-                  return 'setGenerationData not available yet';
-                }
-              } catch (error) {
-                console.error('Error sending generation data:', error);
-                return 'Error: ' + error.message;
-              }
-            })();
-          ''',
-      );
-      debugPrint('Generation data sent to Vue app');
-    } catch (e) {
-      debugPrint('[Flutter] Error storing generation request: $e');
-    }
   }
 
   /// Navigate to Projects page after generation complete

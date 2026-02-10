@@ -28,6 +28,7 @@ class AuthenticatedWebView extends ConsumerStatefulWidget {
     this.onConsoleMessage,
     this.additionalHeaders,
     this.enableZoom = true,
+    this.transparentBackground = false,
   });
 
   final String webViewUrl;
@@ -47,6 +48,7 @@ class AuthenticatedWebView extends ConsumerStatefulWidget {
   onConsoleMessage;
   final Map<String, String>? additionalHeaders;
   final bool enableZoom;
+  final bool transparentBackground;
 
   @override
   ConsumerState<AuthenticatedWebView> createState() =>
@@ -134,6 +136,7 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
         thirdPartyCookiesEnabled: true,
         transparentBackground: false,
         useHybridComposition: true,
+        overScrollMode: OverScrollMode.NEVER,
       ),
       onWebViewCreated: (controller) {
         debugPrint('[AuthWebView] WebView created');

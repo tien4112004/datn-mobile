@@ -78,7 +78,7 @@ void showAdvancedAssignmentFilterDialog({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter chips display
-            _buildFiltersSection(context, filterConfigs, ref),
+            _buildFiltersSection(context, filterConfigs, ref, t),
             const SizedBox(height: 16),
             // TODO: Add topic filter input field here if needed
           ],
@@ -110,6 +110,7 @@ Widget _buildFiltersSection(
   BuildContext context,
   List<BaseFilterConfig> filters,
   WidgetRef ref,
+  dynamic t,
 ) {
   final theme = Theme.of(context);
   final colorScheme = theme.colorScheme;

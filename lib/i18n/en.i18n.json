@@ -180,7 +180,9 @@
     "mindmaps": {
       "title": "Mindmap",
       "search_mindmaps": "Search mindmaps...",
-      "all_mindmaps": "All Mindmaps"
+      "all_mindmaps": "All Mindmaps",
+      "webViewNotSupported": "WebView is not supported on this platform.",
+      "loadingMindmap": "Loading mindmap..."
     },
     "images": {
       "title": "Image",
@@ -214,6 +216,8 @@
     },
     "categories": "Category",
     "your_presentations": "Your Presentations",
+    "mindmaps_title": "Mindmaps",
+    "images_title": "Images",
     "filter": "Filter",
     "filter_coming_soon": "Filter coming soon",
     "sort": "Sort",
@@ -222,7 +226,9 @@
     "sort_name_asc": "Name (A-Z)",
     "sort_name_desc": "Name (Z-A)",
     "no_presentations": "No presentations yet",
+    "no_more_presentations": "No more presentations",
     "no_mindmaps": "No mindmaps yet",
+    "no_more_mindmaps": "No more mindmaps",
     "no_images": "No images yet",
     "back_to_resources": "Back to Resources",
     "coming_soon": "$type coming soon",

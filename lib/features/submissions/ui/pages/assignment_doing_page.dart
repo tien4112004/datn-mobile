@@ -49,7 +49,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     if (widget.postId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Error: Missing postId parameter'),
+          content: Text(t.submissions.errors.missingPostId),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -77,7 +77,9 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
         builder: (context) => AlertDialog(
           title: Text(t.submissions.doing.incompleteWarning),
           content: Text(
-            'Questions ${unanswered.map((i) => i + 1).join(", ")} are not answered.',
+            t.submissions.doing.unansweredQuestions(
+              questions: unanswered.map((i) => i + 1).join(", "),
+            ),
           ),
           actions: [
             TextButton(
@@ -202,7 +204,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
           if (totalQuestions == 0) {
             return Scaffold(
               appBar: AppBar(title: Text(t.submissions.doing.title)),
-              body: const Center(child: Text('No questions in assignment')),
+              body: Center(child: Text(t.submissions.doing.noQuestions)),
             );
           }
 
@@ -217,9 +219,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                 context: context,
                 builder: (context) => AlertDialog(
                   title: Text(t.classes.warning),
-                  content: const Text(
-                    'Are you sure you want to leave? Your progress will not be saved.',
-                  ),
+                  content: Text(t.submissions.doing.leaveConfirmation),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),

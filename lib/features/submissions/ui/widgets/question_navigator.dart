@@ -112,11 +112,14 @@ class QuestionNavigator extends ConsumerWidget {
           // Legend
           Row(
             children: [
-              _LegendItem(color: colorScheme.primary, label: 'Current'),
+              _LegendItem(
+                color: colorScheme.primary,
+                label: t.submissions.doing.legendCurrent,
+              ),
               const SizedBox(width: 16),
               _LegendItem(
                 color: colorScheme.surfaceContainerHighest,
-                label: 'Not visited',
+                label: t.submissions.doing.legendNotVisited,
               ),
             ],
           ),

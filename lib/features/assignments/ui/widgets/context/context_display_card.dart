@@ -1,5 +1,7 @@
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Material 3 collapsible context display card (read-only).
@@ -11,7 +13,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Author display (optional)
 /// - Touch-friendly (44dp minimum tap targets)
 /// - Default collapsed for mobile (saves screen space)
-class ContextDisplayCard extends StatefulWidget {
+class ContextDisplayCard extends ConsumerStatefulWidget {
   final ContextEntity context;
   final bool initiallyExpanded;
   final VoidCallback? onEdit;
@@ -34,10 +36,10 @@ class ContextDisplayCard extends StatefulWidget {
   });
 
   @override
-  State<ContextDisplayCard> createState() => _ContextDisplayCardState();
+  ConsumerState<ContextDisplayCard> createState() => _ContextDisplayCardState();
 }
 
-class _ContextDisplayCardState extends State<ContextDisplayCard>
+class _ContextDisplayCardState extends ConsumerState<ContextDisplayCard>
     with SingleTickerProviderStateMixin {
   late bool _isExpanded;
   late AnimationController _animationController;
@@ -88,6 +90,7 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -113,7 +116,7 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(theme, colorScheme),
+            _buildHeader(theme, colorScheme, t),
             AnimatedSize(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
@@ -127,7 +130,7 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
     );
   }
 
-  Widget _buildHeader(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildHeader(ThemeData theme, ColorScheme colorScheme, dynamic t) {
     return InkWell(
       onTap: _toggleExpanded,
       child: Padding(
@@ -155,7 +158,8 @@ class _ContextDisplayCardState extends State<ContextDisplayCard>
                   Text(
                     widget.context.title.isNotEmpty
                         ? widget.context.title
-                        : (widget.readingPassageLabel ?? 'Reading Passage'),
+                        : (widget.readingPassageLabel ??
+                              t.assignments.context.readingPassage),
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.blue.shade900,

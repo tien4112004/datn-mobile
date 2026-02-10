@@ -1,7 +1,7 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
-import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -33,19 +33,6 @@ class QuestionBreakdownCard extends ConsumerWidget {
         return LucideIcons.equal;
       case QuestionType.openEnded:
         return LucideIcons.pen;
-    }
-  }
-
-  String _getLabelForType(QuestionType type, Translations t) {
-    switch (type) {
-      case QuestionType.multipleChoice:
-        return t.questions.types.multipleChoice;
-      case QuestionType.fillInBlank:
-        return t.questions.types.fillInBlank;
-      case QuestionType.matching:
-        return t.questions.types.matching;
-      case QuestionType.openEnded:
-        return t.questions.types.openEnded;
     }
   }
 
@@ -97,7 +84,7 @@ class QuestionBreakdownCard extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        _getLabelForType(type, t),
+                        type.localizedName(t),
                         style: theme.textTheme.bodyMedium,
                       ),
                     ),

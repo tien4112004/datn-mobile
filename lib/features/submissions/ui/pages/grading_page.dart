@@ -214,7 +214,7 @@ class _GradingPageState extends ConsumerState<GradingPage> {
                         controller: _overallFeedbackController,
                         maxLines: 4,
                         decoration: InputDecoration(
-                          hintText: 'Enter overall feedback...',
+                          hintText: t.submissions.grading.overallFeedbackHint,
                           border: const OutlineInputBorder(),
                           filled: true,
                           fillColor: colorScheme.surfaceContainerHighest,
@@ -359,8 +359,9 @@ class _GradingPageState extends ConsumerState<GradingPage> {
                     decimal: true,
                   ),
                   decoration: InputDecoration(
-                    labelText:
-                        '${t.submissions.grading.score} (Max: $maxScore)',
+                    labelText: t.submissions.grading.scoreWithMax(
+                      max: maxScore,
+                    ),
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),

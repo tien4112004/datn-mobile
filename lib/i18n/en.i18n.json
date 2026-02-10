@@ -1448,6 +1448,9 @@
       "questionCount(count)": "$count questions",
       "previousAttempts": "Previous Attempts",
       "noAttempts": "No previous attempts",
+      "noAttemptsDescription": "This is your first time attempting this assignment.",
+      "loadingAttempts": "Loading previous attempts...",
+      "loadAttemptsError": "Failed to load previous attempts",
       "attemptLimitReached": "You have reached the maximum number of attempts."
     },
     "doing": {
@@ -1457,6 +1460,11 @@
       "submitButton": "Submit Assignment",
       "confirmSubmit": "Are you sure you want to submit? You cannot change your answers after submitting.",
       "incompleteWarning": "Please answer all questions before submitting.",
+      "unansweredQuestions(questions)": "Questions $questions are not answered.",
+      "leaveConfirmation": "Are you sure you want to leave? Your progress will not be saved.",
+      "noQuestions": "No questions in assignment",
+      "legendCurrent": "Current",
+      "legendNotVisited": "Not visited",
       "timeRemaining(time)": "Time Remaining: $time",
       "timeUp": "Time is up! Submitting..."
     },
@@ -1474,10 +1482,12 @@
       "title": "Grade Submission",
       "studentInfo": "Student Information",
       "score": "Score",
+      "scoreWithMax(max)": "Score (Max: $max)",
       "feedback": "Feedback",
       "studentAnswer": "Student's Answer",
       "expectedAnswer": "Expected Answer",
       "overallFeedback": "Overall Feedback",
+      "overallFeedbackHint": "Enter overall feedback...",
       "saveButton": "Save Grades",
       "notAnswered": "Not Answered",
       "saveSuccess": "Grades saved successfully",
@@ -1509,7 +1519,8 @@
       "loadFailed": "Failed to load submission",
       "submitFailed(error)": "Failed to submit assignment: $error",
       "validationFailed(reason)": "Cannot start assignment: $reason",
-      "attemptsExceeded(count)": "You have used all $count attempts"
+      "attemptsExceeded(count)": "You have used all $count attempts",
+      "missingPostId": "Error: Missing postId parameter"
     },
     "statistics": {
       "title": "Assignment Statistics",

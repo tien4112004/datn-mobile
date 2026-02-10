@@ -28,24 +28,24 @@ class ExamFiltersBar extends ConsumerWidget {
     return GenericFiltersBar(
       filters: [
         FilterConfig<AssignmentStatus>(
-          label: 'Status',
+          label: t.assignments.filters.status,
           icon: LucideIcons.info,
           selectedValue: selectedStatus,
           options: AssignmentStatus.values,
           displayNameBuilder: (status) => status.getLocalizedName(t),
           iconBuilder: (status) => _getStatusIcon(status),
           onChanged: onStatusChanged,
-          allLabel: 'All Status',
+          allLabel: t.assignments.filters.allStatus,
           allIcon: LucideIcons.list,
         ),
         FilterConfig<GradeLevel>(
-          label: 'Grade Level',
+          label: t.assignments.filters.gradeLevel,
           icon: LucideIcons.graduationCap,
           selectedValue: selectedGradeLevel,
           options: GradeLevel.values,
           displayNameBuilder: (grade) => grade.getLocalizedName(t),
           onChanged: onGradeLevelChanged,
-          allLabel: 'All Grades',
+          allLabel: t.assignments.filters.allGrades,
           allIcon: LucideIcons.list,
         ),
       ],

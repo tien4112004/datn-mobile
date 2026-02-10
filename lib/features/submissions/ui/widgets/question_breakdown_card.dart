@@ -108,7 +108,7 @@ class QuestionBreakdownCard extends ConsumerWidget {
                       ),
                       decoration: BoxDecoration(
                         color: colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
+                        shape: BoxShape.circle,
                       ),
                       child: Text(
                         count.toString(),

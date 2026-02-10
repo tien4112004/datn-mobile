@@ -18,19 +18,6 @@ class MatchingAfterAssess extends ConsumerWidget {
     this.studentAnswers,
   });
 
-  int get _correctCount {
-    if (studentAnswers == null) return 0;
-    int count = 0;
-    for (var pair in question.data.pairs) {
-      // Match by pair ID instead of text content
-      final studentSelectedId = studentAnswers![pair.id];
-      if (studentSelectedId == pair.id) {
-        count++;
-      }
-    }
-    return count;
-  }
-
   MatchingPair? _findPairById(String id) {
     try {
       return question.data.pairs.firstWhere((p) => p.id == id);
@@ -43,11 +30,6 @@ class MatchingAfterAssess extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final totalPairs = question.data.pairs.length;
-    final percentage = totalPairs > 0
-        ? (_correctCount / totalPairs * 100).round()
-        : 0;
 
     return QuestionCardWrapper(
       title: question.title,
@@ -60,75 +42,6 @@ class MatchingAfterAssess extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.visibility_outlined,
-                      size: 16,
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      t.questionBank.viewing.viewingMode,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: percentage >= 80
-                      ? Colors.green
-                      : percentage >= 60
-                      ? Colors.orange
-                      : Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      percentage >= 80
-                          ? Icons.emoji_events
-                          : percentage >= 60
-                          ? Icons.thumb_up
-                          : Icons.error_outline,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '$percentage% ($_correctCount/$totalPairs)',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
           const SizedBox(height: 16),
           ...question.data.pairs.map((pair) {
             final studentSelectedId = studentAnswers?[pair.id];

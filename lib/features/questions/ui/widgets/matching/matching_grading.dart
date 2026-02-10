@@ -49,7 +49,6 @@ class MatchingGrading extends ConsumerWidget {
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
-      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -151,7 +150,7 @@ class MatchingGrading extends ConsumerWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         color: isCorrect
             ? Colors.green.shade50
@@ -201,7 +200,7 @@ class MatchingGrading extends ConsumerWidget {
           // Left side (question)
           Text(
             '${t.questionBank.matching.leftSide}:',
-            style: theme.textTheme.labelSmall?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
@@ -218,7 +217,7 @@ class MatchingGrading extends ConsumerWidget {
           if (isAnswered) ...[
             Text(
               '${t.submissions.grading.studentAnswer}:',
-              style: theme.textTheme.labelSmall?.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                 color: isCorrect ? Colors.green.shade700 : Colors.red.shade700,
                 fontWeight: FontWeight.w600,
               ),
@@ -227,12 +226,22 @@ class MatchingGrading extends ConsumerWidget {
             MatchingContentWidget(
               text: studentSelectedPair?.right,
               imageUrl: studentSelectedPair?.rightImageUrl,
-              backgroundColor: isCorrect
-                  ? Colors.green.shade100
-                  : Colors.red.shade100,
-              borderColor: isCorrect
-                  ? Colors.green.shade300
-                  : Colors.red.shade300,
+              backgroundColor: Colors.transparent,
+              borderWidth: 2,
+            ),
+            const SizedBox(height: 16),
+          ] else ...[
+            Text(
+              '${t.submissions.grading.studentAnswer}:',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.red.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            MatchingContentWidget(
+              text: t.submissions.grading.notAnswered,
+              backgroundColor: Colors.transparent,
               borderWidth: 2,
             ),
             const SizedBox(height: 16),
@@ -240,7 +249,7 @@ class MatchingGrading extends ConsumerWidget {
           // Correct answer
           Text(
             '${t.submissions.grading.expectedAnswer}:',
-            style: theme.textTheme.labelSmall?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
               color: Colors.green.shade700,
               fontWeight: FontWeight.w600,
             ),
@@ -249,8 +258,7 @@ class MatchingGrading extends ConsumerWidget {
           MatchingContentWidget(
             text: pair.right,
             imageUrl: pair.rightImageUrl,
-            backgroundColor: Colors.green.shade100,
-            borderColor: Colors.green.shade300,
+            backgroundColor: Colors.transparent,
             borderWidth: 2,
           ),
         ],

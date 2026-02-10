@@ -1,9 +1,11 @@
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/submissions/data/dto/answer_data_dto.dart';
+import 'package:AIPrimary/features/submissions/data/dto/statistics_dto.dart';
 import 'package:AIPrimary/features/submissions/data/dto/submission_dto.dart';
 import 'package:AIPrimary/features/submissions/data/source/submission_remote_source.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
+import 'package:AIPrimary/features/submissions/domain/entity/statistics_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/repository/submission_repository.dart';
 
@@ -144,6 +146,23 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
       return response.data!.toEntity();
     } catch (e) {
       throw Exception('Failed to grade submission: $e');
+    }
+  }
+
+  @override
+  Future<SubmissionStatisticsEntity> getSubmissionStatistics(
+    String postId,
+  ) async {
+    try {
+      final response = await _remoteSource.getSubmissionStatistics(postId);
+
+      if (response.data == null) {
+        throw Exception('Failed to get statistics: No data returned');
+      }
+
+      return response.data!.toEntity();
+    } catch (e) {
+      throw Exception('Failed to get submission statistics: $e');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/submissions/data/dto/submission_dto.dart';
+import 'package:AIPrimary/features/submissions/data/dto/statistics_dto.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
 import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:retrofit/retrofit.dart';
@@ -76,4 +77,10 @@ abstract class SubmissionRemoteSource {
     @Path('id') String submissionId,
     @Body() GradeSubmissionRequestDto request,
   );
+
+  /// Get submission statistics for a post (teacher view)
+  /// GET /posts/{postId}/submissions/statistics
+  @GET('/posts/{postId}/submissions/statistics')
+  Future<ServerResponseDto<SubmissionStatisticsResponseDto>>
+  getSubmissionStatistics(@Path('postId') String postId);
 }

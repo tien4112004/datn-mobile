@@ -5,13 +5,13 @@ import 'package:AIPrimary/features/questions/ui/widgets/open_ended/open_ended_gr
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
 import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -162,7 +162,7 @@ class _GradingPageState extends ConsumerState<GradingPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${t.submissions.detail.submittedAt}: ${DateFormat.yMMMd().add_jm().format(submission.submittedAt)}',
+                              '${t.submissions.detail.submittedAt}: ${DateFormatHelper.formatRelativeDate(submission.submittedAt, ref: ref)}',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: colorScheme.onSurfaceVariant,
                               ),
@@ -361,7 +361,9 @@ class _GradingPageState extends ConsumerState<GradingPage> {
                   decoration: InputDecoration(
                     labelText:
                         '${t.submissions.grading.score} (Max: $maxScore)',
-                    border: const OutlineInputBorder(),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
                     isDense: true,
                   ),
                   onChanged: (value) {
@@ -383,7 +385,9 @@ class _GradingPageState extends ConsumerState<GradingPage> {
             maxLines: 2,
             decoration: InputDecoration(
               labelText: t.submissions.grading.feedback,
-              border: const OutlineInputBorder(),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
               isDense: true,
             ),
             onChanged: (value) {

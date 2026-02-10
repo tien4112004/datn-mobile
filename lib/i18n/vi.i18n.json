@@ -1479,20 +1479,26 @@
       "studentAnswer": "Đáp án của học sinh",
       "expectedAnswer": "Đáp án đúng",
       "overallFeedback": "Nhận xét chung",
+      "notAnswered": "Chưa có câu trả lời", 
       "saveButton": "Lưu điểm",
       "saveSuccess": "Lưu điểm thành công",
       "saveError(error)": "Không thể lưu điểm: $error",
       "autoGraded": "Chấm tự động",
-      "manualGrade": "Chấm thủ công"
+      "manualGrade": "Chấm thủ công",
+      "noExplanation": "Không có lời giải thích",
+      "yourAnswer": "Đáp án của bạn"
     },
     "list": {
       "title": "Bài nộp",
+      "status": "Trạng thái",
+      "searchHint": "Tìm kiếm theo tên hoặc email học sinh",
       "filterAll": "Tất cả",
       "filterSubmitted": "Đã nộp",
       "filterGraded": "Đã chấm",
-      "sortByDate": "Sắp xếp theo ngày",
-      "sortByScore": "Sắp xếp theo điểm",
-      "sortByName": "Sắp xếp theo tên",
+      "sortBy": "Sắp xếp theo",
+      "sortByDate": "Ngày",
+      "sortByScore": "Điểm",
+      "sortByName": "Tên",
       "noSubmissions": "Chưa có bài nộp nào"
     },
     "status": {
@@ -1505,6 +1511,25 @@
       "submitFailed(error)": "Nộp bài thất bại: $error",
       "validationFailed(reason)": "Không thể bắt đầu làm bài: $reason",
       "attemptsExceeded(count)": "Bạn đã sử dụng hết $count lần làm bài"
+    },
+    "statistics": {
+      "title": "Thống kê bài tập",
+      "overview": "Tổng quan",
+      "totalSubmissions": "Tổng số",
+      "graded": "Đã chấm",
+      "pending": "Chờ chấm",
+      "inProgress": "Đang làm",
+      "maxScore": "Điểm tối đa",
+      "scoreStatistics": "Thống kê điểm",
+      "average": "Trung bình",
+      "highest": "Cao nhất",
+      "lowest": "Thấp nhất",
+      "scoreDistribution": "Phân bổ điểm",
+      "viewAllSubmissions": "Xem tất cả bài nộp",
+      "noScoresYet": "Chưa có điểm",
+      "noDistributionData": "Chưa có dữ liệu phân bổ",
+      "errorLoadFailed": "Không thể tải thống kê",
+      "below70": "Dưới 70%"
     }
   },
   "shared": {

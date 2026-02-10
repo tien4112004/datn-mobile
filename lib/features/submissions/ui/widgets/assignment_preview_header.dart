@@ -2,7 +2,6 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.d
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Widget displaying assignment metadata in preview page
 class AssignmentPreviewHeader extends ConsumerWidget {
@@ -56,7 +55,6 @@ class AssignmentPreviewHeader extends ConsumerWidget {
             children: [
               // Total questions
               _InfoChip(
-                icon: LucideIcons.fileText,
                 label: t.submissions.preview.questionCount(
                   count: assignment.totalQuestions,
                 ),
@@ -65,7 +63,6 @@ class AssignmentPreviewHeader extends ConsumerWidget {
 
               // Total points
               _InfoChip(
-                icon: LucideIcons.target,
                 label: t.submissions.preview.totalPoints(
                   points: assignment.totalPoints,
                 ),
@@ -75,11 +72,10 @@ class AssignmentPreviewHeader extends ConsumerWidget {
               // Time limit (if exists)
               if (assignment.timeLimitMinutes != null)
                 _InfoChip(
-                  icon: LucideIcons.clock,
                   label: t.submissions.preview.timeLimit(
                     minutes: assignment.timeLimitMinutes!,
                   ),
-                  color: colorScheme.tertiary,
+                  color: colorScheme.secondary,
                 ),
             ],
           ),
@@ -90,39 +86,26 @@ class AssignmentPreviewHeader extends ConsumerWidget {
 }
 
 class _InfoChip extends StatelessWidget {
-  final IconData icon;
   final String label;
   final Color color;
 
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
+  const _InfoChip({required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -107,6 +107,10 @@ class AppRouter extends RootStackRouter {
       page: SubmissionsListRoute.page,
       path: '/posts/:postId/submissions',
     ),
+    AutoRoute(
+      page: AssignmentStatisticsRoute.page,
+      path: '/posts/:postId/statistics',
+    ),
 
     AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
     AutoRoute(

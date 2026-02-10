@@ -1479,19 +1479,25 @@
       "expectedAnswer": "Expected Answer",
       "overallFeedback": "Overall Feedback",
       "saveButton": "Save Grades",
+      "notAnswered": "Not Answered",
       "saveSuccess": "Grades saved successfully",
       "saveError(error)": "Failed to save grades: $error",
       "autoGraded": "Auto-graded",
-      "manualGrade": "Manual grade"
+      "manualGrade": "Manual grade",
+      "noExplanation": "No explanation provided",
+      "yourAnswer": "Your Answer"
     },
     "list": {
       "title": "Submissions",
+      "status": "Status",
+      "searchHint": "Search by student name or email",
       "filterAll": "All",
       "filterSubmitted": "Submitted",
       "filterGraded": "Graded",
-      "sortByDate": "Sort by Date",
-      "sortByScore": "Sort by Score",
-      "sortByName": "Sort by Name",
+      "sortBy": "Sort by",
+      "sortByDate": "Date",
+      "sortByScore": "Score",
+      "sortByName": "Name",
       "noSubmissions": "No submissions yet"
     },
     "status": {
@@ -1504,6 +1510,25 @@
       "submitFailed(error)": "Failed to submit assignment: $error",
       "validationFailed(reason)": "Cannot start assignment: $reason",
       "attemptsExceeded(count)": "You have used all $count attempts"
+    },
+    "statistics": {
+      "title": "Assignment Statistics",
+      "overview": "Overview",
+      "totalSubmissions": "Total",
+      "graded": "Graded",
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "maxScore": "Max Score",
+      "scoreStatistics": "Score Statistics",
+      "average": "Average",
+      "highest": "Highest",
+      "lowest": "Lowest",
+      "scoreDistribution": "Score Distribution",
+      "viewAllSubmissions": "View All Submissions",
+      "noScoresYet": "No scores available yet",
+      "noDistributionData": "No distribution data available",
+      "errorLoadFailed": "Failed to load statistics",
+      "below70": "Below 70%"
     }
   },
   "shared": {

@@ -65,9 +65,9 @@ class AssignmentPreviewCard extends ConsumerWidget {
 
     if (user == null) return;
 
-    // Teachers go to detail page to edit/view assignment
+    // Teachers go to statistics page to view analytics
     if (user.role == UserRole.teacher) {
-      context.router.push(AssignmentDetailRoute(assignmentId: assignmentId));
+      context.router.push(AssignmentStatisticsRoute(postId: postId));
     } else {
       // Students go to preview page to take assignment
       context.router.push(

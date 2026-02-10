@@ -5,11 +5,41 @@ import 'package:AIPrimary/features/submissions/ui/widgets/submission_status_badg
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/widgets/custom_search_bar.dart';
+import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+enum SubmissionSortOption {
+  date,
+  score,
+  name;
+
+  String displayName(Translations t) {
+    switch (this) {
+      case SubmissionSortOption.date:
+        return t.submissions.list.sortByDate;
+      case SubmissionSortOption.score:
+        return t.submissions.list.sortByScore;
+      case SubmissionSortOption.name:
+        return t.submissions.list.sortByName;
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case SubmissionSortOption.date:
+        return LucideIcons.calendar;
+      case SubmissionSortOption.score:
+        return LucideIcons.award;
+      case SubmissionSortOption.name:
+        return LucideIcons.user;
+    }
+  }
+}
 
 @RoutePage()
 class SubmissionsListPage extends ConsumerStatefulWidget {
@@ -27,7 +57,30 @@ class SubmissionsListPage extends ConsumerStatefulWidget {
 
 class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
   SubmissionStatus? _filterStatus;
-  String _sortBy = 'date'; // date, score, name
+  SubmissionSortOption? _sortBy = SubmissionSortOption.date;
+  String _searchQuery = '';
+
+  IconData _getStatusIcon(SubmissionStatus status) {
+    switch (status) {
+      case SubmissionStatus.submitted:
+        return LucideIcons.clock;
+      case SubmissionStatus.graded:
+        return LucideIcons.circleCheck;
+      case SubmissionStatus.inProgress:
+        return LucideIcons.pencil;
+    }
+  }
+
+  String _getStatusDisplayName(SubmissionStatus status, Translations t) {
+    switch (status) {
+      case SubmissionStatus.submitted:
+        return t.submissions.list.filterSubmitted;
+      case SubmissionStatus.graded:
+        return t.submissions.list.filterGraded;
+      case SubmissionStatus.inProgress:
+        return t.submissions.status.inProgress;
+    }
+  }
 
   List<SubmissionEntity> _filterAndSort(List<SubmissionEntity> submissions) {
     var filtered = submissions;
@@ -37,23 +90,36 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
       filtered = filtered.where((s) => s.status == _filterStatus).toList();
     }
 
+    // Filter by search query
+    if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
+      filtered = filtered.where((s) {
+        final fullName = '${s.student.firstName} ${s.student.lastName}'
+            .toLowerCase();
+        final email = s.student.email.toLowerCase();
+        return fullName.contains(query) || email.contains(query);
+      }).toList();
+    }
+
     // Sort
-    switch (_sortBy) {
-      case 'date':
-        filtered.sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
-        break;
-      case 'score':
-        filtered.sort((a, b) {
-          final scoreA = a.score ?? 0;
-          final scoreB = b.score ?? 0;
-          return scoreB.compareTo(scoreA);
-        });
-        break;
-      case 'name':
-        filtered.sort(
-          (a, b) => a.student.firstName.compareTo(b.student.firstName),
-        );
-        break;
+    if (_sortBy != null) {
+      switch (_sortBy!) {
+        case SubmissionSortOption.date:
+          filtered.sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+          break;
+        case SubmissionSortOption.score:
+          filtered.sort((a, b) {
+            final scoreA = a.score ?? 0;
+            final scoreB = b.score ?? 0;
+            return scoreB.compareTo(scoreA);
+          });
+          break;
+        case SubmissionSortOption.name:
+          filtered.sort(
+            (a, b) => a.student.firstName.compareTo(b.student.firstName),
+          );
+          break;
+      }
     }
 
     return filtered;
@@ -76,11 +142,9 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
 
           return Column(
             children: [
-              // Filters and sorting
+              // Search and Filters
               Container(
-                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
                   border: Border(
                     bottom: BorderSide(
                       color: colorScheme.outline.withValues(alpha: 0.2),
@@ -89,71 +153,58 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
                 ),
                 child: Column(
                   children: [
-                    // Filter chips
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          FilterChip(
-                            label: Text(t.submissions.list.filterAll),
-                            selected: _filterStatus == null,
-                            onSelected: (selected) {
-                              setState(() => _filterStatus = null);
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(t.submissions.list.filterSubmitted),
-                            selected:
-                                _filterStatus == SubmissionStatus.submitted,
-                            onSelected: (selected) {
-                              setState(() {
-                                _filterStatus = selected
-                                    ? SubmissionStatus.submitted
-                                    : null;
-                              });
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          FilterChip(
-                            label: Text(t.submissions.list.filterGraded),
-                            selected: _filterStatus == SubmissionStatus.graded,
-                            onSelected: (selected) {
-                              setState(() {
-                                _filterStatus = selected
-                                    ? SubmissionStatus.graded
-                                    : null;
-                              });
-                            },
-                          ),
-                        ],
+                    // Search bar
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: CustomSearchBar(
+                        hintText: t.submissions.list.searchHint,
+                        enabled: true,
+                        autoFocus: false,
+                        onChanged: (value) {
+                          setState(() => _searchQuery = value);
+                        },
+                        onClearTap: () {
+                          setState(() => _searchQuery = '');
+                        },
                       ),
                     ),
 
-                    const SizedBox(height: 8),
-
-                    // Sort dropdown
-                    DropdownButton<String>(
-                      value: _sortBy,
-                      isExpanded: true,
-                      items: [
-                        DropdownMenuItem(
-                          value: 'date',
-                          child: Text(t.submissions.list.sortByDate),
+                    // Filter bar
+                    GenericFiltersBar(
+                      filters: [
+                        FilterConfig<SubmissionStatus>(
+                          label: t.submissions.list.status,
+                          icon: LucideIcons.fileText,
+                          selectedValue: _filterStatus,
+                          options: SubmissionStatus.values,
+                          displayNameBuilder: (status) =>
+                              _getStatusDisplayName(status, t),
+                          iconBuilder: _getStatusIcon,
+                          onChanged: (status) {
+                            setState(() => _filterStatus = status);
+                          },
+                          allLabel: t.submissions.list.filterAll,
+                          allIcon: LucideIcons.fileText,
                         ),
-                        DropdownMenuItem(
-                          value: 'score',
-                          child: Text(t.submissions.list.sortByScore),
-                        ),
-                        DropdownMenuItem(
-                          value: 'name',
-                          child: Text(t.submissions.list.sortByName),
+                        FilterConfig<SubmissionSortOption>(
+                          label: t.submissions.list.sortBy,
+                          icon: LucideIcons.arrowUpDown,
+                          selectedValue: _sortBy,
+                          options: SubmissionSortOption.values,
+                          displayNameBuilder: (sort) => sort.displayName(t),
+                          iconBuilder: (sort) => sort.icon,
+                          onChanged: (sort) {
+                            setState(() => _sortBy = sort);
+                          },
+                          allLabel: t.submissions.list.filterAll,
+                          allIcon: LucideIcons.arrowUpDown,
                         ),
                       ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() => _sortBy = value);
-                        }
+                      onClearFilters: () {
+                        setState(() {
+                          _filterStatus = null;
+                          _sortBy = SubmissionSortOption.date;
+                        });
                       },
                     ),
                   ],
@@ -227,7 +278,8 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
 
     return InkWell(
       onTap: () {
-        context.router.push(SubmissionDetailRoute(submissionId: submission.id));
+        // Teachers go directly to grading page
+        context.router.push(GradingRoute(submissionId: submission.id));
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(

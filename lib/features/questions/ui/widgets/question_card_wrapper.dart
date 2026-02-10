@@ -48,7 +48,7 @@ class QuestionCardWrapper extends ConsumerWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -67,8 +67,8 @@ class QuestionCardWrapper extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
               ],
-              const SizedBox(height: 16),
 
               // Question title
               Text(
@@ -129,14 +129,14 @@ class QuestionCardWrapper extends ConsumerWidget {
 
             // Explanation (shown in after assessment mode)
             if (showExplanation && explanation != null) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer,
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: colorScheme.primary.withValues(alpha: 0.3),
+                    color: colorScheme.primary.withValues(alpha: 0.5),
                     width: 1,
                   ),
                 ),
@@ -162,9 +162,14 @@ class QuestionCardWrapper extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      explanation!,
+                      explanation!.isNotEmpty
+                          ? explanation!
+                          : t.submissions.grading.noExplanation,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onPrimaryContainer,
+                        fontStyle: explanation!.isEmpty
+                            ? FontStyle.italic
+                            : FontStyle.normal,
                         height: 1.5,
                       ),
                     ),

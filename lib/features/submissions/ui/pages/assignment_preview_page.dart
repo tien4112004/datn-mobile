@@ -199,32 +199,8 @@ class AssignmentPreviewPage extends ConsumerWidget {
                     data: (submissions) {
                       // Show view result button if student has submitted
                       if (submissions.isNotEmpty) {
-                        final latestSubmission = submissions.first;
                         return Column(
                           children: [
-                            // View latest result button
-                            SizedBox(
-                              width: double.infinity,
-                              child: FilledButton.icon(
-                                onPressed: () {
-                                  context.router.push(
-                                    SubmissionDetailRoute(
-                                      submissionId: latestSubmission.id,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(LucideIcons.fileCheck),
-                                label: Text(t.submissions.preview.viewResult),
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  textStyle: theme.textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
                             // Start new attempt button (outlined)
                             SizedBox(
                               width: double.infinity,

@@ -2,6 +2,7 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.d
 import 'package:AIPrimary/features/submissions/data/dto/submission_dto.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
+import 'package:AIPrimary/features/submissions/domain/entity/statistics_entity.dart';
 
 /// Repository interface for submission data operations
 abstract class SubmissionRepository {
@@ -42,4 +43,7 @@ abstract class SubmissionRepository {
     Map<String, String>? questionFeedback,
     String? overallFeedback,
   });
+
+  /// Get submission statistics for a specific post (teacher view)
+  Future<SubmissionStatisticsEntity> getSubmissionStatistics(String postId);
 }

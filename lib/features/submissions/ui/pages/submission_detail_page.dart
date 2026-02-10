@@ -1,15 +1,14 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
-import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_blank_grading.dart';
-import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_grading.dart';
-import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_grading.dart';
-import 'package:AIPrimary/features/questions/ui/widgets/open_ended/open_ended_grading.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_blank_after_assess.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_after_assess.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_after_assess.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/open_ended/open_ended_after_assess.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
 import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/score_display.dart';
-import 'package:AIPrimary/features/submissions/ui/widgets/submission_status_badge.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -92,8 +91,6 @@ class SubmissionDetailPage extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        SubmissionStatusBadge(status: submission.status),
-                        const SizedBox(height: 16),
                         if (submission.score != null)
                           ScoreDisplay(
                             score: submission.score!,
@@ -270,26 +267,26 @@ class SubmissionDetailPage extends ConsumerWidget {
 
     switch (answer.type) {
       case QuestionType.multipleChoice:
-        questionWidget = MultipleChoiceGrading(
+        questionWidget = MultipleChoiceAfterAssess(
           question: question,
           studentAnswer:
               (answer as MultipleChoiceAnswerEntity).selectedOptionId,
         );
         break;
       case QuestionType.fillInBlank:
-        questionWidget = FillInBlankGrading(
+        questionWidget = FillInBlankAfterAssess(
           question: question,
           studentAnswers: (answer as FillInBlankAnswerEntity).blankAnswers,
         );
         break;
       case QuestionType.matching:
-        questionWidget = MatchingGrading(
+        questionWidget = MatchingAfterAssess(
           question: question,
           studentAnswers: (answer as MatchingAnswerEntity).matchedPairs,
         );
         break;
       case QuestionType.openEnded:
-        questionWidget = OpenEndedGrading(
+        questionWidget = OpenEndedAfterAssess(
           question: question,
           studentAnswer: (answer as OpenEndedAnswerEntity).response,
         );

@@ -39,7 +39,6 @@ class _OpenEndedGradingState extends ConsumerState<OpenEndedGrading> {
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
-      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

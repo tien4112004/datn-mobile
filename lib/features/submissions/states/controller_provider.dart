@@ -2,6 +2,7 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.d
 import 'package:AIPrimary/features/submissions/data/dto/submission_dto.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
+import 'package:AIPrimary/features/submissions/domain/entity/statistics_entity.dart';
 import 'package:AIPrimary/features/submissions/states/repository_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -15,6 +16,7 @@ part 'post_submissions_controller.dart';
 part 'submission_detail_controller.dart';
 part 'grade_submission_controller.dart';
 part 'validation_controller.dart';
+part 'submission_statistics_controller.dart';
 
 // ============ Provider Definitions ============
 
@@ -73,6 +75,14 @@ final validationProvider =
       ValidationResult?,
       ValidationParams
     >((params) => ValidationController(params: params));
+
+/// Provider for submission statistics (teacher view)
+final submissionStatisticsProvider =
+    AsyncNotifierProvider.family<
+      SubmissionStatisticsController,
+      SubmissionStatisticsEntity,
+      String
+    >((postId) => SubmissionStatisticsController(postId: postId));
 
 /// Provider for getting assignment public details
 final assignmentPublicProvider =

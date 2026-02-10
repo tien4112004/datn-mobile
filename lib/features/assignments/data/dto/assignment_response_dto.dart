@@ -7,32 +7,30 @@ part 'assignment_response_dto.g.dart';
 /// DTO for assignment response (create/duplicate).
 /// Based on ExamResponse schema from assignments.yaml API.
 @JsonSerializable()
-class ExamResponseDto {
-  @JsonKey(name: 'assignment_id')
-  final String assignmentId;
-  @JsonKey(name: 'teacher_id')
-  final String teacherId;
+class AssignmentResponseDto {
+  final String id;
+  final String ownerId;
   final String title;
   final String status;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  ExamResponseDto({
-    required this.assignmentId,
-    required this.teacherId,
+  AssignmentResponseDto({
+    required this.id,
+    required this.ownerId,
     required this.title,
     required this.status,
     required this.createdAt,
   });
 
-  factory ExamResponseDto.fromJson(Map<String, dynamic> json) =>
-      _$ExamResponseDtoFromJson(json);
+  factory AssignmentResponseDto.fromJson(Map<String, dynamic> json) =>
+      _$AssignmentResponseDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ExamResponseDtoToJson(this);
+  Map<String, dynamic> toJson() => _$AssignmentResponseDtoToJson(this);
 }
 
 /// Extension for mapping DTO to domain entity (partial).
-extension ExamResponseMapper on ExamResponseDto {
+extension AssignmentResponseMapper on AssignmentResponseDto {
   AssignmentEntity toEntity({
     String? description,
     required String subject,
@@ -41,8 +39,8 @@ extension ExamResponseMapper on ExamResponseDto {
     int totalQuestions = 0,
     int totalPoints = 0,
   }) => AssignmentEntity(
-    assignmentId: assignmentId,
-    teacherId: teacherId,
+    assignmentId: id,
+    teacherId: ownerId,
     title: title,
     description: description,
     subject: Subject.fromApiValue(subject),

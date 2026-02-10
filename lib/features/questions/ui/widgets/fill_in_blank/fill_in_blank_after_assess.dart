@@ -74,6 +74,7 @@ class FillInBlankAfterAssess extends ConsumerWidget {
       type: question.type,
       explanation: question.explanation,
       showExplanation: true,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

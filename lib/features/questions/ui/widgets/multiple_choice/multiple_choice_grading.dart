@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Multiple Choice Question in Grading Mode (Teacher reviewing student answer)
 /// Enhanced with Material 3 design principles
@@ -18,15 +17,6 @@ class MultipleChoiceGrading extends ConsumerWidget {
     this.studentAnswer,
   });
 
-  bool get _isCorrect {
-    if (studentAnswer == null) return false;
-    final correctOption = question.data.options.firstWhere(
-      (opt) => opt.isCorrect,
-      orElse: () => question.data.options.first,
-    );
-    return studentAnswer == correctOption.id;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
@@ -37,74 +27,10 @@ class MultipleChoiceGrading extends ConsumerWidget {
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.grading_outlined,
-                      size: 16,
-                      color: Colors.orange.shade700,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      QuestionMode.grading.getLocalizedName(t),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: Colors.orange.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              // Result badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: _isCorrect ? Colors.green : Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _isCorrect ? Icons.check_circle : Icons.cancel,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _isCorrect
-                          ? t.questionBank.viewing.correct
-                          : t.common.error,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
           ...question.data.options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;
@@ -232,23 +158,10 @@ class MultipleChoiceGrading extends ConsumerWidget {
             spacing: 8,
             children: [
               if (option.isCorrect)
-                _buildLabel(
-                  t.questionBank.viewing.correct,
-                  Colors.green,
-                  Icons.check_circle,
-                  theme,
-                ),
+                _buildLabel(Colors.green, Icons.check, theme),
               if (isStudentAnswer && !option.isCorrect)
                 _buildLabel(
-                  t.questionBank.viewing.grading,
                   Colors.red,
-                  Icons.person,
-                  theme,
-                ), // Or specific "Student Answer"
-              if (isStudentAnswer && option.isCorrect)
-                _buildLabel(
-                  t.questionBank.viewing.grading,
-                  Colors.blue,
                   Icons.person,
                   theme,
                 ), // Or specific "Student Answer"
@@ -259,27 +172,14 @@ class MultipleChoiceGrading extends ConsumerWidget {
     );
   }
 
-  Widget _buildLabel(String text, Color color, IconData icon, ThemeData theme) {
+  Widget _buildLabel(Color color, IconData icon, ThemeData theme) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: Colors.white),
-          const SizedBox(width: 4),
-          Text(
-            text,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+      child: Icon(icon, size: 14, color: Colors.white),
     );
   }
 }

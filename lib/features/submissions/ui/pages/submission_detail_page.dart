@@ -11,6 +11,7 @@ import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/score_display.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/submission_status_badge.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -19,7 +20,6 @@ import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
@@ -106,14 +106,14 @@ class SubmissionDetailPage extends ConsumerWidget {
                           ),
                         const SizedBox(height: 8),
                         Text(
-                          '${t.submissions.detail.submittedAt}: ${DateFormat.yMMMd().add_jm().format(submission.submittedAt)}',
+                          '${t.submissions.detail.submittedAt}: ${DateFormatHelper.formatRelativeDate(submission.submittedAt, ref: ref)}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                         if (submission.gradedAt != null)
                           Text(
-                            '${t.submissions.detail.gradedAt}: ${DateFormat.yMMMd().add_jm().format(submission.gradedAt!)}',
+                            '${t.submissions.detail.gradedAt}: ${DateFormatHelper.formatRelativeDate(submission.gradedAt!, ref: ref)}',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),

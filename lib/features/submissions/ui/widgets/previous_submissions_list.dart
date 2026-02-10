@@ -1,11 +1,11 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/submission_status_badge.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Widget displaying list of previous submission attempts
@@ -70,19 +70,17 @@ class PreviousSubmissionsList extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  // Status badge
-                  SubmissionStatusBadge(status: submission.status),
-
-                  const SizedBox(width: 12),
-
                   // Submission info
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          DateFormat.yMMMd().add_jm().format(
-                            submission.submittedAt,
+                          t.submissions.preview.handInAt(
+                            date: DateFormatHelper.formatRelativeDate(
+                              submission.submittedAt,
+                              ref: ref,
+                            ),
                           ),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
@@ -100,6 +98,13 @@ class PreviousSubmissionsList extends ConsumerWidget {
                       ],
                     ),
                   ),
+
+                  // Status badge
+                  const SizedBox(width: 12),
+
+                  SubmissionStatusBadge(status: submission.status),
+
+                  const SizedBox(width: 8),
 
                   // Arrow icon
                   Icon(

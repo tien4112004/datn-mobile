@@ -69,6 +69,7 @@ class FillInBlankGrading extends ConsumerWidget {
       titleImageUrl: question.titleImageUrl,
       difficulty: question.difficulty,
       type: question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -574,6 +574,12 @@
       "myQuestions": "Câu hỏi của tôi",
       "publicBank": "Ngân hàng ứng dụng"
     },
+    "types": {
+      "multipleChoice": "Trắc nghiệm",
+      "fillInBlank": "Điền vào chỗ trống",
+      "matching": "Ghép nối",
+      "openEnded": "Tự luận"
+    },
     "search": {
       "hint": "Tìm kiếm câu hỏi...",
       "noResults": "Không tìm thấy câu hỏi"
@@ -677,6 +683,8 @@
     },
     "matching": {
       "title": "Các cặp ghép nối",
+      "incorrect": "Sai",
+      "notAnswered": "Chưa trả lời",
       "subtitle": "Tạo các cặp để ghép nối (tối thiểu 2 cặp)",
       "editingMode": "Chế độ chỉnh sửa - Tạo các cặp ghép nối",
       "addPair": "Thêm cặp",
@@ -793,7 +801,7 @@
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
       "correctAnswerShown": "Hiển thị đáp án đúng",
-      "correct": "Đúng",
+      "correct": "Đáp án đúng",
       "viewingModeCorrectMatches": "Các cặp đúng:",
       "viewingModeCorrectAnswers": "Đáp án đúng:",
       "viewingMode": "Chế độ xem",
@@ -813,6 +821,11 @@
     "createClass": "Tạo lớp học",
     "editClass": "Sửa lớp học",
     "save": "Lưu",
+    "ok": "OK",
+    "warning": "Cảnh báo",
+    "retry": "Thử lại",
+    "previous": "Trước",
+    "next": "Tiếp",
     "back": "Quay lại",
     "cancel": "Hủy",
     "delete": "Xóa",
@@ -1128,7 +1141,6 @@
     "viewMode": "Chế độ xem",
     "editMode": "Chế độ chỉnh sửa",
     "editAssignment": "Sửa bài kiểm tra",
-
     "emptyState": {
       "noAssignments": "Chưa có bài kiểm tra nào",
       "createFirstMessage": "Tạo bài kiểm tra đầu tiên để bắt đầu",
@@ -1282,7 +1294,6 @@
       "available": "$count  có sẵn",
       "generate": "Tạo tự động"
     },
-
     "infoHeader": {
       "subject": "Môn học",
       "grade": "Khối lớp",
@@ -1320,6 +1331,7 @@
         "passages": "Đọc hiểu",
         "matrix": "Ma trận"
       },
+    "questionsBreakdown": "Phân bổ câu hỏi",
       "deleteQuestion": {
         "title": "Xóa câu hỏi",
         "message(number)": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
@@ -1330,6 +1342,7 @@
       "questionUpdated": "Đã cập nhật câu hỏi",
       "questionsAdded(count)": "Đã thêm $count câu hỏi",
       "questionCreated": "Đã tạo và thêm câu hỏi",
+      "questions_": "Questions",
       "saveSuccess": "Lưu bài kiểm tra thành công",
       "saveError(error)": "Lỗi khi lưu bài kiểm tra: $error",
       "metadata": {
@@ -1423,6 +1436,77 @@
       "added": "Đã thêm"
     }
   },
+  "submissions": {
+    "preview": {
+      "title": "Xem trước bài tập",
+      "handInAt(date)": "Nộp bài $date",
+      "startButton": "Bắt đầu làm bài",
+      "viewResult": "Xem kết quả lần cuối",
+      "startNew": "Bắt đầu lần mới",
+      "dueDate(date)": "Hạn nộp: $date",
+      "timeLimit(minutes)": "Thời gian làm bài: $minutes phút",
+      "totalPoints(points)": "Tổng điểm: $points",
+      "questionCount(count)": "$count câu hỏi",
+      "previousAttempts": "Các lần làm bài trước",
+      "noAttempts": "Chưa có lần làm bài nào",
+      "attemptLimitReached": "Bạn đã đạt giới hạn số lần làm bài."
+    },
+    "doing": {
+      "title": "Đang làm bài",
+      "progress(answered, total)": "Đã trả lời $answered trên $total",
+      "questionNavigator": "Điều hướng câu hỏi",
+      "submitButton": "Nộp bài",
+      "confirmSubmit": "Bạn có chắc chắn muốn nộp bài? Bạn không thể thay đổi câu trả lời sau khi nộp.",
+      "incompleteWarning": "Vui lòng trả lời tất cả các câu hỏi trước khi nộp bài.",
+      "timeRemaining(time)": "Thời gian còn lại: $time",
+      "timeUp": "Hết giờ! Đang nộp bài..."
+    },
+    "detail": {
+      "title": "Chi tiết nộp bài",
+      "score(score, maxScore, percentage)": "Điểm: $score/$maxScore ($percentage%)",
+      "status": "Trạng thái",
+      "submittedAt": "Đã nộp",
+      "gradedAt": "Đã chấm",
+      "overallFeedback": "Nhận xét chung",
+      "noFeedback": "Chưa có nhận xét",
+      "editGrades": "Sửa điểm"
+    },
+    "grading": {
+      "title": "Chấm điểm",
+      "studentInfo": "Thông tin học sinh",
+      "score": "Điểm",
+      "feedback": "Nhận xét",
+      "studentAnswer": "Đáp án của học sinh",
+      "expectedAnswer": "Đáp án đúng",
+      "overallFeedback": "Nhận xét chung",
+      "saveButton": "Lưu điểm",
+      "saveSuccess": "Lưu điểm thành công",
+      "saveError(error)": "Không thể lưu điểm: $error",
+      "autoGraded": "Chấm tự động",
+      "manualGrade": "Chấm thủ công"
+    },
+    "list": {
+      "title": "Bài nộp",
+      "filterAll": "Tất cả",
+      "filterSubmitted": "Đã nộp",
+      "filterGraded": "Đã chấm",
+      "sortByDate": "Sắp xếp theo ngày",
+      "sortByScore": "Sắp xếp theo điểm",
+      "sortByName": "Sắp xếp theo tên",
+      "noSubmissions": "Chưa có bài nộp nào"
+    },
+    "status": {
+      "submitted": "Đã nộp",
+      "graded": "Đã chấm",
+      "inProgress": "Đang làm"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải bài nộp",
+      "submitFailed(error)": "Nộp bài thất bại: $error",
+      "validationFailed(reason)": "Không thể bắt đầu làm bài: $reason",
+      "attemptsExceeded(count)": "Bạn đã sử dụng hết $count lần làm bài"
+    }
+  },
   "shared": {
     "models": {
       "cms_enums": {
@@ -1507,5 +1591,14 @@
     "title": "Thông báo",
     "markAllRead": "Đánh dấu tất cả đã đọc",
     "retry": "Thử lại"
+  },
+  "questions": {
+    "question": "Câu hỏi",
+    "types": {
+      "multipleChoice": "Trắc nghiệm",
+      "matching": "Ghép nối",
+      "openEnded": "Tự luận",
+      "fillInBlank": "Điền vào chỗ trống"
+    }
   }
 }

@@ -18,7 +18,7 @@ class AssignmentEntity {
   final int? timeLimitMinutes;
   final QuestionOrder? questionOrder;
   final bool shuffleQuestions;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final DateTime? updatedAt;
 
   /// Questions in this assignment with point values
@@ -41,7 +41,7 @@ class AssignmentEntity {
     required this.totalQuestions,
     required this.totalPoints,
     required this.shuffleQuestions,
-    required this.createdAt,
+    this.createdAt,
     this.timeLimitMinutes,
     this.questionOrder,
     this.updatedAt,

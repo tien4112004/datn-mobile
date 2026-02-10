@@ -50,4 +50,11 @@ abstract class AssignmentRemoteSource {
   /// DELETE /assignments/{id}
   @DELETE('/assignments/{id}')
   Future<ServerResponseDto<void>> deleteAssignment(@Path('id') String id);
+
+  /// Get assignment by post ID
+  /// GET /posts/{postId}/assignment
+  @GET('/posts/{postId}/assignment')
+  Future<ServerResponseDto<AssignmentResponse>> getAssignmentByPostId(
+    @Path('postId') String postId,
+  );
 }

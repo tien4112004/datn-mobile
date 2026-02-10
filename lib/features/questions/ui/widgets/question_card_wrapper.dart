@@ -17,6 +17,7 @@ class QuestionCardWrapper extends ConsumerWidget {
   /// When false, hides the header (title, badges) to avoid duplication
   /// when the card is used inside a detail page that already shows this info
   final bool showHeader;
+  final bool showBadges;
 
   const QuestionCardWrapper({
     super.key,
@@ -28,6 +29,7 @@ class QuestionCardWrapper extends ConsumerWidget {
     this.explanation,
     this.showExplanation = false,
     this.showHeader = true,
+    this.showBadges = true,
   });
 
   @override
@@ -52,18 +54,20 @@ class QuestionCardWrapper extends ConsumerWidget {
           children: [
             // Header with type and difficulty badges (only shown when showHeader is true)
             if (showHeader) ...[
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
-                  DifficultyBadge(
-                    difficulty: difficulty,
-                    iconSize: 16,
-                    fontSize: 12,
-                  ),
-                ],
-              ),
+              if (showBadges) ...[
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    QuestionTypeBadge(type: type, iconSize: 16, fontSize: 12),
+                    DifficultyBadge(
+                      difficulty: difficulty,
+                      iconSize: 16,
+                      fontSize: 12,
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 16),
 
               // Question title
@@ -79,36 +83,37 @@ class QuestionCardWrapper extends ConsumerWidget {
               // Title image if available
               if (titleImageUrl != null) ...[
                 const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    titleImageUrl!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.broken_image_outlined,
-                              size: 48,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              t.questionBank.viewing.imageNotAvailable,
-                              style: theme.textTheme.bodyMedium?.copyWith(
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      titleImageUrl!,
+                      height: 360,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.broken_image_outlined,
+                                size: 48,
                                 color: colorScheme.onSurfaceVariant,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 8),
+                              Text(
+                                t.questionBank.viewing.imageNotAvailable,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

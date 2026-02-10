@@ -1,4 +1,3 @@
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
@@ -41,47 +40,17 @@ class _MultipleChoiceDoingState extends ConsumerState<MultipleChoiceDoing> {
 
   @override
   Widget build(BuildContext context) {
-    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return QuestionCardWrapper(
       title: widget.question.title,
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: colorScheme.secondaryContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.touch_app_outlined,
-                  size: 16,
-                  color: colorScheme.onSecondaryContainer,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  t
-                      .questionBank
-                      .viewing
-                      .viewingMode, // Or add specific "Select your answer"
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onSecondaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
           ...widget.question.data.options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;

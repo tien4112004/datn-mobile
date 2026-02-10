@@ -27,6 +27,9 @@ abstract class AssignmentRepository {
 
   /// Deletes an assignment.
   Future<void> deleteAssignment(String id);
+
+  /// Gets an assignment by post ID.
+  Future<AssignmentEntity> getAssignmentByPostId(String postId);
 }
 
 /// Result object containing the assignment list and pagination info.

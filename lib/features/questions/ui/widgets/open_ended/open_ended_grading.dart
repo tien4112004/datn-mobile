@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// Open Ended Question in Grading Mode
 class OpenEndedGrading extends ConsumerStatefulWidget {
@@ -40,21 +39,13 @@ class _OpenEndedGradingState extends ConsumerState<OpenEndedGrading> {
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            QuestionMode.grading.getLocalizedName(t).toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: Colors.orange,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 12),
-
           // Student's Answer
           Text(
-            '${t.questionBank.openEnded.infoText}:', // Reuse or add specific "Student's Answer"
+            '${t.submissions.grading.studentAnswer}:', // Reuse or add specific "Student's Answer"
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -82,7 +73,7 @@ class _OpenEndedGradingState extends ConsumerState<OpenEndedGrading> {
           if (widget.question.data.expectedAnswer != null) ...[
             const SizedBox(height: 16),
             Text(
-              '${t.questionBank.viewing.expectedAnswerReference}:',
+              '${t.submissions.grading.expectedAnswer}:',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

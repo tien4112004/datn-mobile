@@ -167,15 +167,17 @@ class AssignmentCard extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      '${t.assignments.dates.createdPrefix} ${DateFormatHelper.formatRelativeDate(assignment.createdAt, ref: ref)}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.8,
+                    if (assignment.createdAt != null) ...[
+                      Text(
+                        '${t.assignments.dates.createdPrefix} ${DateFormatHelper.formatRelativeDate(assignment.createdAt!, ref: ref)}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant.withValues(
+                            alpha: 0.8,
+                          ),
+                          fontWeight: FontWeight.w500,
                         ),
-                        fontWeight: FontWeight.w500,
                       ),
-                    ),
+                    ],
                     const Spacer(),
                     _buildActionButtons(context, ref, colorScheme, t),
                   ],

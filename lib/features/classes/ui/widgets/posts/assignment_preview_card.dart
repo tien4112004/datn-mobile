@@ -157,6 +157,8 @@ class AssignmentPreviewCard extends ConsumerWidget {
                       color: colorScheme.tertiary,
                     ),
 
+                    const SizedBox(width: 8),
+
                     // Total Points
                     _buildMetadataBadge(
                       context,

@@ -52,35 +52,10 @@ class _OpenEndedDoingState extends ConsumerState<OpenEndedDoing> {
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.create_outlined,
-                  size: 16,
-                  color: colorScheme.onTertiaryContainer,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  t.questionBank.openEnded.title, // Or specific "Write answer"
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onTertiaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
           TextField(
             controller: _controller,
             focusNode: _focusNode,

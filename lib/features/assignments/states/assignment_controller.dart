@@ -312,3 +312,26 @@ class DeleteAssignmentController extends AsyncNotifier<void> {
     });
   }
 }
+
+/// Controller for managing assignment loaded by post ID.
+class AssignmentPostController extends AsyncNotifier<AssignmentEntity> {
+  final String _postId;
+
+  AssignmentPostController({required String postId}) : _postId = postId;
+
+  @override
+  Future<AssignmentEntity> build() async {
+    return _fetchAssignmentByPostId();
+  }
+
+  Future<AssignmentEntity> _fetchAssignmentByPostId() async {
+    final repository = ref.read(assignmentRepositoryProvider);
+    return repository.getAssignmentByPostId(_postId);
+  }
+
+  /// Refreshes the assignment details.
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_fetchAssignmentByPostId);
+  }
+}

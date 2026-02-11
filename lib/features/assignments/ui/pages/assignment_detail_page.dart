@@ -583,11 +583,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                       );
                     } catch (e) {
                       if (mounted) {
+                        final t = ref.read(translationsPod);
                         scaffoldMessenger.showSnackBar(
                           SnackBar(
-                            content: Text(
-                              'Failed to fetch context details: $e',
-                            ),
+                            content: Text(t.assignments.context.failedToLoad),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );

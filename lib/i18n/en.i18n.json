@@ -570,6 +570,12 @@
       "myQuestions": "My Questions",
       "publicBank": "Public Bank"
     },
+    "types": {
+      "multipleChoice": "Multiple Choice",
+      "fillInBlank": "Fill in the Blank",
+      "matching": "Matching",
+      "openEnded": "Open Ended"
+    },
     "search": {
       "hint": "Search questions...",
       "noResults": "No questions found"
@@ -673,6 +679,8 @@
     },
     "matching": {
       "title": "Matching Pairs",
+      "incorrect": "Incorrect",
+      "notAnswered": "Not Answered",
       "subtitle": "Create pairs to match (minimum 2 required)",
       "editingMode": "Editing Mode - Create matching pairs",
       "addPair": "Add Pair",
@@ -789,7 +797,7 @@
     "viewing": {
       "imageNotAvailable": "Image not available",
       "correctAnswerShown": "Correct answer shown",
-      "correct": "Correct",
+      "correct": "Correct answer",
       "viewingModeCorrectMatches": "Correct matches:",
       "viewingModeCorrectAnswers": "Correct answers:",
       "viewingMode": "Viewing Mode",
@@ -807,6 +815,11 @@
   "classes": {
     "title": "Classes",
     "createClass": "Create Class",
+    "ok": "OK",
+    "warning": "Warning",
+    "retry": "Retry",
+    "previous": "Previous",
+    "next": "Next",
     "editClass": "Edit Class",
     "save": "Save",
     "back": "Back",
@@ -1317,6 +1330,7 @@
         "passages": "Passages",
         "matrix": "Matrix"
       },
+      "questionsBreakdown": "Question Breakdown",
       "deleteQuestion": {
         "title": "Delete Question",
         "message(number)": "Are you sure you want to delete question $number? This action cannot be undone.",
@@ -1327,6 +1341,7 @@
       "questionUpdated": "Question updated",
       "questionsAdded(count)": "Added $count question(s)",
       "questionCreated": "Question created and added",
+      "questions_": "Questions",
       "saveSuccess": "Assignment saved successfully",
       "saveError(error)": "Error saving assignment: $error",
       "metadata": {
@@ -1420,6 +1435,113 @@
       "added": "Added"
     }
   },
+  "submissions": {
+    "preview": {
+      "title": "Assignment Preview",
+      "handInAt(date)": "Hand in at $date",
+      "startButton": "Start Assignment",
+      "viewResult": "View Latest Result",
+      "startNew": "Start New Attempt",
+      "dueDate(date)": "Due: $date",
+      "timeLimit(minutes)": "Time Limit: $minutes minutes",
+      "totalPoints(points)": "Total Points: $points",
+      "questionCount(count)": "$count questions",
+      "previousAttempts": "Previous Attempts",
+      "noAttempts": "No previous attempts",
+      "noAttemptsDescription": "This is your first time attempting this assignment.",
+      "loadingAttempts": "Loading previous attempts...",
+      "loadAttemptsError": "Failed to load previous attempts",
+      "attemptLimitReached": "You have reached the maximum number of attempts."
+    },
+    "doing": {
+      "title": "Taking Assignment",
+      "progress(answered, total)": "$answered of $total answered",
+      "questionNavigator": "Question Navigator",
+      "submitButton": "Submit Assignment",
+      "confirmSubmit": "Are you sure you want to submit? You cannot change your answers after submitting.",
+      "incompleteWarning": "Please answer all questions before submitting.",
+      "unansweredQuestions(questions)": "Questions $questions are not answered.",
+      "leaveConfirmation": "Are you sure you want to leave? Your progress will not be saved.",
+      "noQuestions": "No questions in assignment",
+      "legendCurrent": "Current",
+      "legendNotVisited": "Not visited",
+      "timeRemaining(time)": "Time Remaining: $time",
+      "timeUp": "Time is up! Submitting..."
+    },
+    "detail": {
+      "title": "Submission Details",
+      "score(score, maxScore, percentage)": "Score: $score/$maxScore ($percentage%)",
+      "status": "Status",
+      "submittedAt": "Submitted",
+      "gradedAt": "Graded",
+      "overallFeedback": "Overall Feedback",
+      "noFeedback": "No feedback provided",
+      "editGrades": "Edit Grades"
+    },
+    "grading": {
+      "title": "Grade Submission",
+      "studentInfo": "Student Information",
+      "score": "Score",
+      "scoreWithMax(max)": "Score (Max: $max)",
+      "feedback": "Feedback",
+      "studentAnswer": "Student's Answer",
+      "expectedAnswer": "Expected Answer",
+      "overallFeedback": "Overall Feedback",
+      "overallFeedbackHint": "Enter overall feedback...",
+      "saveButton": "Save Grades",
+      "notAnswered": "Not Answered",
+      "saveSuccess": "Grades saved successfully",
+      "saveError(error)": "Failed to save grades: $error",
+      "autoGraded": "Auto-graded",
+      "manualGrade": "Manual grade",
+      "noExplanation": "No explanation provided",
+      "yourAnswer": "Your Answer"
+    },
+    "list": {
+      "title": "Submissions",
+      "status": "Status",
+      "searchHint": "Search by student name or email",
+      "filterAll": "All",
+      "filterSubmitted": "Submitted",
+      "filterGraded": "Graded",
+      "sortBy": "Sort by",
+      "sortByDate": "Date",
+      "sortByScore": "Score",
+      "sortByName": "Name",
+      "noSubmissions": "No submissions yet"
+    },
+    "status": {
+      "submitted": "Submitted",
+      "graded": "Graded",
+      "inProgress": "In Progress"
+    },
+    "errors": {
+      "loadFailed": "Failed to load submission",
+      "submitFailed(error)": "Failed to submit assignment: $error",
+      "validationFailed(reason)": "Cannot start assignment: $reason",
+      "attemptsExceeded(count)": "You have used all $count attempts",
+      "missingPostId": "Error: Missing postId parameter"
+    },
+    "statistics": {
+      "title": "Assignment Statistics",
+      "overview": "Overview",
+      "totalSubmissions": "Total",
+      "graded": "Graded",
+      "pending": "Pending",
+      "inProgress": "In Progress",
+      "maxScore": "Max Score",
+      "scoreStatistics": "Score Statistics",
+      "average": "Average",
+      "highest": "Highest",
+      "lowest": "Lowest",
+      "scoreDistribution": "Score Distribution",
+      "viewAllSubmissions": "View All Submissions",
+      "noScoresYet": "No scores available yet",
+      "noDistributionData": "No distribution data available",
+      "errorLoadFailed": "Failed to load statistics",
+      "below70": "Below 70%"
+    }
+  },
   "shared": {
     "models": {
       "cms_enums": {
@@ -1504,5 +1626,14 @@
     "title": "Notifications",
     "markAllRead": "Mark all read",
     "retry": "Retry"
+  },
+  "questions": {
+    "question": "Question",
+    "types": {
+      "multipleChoice": "Multiple Choice",
+      "fillInBlank": "Fill in the Blank",
+      "matching": "Matching",
+      "openEnded": "Open Ended"
+    }
   }
 }

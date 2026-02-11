@@ -14,8 +14,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AssignmentSelectorSheet extends ConsumerStatefulWidget {
   final List<LinkedResourceEntity> alreadySelected;
-
-  const AssignmentSelectorSheet({super.key, this.alreadySelected = const []});
+  final bool singleSelect;
+  const AssignmentSelectorSheet({
+    super.key,
+    this.alreadySelected = const [],
+    this.singleSelect = false,
+  });
 
   @override
   ConsumerState<AssignmentSelectorSheet> createState() =>

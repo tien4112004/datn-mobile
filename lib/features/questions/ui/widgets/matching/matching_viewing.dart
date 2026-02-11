@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
+import 'matching_content_widget.dart';
 
 /// Matching Question in Viewing Mode
 class MatchingViewing extends ConsumerWidget {
@@ -50,42 +51,38 @@ class MatchingViewing extends ConsumerWidget {
   Widget _buildPairDisplay(MatchingPair pair, ThemeData theme) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.green),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green, width: 2),
+        borderRadius: BorderRadius.circular(12),
         color: Colors.green.withValues(alpha: 0.05),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Left side content
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  pair.left == null ? "" : pair.left!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            child: MatchingContentWidget(
+              text: pair.left,
+              imageUrl: pair.leftImageUrl,
+              backgroundColor: theme.colorScheme.surface,
+              borderColor: Colors.green.shade200,
+              borderWidth: 1,
             ),
           ),
+          // Arrow separator
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Icon(Icons.arrow_forward, color: Colors.green),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Icon(Icons.arrow_forward, color: Colors.green, size: 28),
           ),
+          // Right side content
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  pair.right == null ? "" : pair.right!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            child: MatchingContentWidget(
+              text: pair.right,
+              imageUrl: pair.rightImageUrl,
+              backgroundColor: theme.colorScheme.surface,
+              borderColor: Colors.green.shade200,
+              borderWidth: 1,
             ),
           ),
         ],

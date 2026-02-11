@@ -20,8 +20,18 @@ class CreatePostController extends AsyncNotifier<void> {
     List<String>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
+    String? assignmentId,
     DateTime? dueDate,
     bool? allowComments,
+    // Assignment settings (only for Homework type posts)
+    int? maxSubmissions,
+    bool? allowRetake,
+    bool? shuffleQuestions,
+    bool? showCorrectAnswers,
+    bool? showScoreImmediately,
+    double? passingScore,
+    DateTime? availableFrom,
+    DateTime? availableUntil,
   }) async {
     state = const AsyncLoading();
 
@@ -34,8 +44,17 @@ class CreatePostController extends AsyncNotifier<void> {
         attachments: attachments,
         linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
+        assignmentId: assignmentId,
         dueDate: dueDate,
         allowComments: allowComments,
+        maxSubmissions: maxSubmissions,
+        allowRetake: allowRetake,
+        shuffleQuestions: shuffleQuestions,
+        showCorrectAnswers: showCorrectAnswers,
+        showScoreImmediately: showScoreImmediately,
+        passingScore: passingScore,
+        availableFrom: availableFrom,
+        availableUntil: availableUntil,
       );
 
       // Refresh the posts list

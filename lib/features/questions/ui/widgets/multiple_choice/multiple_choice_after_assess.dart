@@ -16,15 +16,6 @@ class MultipleChoiceAfterAssess extends ConsumerWidget {
     this.studentAnswer,
   });
 
-  bool get _isCorrect {
-    if (studentAnswer == null) return false;
-    final correctOption = question.data.options.firstWhere(
-      (opt) => opt.isCorrect,
-      orElse: () => question.data.options.first,
-    );
-    return studentAnswer == correctOption.id;
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
@@ -37,53 +28,10 @@ class MultipleChoiceAfterAssess extends ConsumerWidget {
       type: question.type,
       explanation: question.explanation,
       showExplanation: true,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                t.questionBank.viewing.viewingMode.toUpperCase(),
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: Colors.indigo,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: _isCorrect ? Colors.green : Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _isCorrect ? Icons.check_circle : Icons.cancel,
-                      size: 16,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _isCorrect
-                          ? t.questionBank.viewing.correct.toUpperCase()
-                          : t.common.error.toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
           ...question.data.options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;
@@ -160,65 +108,6 @@ class MultipleChoiceAfterAssess extends ConsumerWidget {
           ),
         ),
         title: Text(option.text, style: theme.textTheme.bodyMedium),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (option.isCorrect)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  t.questionBank.viewing.correct.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            if (isStudentAnswer && !option.isCorrect) ...[
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  t.questionBank.viewing.grading
-                      .toUpperCase(), // Or add specific "YOUR ANSWER"
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-            if (isStudentAnswer && option.isCorrect) ...[
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  t.questionBank.viewing.grading
-                      .toUpperCase(), // Or add specific "YOUR ANSWER"
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

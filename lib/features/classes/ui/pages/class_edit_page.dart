@@ -96,7 +96,7 @@ class _ClassEditPageState extends ConsumerState<ClassEditPage> {
             behavior: SnackBarBehavior.floating,
           ),
         );
-        navigator.pop();
+        navigator.pop(true); // Return true to indicate successful update
       },
       error: (error, _) {
         messenger.showSnackBar(

@@ -80,4 +80,15 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
   Future<void> deleteAssignment(String id) async {
     await _remoteSource.deleteAssignment(id);
   }
+
+  @override
+  Future<AssignmentEntity> getAssignmentByPostId(String postId) async {
+    final response = await _remoteSource.getAssignmentByPostId(postId);
+
+    if (response.data == null) {
+      throw Exception('Assignment not found for post');
+    }
+
+    return response.data!.toEntity();
+  }
 }

@@ -17,26 +17,6 @@ class FillInBlankAfterAssess extends ConsumerWidget {
     this.studentAnswers,
   });
 
-  int get _correctCount {
-    if (studentAnswers == null) return 0;
-    int count = 0;
-    for (var segment in question.data.segments) {
-      if (segment.type == SegmentType.blank) {
-        final studentAnswer = studentAnswers![segment.id] ?? '';
-        if (_isCorrectAnswer(segment, studentAnswer)) {
-          count++;
-        }
-      }
-    }
-    return count;
-  }
-
-  int get _totalBlanks {
-    return question.data.segments
-        .where((s) => s.type == SegmentType.blank)
-        .length;
-  }
-
   bool _isCorrectAnswer(BlankSegment segment, String answer) {
     final caseSensitive = question.data.caseSensitive;
     final correctAnswer = caseSensitive
@@ -63,9 +43,6 @@ class FillInBlankAfterAssess extends ConsumerWidget {
     final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final percentage = _totalBlanks > 0
-        ? (_correctCount / _totalBlanks * 100).round()
-        : 0;
 
     return QuestionCardWrapper(
       title: question.title,
@@ -74,79 +51,10 @@ class FillInBlankAfterAssess extends ConsumerWidget {
       type: question.type,
       explanation: question.explanation,
       showExplanation: true,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.visibility_outlined,
-                      size: 16,
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      t.questionBank.viewing.viewingMode,
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: percentage >= 80
-                      ? Colors.green
-                      : percentage >= 60
-                      ? Colors.orange
-                      : Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      percentage >= 80
-                          ? Icons.emoji_events
-                          : percentage >= 60
-                          ? Icons.thumb_up
-                          : Icons.error_outline,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '$percentage% ($_correctCount/$_totalBlanks)',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             runSpacing: 12,

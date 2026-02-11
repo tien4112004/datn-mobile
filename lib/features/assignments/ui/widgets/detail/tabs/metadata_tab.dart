@@ -49,17 +49,19 @@ class MetadataTab extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
-                          t.assignments.detail.metadata.createdOn(
-                            date: DateFormatHelper.formatMediumDate(
-                              assignment.createdAt,
-                              ref: ref,
+                        if (assignment.createdAt != null) ...[
+                          Text(
+                            t.assignments.detail.metadata.createdOn(
+                              date: DateFormatHelper.formatMediumDate(
+                                assignment.createdAt!,
+                                ref: ref,
+                              ),
+                            ),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
+                        ],
                       ],
                     ),
                   ),

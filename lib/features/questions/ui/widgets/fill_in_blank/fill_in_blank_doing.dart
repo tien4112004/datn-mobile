@@ -71,38 +71,10 @@ class _FillInBlankDoingState extends ConsumerState<FillInBlankDoing> {
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              // color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.edit_outlined,
-                  size: 16,
-                  color: colorScheme.onPrimaryContainer,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  t
-                      .questionBank
-                      .fillInBlank
-                      .title, // Or add a specific "Fill in blanks" key
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             runSpacing: 12,

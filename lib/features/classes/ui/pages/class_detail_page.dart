@@ -64,6 +64,12 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                 ClassDetailAppBar(
                   classEntity: classEntity,
                   isStudent: isStudent,
+                  onClassUpdated: () {
+                    // Invalidate the provider to refetch updated class data
+                    ref.invalidate(
+                      detailClassControllerProvider(widget.classId),
+                    );
+                  },
                 ),
               ];
             },

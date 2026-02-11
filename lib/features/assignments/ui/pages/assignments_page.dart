@@ -1,3 +1,4 @@
+import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
@@ -86,14 +87,17 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     BuildContext context,
     ColorScheme colorScheme,
     ThemeData theme,
-    dynamic t,
+    Translations t,
   ) {
     final filterState = ref.watch(assignmentFilterProvider);
+    final AppLocale locale = t.$meta.locale;
 
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: filterState.hasActiveFilters ? 260 : 220,
+      expandedHeight: (filterState.hasActiveFilters || locale == AppLocale.vi)
+          ? 220
+          : 180,
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(

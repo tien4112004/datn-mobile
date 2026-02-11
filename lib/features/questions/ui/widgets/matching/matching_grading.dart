@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'matching_content_widget.dart';
 
 /// Matching Question in Grading Mode (Teacher reviewing student answers)
 /// Enhanced with Material 3 design principles
@@ -22,11 +22,20 @@ class MatchingGrading extends ConsumerWidget {
     if (studentAnswers == null) return 0;
     int count = 0;
     for (var pair in question.data.pairs) {
-      if (studentAnswers![pair.left] == pair.right) {
+      final studentSelectedId = studentAnswers![pair.id];
+      if (studentSelectedId == pair.id) {
         count++;
       }
     }
     return count;
+  }
+
+  MatchingPair? _findPairById(String id) {
+    try {
+      return question.data.pairs.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
@@ -45,34 +54,6 @@ class MatchingGrading extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.grading_outlined,
-                      size: 16,
-                      color: Colors.orange.shade700,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      QuestionMode.grading.getLocalizedName(t),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: Colors.orange.shade700,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -93,7 +74,7 @@ class MatchingGrading extends ConsumerWidget {
                     const Icon(Icons.assessment, size: 18, color: Colors.white),
                     const SizedBox(width: 6),
                     Text(
-                      '$_correctCount/$totalPairs ${t.questionBank.viewing.correct}',
+                      '$_correctCount/$totalPairs',
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -106,13 +87,16 @@ class MatchingGrading extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           ...question.data.pairs.map((pair) {
-            final studentAnswer = studentAnswers?[pair.left];
-            final isCorrect = studentAnswer == pair.right;
-            final isAnswered = studentAnswer != null;
+            final studentSelectedId = studentAnswers?[pair.id];
+            final studentSelectedPair = studentSelectedId != null
+                ? _findPairById(studentSelectedId)
+                : null;
+            final isCorrect = studentSelectedId == pair.id;
+            final isAnswered = studentSelectedId != null;
 
             return _buildGradingPair(
               pair,
-              studentAnswer,
+              studentSelectedPair,
               isCorrect,
               isAnswered,
               theme,
@@ -156,7 +140,7 @@ class MatchingGrading extends ConsumerWidget {
 
   Widget _buildGradingPair(
     MatchingPair pair,
-    String? studentAnswer,
+    MatchingPair? studentSelectedPair,
     bool isCorrect,
     bool isAnswered,
     ThemeData theme,
@@ -165,8 +149,8 @@ class MatchingGrading extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         color: isCorrect
             ? Colors.green.shade50
@@ -186,126 +170,96 @@ class MatchingGrading extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Left item (question)
+          // Status badge
           Row(
             children: [
+              const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: colorScheme.tertiaryContainer,
-                  borderRadius: BorderRadius.circular(8),
+                  color: isCorrect
+                      ? Colors.green
+                      : isAnswered
+                      ? Colors.red
+                      : colorScheme.surfaceContainerHigh,
+                  shape: BoxShape.circle,
                 ),
-                child: Text(
-                  t.questionBank.matching.leftSide,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onTertiaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  pair.left == null
-                      ? t.questionBank.multipleChoice.notAnswered
-                      : pair.left!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Icon(
+                  isCorrect
+                      ? Icons.check
+                      : isAnswered
+                      ? Icons.cancel
+                      : Icons.help_outline,
+                  color: Colors.white,
+                  size: 16,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
+          // Left side (question)
+          Text(
+            '${t.questionBank.matching.leftSide}:',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          MatchingContentWidget(
+            text: pair.left,
+            imageUrl: pair.leftImageUrl,
+            backgroundColor: theme.colorScheme.surface,
+            borderColor: colorScheme.outlineVariant,
+          ),
+          const SizedBox(height: 16),
           // Student's answer
           if (isAnswered) ...[
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isCorrect ? Colors.green.shade100 : Colors.red.shade100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isCorrect ? Icons.check_circle : Icons.cancel,
-                    color: isCorrect
-                        ? Colors.green.shade700
-                        : Colors.red.shade700,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${t.questionBank.openEnded.gradingNote}:', // Simplified reuse
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          studentAnswer ?? '',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            Text(
+              '${t.submissions.grading.studentAnswer}:',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isCorrect ? Colors.green.shade700 : Colors.red.shade700,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
+            MatchingContentWidget(
+              text: studentSelectedPair?.right,
+              imageUrl: studentSelectedPair?.rightImageUrl,
+              backgroundColor: Colors.transparent,
+              borderWidth: 2,
+            ),
+            const SizedBox(height: 16),
+          ] else ...[
+            Text(
+              '${t.submissions.grading.studentAnswer}:',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.red.shade700,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            MatchingContentWidget(
+              text: t.submissions.grading.notAnswered,
+              backgroundColor: Colors.transparent,
+              borderWidth: 2,
+            ),
+            const SizedBox(height: 16),
           ],
           // Correct answer
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.green.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.green.shade200, width: 1),
+          Text(
+            '${t.submissions.grading.expectedAnswer}:',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: Colors.green.shade700,
+              fontWeight: FontWeight.w600,
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  color: Colors.green.shade700,
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${t.questionBank.viewing.correct}:',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: Colors.green.shade700,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        pair.right == null
-                            ? t.questionBank.multipleChoice.notAnswered
-                            : pair.right!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.green.shade900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          ),
+          const SizedBox(height: 8),
+          MatchingContentWidget(
+            text: pair.right,
+            imageUrl: pair.rightImageUrl,
+            backgroundColor: Colors.transparent,
+            borderWidth: 2,
           ),
         ],
       ),

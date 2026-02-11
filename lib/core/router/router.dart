@@ -85,6 +85,33 @@ class AppRouter extends RootStackRouter {
       page: AssignmentDetailRoute.page,
       path: '/assignments/:assignmentId',
     ),
+
+    // Submission Routes
+    AutoRoute(
+      page: AssignmentPreviewRoute.page,
+      path: '/assignments/:assignmentId/preview',
+    ),
+    AutoRoute(
+      page: AssignmentDoingRoute.page,
+      path: '/assignments/:assignmentId/do',
+    ),
+    AutoRoute(
+      page: SubmissionDetailRoute.page,
+      path: '/submissions/:submissionId',
+    ),
+    AutoRoute(
+      page: GradingRoute.page,
+      path: '/submissions/:submissionId/grade',
+    ),
+    AutoRoute(
+      page: SubmissionsListRoute.page,
+      path: '/posts/:postId/submissions',
+    ),
+    AutoRoute(
+      page: AssignmentStatisticsRoute.page,
+      path: '/posts/:postId/statistics',
+    ),
+
     AutoRoute(page: QuestionBankRoute.page, path: '/questions-bank'),
     AutoRoute(
       page: QuestionBankPickerRoute.page,

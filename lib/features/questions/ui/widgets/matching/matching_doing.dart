@@ -1,11 +1,10 @@
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
-import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_card_wrapper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'matching_content_widget.dart';
 
 /// Matching Question in Doing Mode
 class MatchingDoing extends ConsumerStatefulWidget {
@@ -26,22 +25,19 @@ class MatchingDoing extends ConsumerStatefulWidget {
 
 class _MatchingDoingState extends ConsumerState<MatchingDoing> {
   late Map<String, String?> _selectedAnswers;
-  late List<String> _rightItems;
+  late List<MatchingPair> _shuffledRightPairs;
 
   @override
   void initState() {
     super.initState();
     _selectedAnswers = Map.from(widget.answers ?? {});
-    _rightItems =
-        widget.question.data.pairs
-            .map((pair) => pair.right == null ? "" : pair.right!)
-            .toList()
-          ..shuffle();
+    // Store shuffled pairs instead of just text for image support
+    _shuffledRightPairs = List.from(widget.question.data.pairs)..shuffle();
   }
 
-  void _selectMatch(String leftItem, String? rightItem) {
+  void _selectMatch(String pairId, String? rightPairId) {
     setState(() {
-      _selectedAnswers[leftItem] = rightItem;
+      _selectedAnswers[pairId] = rightPairId;
     });
     widget.onAnswersChanged?.call(
       Map.from(
@@ -60,11 +56,13 @@ class _MatchingDoingState extends ConsumerState<MatchingDoing> {
       titleImageUrl: widget.question.titleImageUrl,
       difficulty: widget.question.difficulty,
       type: widget.question.type,
+      showHeader: true,
+      showBadges: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${QuestionMode.doing.getLocalizedName(t).toUpperCase()} - ${t.questionBank.matching.subtitle}:',
+            '${t.questionBank.matching.subtitle}:',
             style: theme.textTheme.labelSmall?.copyWith(
               color: Colors.orange,
               fontWeight: FontWeight.w600,
@@ -84,52 +82,131 @@ class _MatchingDoingState extends ConsumerState<MatchingDoing> {
     ThemeData theme,
     Translations t,
   ) {
-    final placeholder = t.questionBank.matching.enterRightText;
-    final currentValue =
-        _selectedAnswers[pair.left == null ? "" : pair.left!] ?? placeholder;
-    final dropdownItems = [placeholder, ..._rightItems];
+    final selectedRightPairId = _selectedAnswers[pair.id];
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Column(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.orange[50],
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orange[200]!),
-            ),
-            child: Row(
+          // Left side (question) - Fixed width column
+          Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.arrow_forward, size: 20, color: Colors.orange),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    pair.left == null ? "" : pair.left!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                Text(
+                  '${t.questionBank.matching.leftSide}:',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.w600,
                   ),
+                ),
+                const SizedBox(height: 8),
+                MatchingContentWidget(
+                  text: pair.left,
+                  imageUrl: pair.leftImageUrl,
+                  backgroundColor: Colors.orange[50],
+                  borderColor: Colors.orange[200],
+                  borderWidth: 2,
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          FlexDropdownField<String>(
-            value: currentValue,
-            items: dropdownItems,
-            onChanged: (value) {
-              if (value != placeholder) {
-                _selectMatch(pair.left == null ? "" : pair.left!, value);
-              } else {
-                _selectMatch(pair.left == null ? "" : pair.left!, null);
-              }
-            },
+          const SizedBox(width: 16),
+          // Right side selection - Grid of options
+          Expanded(
+            flex: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${t.questionBank.matching.rightSide}:',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildRightOptionsGrid(pair, selectedRightPairId, theme, t),
+              ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  /// Build grid selection for right options (works for both text and images)
+  Widget _buildRightOptionsGrid(
+    MatchingPair pair,
+    String? selectedRightPairId,
+    ThemeData theme,
+    Translations t,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: _shuffledRightPairs.map((rightPair) {
+        final isSelected = selectedRightPairId == rightPair.id;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: InkWell(
+            onTap: () {
+              _selectMatch(pair.id, isSelected ? null : rightPair.id);
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isSelected ? Colors.orange : Colors.transparent,
+                  width: 2,
+                ),
+                color: isSelected
+                    ? const Color.fromARGB(
+                        255,
+                        255,
+                        197,
+                        107,
+                      ).withValues(alpha: 0.1)
+                    : theme.colorScheme.surface,
+              ),
+              child: Stack(
+                children: [
+                  MatchingContentWidget(
+                    text: rightPair.right,
+                    imageUrl: rightPair.rightImageUrl,
+                    backgroundColor: !isSelected
+                        ? Colors.blue[50]
+                        : Colors.transparent,
+                    borderColor: !isSelected
+                        ? Colors.blue[200]
+                        : Colors.transparent,
+                    borderWidth: 2,
+                  ),
+                  if (isSelected)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.orange,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

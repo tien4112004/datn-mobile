@@ -103,3 +103,11 @@ final assignmentContextsControllerProvider =
       (assignmentId) =>
           AssignmentContextsController(assignmentId: assignmentId),
     );
+
+/// Provider for assignment loaded by post ID.
+final assignmentPostProvider =
+    AsyncNotifierProvider.family<
+      AssignmentPostController,
+      AssignmentEntity,
+      String
+    >((String postId) => AssignmentPostController(postId: postId));

@@ -2,7 +2,9 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_question
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/context/context_display_card.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/question_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A card that groups multiple questions under a shared context.
 ///
@@ -11,7 +13,7 @@ import 'package:flutter/material.dart';
 /// - Nested question cards below
 /// - Visual grouping indicator
 /// - Edit/unlink actions for context
-class ContextGroupCard extends StatelessWidget {
+class ContextGroupCard extends ConsumerWidget {
   /// The context entity to display
   final ContextEntity context;
 
@@ -67,7 +69,8 @@ class ContextGroupCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -111,7 +114,9 @@ class ContextGroupCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   questionCountLabel ??
-                      '${questions.length} ${questions.length == 1 ? 'Question' : 'Questions'}',
+                      t.assignments.context.questionCount(
+                        count: questions.length,
+                      ),
                   style: theme.textTheme.labelLarge?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.w600,

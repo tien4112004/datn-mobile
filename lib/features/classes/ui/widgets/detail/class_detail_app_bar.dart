@@ -12,11 +12,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 class ClassDetailAppBar extends ConsumerWidget {
   final ClassEntity classEntity;
   final bool isStudent;
+  final VoidCallback? onClassUpdated;
 
   const ClassDetailAppBar({
     super.key,
     required this.classEntity,
     required this.isStudent,
+    this.onClassUpdated,
   });
 
   @override
@@ -195,9 +197,16 @@ class ClassDetailAppBar extends ConsumerWidget {
               ListTile(
                 leading: Icon(LucideIcons.settings, color: colorScheme.primary),
                 title: Text(t.classes.appBar.classSettings),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  context.router.push(ClassEditRoute(classId: classEntity.id));
+                  final result = await context.router.push<bool>(
+                    ClassEditRoute(classId: classEntity.id),
+                  );
+
+                  // If class was updated, notify parent to refresh
+                  if (result == true && onClassUpdated != null) {
+                    onClassUpdated!();
+                  }
                 },
               ),
             ],

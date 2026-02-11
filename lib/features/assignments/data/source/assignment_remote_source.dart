@@ -7,9 +7,6 @@ import 'package:dio/dio.dart';
 
 part 'assignment_remote_source.g.dart';
 
-/// Retrofit API service for Assignment endpoints.
-/// Base URL already contains `/api`, so we only need `/assignments`.
-/// Follows ASSIGNMENT_API_DOCS.md structure.
 @RestApi()
 abstract class AssignmentRemoteSource {
   factory AssignmentRemoteSource(Dio dio, {String baseUrl}) =
@@ -50,4 +47,11 @@ abstract class AssignmentRemoteSource {
   /// DELETE /assignments/{id}
   @DELETE('/assignments/{id}')
   Future<ServerResponseDto<void>> deleteAssignment(@Path('id') String id);
+
+  /// Get assignment by post ID
+  /// GET /posts/{postId}/assignment
+  @GET('/posts/{postId}/assignment')
+  Future<ServerResponseDto<AssignmentResponse>> getAssignmentByPostId(
+    @Path('postId') String postId,
+  );
 }

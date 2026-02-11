@@ -7,8 +7,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Fetches resource details and displays them as interactive cards
 class LinkedResourcesDisplay extends StatelessWidget {
   final List<LinkedResourceEntity> linkedResources;
+  final String postId; // Post ID for submission context
 
-  const LinkedResourcesDisplay({super.key, required this.linkedResources});
+  const LinkedResourcesDisplay({
+    super.key,
+    required this.linkedResources,
+    required this.postId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +45,21 @@ class LinkedResourcesDisplay extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Column(
-            children: linkedResources
-                .map(
-                  (resource) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: LinkedResourceCard(resource: resource),
-                  ),
-                )
-                .toList(),
-          ),
+          if (linkedResources.isNotEmpty) ...[
+            Column(
+              children: linkedResources
+                  .map(
+                    (resource) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: LinkedResourceCard(
+                        resource: resource,
+                        postId: postId,
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
         ],
       ),
     );

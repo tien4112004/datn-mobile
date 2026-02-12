@@ -21,7 +21,8 @@ class ValidationController extends AsyncNotifier<ValidationResult?> {
 
   @override
   Future<ValidationResult?> build() async {
-    return _validate(params);
+    // Don't auto-validate on build - wait for manual validate() call
+    return null;
   }
 
   Future<ValidationResult?> _validate(ValidationParams params) async {

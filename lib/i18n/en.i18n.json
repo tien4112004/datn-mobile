@@ -1520,7 +1520,14 @@
       "submitFailed(error)": "Failed to submit assignment: $error",
       "validationFailed(reason)": "Cannot start assignment: $reason",
       "attemptsExceeded(count)": "You have used all $count attempts",
-      "missingPostId": "Error: Missing postId parameter"
+      "missingPostId": "Error: Missing postId parameter",
+      "maxSubmissionLimitReached(limit)": "You have reached the maximum submission limit ($limit attempts)",
+      "questionNotAnswered(question)": "Question '$question' is not answered",
+      "assignmentNotAvailable": "This assignment is not available at the moment",
+      "assignmentExpired": "This assignment has expired",
+      "validationErrors": "Validation Errors",
+      "validationWarnings": "Warnings",
+      "continueAnyway": "Continue Anyway"
     },
     "statistics": {
       "title": "Assignment Statistics",

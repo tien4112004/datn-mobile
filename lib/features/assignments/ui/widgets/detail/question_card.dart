@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
+import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_content_widget.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/enum_localizations.dart';
@@ -624,29 +625,18 @@ class _QuestionCardState extends ConsumerState<QuestionCard>
               ),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Left Side
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: colorScheme.primary.withValues(alpha: 0.3),
-                      ),
+                  child: MatchingContentWidget(
+                    text: pair.left,
+                    imageUrl: pair.leftImageUrl,
+                    backgroundColor: colorScheme.primaryContainer.withValues(
+                      alpha: 0.3,
                     ),
-                    child: Text(
-                      pair.left == null
-                          ? t.assignments.questionCard.blank
-                          : pair.left!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    borderColor: colorScheme.primary.withValues(alpha: 0.3),
+                    borderWidth: 1,
                   ),
                 ),
 
@@ -662,26 +652,14 @@ class _QuestionCardState extends ConsumerState<QuestionCard>
 
                 // Right Side
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: colorScheme.secondaryContainer.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: colorScheme.secondary.withValues(alpha: 0.3),
-                      ),
+                  child: MatchingContentWidget(
+                    text: pair.right,
+                    imageUrl: pair.rightImageUrl,
+                    backgroundColor: colorScheme.secondaryContainer.withValues(
+                      alpha: 0.3,
                     ),
-                    child: Text(
-                      pair.right == null
-                          ? t.assignments.questionCard.blank
-                          : pair.right!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    borderColor: colorScheme.secondary.withValues(alpha: 0.3),
+                    borderWidth: 1,
                   ),
                 ),
               ],

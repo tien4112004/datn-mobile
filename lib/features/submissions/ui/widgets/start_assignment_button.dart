@@ -1,6 +1,7 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
+import 'package:AIPrimary/features/submissions/utils/validation_message_mapper.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
@@ -45,22 +46,36 @@ class StartAssignmentButton extends ConsumerWidget {
       if (!context.mounted) return;
 
       if (validation == null || !validation.canSubmit) {
-        // Show error dialog
+        final translatedErrors = validation?.errors != null
+            ? ValidationMessageMapper.mapErrors(validation!.errors, t)
+            : [t.submissions.errors.loadFailed];
+
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
-              t.submissions.errors.validationFailed(
-                reason: validation?.reason ?? t.submissions.errors.loadFailed,
+            icon: Icon(
+              LucideIcons.circleAlert,
+              color: Theme.of(context).colorScheme.error,
+              size: 32,
+            ),
+            title: Text(t.submissions.errors.validationErrors),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Display errors
+                  if (translatedErrors.isNotEmpty) ...[
+                    ...translatedErrors.map(
+                      (error) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(error),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            content: validation?.attemptsRemaining != null
-                ? Text(
-                    t.submissions.errors.attemptsExceeded(
-                      count: validation!.attemptsRemaining!,
-                    ),
-                  )
-                : null,
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

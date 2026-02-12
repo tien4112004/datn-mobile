@@ -1521,7 +1521,14 @@
       "submitFailed(error)": "Nộp bài thất bại: $error",
       "validationFailed(reason)": "Không thể bắt đầu làm bài: $reason",
       "attemptsExceeded(count)": "Bạn đã sử dụng hết $count lần làm bài",
-      "missingPostId": "Lỗi: Thiếu tham số postId"
+      "missingPostId": "Lỗi: Thiếu tham số postId",
+      "maxSubmissionLimitReached(limit)": "Bạn đã đạt giới hạn số lần nộp bài ($limit lần)",
+      "questionNotAnswered(question)": "Câu hỏi '$question' chưa được trả lời",
+      "assignmentNotAvailable": "Bài tập này hiện không khả dụng",
+      "assignmentExpired": "Bài tập này đã hết hạn",
+      "validationErrors": "Lỗi xác thực",
+      "validationWarnings": "Cảnh báo",
+      "continueAnyway": "Tiếp tục"
     },
     "statistics": {
       "title": "Thống kê bài tập",

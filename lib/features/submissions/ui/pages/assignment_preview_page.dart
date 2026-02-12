@@ -6,6 +6,7 @@ import 'package:AIPrimary/features/submissions/ui/widgets/assignment_preview_hea
 import 'package:AIPrimary/features/submissions/ui/widgets/previous_submissions_list.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/question_breakdown_card.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/start_assignment_button.dart';
+import 'package:AIPrimary/features/submissions/utils/validation_message_mapper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
@@ -50,22 +51,49 @@ class AssignmentPreviewPage extends ConsumerWidget {
       if (!context.mounted) return;
 
       if (validation == null || !validation.canSubmit) {
-        // Show error dialog
+        // Translate error and warning messages
+        final translatedErrors = validation?.errors != null
+            ? ValidationMessageMapper.mapErrors(validation!.errors, t)
+            : [t.submissions.errors.loadFailed];
+
+        // Show error dialog with translated messages
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
-              t.submissions.errors.validationFailed(
-                reason: validation?.reason ?? t.submissions.errors.loadFailed,
+            icon: Icon(
+              LucideIcons.circleAlert,
+              color: Theme.of(context).colorScheme.error,
+              size: 32,
+            ),
+            title: Text(t.submissions.errors.validationErrors),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Display errors
+                  if (translatedErrors.isNotEmpty) ...[
+                    ...translatedErrors.map(
+                      (error) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              LucideIcons.circleX,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(error)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            content: validation?.attemptsRemaining != null
-                ? Text(
-                    t.submissions.errors.attemptsExceeded(
-                      count: validation!.attemptsRemaining!,
-                    ),
-                  )
-                : null,
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

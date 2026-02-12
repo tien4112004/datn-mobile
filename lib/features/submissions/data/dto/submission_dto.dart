@@ -159,13 +159,13 @@ class GradeSubmissionRequestDto {
 @JsonSerializable()
 class ValidationResponseDto {
   final bool valid;
-  final String? reason;
-  final int? attemptsRemaining;
+  final List<String>? errors;
+  final List<String>? warnings;
 
   const ValidationResponseDto({
     required this.valid,
-    this.reason,
-    this.attemptsRemaining,
+    this.errors,
+    this.warnings,
   });
 
   factory ValidationResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -178,21 +178,36 @@ class ValidationResult {
   final bool canSubmit;
   final String? reason;
   final int? attemptsRemaining;
+  final List<String> errors;
+  final List<String> warnings;
 
   const ValidationResult({
     required this.canSubmit,
     this.reason,
     this.attemptsRemaining,
+    this.errors = const [],
+    this.warnings = const [],
   });
 }
 
 /// Extension to convert validation DTO to entity
 extension ValidationResponseDtoToEntity on ValidationResponseDto {
   ValidationResult toEntity() {
+    // Extract attempts remaining from error message if present
+    // e.g., "Maximum submission limit reached (1)" -> attemptsRemaining = 1
+    int? attemptsRemaining;
+    final errorMsg = errors?.firstOrNull ?? '';
+    final match = RegExp(r'\((\d+)\)').firstMatch(errorMsg);
+    if (match != null) {
+      attemptsRemaining = int.tryParse(match.group(1) ?? '');
+    }
+
     return ValidationResult(
       canSubmit: valid,
-      reason: reason,
+      reason: errors?.firstOrNull,
       attemptsRemaining: attemptsRemaining,
+      errors: errors ?? [],
+      warnings: warnings ?? [],
     );
   }
 }

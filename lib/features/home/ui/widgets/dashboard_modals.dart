@@ -41,12 +41,7 @@ void showClassesOverviewModal(BuildContext context, WidgetRef ref) {
     context: context,
     pageListBuilder: (context) => [
       WoltModalSheetPage(
-        topBarTitle: Text(
-          t.home.dashboard.modals.classesOverview.title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
+        topBarTitle: Text(t.home.dashboard.modals.classesOverview.title),
         isTopBarLayerAlwaysVisible: true,
         trailingNavBarWidget: IconButton(
           icon: const Icon(LucideIcons.x),

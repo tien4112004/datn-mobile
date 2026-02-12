@@ -33,6 +33,7 @@ class _HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final summaryAsync = ref.watch(teacherSummaryProvider);
     final calendarAsync = ref.watch(teacherCalendarProvider);
     final recentDocsAsync = ref.watch(recentDocumentsProvider);
@@ -52,14 +53,14 @@ class _HomeView extends ConsumerWidget {
             children: [
               // Welcome Section
               Text(
-                'Dashboard',
+                t.home.dashboard.title,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Overview of your teaching activities',
+                t.home.dashboard.subtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -77,7 +78,7 @@ class _HomeView extends ConsumerWidget {
                 ),
                 loading: () => const DashboardSummaryMetricsShimmer(),
                 error: (error, stack) =>
-                    Center(child: Text('Error loading summary: $error')),
+                    Center(child: Text(t.home.dashboard.error.loadingSummary)),
               ),
               const SizedBox(height: 24),
 

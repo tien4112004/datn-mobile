@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/home/data/models/at_risk_student_model.dart';
 import 'package:AIPrimary/features/home/data/models/class_at_risk_students_model.dart';
 import 'package:AIPrimary/features/home/data/models/grading_queue_model.dart';
 import 'package:AIPrimary/features/home/providers/analytics_providers.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -11,12 +12,13 @@ import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 /// Show Pending Grading Queue Modal
 void showPendingGradingModal(BuildContext context, WidgetRef ref) {
+  final t = ref.read(translationsPod);
   WoltModalSheet.show(
     context: context,
     pageListBuilder: (context) => [
       WoltModalSheetPage(
         topBarTitle: Text(
-          'Pending Grading',
+          t.home.dashboard.modals.pendingGrading.title,
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -34,12 +36,13 @@ void showPendingGradingModal(BuildContext context, WidgetRef ref) {
 
 /// Show Total Classes Overview Modal
 void showClassesOverviewModal(BuildContext context, WidgetRef ref) {
+  final t = ref.read(translationsPod);
   WoltModalSheet.show(
     context: context,
     pageListBuilder: (context) => [
       WoltModalSheetPage(
         topBarTitle: Text(
-          'Classes Overview',
+          t.home.dashboard.modals.classesOverview.title,
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -59,6 +62,7 @@ void showClassesOverviewModal(BuildContext context, WidgetRef ref) {
 class _GradingQueueModalContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return FutureBuilder<List<GradingQueueItemModel>>(
       future: _fetchGradingQueue(ref),
       builder: (context, snapshot) {
@@ -67,15 +71,14 @@ class _GradingQueueModalContent extends ConsumerWidget {
         }
 
         if (snapshot.hasError) {
-          return _buildErrorState(
-            'Failed to load grading queue: ${snapshot.error}',
-          );
+          // Log the actual error for debugging
+          return _buildErrorState(t.home.dashboard.modals.pendingGrading.error);
         }
 
         final queue = snapshot.data ?? [];
 
         if (queue.isEmpty) {
-          return _buildEmptyGradingQueue();
+          return _buildEmptyGradingQueue(t);
         }
 
         return ListView.separated(
@@ -120,7 +123,7 @@ class _GradingQueueModalContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyGradingQueue() {
+  Widget _buildEmptyGradingQueue(dynamic t) {
     return Padding(
       padding: const EdgeInsets.all(48),
       child: Center(
@@ -129,7 +132,7 @@ class _GradingQueueModalContent extends ConsumerWidget {
             const Icon(LucideIcons.circleCheck, size: 64, color: Colors.green),
             const SizedBox(height: 16),
             Text(
-              'All caught up!',
+              t.home.dashboard.modals.pendingGrading.empty.title,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -138,7 +141,7 @@ class _GradingQueueModalContent extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'No submissions waiting for grading',
+              t.home.dashboard.modals.pendingGrading.empty.description,
               style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],
@@ -304,12 +307,13 @@ class _GradingQueueCard extends StatelessWidget {
 class _ClassesOverviewModalContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final classesAsync = ref.watch(allClassesAtRiskStudentsProvider);
 
     return classesAsync.when(
       data: (classes) {
         if (classes.isEmpty) {
-          return _buildEmptyClasses();
+          return _buildEmptyClasses(t);
         }
 
         return ListView.separated(
@@ -324,7 +328,8 @@ class _ClassesOverviewModalContent extends ConsumerWidget {
         );
       },
       loading: () => _buildClassesShimmer(),
-      error: (error, stack) => _buildErrorState('Failed to load classes'),
+      error: (error, stack) =>
+          _buildErrorState(t.home.dashboard.modals.classesOverview.error),
     );
   }
 
@@ -351,7 +356,7 @@ class _ClassesOverviewModalContent extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyClasses() {
+  Widget _buildEmptyClasses(dynamic t) {
     return Padding(
       padding: const EdgeInsets.all(48),
       child: Center(
@@ -360,7 +365,7 @@ class _ClassesOverviewModalContent extends ConsumerWidget {
             Icon(LucideIcons.school, size: 64, color: Colors.grey.shade400),
             const SizedBox(height: 16),
             Text(
-              'No classes yet',
+              t.home.dashboard.modals.classesOverview.empty.title,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -369,7 +374,7 @@ class _ClassesOverviewModalContent extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Create your first class to get started',
+              t.home.dashboard.modals.classesOverview.empty.description,
               style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],
@@ -415,212 +420,255 @@ class _ClassOverviewCardState extends State<_ClassOverviewCard> {
     final colorScheme = Theme.of(context).colorScheme;
     final hasAtRisk = widget.classData.atRiskCount > 0;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: Themes.boxRadius,
-        border: Border.all(
-          color: hasAtRisk
-              ? Colors.orange.withValues(alpha: 0.3)
-              : colorScheme.outlineVariant,
-          width: 1.5,
-        ),
-      ),
-      child: Column(
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                if (hasAtRisk) {
-                  setState(() {
-                    _isExpanded = !_isExpanded;
-                  });
-                }
-              },
-              borderRadius: Themes.boxRadius,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            LucideIcons.school,
-                            color: colorScheme.onPrimaryContainer,
-                            size: 20,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.classData.className,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                '${widget.classData.totalStudents} students',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: colorScheme.outline,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (hasAtRisk)
-                          Icon(
-                            _isExpanded
-                                ? LucideIcons.chevronUp
-                                : LucideIcons.chevronDown,
-                            color: colorScheme.outline,
-                            size: 20,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _MetricChip(
-                            icon: LucideIcons.users,
-                            label: 'Students',
-                            value: widget.classData.totalStudents.toString(),
-                            color: colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _MetricChip(
-                            icon: LucideIcons.triangleAlert,
-                            label: 'At Risk',
-                            value: widget.classData.atRiskCount.toString(),
-                            color: hasAtRisk ? Colors.orange : Colors.green,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+    return Consumer(
+      builder: (context, ref, child) {
+        final t = ref.watch(translationsPod);
+        return Container(
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: Themes.boxRadius,
+            border: Border.all(
+              color: hasAtRisk
+                  ? Colors.orange.withValues(alpha: 0.3)
+                  : colorScheme.outlineVariant,
+              width: 1.5,
             ),
           ),
-
-          // Expandable At-Risk Students List
-          if (_isExpanded && hasAtRisk) ...[
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'At-Risk Students',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.orange.shade900,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 280,
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: widget.classData.atRiskStudents.length,
-                      itemBuilder: (context, index) {
-                        final student = widget.classData.atRiskStudents[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 4, top: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 16,
-                                backgroundImage: student.student.avatar != null
-                                    ? NetworkImage(student.student.avatar!)
-                                    : null,
-                                child: student.student.avatar == null
-                                    ? Text(
-                                        '${student.student.firstName[0]}${student.student.lastName[0]}'
-                                            .toUpperCase(),
-                                        style: const TextStyle(fontSize: 10),
-                                      )
-                                    : null,
+          child: Column(
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    if (hasAtRisk) {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    }
+                  },
+                  borderRadius: Themes.boxRadius,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              const SizedBox(width: 16),
-                              Column(
+                              child: Icon(
+                                LucideIcons.school,
+                                color: colorScheme.onPrimaryContainer,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${student.student.firstName} ${student.student.lastName}',
+                                    widget.classData.className,
                                     style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    t.home.dashboard.modals.classesOverview
+                                        .studentsCount(
+                                          count: widget.classData.totalStudents,
+                                        ),
+                                    style: TextStyle(
                                       fontSize: 13,
-                                      fontWeight: FontWeight.w500,
+                                      color: colorScheme.outline,
                                     ),
                                   ),
-                                  Wrap(
+                                ],
+                              ),
+                            ),
+                            if (hasAtRisk)
+                              Icon(
+                                _isExpanded
+                                    ? LucideIcons.chevronUp
+                                    : LucideIcons.chevronDown,
+                                color: colorScheme.outline,
+                                size: 20,
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _MetricChip(
+                                icon: LucideIcons.users,
+                                label: t
+                                    .home
+                                    .dashboard
+                                    .modals
+                                    .classesOverview
+                                    .students,
+                                value: widget.classData.totalStudents
+                                    .toString(),
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _MetricChip(
+                                icon: LucideIcons.triangleAlert,
+                                label: t
+                                    .home
+                                    .dashboard
+                                    .modals
+                                    .classesOverview
+                                    .atRisk,
+                                value: widget.classData.atRiskCount.toString(),
+                                color: hasAtRisk ? Colors.orange : Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Expandable At-Risk Students List
+              if (_isExpanded && hasAtRisk) ...[
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        t.home.dashboard.modals.classesOverview.atRiskStudents,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.orange.shade900,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 280,
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: widget.classData.atRiskStudents.length,
+                          itemBuilder: (context, index) {
+                            final student =
+                                widget.classData.atRiskStudents[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 4, top: 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 16,
+                                    backgroundImage:
+                                        student.student.avatar != null
+                                        ? NetworkImage(student.student.avatar!)
+                                        : null,
+                                    child: student.student.avatar == null
+                                        ? Text(
+                                            '${student.student.firstName[0]}${student.student.lastName[0]}'
+                                                .toUpperCase(),
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Completed ${student.totalAssignments - student.missedSubmissions - student.lateSubmissions} assignments',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: _getRiskColor(
-                                            student.riskLevel,
-                                          ),
-                                          fontWeight: FontWeight.w600,
+                                        '${student.student.firstName} ${student.student.lastName}',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        textAlign: TextAlign.center,
                                       ),
-                                      const SizedBox(width: 16),
-                                      Text(
-                                        'Average score: ${student.averageScore.toStringAsFixed(1)}',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: _getRiskColor(
-                                            student.riskLevel,
+                                      Wrap(
+                                        children: [
+                                          Text(
+                                            t
+                                                .home
+                                                .dashboard
+                                                .modals
+                                                .classesOverview
+                                                .completedAssignments(
+                                                  count:
+                                                      student.totalAssignments -
+                                                      student
+                                                          .missedSubmissions -
+                                                      student.lateSubmissions,
+                                                ),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: _getRiskColor(
+                                                student.riskLevel,
+                                              ),
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        textAlign: TextAlign.center,
+                                          const SizedBox(width: 16),
+                                          Text(
+                                            t
+                                                .home
+                                                .dashboard
+                                                .modals
+                                                .classesOverview
+                                                .averageScoreLabel(
+                                                  score: student.averageScore
+                                                      .toStringAsFixed(1),
+                                                ),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: _getRiskColor(
+                                                student.riskLevel,
+                                              ),
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                            ],
+                            );
+                          },
+                          separatorBuilder: (context, index) => Divider(
+                            height: 1,
+                            color: Colors.grey.shade300,
+                            indent: 48,
                           ),
-                        );
-                      },
-                      separatorBuilder: (context, index) => Divider(
-                        height: 1,
-                        color: Colors.grey.shade300,
-                        indent: 48,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
     );
   }
 

@@ -1633,6 +1633,79 @@
     }
   },
   "home": {
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Overview of your teaching activities",
+      "metrics": {
+        "totalClasses": "Total Classes",
+        "pendingGrading": "Pending Grading",
+        "avgScore": "Avg Score",
+        "engagement24h": "24h Engagement",
+        "comparisonPrefix": "+$count from last month",
+        "urgent": "Urgent"
+      },
+      "resourceBanner": {
+        "title": "Generate Teaching Resources with AI",
+        "subtitle": "Create quizzes, worksheets, and lesson plans instantly using AI",
+        "buttonText": "Generate"
+      },
+      "calendar": {
+        "title": "Calendar",
+        "eventsOn": "Events on $date",
+        "noEvents": "No events",
+        "noEventsDescription": "No deadlines or events for this date"
+      },
+      "recentDocuments": {
+        "title": "Recent Documents",
+        "viewAll": "View All",
+        "timeAgo": {
+          "justNow": "Just now",
+          "minutesAgo": "$count min ago",
+          "hoursAgo": "$count hr ago",
+          "daysAgo": "$count days ago",
+          "weeksAgo": "$count weeks ago"
+        },
+        "empty": {
+          "title": "No recent documents",
+          "description": "Start creating resources to see them here"
+        }
+      },
+      "modals": {
+        "pendingGrading": {
+          "title": "Pending Grading",
+          "daysAgo": "$count days ago",
+          "dayAgo": "$count day ago",
+          "autoGraded": "Auto-graded: $score/$max",
+          "empty": {
+            "title": "All caught up!",
+            "description": "No submissions waiting for grading"
+          },
+          "error": "Failed to load grading queue"
+        },
+        "classesOverview": {
+          "title": "Classes Overview",
+          "students": "Students",
+          "studentsCount": "$count students",
+          "atRisk": "At Risk",
+          "atRiskStudents": "At-Risk Students",
+          "avgScore": "Avg Score",
+          "completedAssignments": "Completed $count assignments",
+          "averageScoreLabel": "Average score: $score",
+          "empty": {
+            "title": "No classes yet",
+            "description": "Create your first class to get started"
+          },
+          "error": "Failed to load classes"
+        }
+      },
+      "loading": "Loading...",
+      "error": {
+        "loadingSummary": "Error loading summary",
+        "loadingCalendar": "Failed to load calendar",
+        "loadingDocuments": "Failed to load documents",
+        "retry": "Retry"
+      }
+    },
     "todayWorks": {
       "lorems": "Lorems"
     }

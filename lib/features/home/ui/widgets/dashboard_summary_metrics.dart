@@ -1,11 +1,13 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/home/data/models/teacher_summary_model.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Material 3 Summary Metrics Cards in Bento Grid Layout
-class DashboardSummaryMetrics extends StatelessWidget {
+class DashboardSummaryMetrics extends ConsumerWidget {
   final TeacherSummaryModel summary;
   final VoidCallback? onTotalClassesTap;
   final VoidCallback? onPendingGradingTap;
@@ -18,7 +20,8 @@ class DashboardSummaryMetrics extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
@@ -26,7 +29,7 @@ class DashboardSummaryMetrics extends StatelessWidget {
         Expanded(
           child: _MetricCard(
             icon: LucideIcons.school,
-            label: 'Total Classes',
+            label: t.home.dashboard.metrics.totalClasses,
             value: summary.totalClasses.toString(),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -44,7 +47,7 @@ class DashboardSummaryMetrics extends StatelessWidget {
         Expanded(
           child: _MetricCard(
             icon: LucideIcons.clipboardList,
-            label: 'Pending Grading',
+            label: t.home.dashboard.metrics.pendingGrading,
             value: summary.pendingGrading.toString(),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -67,7 +70,7 @@ class DashboardSummaryMetrics extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Urgent',
+                      t.home.dashboard.metrics.urgent,
                       style: TextStyle(
                         color: colorScheme.onError,
                         fontSize: 10,

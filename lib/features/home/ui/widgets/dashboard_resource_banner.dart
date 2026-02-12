@@ -1,15 +1,18 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Banner encouraging teachers to generate educational resources
-class DashboardResourceBanner extends StatelessWidget {
+class DashboardResourceBanner extends ConsumerWidget {
   final VoidCallback? onGenerateTap;
 
   const DashboardResourceBanner({super.key, this.onGenerateTap});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -68,7 +71,7 @@ class DashboardResourceBanner extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Generate Resources',
+                        t.home.dashboard.resourceBanner.title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: colorScheme.onPrimaryContainer,
@@ -76,7 +79,7 @@ class DashboardResourceBanner extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Create presentations, mindmaps, and images with AI',
+                        t.home.dashboard.resourceBanner.subtitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSecondaryContainer.withValues(
                             alpha: 0.8,

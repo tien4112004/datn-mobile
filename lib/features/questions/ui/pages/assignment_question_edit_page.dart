@@ -39,15 +39,15 @@ class AssignmentQuestionEditPage extends ConsumerStatefulWidget {
   /// Local contexts available in this assignment for linking
   final List<ContextEntity> assignmentContexts;
 
-  /// Available subtopics from the assignment matrix for topic assignment
-  final List<MatrixSubtopic> availableSubtopics;
+  /// Available topics from the assignment matrix for topic assignment
+  final List<MatrixDimensionTopic> availableTopics;
 
   const AssignmentQuestionEditPage({
     super.key,
     required this.questionEntity,
     required this.questionNumber,
     this.assignmentContexts = const [],
-    this.availableSubtopics = const [],
+    this.availableTopics = const [],
   });
 
   @override
@@ -487,10 +487,10 @@ class _AssignmentQuestionEditPageState
           ),
           const SizedBox(height: 20),
 
-          // Subtopic selector
-          if (widget.availableSubtopics.isNotEmpty)
-            _buildSubtopicSelector(theme, colorScheme),
-          if (widget.availableSubtopics.isNotEmpty) const SizedBox(height: 20),
+          // Topic selector
+          if (widget.availableTopics.isNotEmpty)
+            _buildTopicSelector(theme, colorScheme),
+          if (widget.availableTopics.isNotEmpty) const SizedBox(height: 20),
 
           // Type & Difficulty row
           Row(
@@ -627,7 +627,7 @@ class _AssignmentQuestionEditPageState
 
   // ── Helper Widgets ────────────────────────────────────────────────────
 
-  Widget _buildSubtopicSelector(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildTopicSelector(ThemeData theme, ColorScheme colorScheme) {
     final t = ref.watch(translationsPod);
     return DropdownButtonFormField<String>(
       initialValue: _currentTopicId,
@@ -644,10 +644,10 @@ class _AssignmentQuestionEditPageState
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
         ),
-        ...widget.availableSubtopics.map((subtopic) {
+        ...widget.availableTopics.map((topic) {
           return DropdownMenuItem<String>(
-            value: subtopic.id,
-            child: Text(subtopic.name),
+            value: topic.id,
+            child: Text(topic.name),
           );
         }),
       ],

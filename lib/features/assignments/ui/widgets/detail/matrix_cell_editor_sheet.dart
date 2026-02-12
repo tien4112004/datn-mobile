@@ -11,7 +11,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// Shown when tapping a sub-cell in the expanded matrix tab (edit mode).
 /// Follows the same Material 3 patterns as QuestionPointsAssignmentDialog.
 class MatrixCellEditorSheet extends ConsumerStatefulWidget {
-  final String subtopicName;
+  final String topicName;
   final Difficulty difficulty;
   final QuestionType questionType;
   final int initialCount;
@@ -20,7 +20,7 @@ class MatrixCellEditorSheet extends ConsumerStatefulWidget {
 
   const MatrixCellEditorSheet({
     super.key,
-    required this.subtopicName,
+    required this.topicName,
     required this.difficulty,
     required this.questionType,
     required this.initialCount,
@@ -116,10 +116,10 @@ class _MatrixCellEditorSheetState extends ConsumerState<MatrixCellEditorSheet> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                // Subtopic chip
+                // Topic chip
                 _buildInfoChip(
                   icon: LucideIcons.tag,
-                  label: widget.subtopicName,
+                  label: widget.topicName,
                   color: colorScheme.primary,
                   theme: theme,
                 ),
@@ -281,7 +281,7 @@ class _MaxValueFormatter extends TextInputFormatter {
 /// Shows the matrix cell editor bottom sheet.
 Future<void> showMatrixCellEditor({
   required BuildContext context,
-  required String subtopicName,
+  required String topicName,
   required Difficulty difficulty,
   required QuestionType questionType,
   required String cellValue,
@@ -296,7 +296,7 @@ Future<void> showMatrixCellEditor({
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (ctx) => MatrixCellEditorSheet(
-      subtopicName: subtopicName,
+      topicName: topicName,
       difficulty: difficulty,
       questionType: questionType,
       initialCount: parsed.count,

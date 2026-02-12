@@ -1,23 +1,22 @@
-/// Subtopic within a topic group.
-/// Matches web's `{ id: string; name: string }` in MatrixDimensionTopic.subtopics.
-class MatrixSubtopic {
+/// Topic in matrix dimensions.
+/// Matches web's `MatrixDimensionTopic` from `@aiprimary/core`.
+/// Subtopics are now informational only (not used for filtering/indexing).
+class MatrixDimensionTopic {
   final String id;
   final String name;
+  final List<String>? subtopics; // Informational subtopic names
 
-  const MatrixSubtopic({required this.id, required this.name});
-}
-
-/// Topic group containing subtopics.
-/// Matches web's `MatrixDimensionTopic` from `@aiprimary/core`.
-class MatrixDimensionTopic {
-  final String name;
-  final List<MatrixSubtopic> subtopics;
-
-  const MatrixDimensionTopic({required this.name, required this.subtopics});
+  const MatrixDimensionTopic({
+    required this.id,
+    required this.name,
+    this.subtopics,
+  });
 }
 
 /// Matrix dimension axes.
 /// Defines the indices for the 3D matrix array.
+/// Matrix is now indexed as: matrix[topicIndex][difficultyIndex][questionTypeIndex]
+/// (previously was indexed by subtopic, now by topic)
 class MatrixDimensions {
   final List<MatrixDimensionTopic> topics;
   final List<String> difficulties;
@@ -28,16 +27,12 @@ class MatrixDimensions {
     required this.difficulties,
     required this.questionTypes,
   });
-
-  /// Flattened subtopics across all topic groups, preserving order.
-  /// Each row in the 3D matrix corresponds to one flattened subtopic.
-  List<MatrixSubtopic> get flatSubtopics =>
-      topics.expand((t) => t.subtopics).toList();
 }
 
 /// Full API matrix — matches the JSONB `matrix` column on Assignment.
 ///
-/// 3D structure: matrix[subtopicIndex][difficultyIndex][questionTypeIndex] = "count:points"
+/// 3D structure: matrix[topicIndex][difficultyIndex][questionTypeIndex] = "count:points"
+/// Topics are the first dimension (previously was subtopic index).
 class ApiMatrixEntity {
   final String? grade;
   final String? subject;
@@ -59,9 +54,8 @@ class ApiMatrixEntity {
   List<List<List<String>>> deepCopyMatrix() {
     return matrix
         .map(
-          (subtopic) => subtopic
-              .map((difficulty) => List<String>.from(difficulty))
-              .toList(),
+          (topic) =>
+              topic.map((difficulty) => List<String>.from(difficulty)).toList(),
         )
         .toList();
   }

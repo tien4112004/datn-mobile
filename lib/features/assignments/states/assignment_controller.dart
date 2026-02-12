@@ -169,7 +169,7 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
   /// Update a single cell in the matrix (optimistic local update only).
   /// Server sync happens when the user presses Save.
   Future<void> updateMatrixCell(
-    int subtopicIndex,
+    int topicIndex,
     int difficultyIndex,
     int questionTypeIndex,
     String cellValue,
@@ -178,13 +178,13 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     if (currentAssignment.matrix == null) return;
 
     final newMatrix = currentAssignment.matrix!.deepCopyMatrix();
-    newMatrix[subtopicIndex][difficultyIndex][questionTypeIndex] = cellValue;
+    newMatrix[topicIndex][difficultyIndex][questionTypeIndex] = cellValue;
 
     // Recalculate totals from all cells
     int totalCount = 0;
     double totalPts = 0.0;
-    for (final subtopic in newMatrix) {
-      for (final difficulty in subtopic) {
+    for (final topic in newMatrix) {
+      for (final difficulty in topic) {
         for (final cell in difficulty) {
           final parsed = parseCellValue(cell);
           totalCount += parsed.count;

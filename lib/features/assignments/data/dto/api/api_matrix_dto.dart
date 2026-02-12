@@ -3,27 +3,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'api_matrix_dto.g.dart';
 
-/// DTO for a subtopic within a topic group.
-@JsonSerializable()
-class MatrixSubtopicDto {
-  final String id;
-  final String name;
-
-  const MatrixSubtopicDto({required this.id, required this.name});
-
-  factory MatrixSubtopicDto.fromJson(Map<String, dynamic> json) =>
-      _$MatrixSubtopicDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MatrixSubtopicDtoToJson(this);
-}
-
-/// DTO for a topic group containing subtopics.
+/// DTO for a topic with optional informational subtopics.
+///
+/// Topics are now the primary dimension for the matrix structure.
+/// Subtopics are informational metadata and do not affect matrix indexing/filtering.
 @JsonSerializable()
 class MatrixDimensionTopicDto {
+  final String id;
   final String name;
-  final List<MatrixSubtopicDto> subtopics;
+  final List<String>? subtopics; // Informational subtopic names
 
-  const MatrixDimensionTopicDto({required this.name, required this.subtopics});
+  const MatrixDimensionTopicDto({
+    required this.id,
+    required this.name,
+    this.subtopics,
+  });
 
   factory MatrixDimensionTopicDto.fromJson(Map<String, dynamic> json) =>
       _$MatrixDimensionTopicDtoFromJson(json);
@@ -84,10 +78,9 @@ extension ApiMatrixEntityMapper on ApiMatrixEntity {
       topics: dimensions.topics
           .map(
             (t) => MatrixDimensionTopicDto(
+              id: t.id,
               name: t.name,
-              subtopics: t.subtopics
-                  .map((s) => MatrixSubtopicDto(id: s.id, name: s.name))
-                  .toList(),
+              subtopics: t.subtopics, // Pass through informational subtopics
             ),
           )
           .toList(),
@@ -109,10 +102,9 @@ extension ApiMatrixDtoMapper on ApiMatrixDto {
       topics: dimensions.topics
           .map(
             (t) => MatrixDimensionTopic(
+              id: t.id,
               name: t.name,
-              subtopics: t.subtopics
-                  .map((s) => MatrixSubtopic(id: s.id, name: s.name))
-                  .toList(),
+              subtopics: t.subtopics, // Pass through informational subtopics
             ),
           )
           .toList(),

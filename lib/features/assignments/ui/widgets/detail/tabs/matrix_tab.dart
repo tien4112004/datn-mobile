@@ -19,7 +19,7 @@ class MatrixTab extends ConsumerStatefulWidget {
   final bool isEditMode;
 
   /// Called when a sub-cell is tapped in edit mode.
-  /// Parameters: (subtopicIndex, difficultyIndex, questionTypeIndex)
+  /// Parameters: (topicIndex, difficultyIndex, questionTypeIndex)
   final void Function(int, int, int)? onCellTap;
 
   const MatrixTab({
@@ -185,42 +185,25 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
               ),
               Divider(height: 1, color: colorScheme.outlineVariant),
 
-              // Topic groups with subtopics
+              // Topics as flat rows (no grouping)
               ...topics.asMap().entries.expand((topicEntry) {
+                final topicIndex = topicEntry.key;
                 final topic = topicEntry.value;
-                int subtopicStartIndex = 0;
-                for (int i = 0; i < topicEntry.key; i++) {
-                  subtopicStartIndex += topics[i].subtopics.length;
-                }
 
                 return [
-                  _buildTopicGroupHeader(topic.name, theme, colorScheme),
-                  Divider(
-                    height: 1,
-                    color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                  _buildTopicRow(
+                    topic,
+                    topicIndex,
+                    difficulties,
+                    questionTypes,
+                    theme,
+                    colorScheme,
                   ),
-                  ...topic.subtopics.asMap().entries.expand((subEntry) {
-                    final subtopicIndex = subtopicStartIndex + subEntry.key;
-                    final subtopic = subEntry.value;
-                    return [
-                      _buildSubtopicRow(
-                        subtopic,
-                        subtopicIndex,
-                        difficulties,
-                        questionTypes,
-                        theme,
-                        colorScheme,
-                      ),
-                      if (subEntry.key < topic.subtopics.length - 1 ||
-                          topicEntry.key < topics.length - 1)
-                        Divider(
-                          height: 1,
-                          color: colorScheme.outlineVariant.withValues(
-                            alpha: 0.3,
-                          ),
-                        ),
-                    ];
-                  }),
+                  if (topicIndex < topics.length - 1)
+                    Divider(
+                      height: 1,
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+                    ),
                 ];
               }),
             ],
@@ -451,115 +434,126 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
     );
   }
 
-  Widget _buildTopicGroupHeader(
-    String topicName,
-    ThemeData theme,
-    ColorScheme colorScheme,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      color: colorScheme.surfaceContainerHigh.withValues(alpha: 0.5),
-      child: Row(
-        children: [
-          Icon(LucideIcons.folder, size: 14, color: colorScheme.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              topicName,
-              style: theme.textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubtopicRow(
-    MatrixSubtopic subtopic,
-    int subtopicIndex,
+  Widget _buildTopicRow(
+    MatrixDimensionTopic topic,
+    int topicIndex,
     List<String> difficulties,
     List<String> questionTypes,
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
-    final totalTarget = widget.matrix.getSubtopicTotalTarget(subtopicIndex);
-    final totalActual = widget.matrix.getSubtopicTotalActual(subtopicIndex);
+    final totalTarget = widget.matrix.getSubtopicTotalTarget(topicIndex);
+    final totalActual = widget.matrix.getSubtopicTotalActual(topicIndex);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Subtopic label
-          SizedBox(
-            width: 70,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: Text(
-                subtopic.name,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
+          // Topic name and subtopic chips
+          Row(
+            children: [
+              // Topic label
+              SizedBox(
+                width: 70,
+                child: Text(
+                  topic.name,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
               ),
-            ),
-          ),
-          // Difficulty cells (collapsed or expanded)
-          ...difficulties.asMap().entries.map((entry) {
-            final diffIndex = entry.key;
-            final isExpanded = _expandedDifficultyIndex == diffIndex;
+              // Difficulty cells (collapsed or expanded)
+              ...difficulties.asMap().entries.map((entry) {
+                final diffIndex = entry.key;
+                final isExpanded = _expandedDifficultyIndex == diffIndex;
 
-            if (isExpanded) {
-              return Expanded(
-                flex: 4,
-                child: _buildExpandedDifficultyCell(
-                  subtopicIndex,
+                if (isExpanded) {
+                  return Expanded(
+                    flex: 4,
+                    child: _buildExpandedDifficultyCell(
+                      topicIndex,
+                      diffIndex,
+                      questionTypes,
+                      theme,
+                      colorScheme,
+                    ),
+                  );
+                }
+
+                final target = widget.matrix.getSubtopicTarget(
+                  topicIndex,
                   diffIndex,
-                  questionTypes,
-                  theme,
-                  colorScheme,
-                ),
-              );
-            }
+                );
+                final actual = widget.matrix.getSubtopicDiffActual(
+                  topicIndex,
+                  diffIndex,
+                );
 
-            final target = widget.matrix.getSubtopicTarget(
-              subtopicIndex,
-              diffIndex,
-            );
-            final actual = widget.matrix.getSubtopicDiffActual(
-              subtopicIndex,
-              diffIndex,
-            );
-
-            return Expanded(
-              flex: 1,
-              child: Center(
-                child: _buildStatusCell(
-                  actual: actual,
-                  target: target,
-                  theme: theme,
-                  colorScheme: colorScheme,
+                return Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: _buildStatusCell(
+                      actual: actual,
+                      target: target,
+                      theme: theme,
+                      colorScheme: colorScheme,
+                    ),
+                  ),
+                );
+              }),
+              // Total
+              SizedBox(
+                width: 50,
+                child: Center(
+                  child: _buildStatusCell(
+                    actual: totalActual,
+                    target: totalTarget,
+                    theme: theme,
+                    colorScheme: colorScheme,
+                  ),
                 ),
               ),
-            );
-          }),
-          // Total
-          SizedBox(
-            width: 50,
-            child: Center(
-              child: _buildStatusCell(
-                actual: totalActual,
-                target: totalTarget,
-                theme: theme,
-                colorScheme: colorScheme,
+            ],
+          ),
+          // Subtopics chips (informational)
+          if (topic.subtopics != null && topic.subtopics!.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8, left: 70),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: topic.subtopics!
+                    .map(
+                      (subtopic) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primaryContainer.withValues(
+                            alpha: 0.3,
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: colorScheme.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Text(
+                          subtopic,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.onSurface,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -567,7 +561,7 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
 
   /// Renders 4 question-type sub-cells for an expanded difficulty column.
   Widget _buildExpandedDifficultyCell(
-    int subtopicIndex,
+    int topicIndex,
     int difficultyIndex,
     List<String> questionTypes,
     ThemeData theme,
@@ -579,10 +573,10 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
       children: questionTypes.asMap().entries.map((entry) {
         final qTypeIndex = entry.key;
         final cellValue =
-            apiMatrix.matrix[subtopicIndex][difficultyIndex][qTypeIndex];
+            apiMatrix.matrix[topicIndex][difficultyIndex][qTypeIndex];
         final target = parseCellValue(cellValue).count;
         final actual = widget.matrix.getSubtopicCellActual(
-          subtopicIndex,
+          topicIndex,
           difficultyIndex,
           qTypeIndex,
         );
@@ -592,11 +586,8 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: isEditable
-                ? () => widget.onCellTap!(
-                    subtopicIndex,
-                    difficultyIndex,
-                    qTypeIndex,
-                  )
+                ? () =>
+                      widget.onCellTap!(topicIndex, difficultyIndex, qTypeIndex)
                 : null,
             child: Center(
               child: _buildSubCell(

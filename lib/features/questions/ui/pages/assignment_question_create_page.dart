@@ -34,14 +34,14 @@ class AssignmentQuestionCreatePage extends ConsumerStatefulWidget {
   /// Local contexts available in this assignment for linking
   final List<ContextEntity> assignmentContexts;
 
-  /// Available subtopics from the assignment matrix for topic assignment
-  final List<MatrixSubtopic> availableSubtopics;
+  /// Available topics from the assignment matrix for topic assignment
+  final List<MatrixDimensionTopic> availableTopics;
 
   const AssignmentQuestionCreatePage({
     super.key,
     this.defaultPoints = 10.0,
     this.assignmentContexts = const [],
-    this.availableSubtopics = const [],
+    this.availableTopics = const [],
   });
 
   @override
@@ -487,9 +487,9 @@ class _AssignmentQuestionCreatePageState
           ),
           const SizedBox(height: 20),
 
-          // Subtopic selector
-          if (widget.availableSubtopics.isNotEmpty)
-            _buildSubtopicSelector(theme, colorScheme),
+          // Topic selector
+          if (widget.availableTopics.isNotEmpty)
+            _buildTopicSelector(theme, colorScheme),
         ],
       ),
     );
@@ -535,7 +535,7 @@ class _AssignmentQuestionCreatePageState
 
   // ── Helper Widgets ────────────────────────────────────────────────────
 
-  Widget _buildSubtopicSelector(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildTopicSelector(ThemeData theme, ColorScheme colorScheme) {
     final t = ref.watch(translationsPod);
     return DropdownButtonFormField<String>(
       initialValue: _currentTopicId,
@@ -552,10 +552,10 @@ class _AssignmentQuestionCreatePageState
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
         ),
-        ...widget.availableSubtopics.map((subtopic) {
+        ...widget.availableTopics.map((topic) {
           return DropdownMenuItem<String>(
-            value: subtopic.id,
-            child: Text(subtopic.name),
+            value: topic.id,
+            child: Text(topic.name),
           );
         }),
       ],

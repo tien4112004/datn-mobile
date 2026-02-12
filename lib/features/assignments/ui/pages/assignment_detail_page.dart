@@ -204,14 +204,14 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
   void _showMatrixCellEditor(
     BuildContext context,
     AssignmentEntity assignment,
-    int subtopicIndex,
+    int topicIndex,
     int difficultyIndex,
     int questionTypeIndex,
   ) {
     final matrixData = assignment.matrix!;
     final cellValue =
-        matrixData.matrix[subtopicIndex][difficultyIndex][questionTypeIndex];
-    final subtopic = matrixData.dimensions.flatSubtopics[subtopicIndex];
+        matrixData.matrix[topicIndex][difficultyIndex][questionTypeIndex];
+    final topic = matrixData.dimensions.topics[topicIndex];
     final difficulty = Difficulty.fromApiValue(
       matrixData.dimensions.difficulties[difficultyIndex],
     );
@@ -221,7 +221,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
 
     showMatrixCellEditor(
       context: context,
-      subtopicName: subtopic.name,
+      topicName: topic.name,
       difficulty: difficulty,
       questionType: questionType,
       cellValue: cellValue,
@@ -231,7 +231,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
               detailAssignmentControllerProvider(widget.assignmentId).notifier,
             )
             .updateMatrixCell(
-              subtopicIndex,
+              topicIndex,
               difficultyIndex,
               questionTypeIndex,
               serializeCellValue(count, points),
@@ -421,10 +421,10 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                   isEditMode: _isEditMode,
                   contextsMap: contextsMap,
                   subtopicNameMap: {
-                    for (final s
-                        in assignment.matrix?.dimensions.flatSubtopics ??
-                            <MatrixSubtopic>[])
-                      s.id: s.name,
+                    for (final t
+                        in assignment.matrix?.dimensions.topics ??
+                            <MatrixDimensionTopic>[])
+                      t.id: t.name,
                   },
                   onEditContext: _isEditMode
                       ? (contextEntity) => _handleEditContext(contextEntity)
@@ -438,8 +438,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                         questionEntity: questionEntity,
                         questionNumber: index + 1,
                         assignmentContexts: contextsMap.values.toList(),
-                        availableSubtopics:
-                            assignment.matrix?.dimensions.flatSubtopics ?? [],
+                        availableTopics:
+                            assignment.matrix?.dimensions.topics ?? [],
                       ),
                     );
 
@@ -637,9 +637,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                           AssignmentQuestionCreateRoute(
                             defaultPoints: 10.0,
                             assignmentContexts: contextsMap.values.toList(),
-                            availableSubtopics:
-                                assignment.matrix?.dimensions.flatSubtopics ??
-                                [],
+                            availableTopics:
+                                assignment.matrix?.dimensions.topics ?? [],
                           ),
                         );
 

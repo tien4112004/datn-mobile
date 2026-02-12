@@ -568,7 +568,7 @@ class AssessmentMatrix {
   final Map<String, int> _targetMatrix;
   final Map<String, int> _actualMatrix;
 
-  /// Per-subtopic actual counts: "subtopicId:difficultyApi:questionTypeApi" → count
+  /// Per-topic actual counts: "topicId:difficultyApi:questionTypeApi" → count
   final Map<String, int> _subtopicActualMatrix;
   final ApiMatrixEntity? apiMatrix;
 
@@ -663,13 +663,13 @@ class AssessmentMatrix {
   ) {
     if (apiMatrix == null) return 0;
     final dims = apiMatrix!.dimensions;
-    final subtopics = dims.flatSubtopics;
-    if (subtopicIndex >= subtopics.length) return 0;
+    final topics = dims.topics;
+    if (subtopicIndex >= topics.length) return 0;
     if (difficultyIndex >= dims.difficulties.length) return 0;
     if (questionTypeIndex >= dims.questionTypes.length) return 0;
 
     final key =
-        '${subtopics[subtopicIndex].id}:${dims.difficulties[difficultyIndex]}:${dims.questionTypes[questionTypeIndex]}';
+        '${topics[subtopicIndex].id}:${dims.difficulties[difficultyIndex]}:${dims.questionTypes[questionTypeIndex]}';
     return _subtopicActualMatrix[key] ?? 0;
   }
 

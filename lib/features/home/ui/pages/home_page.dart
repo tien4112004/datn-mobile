@@ -5,9 +5,13 @@ import 'package:AIPrimary/features/notification/ui/widgets/notification_bell.dar
 import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/features/home/ui/widgets/today_works_section.dart';
-import 'package:AIPrimary/features/home/ui/widgets/my_classes_section.dart';
-import 'package:AIPrimary/features/projects/ui/widgets/common/recent_documents_row.dart';
+import 'package:AIPrimary/features/home/providers/analytics_providers.dart';
+import 'package:AIPrimary/features/home/providers/recent_documents_provider.dart';
+import 'package:AIPrimary/features/home/ui/widgets/dashboard_summary_metrics.dart';
+import 'package:AIPrimary/features/home/ui/widgets/dashboard_calendar_widget.dart';
+import 'package:AIPrimary/features/home/ui/widgets/dashboard_recent_activity.dart';
+import 'package:AIPrimary/features/home/ui/widgets/dashboard_resource_banner.dart';
+import 'package:AIPrimary/features/home/ui/widgets/dashboard_modals.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -29,22 +33,80 @@ class _HomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = ref.watch(translationsPod);
+    final summaryAsync = ref.watch(teacherSummaryProvider);
+    final calendarAsync = ref.watch(teacherCalendarProvider);
+    final recentDocsAsync = ref.watch(recentDocumentsProvider);
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 8),
-            const TodayWorksSection(),
-            const SizedBox(height: 32),
-            const MyClassesSection(),
-            const SizedBox(height: 32),
-            RecentDocumentsRow(title: t.recentDocuments),
-            const SizedBox(height: 16),
-          ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(teacherSummaryProvider);
+        ref.invalidate(teacherCalendarProvider);
+        ref.invalidate(recentDocumentsProvider);
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Welcome Section
+              Text(
+                'Dashboard',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Overview of your teaching activities',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Summary Metrics Cards
+              summaryAsync.when(
+                data: (summary) => DashboardSummaryMetrics(
+                  summary: summary,
+                  onTotalClassesTap: () =>
+                      showClassesOverviewModal(context, ref),
+                  onPendingGradingTap: () =>
+                      showPendingGradingModal(context, ref),
+                ),
+                loading: () => const DashboardSummaryMetricsShimmer(),
+                error: (error, stack) =>
+                    Center(child: Text('Error loading summary: $error')),
+              ),
+              const SizedBox(height: 24),
+
+              // Resource Generation Banner
+              DashboardResourceBanner(
+                onGenerateTap: () {
+                  context.router.push(const GenerateRoute());
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // Calendar Widget
+              calendarAsync.when(
+                data: (events) => DashboardCalendarWidget(events: events),
+                loading: () => const DashboardCalendarShimmer(),
+                error: (error, stack) => const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 24),
+
+              // Recent Documents
+              recentDocsAsync.when(
+                data: (documents) =>
+                    DashboardRecentDocuments(documents: documents),
+                loading: () => const DashboardRecentDocumentsShimmer(),
+                error: (error, stack) => const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'package:AIPrimary/features/classes/states/controller_provider.dart';
+import 'package:AIPrimary/features/classes/ui/pages/class_detail_page.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -63,21 +65,36 @@ class MainWrapperPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userControllerPod);
     final t = ref.watch(translationsPod);
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
 
     return userState.easyWhen(
       data: (userProfileState) {
-        final isStudent = ref.watch(userRolePod) == UserRole.student;
-        final routes = isStudent
-            ? [const ClassRoute(), const SettingRoute()]
-            : [
-                const HomeRoute(),
-                const ProjectsRoute(),
-                const ClassRoute(),
-                const SettingRoute(),
-              ];
+        // For students, wait for classes to load before showing the UI
+        if (isStudent) {
+          final classesState = ref.watch(classesControllerProvider);
 
+          // Show loading indicator while classes are being fetched
+          if (classesState.isLoading ||
+              !classesState.hasValue ||
+              classesState.value!.isEmpty) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final classId = classesState.value!.first.id;
+
+          return ClassDetailPage(classId: classId);
+        }
+
+        // For teachers, show normal navigation
         return AutoTabsScaffold(
-          routes: routes,
+          routes: const [
+            HomeRoute(),
+            ProjectsRoute(),
+            ClassRoute(),
+            SettingRoute(),
+          ],
           bottomNavigationBuilder: (_, tabsRouter) {
             if (userState.isLoading) {
               return const SizedBox.shrink();
@@ -94,101 +111,68 @@ class MainWrapperPage extends ConsumerWidget {
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
                 type: BottomNavigationBarType.shifting,
-                items: isStudent
-                    ? [
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.school,
-                            t.navigation.class_,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.school,
-                            t.navigation.class_,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.user,
-                            t.navigation.profile,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.user,
-                            t.navigation.profile,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                      ]
-                    : [
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.house,
-                            t.navigation.home,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.house400,
-                            t.navigation.home,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.folder,
-                            t.navigation.project,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.folder,
-                            t.navigation.project,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.school,
-                            t.navigation.class_,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.school,
-                            t.navigation.class_,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                        BottomNavigationBarItem(
-                          icon: _bottomItemActivated(
-                            LucideIcons.user,
-                            t.navigation.profile,
-                            false,
-                            context,
-                          ),
-                          activeIcon: _bottomItemActivated(
-                            LucideIcons.user,
-                            t.navigation.profile,
-                            true,
-                            context,
-                          ),
-                          label: "",
-                        ),
-                      ],
+                items: [
+                  BottomNavigationBarItem(
+                    icon: _bottomItemActivated(
+                      LucideIcons.house,
+                      t.navigation.home,
+                      false,
+                      context,
+                    ),
+                    activeIcon: _bottomItemActivated(
+                      LucideIcons.house400,
+                      t.navigation.home,
+                      true,
+                      context,
+                    ),
+                    label: "",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _bottomItemActivated(
+                      LucideIcons.folder,
+                      t.navigation.project,
+                      false,
+                      context,
+                    ),
+                    activeIcon: _bottomItemActivated(
+                      LucideIcons.folder,
+                      t.navigation.project,
+                      true,
+                      context,
+                    ),
+                    label: "",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _bottomItemActivated(
+                      LucideIcons.school,
+                      t.navigation.class_,
+                      false,
+                      context,
+                    ),
+                    activeIcon: _bottomItemActivated(
+                      LucideIcons.school,
+                      t.navigation.class_,
+                      true,
+                      context,
+                    ),
+                    label: "",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: _bottomItemActivated(
+                      LucideIcons.user,
+                      t.navigation.profile,
+                      false,
+                      context,
+                    ),
+                    activeIcon: _bottomItemActivated(
+                      LucideIcons.user,
+                      t.navigation.profile,
+                      true,
+                      context,
+                    ),
+                    label: "",
+                  ),
+                ],
               ),
             );
           },

@@ -4,6 +4,7 @@ import 'package:AIPrimary/core/secure_storage/secure_storage_pod.dart';
 import 'package:AIPrimary/features/auth/data/repositories/user_repository_provider.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_profile.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
+import 'package:AIPrimary/features/classes/states/controller_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -65,6 +66,10 @@ class UserController extends AsyncNotifier<UserState?> {
 
     // Store to local storage
     await _saveUserProfileToStorage(profile);
+
+    if (profile.role == UserRole.student) {
+      ref.read(classesControllerProvider.notifier).refresh();
+    }
 
     return UserState.fromUserProfile(profile);
   }

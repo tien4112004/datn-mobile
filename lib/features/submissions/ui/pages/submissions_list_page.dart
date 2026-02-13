@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/submissions/domain/entity/statistics_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
 import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
 import 'package:AIPrimary/features/submissions/ui/widgets/submission_status_badge.dart';
@@ -132,6 +133,9 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
     final colorScheme = theme.colorScheme;
 
     final submissionsAsync = ref.watch(postSubmissionsProvider(widget.postId));
+    final statisticsAsync = ref.watch(
+      submissionStatisticsProvider(widget.postId),
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(t.submissions.list.title)),
@@ -142,6 +146,12 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
 
           return Column(
             children: [
+              // Statistics Card
+              statisticsAsync.when(
+                data: (stats) => _buildStatisticsCard(context, stats, t),
+                loading: () => _buildStatisticsLoadingCard(context),
+                error: (error, stack) => const SizedBox.shrink(),
+              ),
               // Search and Filters
               Container(
                 decoration: BoxDecoration(
@@ -359,6 +369,269 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatisticsCard(
+    BuildContext context,
+    SubmissionStatisticsEntity stats,
+    Translations t,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.primaryContainer,
+            colorScheme.primaryContainer.withValues(alpha: 0.5),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Icon(LucideIcons.chartBar, color: colorScheme.primary, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                'Statistics',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          // Statistics Grid
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatItem(
+                  context,
+                  label: 'Total',
+                  value: stats.totalSubmissions.toString(),
+                  icon: LucideIcons.fileText,
+                  color: colorScheme.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatItem(
+                  context,
+                  label: t.submissions.list.filterGraded,
+                  value: stats.gradedCount.toString(),
+                  icon: LucideIcons.circleCheck,
+                  color: Colors.green,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatItem(
+                  context,
+                  label: t.submissions.list.filterSubmitted,
+                  value: stats.pendingCount.toString(),
+                  icon: LucideIcons.clock,
+                  color: Colors.orange,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatItem(
+                  context,
+                  label: t.submissions.status.inProgress,
+                  value: stats.inProgressCount.toString(),
+                  icon: LucideIcons.pencil,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
+
+          // Average Score (if available)
+          if (stats.averageScore != null && stats.totalSubmissions > 0) ...[
+            const SizedBox(height: 16),
+            Divider(
+              color: colorScheme.onPrimaryContainer.withValues(alpha: 0.2),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Average Score',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onPrimaryContainer.withValues(
+                          alpha: 0.8,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${stats.averageScore!.toStringAsFixed(1)}%',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                if (stats.highestScore != null && stats.lowestScore != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.trendingUp,
+                            size: 16,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${stats.highestScore!.toStringAsFixed(1)}%',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.trendingDown,
+                            size: 16,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${stats.lowestScore!.toStringAsFixed(1)}%',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(
+    BuildContext context, {
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withValues(alpha: 0.7),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatisticsLoadingCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            'Loading statistics...',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }

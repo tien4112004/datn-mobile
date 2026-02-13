@@ -89,7 +89,7 @@ class StartAssignmentButton extends ConsumerWidget {
 
       // Navigate to doing page
       if (context.mounted) {
-        context.router.push(
+        context.router.replace(
           AssignmentDoingRoute(assignmentId: assignmentId, postId: postId),
         );
       }

@@ -1467,7 +1467,15 @@
       "legendCurrent": "Hiện tại",
       "legendNotVisited": "Chưa xem",
       "timeRemaining(time)": "Thời gian còn lại: $time",
-      "timeUp": "Hết giờ! Đang nộp bài..."
+      "timeUp": "Hết giờ! Đang nộp bài...",
+      "question": "Câu hỏi",
+      "questions": "Câu hỏi",
+      "questionNumber(number)": "Câu hỏi $number",
+      "questionRange(start, end)": "Câu hỏi $start-$end",
+      "questionCount(count)": "$count Câu hỏi",
+      "contextQuestions(context, questions)": "$context: Câu hỏi $questions",
+      "standaloneQuestions(questions)": "Câu hỏi $questions",
+      "context": "Ngữ cảnh"
     },
     "detail": {
       "title": "Chi tiết nộp bài",

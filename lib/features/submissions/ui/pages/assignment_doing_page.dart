@@ -123,7 +123,10 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                '${contextEntity?.title ?? "Context"}: Questions $questionNums',
+                t.submissions.doing.contextQuestions(
+                  context: contextEntity?.title ?? t.submissions.doing.context,
+                  questions: questionNums,
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
             ),
@@ -133,7 +136,9 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                'Questions $questionNums',
+                t.submissions.doing.standaloneQuestions(
+                  questions: questionNums,
+                ),
                 style: theme.textTheme.bodyMedium,
               ),
             ),
@@ -270,12 +275,15 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
   /// Gets the title for the current group
   String _getGroupTitle(QuestionGroup group) {
+    final t = ref.read(translationsPod);
     if (group.questions.length == 1) {
-      return 'Question ${group.startingDisplayNumber}';
+      return t.submissions.doing.questionNumber(
+        number: group.startingDisplayNumber,
+      );
     } else {
       final start = group.startingDisplayNumber;
       final end = start + group.questions.length - 1;
-      return 'Questions $start-$end';
+      return t.submissions.doing.questionRange(start: start, end: end);
     }
   }
 
@@ -378,7 +386,9 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
               Icon(Icons.quiz_outlined, size: 16, color: colorScheme.primary),
               const SizedBox(width: 8),
               Text(
-                '${group.questions.length} ${group.questions.length == 1 ? 'Question' : 'Questions'}',
+                t.submissions.doing.questionCount(
+                  count: group.questions.length,
+                ),
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: colorScheme.primary,
                   fontWeight: FontWeight.w600,
@@ -410,7 +420,9 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      'Question $questionNumber',
+                      t.submissions.doing.questionNumber(
+                        number: questionNumber,
+                      ),
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.w600,

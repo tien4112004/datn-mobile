@@ -1466,7 +1466,15 @@
       "legendCurrent": "Current",
       "legendNotVisited": "Not visited",
       "timeRemaining(time)": "Time Remaining: $time",
-      "timeUp": "Time is up! Submitting..."
+      "timeUp": "Time is up! Submitting...",
+      "question": "Question",
+      "questions": "Questions",
+      "questionNumber(number)": "Question $number",
+      "questionRange(start, end)": "Questions $start-$end",
+      "questionCount(count)": "$count Question(s)",
+      "contextQuestions(context, questions)": "$context: Questions $questions",
+      "standaloneQuestions(questions)": "Questions $questions",
+      "context": "Context"
     },
     "detail": {
       "title": "Submission Details",

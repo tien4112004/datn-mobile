@@ -6,23 +6,23 @@ part 'statistics_dto.g.dart';
 /// Score distribution DTO with hyphenated keys
 @JsonSerializable()
 class ScoreDistributionDto {
-  @JsonKey(name: 'below-70')
+  @JsonKey(name: 'below-70', defaultValue: 0)
   final int below70;
 
-  @JsonKey(name: '70-79')
+  @JsonKey(name: '70-79', defaultValue: 0)
   final int range70to79;
 
-  @JsonKey(name: '80-89')
+  @JsonKey(name: '80-89', defaultValue: 0)
   final int range80to89;
 
-  @JsonKey(name: '90-100')
+  @JsonKey(name: '90-100', defaultValue: 0)
   final int range90to100;
 
   const ScoreDistributionDto({
-    required this.below70,
-    required this.range70to79,
-    required this.range80to89,
-    required this.range90to100,
+    this.below70 = 0,
+    this.range70to79 = 0,
+    this.range80to89 = 0,
+    this.range90to100 = 0,
   });
 
   factory ScoreDistributionDto.fromJson(Map<String, dynamic> json) =>
@@ -51,7 +51,7 @@ class SubmissionStatisticsResponseDto {
   final double? averageScore;
   final double? highestScore;
   final double? lowestScore;
-  final ScoreDistributionDto scoreDistribution;
+  final ScoreDistributionDto? scoreDistribution;
 
   const SubmissionStatisticsResponseDto({
     required this.totalSubmissions,
@@ -61,7 +61,7 @@ class SubmissionStatisticsResponseDto {
     this.averageScore,
     this.highestScore,
     this.lowestScore,
-    required this.scoreDistribution,
+    this.scoreDistribution,
   });
 
   factory SubmissionStatisticsResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -83,7 +83,7 @@ extension SubmissionStatisticsResponseDtoToEntity
       averageScore: averageScore,
       highestScore: highestScore,
       lowestScore: lowestScore,
-      scoreDistribution: scoreDistribution.toMap(),
+      scoreDistribution: scoreDistribution?.toMap() ?? {},
     );
   }
 }

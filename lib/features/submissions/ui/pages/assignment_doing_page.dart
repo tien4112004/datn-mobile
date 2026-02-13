@@ -1,4 +1,8 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/context/context_display_card.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_blank_doing.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_doing.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_doing.dart';
@@ -17,6 +21,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+/// Represents a group of questions, either sharing a context or standalone
+class QuestionGroup {
+  final String? contextId;
+  final ContextEntity? context;
+  final List<AssignmentQuestionEntity> questions;
+  final List<int> questionIndices; // Original indices in flat list
+
+  QuestionGroup({
+    this.contextId,
+    this.context,
+    required this.questions,
+    required this.questionIndices,
+  });
+
+  bool get isContextGroup => contextId != null;
+  int get startingDisplayNumber => questionIndices.first + 1;
+}
+
 @RoutePage()
 class AssignmentDoingPage extends ConsumerStatefulWidget {
   final String assignmentId;
@@ -34,7 +56,8 @@ class AssignmentDoingPage extends ConsumerStatefulWidget {
 }
 
 class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
-  int _currentQuestionIndex = 0;
+  int _currentGroupIndex = 0;
+  List<QuestionGroup> _questionGroups = [];
   DateTime? _startTime;
 
   @override
@@ -45,6 +68,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
   Future<void> _handleSubmit() async {
     final t = ref.read(translationsPod);
+    final theme = Theme.of(context);
 
     if (widget.postId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,14 +95,67 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     final unanswered = answerController.validateAnswers();
 
     if (unanswered.isNotEmpty) {
+      // Group unanswered questions by context for better clarity
+      final unansweredByContext = <String?, List<int>>{};
+      for (final idx in unanswered) {
+        final contextId = assignment.questions[idx].contextId;
+        unansweredByContext.putIfAbsent(contextId, () => []);
+        unansweredByContext[contextId]!.add(idx + 1); // 1-based
+      }
+
+      // Build the content showing grouped unanswered questions
+      final contentWidgets = <Widget>[];
+      for (final entry in unansweredByContext.entries) {
+        final contextId = entry.key;
+        final questionNums = entry.value.join(", ");
+
+        if (contextId != null) {
+          ContextEntity? contextEntity;
+          try {
+            contextEntity = assignment.contexts.firstWhere(
+              (c) => c.id == contextId,
+            );
+          } catch (e) {
+            contextEntity = null;
+          }
+
+          contentWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                t.submissions.doing.contextQuestions(
+                  context: contextEntity?.title ?? t.submissions.doing.context,
+                  questions: questionNums,
+                ),
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
+          );
+        } else {
+          contentWidgets.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                t.submissions.doing.standaloneQuestions(
+                  questions: questionNums,
+                ),
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
+          );
+        }
+      }
+
       // Show incomplete warning
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(t.submissions.doing.incompleteWarning),
-          content: Text(
-            t.submissions.doing.unansweredQuestions(
-              questions: unanswered.map((i) => i + 1).join(", "),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: contentWidgets,
             ),
           ),
           actions: [
@@ -134,13 +211,8 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
       // Hide loading overlay
       ref.read(loadingOverlayPod.notifier).state = false;
 
-      // Navigate back to preview page to show the result
-      context.router.replace(
-        AssignmentPreviewRoute(
-          assignmentId: assignmentAsync.value!.assignmentId,
-          postId: widget.postId!,
-        ),
-      );
+      // Pop back to preview page (which will refresh and show the new submission)
+      context.router.popUntilRouteWithName(AssignmentPreviewRoute.name);
     } catch (e) {
       // Hide loading overlay on error
       ref.read(loadingOverlayPod.notifier).state = false;
@@ -165,23 +237,219 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
     final answerState = ref.read(answerCollectionProvider(assignment));
 
+    // Get the first question index in the current group
+    final currentQuestionIndex = _questionGroups.isNotEmpty
+        ? _questionGroups[_currentGroupIndex].questionIndices.first
+        : 0;
+
     showModalBottomSheet(
       context: context,
       builder: (context) => SafeArea(
         child: QuestionNavigator(
-          currentIndex: _currentQuestionIndex,
+          currentIndex: currentQuestionIndex,
           totalQuestions: totalQuestions,
           answeredQuestions: answerState.answers.keys.where((qId) {
             final answer = answerState.answers[qId];
             return answer?.isAnswered ?? false;
           }).toList(),
           onQuestionSelected: (index) {
-            setState(() => _currentQuestionIndex = index);
+            // Find which group this question index belongs to
+            for (int i = 0; i < _questionGroups.length; i++) {
+              if (_questionGroups[i].questionIndices.contains(index)) {
+                setState(() => _currentGroupIndex = i);
+                break;
+              }
+            }
             Navigator.pop(context);
           },
         ),
       ),
     );
+  }
+
+  /// Helper to check if groups need to be rebuilt
+  int _getExpectedGroupCount(AssignmentEntity assignment) {
+    // Simple heuristic: if assignment has changed, rebuild
+    return assignment.questions.length;
+  }
+
+  /// Gets the title for the current group
+  String _getGroupTitle(QuestionGroup group) {
+    final t = ref.read(translationsPod);
+    if (group.questions.length == 1) {
+      return t.submissions.doing.questionNumber(
+        number: group.startingDisplayNumber,
+      );
+    } else {
+      final start = group.startingDisplayNumber;
+      final end = start + group.questions.length - 1;
+      return t.submissions.doing.questionRange(start: start, end: end);
+    }
+  }
+
+  /// Builds question groups from assignment questions
+  /// Groups consecutive questions with the same contextId together
+  List<QuestionGroup> _buildQuestionGroups(AssignmentEntity assignment) {
+    final groups = <QuestionGroup>[];
+    final processedIndices = <int>{};
+
+    for (int i = 0; i < assignment.questions.length; i++) {
+      if (processedIndices.contains(i)) continue;
+
+      final question = assignment.questions[i];
+      final contextId = question.contextId;
+
+      if (contextId != null && contextId.isNotEmpty) {
+        // Find all questions with this contextId
+        final questionsInGroup = <AssignmentQuestionEntity>[];
+        final indicesInGroup = <int>[];
+
+        for (int j = i; j < assignment.questions.length; j++) {
+          if (assignment.questions[j].contextId == contextId) {
+            questionsInGroup.add(assignment.questions[j]);
+            indicesInGroup.add(j);
+            processedIndices.add(j);
+          }
+        }
+
+        // Find the context entity
+        ContextEntity? contextEntity;
+        try {
+          contextEntity = assignment.contexts.firstWhere(
+            (c) => c.id == contextId,
+          );
+        } catch (e) {
+          contextEntity = null;
+        }
+
+        groups.add(
+          QuestionGroup(
+            contextId: contextId,
+            context: contextEntity,
+            questions: questionsInGroup,
+            questionIndices: indicesInGroup,
+          ),
+        );
+      } else {
+        // Standalone question
+        groups.add(
+          QuestionGroup(
+            contextId: null,
+            context: null,
+            questions: [question],
+            questionIndices: [i],
+          ),
+        );
+        processedIndices.add(i);
+      }
+    }
+
+    return groups;
+  }
+
+  /// Builds the widget for a question group (context group or standalone)
+  Widget _buildGroupWidget(QuestionGroup group) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final t = ref.read(translationsPod);
+
+    final assignment = ref
+        .read(assignmentPublicProvider(widget.assignmentId))
+        .value;
+
+    if (assignment == null) return const SizedBox.shrink();
+
+    final answerState = ref.watch(answerCollectionProvider(assignment));
+
+    if (group.isContextGroup && group.context != null) {
+      // Context group: show context + all questions
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Context card
+          ContextDisplayCard(
+            context: group.context!,
+            initiallyExpanded: true,
+            isEditMode: false,
+            readingPassageLabel: t.assignments.context.readingPassage,
+          ),
+          const SizedBox(height: 24),
+          Divider(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.3),
+            thickness: 1,
+          ),
+          const SizedBox(height: 16),
+
+          // Questions header
+          Row(
+            children: [
+              Icon(Icons.quiz_outlined, size: 16, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                t.submissions.doing.questionCount(
+                  count: group.questions.length,
+                ),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // All questions in this group
+          ...group.questions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final question = entry.value;
+            final questionNumber = group.startingDisplayNumber + index;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Question number badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      t.submissions.doing.questionNumber(
+                        number: questionNumber,
+                      ),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildQuestionWidget(
+                    question.question.type,
+                    question.question.id,
+                    answerState.answers[question.question.id],
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      );
+    } else {
+      // Standalone question
+      final question = group.questions.first;
+      return _buildQuestionWidget(
+        question.question.type,
+        question.question.id,
+        answerState.answers[question.question.id],
+      );
+    }
   }
 
   @override
@@ -208,7 +476,16 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
             );
           }
 
-          final currentQuestion = assignment.questions[_currentQuestionIndex];
+          // Build question groups
+          if (_questionGroups.isEmpty ||
+              _questionGroups.length != _getExpectedGroupCount(assignment)) {
+            _questionGroups = _buildQuestionGroups(assignment);
+            // Ensure current group index is valid
+            if (_currentGroupIndex >= _questionGroups.length) {
+              _currentGroupIndex = 0;
+            }
+          }
+
           final progress = answerState.progress;
 
           return PopScope(
@@ -243,7 +520,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${t.submissions.doing.title} ${_currentQuestionIndex + 1}/$totalQuestions',
+                      _getGroupTitle(_questionGroups[_currentGroupIndex]),
                       style: theme.textTheme.titleMedium,
                     ),
                     if (assignment.timeLimitMinutes != null)
@@ -272,10 +549,8 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
-                      child: _buildQuestionWidget(
-                        currentQuestion.question.type,
-                        currentQuestion.question.id,
-                        answerState.answers[currentQuestion.question.id],
+                      child: _buildGroupWidget(
+                        _questionGroups[_currentGroupIndex],
                       ),
                     ),
                   ),
@@ -296,27 +571,26 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                     child: Row(
                       children: [
                         // Previous button
-                        if (_currentQuestionIndex > 0)
+                        if (_currentGroupIndex > 0)
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: () {
-                                setState(() => _currentQuestionIndex--);
+                                setState(() => _currentGroupIndex--);
                               },
                               icon: const Icon(LucideIcons.chevronLeft),
                               label: Text(t.classes.previous),
                             ),
                           ),
 
-                        if (_currentQuestionIndex > 0)
-                          const SizedBox(width: 12),
+                        if (_currentGroupIndex > 0) const SizedBox(width: 12),
 
                         // Next/Submit button
                         Expanded(
                           flex: 2,
-                          child: _currentQuestionIndex < totalQuestions - 1
+                          child: _currentGroupIndex < _questionGroups.length - 1
                               ? FilledButton.icon(
                                   onPressed: () {
-                                    setState(() => _currentQuestionIndex++);
+                                    setState(() => _currentGroupIndex++);
                                   },
                                   icon: const Icon(LucideIcons.chevronRight),
                                   label: Text(t.classes.next),

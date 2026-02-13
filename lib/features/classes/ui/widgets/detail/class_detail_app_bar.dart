@@ -33,7 +33,16 @@ class ClassDetailAppBar extends ConsumerWidget {
       foregroundColor: Colors.white,
       systemOverlayStyle: SystemUiOverlayStyle.light,
       leading: isStudent
-          ? null
+          ? Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(LucideIcons.menu, color: Colors.white),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Scaffold.of(context).openDrawer();
+                },
+                tooltip: 'Menu',
+              ),
+            )
           : Semantics(
               label: t.classes.appBar.goBack,
               button: true,

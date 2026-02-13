@@ -33,16 +33,22 @@ class _ClassPageState extends ConsumerState<ClassPage> {
     final classesState = ref.watch(classesControllerProvider);
     final isStudent = ref.watch(userRolePod) == UserRole.student;
 
-    classesState.whenData((classes) {
-      if (isStudent && !_didAutoRedirect && classes.isNotEmpty) {
+    // For students with classes, show loading and auto-redirect to prevent flash
+    if (isStudent && classesState.hasValue && classesState.value!.isNotEmpty) {
+      if (!_didAutoRedirect) {
         _didAutoRedirect = true;
+        // Use replace instead of push to avoid back navigation to class list
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            context.router.push(ClassDetailRoute(classId: classes[0].id));
+            context.router.replace(
+              ClassDetailRoute(classId: classesState.value![0].id),
+            );
           }
         });
       }
-    });
+      // Show loading indicator while redirecting (prevents flash of class list)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       appBar: const _ClassListAppBar(),

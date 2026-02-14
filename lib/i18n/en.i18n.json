@@ -1592,7 +1592,23 @@
       "success": "Student updated successfully"
     },
     "detail": {
-      "appBarTitle": "Student Details"
+      "appBarTitle": "Student Details",
+      "phone": "Phone",
+      "address": "Address",
+      "enrollmentDate": "Enrollment Date",
+      "parentEmail": "Parent Email",
+      "notAvailable": "N/A"
+    },
+    "performance": {
+      "title": "Performance Overview",
+      "overallAverage": "Overall Average",
+      "completionRate": "Completion Rate",
+      "completed": "Completed",
+      "pending": "Pending",
+      "overdue": "Overdue",
+      "performanceTrend": "Performance Trend",
+      "performanceByClass": "Performance by Class",
+      "submissions": "submissions"
     },
     "saveChanges": "Save Changes",
     "createStudent": "Create Student",

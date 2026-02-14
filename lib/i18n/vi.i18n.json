@@ -1593,7 +1593,23 @@
       "success": "Cập nhật học sinh thành công"
     },
     "detail": {
-      "appBarTitle": "Chi tiết học sinh"
+      "appBarTitle": "Chi tiết học sinh",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ",
+      "enrollmentDate": "Ngày nhập học",
+      "parentEmail": "Email phụ huynh",
+      "notAvailable": "N/A"
+    },
+    "performance": {
+      "title": "Tổng quan hiệu suất",
+      "overallAverage": "Trung bình chung",
+      "completionRate": "Tỷ lệ hoàn thành",
+      "completed": "Đã hoàn thành",
+      "pending": "Đang chờ",
+      "overdue": "Quá hạn",
+      "performanceTrend": "Xu hướng hiệu suất",
+      "performanceByClass": "Hiệu suất theo lớp",
+      "submissions": "bài nộp"
     },
     "saveChanges": "Lưu thay đổi",
     "createStudent": "Thêm học sinh",

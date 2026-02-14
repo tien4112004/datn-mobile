@@ -1,16 +1,19 @@
 import 'package:AIPrimary/features/home/data/models/student_performance_model.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 /// A section widget displaying student performance metrics.
-class StudentPerformanceSection extends StatelessWidget {
+class StudentPerformanceSection extends ConsumerWidget {
   final StudentPerformanceModel performance;
 
   const StudentPerformanceSection({super.key, required this.performance});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -24,7 +27,7 @@ class StudentPerformanceSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Performance Overview',
+                t.students.performance.title,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -35,7 +38,7 @@ class StudentPerformanceSection extends StatelessWidget {
                   Expanded(
                     child: _MetricCard(
                       icon: LucideIcons.trendingUp,
-                      label: 'Overall Average',
+                      label: t.students.performance.overallAverage,
                       value:
                           '${performance.overallAverage.toStringAsFixed(1)}%',
                       color: _getScoreColor(performance.overallAverage),
@@ -45,7 +48,7 @@ class StudentPerformanceSection extends StatelessWidget {
                   Expanded(
                     child: _MetricCard(
                       icon: LucideIcons.circleCheck,
-                      label: 'Completion Rate',
+                      label: t.students.performance.completionRate,
                       value:
                           '${performance.completionRate.toStringAsFixed(0)}%',
                       color: colorScheme.primary,
@@ -59,7 +62,7 @@ class StudentPerformanceSection extends StatelessWidget {
                   Expanded(
                     child: _MetricCard(
                       icon: LucideIcons.fileCheck,
-                      label: 'Completed',
+                      label: t.students.performance.completed,
                       value:
                           '${performance.completedAssignments}/${performance.totalAssignments}',
                       color: Colors.green,
@@ -69,7 +72,7 @@ class StudentPerformanceSection extends StatelessWidget {
                   Expanded(
                     child: _MetricCard(
                       icon: LucideIcons.clock,
-                      label: 'Pending',
+                      label: t.students.performance.pending,
                       value: '${performance.pendingAssignments}',
                       color: Colors.orange,
                     ),
@@ -78,7 +81,7 @@ class StudentPerformanceSection extends StatelessWidget {
                   Expanded(
                     child: _MetricCard(
                       icon: LucideIcons.circleAlert,
-                      label: 'Overdue',
+                      label: t.students.performance.overdue,
                       value: '${performance.overdueAssignments}',
                       color: colorScheme.error,
                     ),
@@ -110,7 +113,7 @@ class StudentPerformanceSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Performance Trend',
+                          t.students.performance.performanceTrend,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -122,6 +125,7 @@ class StudentPerformanceSection extends StatelessWidget {
                       height: 200,
                       child: _PerformanceTrendChart(
                         trends: performance.performanceTrends,
+                        submissionsText: t.students.performance.submissions,
                       ),
                     ),
                   ],
@@ -151,7 +155,7 @@ class StudentPerformanceSection extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Performance by Class',
+                          t.students.performance.performanceByClass,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -309,8 +313,12 @@ class _ClassPerformanceRow extends StatelessWidget {
 
 class _PerformanceTrendChart extends StatelessWidget {
   final List<PerformanceTrend> trends;
+  final String submissionsText;
 
-  const _PerformanceTrendChart({required this.trends});
+  const _PerformanceTrendChart({
+    required this.trends,
+    required this.submissionsText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -410,7 +418,7 @@ class _PerformanceTrendChart extends StatelessWidget {
               return touchedSpots.map((spot) {
                 final trend = trends[spot.x.toInt()];
                 return LineTooltipItem(
-                  '${trend.period}\n${trend.averageScore.toStringAsFixed(1)}%\n${trend.submissionCount} submissions',
+                  '${trend.period}\n${trend.averageScore.toStringAsFixed(1)}%\n${trend.submissionCount} $submissionsText',
                   TextStyle(
                     color: colorScheme.onPrimary,
                     fontSize: 12,

@@ -20,6 +20,7 @@ enum SubmissionStatus {
   static SubmissionStatus fromValue(String value) {
     switch (value.toLowerCase()) {
       case 'submitted':
+      case 'pending': // Backend uses "pending" for submitted status
         return SubmissionStatus.submitted;
       case 'graded':
         return SubmissionStatus.graded;

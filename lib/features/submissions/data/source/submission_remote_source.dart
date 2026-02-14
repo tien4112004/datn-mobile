@@ -47,13 +47,6 @@ abstract class SubmissionRemoteSource {
     @Body() ValidateSubmissionRequestDto request,
   );
 
-  /// Get assignment public details (bypasses permission checks for students)
-  /// GET /assignments/{id}/public
-  @GET('/assignments/{id}/public')
-  Future<ServerResponseDto<AssignmentResponse>> getAssignmentPublic(
-    @Path('id') String assignmentId,
-  );
-
   // ============ Teacher Endpoints ============
 
   /// Get all submissions for a specific post (teacher view)

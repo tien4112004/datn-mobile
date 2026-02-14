@@ -440,7 +440,7 @@ class AssignmentPreviewPage extends ConsumerWidget {
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () {
-                  ref.invalidate(assignmentPublicProvider(assignmentId));
+                  ref.invalidate(assignmentByPostIdProvider(postId!));
                 },
                 child: Text(t.classes.retry),
               ),

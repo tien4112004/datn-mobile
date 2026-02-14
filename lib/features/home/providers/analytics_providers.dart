@@ -105,3 +105,10 @@ final studentPerformanceProvider =
       final repository = ref.watch(analyticsRepositoryProvider);
       return repository.getStudentPerformance();
     });
+
+/// Provider for Student Performance by ID (for teachers)
+final studentPerformanceByIdProvider = FutureProvider.autoDispose
+    .family<StudentPerformanceModel, String>((ref, studentId) async {
+      final repository = ref.watch(analyticsRepositoryProvider);
+      return repository.getStudentPerformanceById(studentId);
+    });

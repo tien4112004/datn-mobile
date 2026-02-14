@@ -48,4 +48,7 @@ abstract class AnalyticsRepository {
 
   /// Get student performance
   Future<StudentPerformanceModel> getStudentPerformance();
+
+  /// Get specific student performance by ID (for teachers)
+  Future<StudentPerformanceModel> getStudentPerformanceById(String studentId);
 }

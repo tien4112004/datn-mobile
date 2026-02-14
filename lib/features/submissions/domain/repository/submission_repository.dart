@@ -27,8 +27,8 @@ abstract class SubmissionRepository {
     required List<AnswerEntity> answers,
   });
 
-  /// Get assignment public details (bypasses permission checks for students taking assignment)
-  Future<AssignmentEntity> getAssignmentPublic(String assignmentId);
+  /// Get assignment by post ID
+  Future<AssignmentEntity> getAssignmentByPostId(String postId);
 
   /// Get all submissions for a specific post (teacher view)
   Future<List<SubmissionEntity>> getPostSubmissions(String postId);

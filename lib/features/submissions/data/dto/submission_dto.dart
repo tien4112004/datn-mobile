@@ -54,7 +54,7 @@ class ValidateSubmissionRequestDto {
 @JsonSerializable(explicitToJson: true)
 class SubmissionResponseDto {
   final String id;
-  final String assignmentId;
+  final String? assignmentId;
   final String postId;
   final String studentId;
   final StudentDto student;
@@ -62,21 +62,21 @@ class SubmissionResponseDto {
   final List<AnswerResponseDto> answers;
   final String status;
   final double? score;
-  final double maxScore;
+  final double? maxScore;
   final String? overallFeedback;
   final String submittedAt; // ISO 8601 string
   final String? gradedAt; // ISO 8601 string
 
   const SubmissionResponseDto({
     required this.id,
-    required this.assignmentId,
+    this.assignmentId,
     required this.postId,
     required this.studentId,
     required this.student,
     required this.answers,
     required this.status,
     this.score,
-    required this.maxScore,
+    this.maxScore,
     this.overallFeedback,
     required this.submittedAt,
     this.gradedAt,
@@ -122,14 +122,16 @@ extension SubmissionResponseDtoToEntity on SubmissionResponseDto {
   SubmissionEntity toEntity() {
     return SubmissionEntity(
       id: id,
-      assignmentId: assignmentId,
+      assignmentId:
+          assignmentId ??
+          postId, // Use postId as fallback if assignmentId is missing
       postId: postId,
       studentId: studentId,
       student: student.toEntity(),
       questions: answers.map((a) => a.toEntity()).toList(),
       status: SubmissionStatus.fromValue(status),
       score: score,
-      maxScore: maxScore,
+      maxScore: maxScore ?? 100.0, // Default to 100 if maxScore is missing
       overallFeedback: overallFeedback,
       submittedAt: DateTime.parse(submittedAt),
       gradedAt: gradedAt != null ? DateTime.parse(gradedAt!) : null,

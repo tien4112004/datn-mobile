@@ -1,9 +1,11 @@
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/home/data/models/at_risk_student_model.dart';
 import 'package:AIPrimary/features/home/data/models/class_at_risk_students_model.dart';
 import 'package:AIPrimary/features/home/data/models/grading_queue_model.dart';
 import 'package:AIPrimary/features/home/providers/analytics_providers.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -197,7 +199,7 @@ class _GradingQueueCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // TODO: Navigate to grading page
+            context.router.push(GradingRoute(submissionId: item.submissionId));
           },
           borderRadius: Themes.boxRadius,
           child: Padding(

@@ -42,7 +42,7 @@ class SubmissionDetailPage extends ConsumerWidget {
 
     // Also fetch assignment for question details
     final assignmentAsync = submissionAsync.whenData((submission) {
-      return ref.watch(assignmentPublicProvider(submission.assignmentId));
+      return ref.watch(assignmentByPostIdProvider(submission.postId));
     });
 
     return Scaffold(

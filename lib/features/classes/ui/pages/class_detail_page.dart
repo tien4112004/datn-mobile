@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/setting/widget/bottom_sheet/language_bottom_sheet.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -242,6 +243,56 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                     onTap: () {
                       Navigator.pop(context); // Close drawer
                       showLanguageBottomSheet(context, ref);
+                    },
+                  ),
+
+                  const Divider(),
+
+                  // Logout
+                  ListTile(
+                    leading: Icon(LucideIcons.logOut, color: colorScheme.error),
+                    title: Text(
+                      t.settings.logOut,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.error,
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.pop(context); // Close drawer
+
+                      // Show confirmation dialog
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(t.settings.logOut),
+                          content: const Text(
+                            'Are you sure you want to log out?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text(t.classes.cancel),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: colorScheme.error,
+                              ),
+                              child: Text(t.settings.logOut),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirmed == true && context.mounted) {
+                        // Perform logout
+                        await ref.read(authControllerPod.notifier).signOut();
+
+                        if (context.mounted) {
+                          // Navigate to sign-in page
+                          context.router.replaceAll([const SignInRoute()]);
+                        }
+                      }
                     },
                   ),
                 ],

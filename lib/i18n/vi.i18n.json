@@ -1634,6 +1634,79 @@
     }
   },
   "home": {
+    "dashboard": {
+      "title": "Bảng điều khiển",
+      "subtitle": "Tổng quan hoạt động giảng dạy của bạn",
+      "metrics": {
+        "totalClasses": "Tổng số lớp",
+        "pendingGrading": "Chờ chấm điểm",
+        "avgScore": "Điểm TB",
+        "engagement24h": "Tương tác 24h",
+        "comparisonPrefix": "+$count so với tháng trước",
+        "urgent": "Khẩn cấp"
+      },
+      "resourceBanner": {
+        "title": "Tạo tài liệu giảng dạy với AI",
+        "subtitle": "Tạo bài kiểm tra, bài tập và kế hoạch bài học ngay lập tức bằng AI",
+        "buttonText": "Tạo tài liệu"
+      },
+      "calendar": {
+        "title": "Lịch",
+        "eventsOn": "Sự kiện vào $date",
+        "noEvents": "Không có sự kiện",
+        "noEventsDescription": "Không có thời hạn hoặc sự kiện nào cho ngày này"
+      },
+      "recentDocuments": {
+        "title": "Tài liệu gần đây",
+        "viewAll": "Xem tất cả",
+        "timeAgo": {
+          "justNow": "Vừa xong",
+          "minutesAgo": "$count phút trước",
+          "hoursAgo": "$count giờ trước",
+          "daysAgo": "$count ngày trước",
+          "weeksAgo": "$count tuần trước"
+        },
+        "empty": {
+          "title": "Không có tài liệu gần đây",
+          "description": "Bắt đầu tạo tài liệu để xem chúng ở đây"
+        }
+      },
+      "modals": {
+        "pendingGrading": {
+          "title": "Chờ chấm điểm",
+          "daysAgo": "$count ngày trước",
+          "dayAgo": "$count ngày trước",
+          "autoGraded": "Tự động chấm: $score/$max",
+          "empty": {
+            "title": "Đã xong hết!",
+            "description": "Không có bài nộp nào đang chờ chấm điểm"
+          },
+          "error": "Không thể tải danh sách chấm điểm"
+        },
+        "classesOverview": {
+          "title": "Tổng quan lớp học",
+          "students": "Học sinh",
+          "studentsCount": "$count học sinh",
+          "atRisk": "Có nguy cơ",
+          "atRiskStudents": "Học sinh có nguy cơ",
+          "avgScore": "Điểm TB",
+          "completedAssignments": "Hoàn thành $count bài tập",
+          "averageScoreLabel": "Điểm trung bình: $score",
+          "empty": {
+            "title": "Chưa có lớp học",
+            "description": "Tạo lớp học đầu tiên để bắt đầu"
+          },
+          "error": "Không thể tải danh sách lớp học"
+        }
+      },
+      "loading": "Đang tải...",
+      "error": {
+        "loadingSummary": "Lỗi khi tải tóm tắt",
+        "loadingCalendar": "Không thể tải lịch",
+        "loadingDocuments": "Không thể tải tài liệu",
+        "retry": "Thử lại"
+      }
+    },
     "todayWorks": {
       "lorems": "Lorems"
     }

@@ -25,6 +25,8 @@ class StudentsTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final studentsState = ref.watch(studentsControllerProvider(classId));
     final t = ref.watch(translationsPod);
+    final userRole = ref.watch(userRolePod);
+    final isStudent = userRole == UserRole.student;
 
     return Scaffold(
       body: studentsState.easyWhen(
@@ -40,7 +42,7 @@ class StudentsTab extends ConsumerWidget {
         onRetry: () =>
             ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
-      floatingActionButton: (ref.watch(userRolePod) == UserRole.student)
+      floatingActionButton: (isStudent)
           ? null
           : Semantics(
               label: t.classes.students.addStudent,
@@ -84,6 +86,21 @@ class _StudentsContent extends ConsumerWidget {
       );
     }
 
+    final isStudent = ref.watch(userRolePod) == UserRole.student;
+    final currentUserId = ref.watch(userIdPod);
+
+    // Sort students to show current student first if viewing as a student
+    final sortedStudents = List.from(students);
+    if (isStudent) {
+      sortedStudents.sort((a, b) {
+        // Current student comes first
+        if (a.userId == currentUserId) return -1;
+        if (b.userId == currentUserId) return 1;
+        // Maintain original order for others
+        return 0;
+      });
+    }
+
     return Column(
       children: [
         // Enhanced count header
@@ -99,9 +116,9 @@ class _StudentsContent extends ConsumerWidget {
             label: t.classes.students.studentCount(count: students.length),
             child: ListView.builder(
               padding: const EdgeInsets.only(top: 8, bottom: 80),
-              itemCount: students.length,
+              itemCount: sortedStudents.length,
               itemBuilder: (context, index) {
-                final student = students[index];
+                final student = sortedStudents[index];
                 return AnimatedListItem(
                   index: index,
                   child: StudentTile(
@@ -112,15 +129,21 @@ class _StudentsContent extends ConsumerWidget {
                         StudentDetailRoute(studentId: student.id),
                       );
                     },
-                    onEdit: () {
-                      context.router.push(
-                        StudentEditRoute(
-                          classId: classId,
-                          studentId: student.id,
-                        ),
-                      );
-                    },
-                    onDelete: () => _showDeleteDialog(context, ref, student),
+                    isCurrentStudent:
+                        isStudent && student.userId == ref.watch(userIdPod),
+                    onEdit: isStudent
+                        ? null
+                        : () {
+                            context.router.push(
+                              StudentEditRoute(
+                                classId: classId,
+                                studentId: student.id,
+                              ),
+                            );
+                          },
+                    onDelete: isStudent
+                        ? null
+                        : () => _showDeleteDialog(context, ref, student),
                   ),
                 );
               },

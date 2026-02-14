@@ -1,6 +1,8 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/home/data/models/calendar_event_model.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
@@ -25,6 +27,13 @@ class DashboardCalendarWidget extends StatefulWidget {
 class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
   DateTime? _selectedDate;
   List<CalendarEventModel> _selectedDateEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+    _onDateTapped(_selectedDate!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +100,9 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
                     textAlign: TextAlign.center,
                     backgroundColor: Colors.transparent,
                   ),
-                  todayHighlightColor: colorScheme.primary,
+                  todayHighlightColor: colorScheme.primary.withValues(
+                    alpha: 0.8,
+                  ),
                   selectionDecoration: BoxDecoration(
                     border: Border.all(color: colorScheme.primary, width: 2),
                     shape: BoxShape.circle,
@@ -120,24 +131,30 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
                 const Divider(height: 1),
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        DateFormat('EEEE, MMMM d, y').format(_selectedDate!),
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.primary,
+                  child: Consumer(
+                    builder: (context, ref, child) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          DateFormatHelper.formatMediumDate(
+                            _selectedDate!,
+                            ref: ref,
+                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.primary,
+                              ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      ..._selectedDateEvents.map(
-                        (event) => _CompactEventTile(
-                          event: event,
-                          onTap: () => widget.onEventTap?.call(event),
+                        const SizedBox(height: 12),
+                        ..._selectedDateEvents.map(
+                          (event) => _CompactEventTile(
+                            event: event,
+                            onTap: () => widget.onEventTap?.call(event),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],

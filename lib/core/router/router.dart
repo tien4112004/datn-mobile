@@ -79,6 +79,9 @@ class AppRouter extends RootStackRouter {
     // Notification Routes
     AutoRoute(page: NotificationListRoute.page, path: '/notifications'),
 
+    // Payment Routes
+    AutoRoute(page: PaymentMethodsRoute.page, path: '/payment-methods'),
+
     // Exam Routes
     AutoRoute(page: AssignmentsRoute.page, path: '/assignments'),
     AutoRoute(

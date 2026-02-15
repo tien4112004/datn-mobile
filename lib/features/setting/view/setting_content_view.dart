@@ -55,43 +55,6 @@ class SettingContentView extends ConsumerWidget {
           children: [
             const SettingProfilePicture(),
             const SizedBox(height: 20),
-            // SettingSection(
-            //   title: 'Showcase Area',
-            //   options: [
-            //     SettingOption(
-            //       title: 'Question Widgets Showcase',
-            //       onPressed: () {
-            //         context.router.push(const QuestionShowcaseRoute());
-            //       },
-            //       icon: LucideIcons.layoutDashboard,
-            //     ),
-            //     SettingOption(
-            //       title: userStateNotifier.isStudent()
-            //           ? 'Switch to Teacher View'
-            //           : 'Switch to Student View',
-            //       onPressed: () {
-            //         final currentRole = ref
-            //             .read(userControllerProvider)
-            //             .value
-            //             ?.role;
-            //         debugPrint("Current user role: $currentRole");
-
-            //         // Toggle between student and teacher
-            //         if (userStateNotifier.isStudent()) {
-            //           debugPrint("Switching to Student View Mode");
-            //           ref
-            //               .read(userControllerProvider.notifier)
-            //               .setUserRole(UserRole.teacher);
-            //         } else {
-            //           ref
-            //               .read(userControllerProvider.notifier)
-            //               .setUserRole(UserRole.student);
-            //         }
-            //       },
-            //       icon: LucideIcons.userCog,
-            //     ),
-            //   ],
-            // ),
             SettingSection(
               title: t.accountSetting,
               options: [

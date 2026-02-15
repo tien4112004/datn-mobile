@@ -1,15 +1,18 @@
 import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A section widget displaying student information in read-only mode.
-class StudentInfoSection extends StatelessWidget {
+class StudentInfoSection extends ConsumerWidget {
   final Student student;
 
   const StudentInfoSection({super.key, required this.student});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -58,37 +61,36 @@ class StudentInfoSection extends StatelessWidget {
               ],
             ),
             const Divider(height: 32),
-
-            // Information rows
-            // _InfoRow(
-            //   icon: LucideIcons.user,
-            //   label: 'Username',
-            //   value: student.username,
-            // ),
-            if (student.phoneNumber != null && student.phoneNumber!.isNotEmpty)
-              _InfoRow(
-                icon: LucideIcons.phone,
-                label: 'Phone',
-                value: student.phoneNumber!,
-              ),
-            if (student.address != null && student.address!.isNotEmpty)
-              _InfoRow(
-                icon: LucideIcons.mapPin,
-                label: 'Address',
-                value: student.address!,
-              ),
+            _InfoRow(
+              icon: LucideIcons.phone,
+              label: t.students.detail.phone,
+              value:
+                  (student.phoneNumber != null &&
+                      student.phoneNumber!.isNotEmpty)
+                  ? student.phoneNumber!
+                  : t.students.detail.notAvailable,
+            ),
+            _InfoRow(
+              icon: LucideIcons.mapPin,
+              label: t.students.detail.address,
+              value: (student.address != null && student.address!.isNotEmpty)
+                  ? student.address!
+                  : t.students.detail.notAvailable,
+            ),
             _InfoRow(
               icon: LucideIcons.calendar,
-              label: 'Enrollment Date',
+              label: t.students.detail.enrollmentDate,
               value: _formatDate(student.createdAt),
             ),
-            if (student.parentContactEmail != null &&
-                student.parentContactEmail!.isNotEmpty)
-              _InfoRow(
-                icon: LucideIcons.users,
-                label: 'Parent Email',
-                value: student.parentContactEmail!,
-              ),
+            _InfoRow(
+              icon: LucideIcons.users,
+              label: t.students.detail.parentEmail,
+              value:
+                  (student.parentContactEmail != null &&
+                      student.parentContactEmail!.isNotEmpty)
+                  ? student.parentContactEmail!
+                  : t.students.detail.notAvailable,
+            ),
           ],
         ),
       ),

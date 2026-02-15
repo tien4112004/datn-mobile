@@ -13,6 +13,7 @@ class StudentTile extends ConsumerWidget {
   final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final bool isCurrentStudent;
 
   const StudentTile({
     super.key,
@@ -20,6 +21,7 @@ class StudentTile extends ConsumerWidget {
     this.onTap,
     this.onEdit,
     this.onDelete,
+    this.isCurrentStudent = false,
   });
 
   @override
@@ -41,208 +43,238 @@ class StudentTile extends ConsumerWidget {
       child: Card(
         elevation: 0,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        color: colorScheme.surfaceContainerLowest,
+        color: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: colorScheme.outlineVariant, width: 1),
+          side: BorderSide(
+            color: isCurrentStudent
+                ? colorScheme.primary
+                : colorScheme.outlineVariant,
+            width: 1,
+          ),
         ),
-        child: InkWell(
-          onTap: onTap != null
-              ? () {
-                  HapticFeedback.lightImpact();
-                  onTap?.call();
-                }
-              : null,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                // Enhanced avatar with gradient ring
-                Hero(
-                  tag: 'student_avatar_${student.id}',
-                  child: Semantics(
-                    label: t.students.tile.avatarSemanticLabel(
-                      fullName: student.fullName,
-                    ),
-                    image: true,
-                    excludeSemantics: true,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [colorScheme.primary, colorScheme.secondary],
-                        ),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(2.5),
-                      child: CircleAvatar(
-                        radius: 28,
-                        backgroundColor: colorScheme.surfaceContainerHighest,
-                        backgroundImage:
-                            student.avatarUrl != null &&
-                                student.avatarUrl!.isNotEmpty
-                            ? NetworkImage(student.avatarUrl!)
-                            : null,
-                        child:
-                            student.avatarUrl == null ||
-                                student.avatarUrl!.isEmpty
-                            ? Text(
-                                _getInitials(student.fullName),
-                                style: TextStyle(
-                                  color: colorScheme.onSurfaceVariant,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                // Student info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        student.fullName,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.15,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: [
-                          Icon(
-                            LucideIcons.mail,
-                            size: 14,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              student.parentContactEmail ??
-                                  t.students.tile.noEmail,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isCurrentStudent
+                  ? [
+                      colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      colorScheme.secondaryContainer.withValues(alpha: 0.2),
+                    ]
+                  : [
+                      colorScheme.surfaceContainerLowest,
+                      colorScheme.surfaceContainerLowest,
                     ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Enhanced actions menu
-                ref.watch(userRolePod) == UserRole.student
-                    ? const SizedBox.shrink()
-                    : Semantics(
-                        label: t.students.tile.actionsSemanticLabel(
-                          fullName: student.fullName,
-                        ),
-                        button: true,
-                        hint: t.students.tile.actionsHint,
-                        child: PopupMenuButton<String>(
-                          icon: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest,
-                              shape: BoxShape.circle,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: InkWell(
+            onTap: onTap != null
+                ? () {
+                    HapticFeedback.lightImpact();
+                    onTap?.call();
+                  }
+                : null,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                children: [
+                  // Enhanced avatar with gradient ring
+                  Hero(
+                    tag: 'student_avatar_${student.id}',
+                    child: Semantics(
+                      label: t.students.tile.avatarSemanticLabel(
+                        fullName: student.fullName,
+                      ),
+                      image: true,
+                      excludeSemantics: true,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              colorScheme.primary,
+                              colorScheme.secondary,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: colorScheme.primary.withValues(alpha: 0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
-                            child: Icon(
-                              LucideIcons.ellipsisVertical,
-                              size: 18,
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(2.5),
+                        child: CircleAvatar(
+                          radius: 28,
+                          backgroundColor: colorScheme.surfaceContainerHighest,
+                          backgroundImage:
+                              student.avatarUrl != null &&
+                                  student.avatarUrl!.isNotEmpty
+                              ? NetworkImage(student.avatarUrl!)
+                              : null,
+                          child:
+                              student.avatarUrl == null ||
+                                  student.avatarUrl!.isEmpty
+                              ? Text(
+                                  _getInitials(student.fullName),
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  // Student info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          student.fullName,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.15,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Icon(
+                              LucideIcons.mail,
+                              size: 14,
                               color: colorScheme.onSurfaceVariant,
                             ),
-                          ),
-                          tooltip: t.students.tile.moreActions,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 3,
-                          onSelected: (value) {
-                            HapticFeedback.mediumImpact();
-                            if (value == 'edit') {
-                              onEdit?.call();
-                            } else if (value == 'delete') {
-                              onDelete?.call();
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Semantics(
-                                label: t.students.tile.editSemanticLabel,
-                                button: true,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: colorScheme.primaryContainer,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Icon(
-                                        LucideIcons.pencil,
-                                        size: 16,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Text(t.common.edit),
-                                  ],
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                student.parentContactEmail ??
+                                    t.students.tile.noEmail,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
-                              ),
-                            ),
-                            const PopupMenuDivider(),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Semantics(
-                                label: t.students.tile.deleteSemanticLabel,
-                                button: true,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: colorScheme.errorContainer,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Icon(
-                                        LucideIcons.trash2,
-                                        size: 16,
-                                        color: colorScheme.error,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      t.common.delete,
-                                      style: TextStyle(
-                                        color: colorScheme.error,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
-                      ),
-              ],
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Enhanced actions menu
+                  ref.watch(userRolePod) == UserRole.student
+                      ? const SizedBox.shrink()
+                      : Semantics(
+                          label: t.students.tile.actionsSemanticLabel(
+                            fullName: student.fullName,
+                          ),
+                          button: true,
+                          hint: t.students.tile.actionsHint,
+                          child: PopupMenuButton<String>(
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: colorScheme.surfaceContainerHighest,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                LucideIcons.ellipsisVertical,
+                                size: 18,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            tooltip: t.students.tile.moreActions,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 3,
+                            onSelected: (value) {
+                              HapticFeedback.mediumImpact();
+                              if (value == 'edit') {
+                                onEdit?.call();
+                              } else if (value == 'delete') {
+                                onDelete?.call();
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: Semantics(
+                                  label: t.students.tile.editSemanticLabel,
+                                  button: true,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.primaryContainer,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          LucideIcons.pencil,
+                                          size: 16,
+                                          color: colorScheme.primary,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(t.common.edit),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const PopupMenuDivider(),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Semantics(
+                                  label: t.students.tile.deleteSemanticLabel,
+                                  button: true,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.errorContainer,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          LucideIcons.trash2,
+                                          size: 16,
+                                          color: colorScheme.error,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        t.common.delete,
+                                        style: TextStyle(
+                                          color: colorScheme.error,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
             ),
           ),
         ),

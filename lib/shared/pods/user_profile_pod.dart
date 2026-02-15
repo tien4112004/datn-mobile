@@ -19,6 +19,10 @@ final userRolePod = Provider<UserRole?>((ref) {
   return ref.watch(userControllerPod).value?.role;
 });
 
+final userIdPod = Provider<String?>(
+  (ref) => ref.watch(userControllerPod).value?.id,
+);
+
 @freezed
 abstract class UserState with _$UserState {
   const factory UserState({

@@ -91,10 +91,6 @@ class _GradingPageState extends ConsumerState<GradingPage> {
       submissionDetailProvider(widget.submissionId),
     );
 
-    final assignmentAsync = submissionAsync.whenData((submission) {
-      return ref.watch(assignmentPublicProvider(submission.assignmentId));
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: Text(t.submissions.grading.title),
@@ -125,120 +121,137 @@ class _GradingPageState extends ConsumerState<GradingPage> {
             }
           }
 
-          return assignmentAsync.value != null
-              ? SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Student info
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer.withValues(
-                            alpha: 0.3,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              t.submissions.grading.studentInfo,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              submission.student.firstName,
-                              style: theme.textTheme.bodyLarge,
-                            ),
-                            Text(
-                              submission.student.email,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${t.submissions.detail.submittedAt}: ${DateFormatHelper.formatRelativeDate(submission.submittedAt, ref: ref)}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
+          // Watch assignment data separately to avoid nested AsyncValue
+          final assignmentAsync = ref.watch(
+            assignmentByPostIdProvider(submission.postId),
+          );
+
+          return assignmentAsync.when(
+            data: (assignment) => SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Student info
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
                       ),
-
-                      const SizedBox(height: 24),
-
-                      // Questions for grading
-                      ...submission.questions.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final answer = entry.value;
-
-                        final assignmentQuestion = assignmentAsync
-                            .value!
-                            .value!
-                            .questions
-                            .firstWhere(
-                              (q) => q.question.id == answer.questionId,
-                            );
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: _buildGradingQuestionCard(
-                            context,
-                            ref,
-                            index + 1,
-                            assignmentQuestion.question,
-                            assignmentQuestion.points,
-                            answer,
-                            t,
-                          ),
-                        );
-                      }),
-
-                      const SizedBox(height: 24),
-
-                      // Overall feedback
-                      Text(
-                        t.submissions.grading.overallFeedback,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _overallFeedbackController,
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          hintText: t.submissions.grading.overallFeedbackHint,
-                          border: const OutlineInputBorder(),
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest,
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Save button
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton.icon(
-                          onPressed: _handleSave,
-                          icon: const Icon(LucideIcons.save),
-                          label: Text(t.submissions.grading.saveButton),
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.submissions.grading.studentInfo,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8),
+                        Text(
+                          submission.student.firstName,
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                        Text(
+                          submission.student.email,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${t.submissions.detail.submittedAt}: ${DateFormatHelper.formatRelativeDate(submission.submittedAt, ref: ref)}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
-              : const Center(child: CircularProgressIndicator());
+
+                  const SizedBox(height: 24),
+
+                  // Questions for grading
+                  ...submission.questions.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final answer = entry.value;
+
+                    final assignmentQuestion = assignment.questions.firstWhere(
+                      (q) => q.question.id == answer.questionId,
+                    );
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _buildGradingQuestionCard(
+                        context,
+                        ref,
+                        index + 1,
+                        assignmentQuestion.question,
+                        assignmentQuestion.points,
+                        answer,
+                        t,
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(height: 24),
+
+                  // Overall feedback
+                  Text(
+                    t.submissions.grading.overallFeedback,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _overallFeedbackController,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      hintText: t.submissions.grading.overallFeedbackHint,
+                      border: const OutlineInputBorder(),
+                      filled: true,
+                      fillColor: colorScheme.surfaceContainerHighest,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Save button
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _handleSave,
+                      icon: const Icon(LucideIcons.save),
+                      label: Text(t.submissions.grading.saveButton),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(t.submissions.errors.loadFailed),
+                  const SizedBox(height: 8),
+                  Text(
+                    error.toString(),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         },
         loadingWidget: () => const Center(child: CircularProgressIndicator()),
         errorWidget: (error, stack) =>

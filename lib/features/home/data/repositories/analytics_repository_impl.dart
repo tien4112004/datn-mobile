@@ -105,4 +105,15 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     }
     return response.data!;
   }
+
+  @override
+  Future<StudentPerformanceModel> getStudentPerformanceById(
+    String studentId,
+  ) async {
+    final response = await _remoteSource.getStudentPerformanceById(studentId);
+    if (response.data == null) {
+      throw Exception('Failed to load student performance');
+    }
+    return response.data!;
+  }
 }

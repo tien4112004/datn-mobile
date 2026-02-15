@@ -84,12 +84,17 @@ final submissionStatisticsProvider =
       String
     >((postId) => SubmissionStatisticsController(postId: postId));
 
-/// Provider for getting assignment public details
-final assignmentPublicProvider =
-    FutureProvider.family<AssignmentEntity, String>((ref, assignmentId) async {
+/// Provider for getting assignment by post ID
+final assignmentByPostIdProvider =
+    FutureProvider.family<AssignmentEntity, String>((ref, postId) async {
       final repository = ref.watch(submissionRepositoryProvider);
-      return repository.getAssignmentPublic(assignmentId);
+      return repository.getAssignmentByPostId(postId);
     });
+
+/// Legacy provider name - kept for backward compatibility
+/// Use assignmentByPostIdProvider instead
+@Deprecated('Use assignmentByPostIdProvider with postId instead')
+final assignmentPublicProvider = assignmentByPostIdProvider;
 
 // ============ Parameter Classes ============
 

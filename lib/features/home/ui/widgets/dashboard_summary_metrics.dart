@@ -193,6 +193,7 @@ class _MetricCardShimmer extends StatelessWidget {
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
       child: Container(
+        height: 140,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: Themes.boxRadius,

@@ -80,9 +80,9 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
   }
 
   @override
-  Future<AssignmentEntity> getAssignmentPublic(String assignmentId) async {
+  Future<AssignmentEntity> getAssignmentByPostId(String postId) async {
     try {
-      final response = await _remoteSource.getAssignmentPublic(assignmentId);
+      final response = await _remoteSource.getAssignmentPostById(postId);
 
       if (response.data == null) {
         throw Exception('Assignment not found');

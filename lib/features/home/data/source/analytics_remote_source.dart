@@ -86,4 +86,11 @@ abstract class AnalyticsRemoteSource {
   /// GET /analytics/student/performance
   @GET('/analytics/student/performance')
   Future<ServerResponseDto<StudentPerformanceModel>> getStudentPerformance();
+
+  /// Get Specific Student Performance (for teachers)
+  /// GET /analytics/teacher/students/{studentId}/performance
+  @GET('/analytics/teacher/students/{studentId}/performance')
+  Future<ServerResponseDto<StudentPerformanceModel>> getStudentPerformanceById(
+    @Path('studentId') String studentId,
+  );
 }

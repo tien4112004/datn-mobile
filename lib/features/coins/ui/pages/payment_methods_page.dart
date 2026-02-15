@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,17 +24,17 @@ class PaymentMethodsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Payment Methods'),
         actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.plus),
+          ElevatedButton.icon(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Purchase feature coming soon'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              context.router.push(const CoinPurchaseRoute());
             },
+            icon: const Icon(LucideIcons.plus, size: 18),
+            label: const Text('Buy Coins'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
           ),
+          const SizedBox(width: 16),
         ],
       ),
       body: RefreshIndicator(

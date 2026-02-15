@@ -1,11 +1,11 @@
 name: AIPrimary
-description: ""
+description: ''
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
-  flutter: ">=3.8.0"
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.8.0'
 
 dependencies:
   auto_route: ^10.1.2
@@ -73,6 +73,7 @@ dependencies:
   flutter_local_notifications: ^19.5.0
   syncfusion_flutter_calendar: ^32.1.23
   fl_chart: ^0.69.2
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_test:

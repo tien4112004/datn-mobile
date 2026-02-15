@@ -81,6 +81,9 @@ class AppRouter extends RootStackRouter {
 
     // Payment Routes
     AutoRoute(page: PaymentMethodsRoute.page, path: '/payment-methods'),
+    AutoRoute(page: CoinPurchaseRoute.page, path: '/purchase-coins'),
+    AutoRoute(page: PaymentWebViewRoute.page, path: '/payment-webview'),
+    AutoRoute(page: TransactionHistoryRoute.page, path: '/transaction-history'),
 
     // Exam Routes
     AutoRoute(page: AssignmentsRoute.page, path: '/assignments'),

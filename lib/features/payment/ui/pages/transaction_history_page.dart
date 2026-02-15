@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
 
 @RoutePage()
 class TransactionHistoryPage extends ConsumerStatefulWidget {
@@ -58,7 +59,14 @@ class _TransactionHistoryPageState
               itemCount: transactions.length,
               itemBuilder: (context, index) {
                 final transaction = transactions[index];
-                return _TransactionListItem(transaction: transaction);
+                return _TransactionListItem(
+                  transaction: transaction,
+                  onTap: () {
+                    context.router.push(
+                      TransactionDetailRoute(transaction: transaction),
+                    );
+                  },
+                );
               },
             ),
           );
@@ -88,8 +96,9 @@ class _TransactionHistoryPageState
 
 class _TransactionListItem extends StatelessWidget {
   final TransactionDetailsModel transaction;
+  final VoidCallback onTap;
 
-  const _TransactionListItem({required this.transaction});
+  const _TransactionListItem({required this.transaction, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -123,82 +132,86 @@ class _TransactionListItem extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(statusIcon, color: statusColor, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      transaction.status,
-                      style: TextStyle(
-                        color: statusColor,
-                        fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(statusIcon, color: statusColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        transaction.status,
+                        style: TextStyle(
+                          color: statusColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                    ],
+                  ),
+                  Text(
+                    dateFormat.format(transaction.createdAt),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    currencyFormat.format(transaction.amount),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (transaction.coinsAwarded != null)
+                    Row(
+                      children: [
+                        Icon(
+                          LucideIcons.coins,
+                          size: 16,
+                          color: Colors.amber.shade700,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '+${NumberFormat('#,###').format(transaction.coinsAwarded)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber.shade900,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              if (transaction.gateway != null) ...[
+                const SizedBox(height: 8),
                 Text(
-                  dateFormat.format(transaction.createdAt),
+                  'Payment method: ${transaction.gateway}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              if (transaction.errorMessage != null) ...[
+                const SizedBox(height: 8),
                 Text(
-                  currencyFormat.format(transaction.amount),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  'Error: ${transaction.errorMessage}',
+                  style: const TextStyle(color: Colors.red, fontSize: 12),
                 ),
-                if (transaction.coinsAwarded != null)
-                  Row(
-                    children: [
-                      Icon(
-                        LucideIcons.coins,
-                        size: 16,
-                        color: Colors.amber.shade700,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '+${NumberFormat('#,###').format(transaction.coinsAwarded)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.amber.shade900,
-                        ),
-                      ),
-                    ],
-                  ),
               ],
-            ),
-            if (transaction.gateway != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Payment method: ${transaction.gateway}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
-              ),
             ],
-            if (transaction.errorMessage != null) ...[
-              const SizedBox(height: 8),
-              Text(
-                'Error: ${transaction.errorMessage}',
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

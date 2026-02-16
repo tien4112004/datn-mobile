@@ -1797,9 +1797,18 @@
     "transactionHistory": {
       "title": "Lịch sử giao dịch",
       "noTransactions": "Chưa có giao dịch nào",
+      "noMatchingTransactions": "Không có giao dịch phù hợp",
+      "tryDifferentFilters": "Thử điều chỉnh bộ lọc của bạn",
       "error": "Lỗi: $error",
       "retry": "Thử lại",
-      "paymentMethod": "Phương thức thanh toán: $gateway"
+      "paymentMethod": "Phương thức thanh toán: $gateway",
+      "errorPrefix": "Lỗi",
+      "filters": {
+        "status": "Trạng thái",
+        "allStatus": "Tất cả trạng thái",
+        "gateway": "Phương thức thanh toán",
+        "allGateways": "Tất cả phương thức"
+      }
     },
     "transactionDetail": {
       "title": "Chi tiết giao dịch",

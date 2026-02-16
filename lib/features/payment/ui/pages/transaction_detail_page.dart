@@ -1,19 +1,23 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
-class TransactionDetailPage extends StatelessWidget {
+class TransactionDetailPage extends ConsumerWidget {
   final TransactionDetailsModel transaction;
 
   const TransactionDetailPage({super.key, required this.transaction});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(t.payment.transactionDetail.title),
@@ -40,49 +44,50 @@ class TransactionDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStatusCard(context),
+            _buildStatusCard(context, t),
             const SizedBox(height: 24),
-            _buildAmountCard(context),
+            _buildAmountCard(context, t),
             const SizedBox(height: 24),
-            _buildDetailsSection(context),
+            _buildDetailsSection(context, t),
             const SizedBox(height: 24),
-            _buildTimestampsSection(context),
+            _buildTimestampsSection(context, t),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatusCard(BuildContext context) {
+  Widget _buildStatusCard(BuildContext context, Translations t) {
     Color statusColor;
     IconData statusIcon;
     String statusMessage;
 
     switch (transaction.status) {
       case 'SUCCESS':
+      case 'COMPLETED':
         statusColor = Colors.green;
         statusIcon = LucideIcons.circleCheck;
-        statusMessage = 'Payment completed successfully';
+        statusMessage = t.payment.status.messages.success;
         break;
       case 'PENDING':
         statusColor = Colors.orange;
         statusIcon = LucideIcons.clock;
-        statusMessage = 'Payment is being processed';
+        statusMessage = t.payment.status.messages.pending;
         break;
       case 'FAILED':
         statusColor = Colors.red;
         statusIcon = LucideIcons.circleX;
-        statusMessage = 'Payment failed';
+        statusMessage = t.payment.status.messages.failed;
         break;
       case 'CANCELLED':
         statusColor = Colors.grey;
         statusIcon = LucideIcons.ban;
-        statusMessage = 'Payment was cancelled';
+        statusMessage = t.payment.status.messages.cancelled;
         break;
       default:
         statusColor = Colors.grey;
         statusIcon = LucideIcons.circleQuestionMark;
-        statusMessage = 'Unknown status';
+        statusMessage = t.payment.status.messages.unknown;
     }
 
     return Container(
@@ -119,7 +124,7 @@ class TransactionDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountCard(BuildContext context) {
+  Widget _buildAmountCard(BuildContext context, Translations t) {
     final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
     return Card(
@@ -184,7 +189,7 @@ class TransactionDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailsSection(BuildContext context) {
+  Widget _buildDetailsSection(BuildContext context, Translations t) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -247,7 +252,7 @@ class TransactionDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimestampsSection(BuildContext context) {
+  Widget _buildTimestampsSection(BuildContext context, Translations t) {
     final dateFormat = DateFormat('dd/MM/yyyy HH:mm:ss');
 
     return Card(

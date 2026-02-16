@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/features/payment/data/models/payment_callback_result_model.dart';
+import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
+import 'package:AIPrimary/features/payment/domain/exceptions/payment_exceptions.dart';
 import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 
 @RoutePage()
@@ -203,61 +205,298 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
   }
 
   void _handleSuccess(Uri uri) async {
-    // Wait a moment for backend webhook to process
-    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
 
-    // Verify transaction status
+    // Show loading indicator
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text('Verifying payment status...'),
+          ],
+        ),
+        duration: Duration(minutes: 2),
+      ),
+    );
+
     try {
-      final transaction = await ref.read(
-        transactionDetailsProvider(widget.transactionId).future,
+      final pollingService = ref.read(paymentStatusPollingServiceProvider);
+
+      // Poll with exponential backoff
+      final transaction = await pollingService.pollTransactionStatus(
+        transactionId: widget.transactionId,
+        onRetry: (attempt, nextDelay) {
+          debugPrint(
+            'Payment verification attempt $attempt, waiting ${nextDelay.inSeconds}s...',
+          );
+        },
       );
 
       if (!mounted) return;
 
-      final result = PaymentCallbackResultModel(
-        status: transaction.status == 'SUCCESS'
-            ? PaymentCallbackStatus.success
-            : PaymentCallbackStatus.pending,
-        transactionId: widget.transactionId,
-        message: transaction.status == 'SUCCESS'
-            ? 'Payment completed successfully!'
-            : 'Payment is being processed. Please check back later.',
-      );
+      // Clear loading indicator
+      scaffoldMessenger.hideCurrentSnackBar();
 
+      // Build result based on verified status
+      final result = _buildCallbackResult(transaction);
       context.router.pop(result);
+    } on PaymentTimeoutException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      // Show timeout message with helpful information
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.pending,
+          transactionId: widget.transactionId,
+          message:
+              'Payment verification is taking longer than expected. '
+              'Please check your transaction history in a few minutes.',
+        ),
+      );
+    } on PaymentVerificationException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      // Show verification failure with retry suggestion
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.pending,
+          transactionId: widget.transactionId,
+          message:
+              'Unable to verify payment status. '
+              'Your payment may still be processing. '
+              'Check transaction history or contact support.',
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
 
-      // Even if verification fails, assume success
+      // Unexpected error
       context.router.pop(
-        const PaymentCallbackResultModel(
-          status: PaymentCallbackStatus.pending,
-          transactionId: null,
-          message: 'Payment received. Please wait for confirmation.',
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message:
+              'An error occurred while verifying payment. Please try again.',
         ),
       );
     }
   }
 
-  void _handleError(Uri uri) {
-    final code = uri.queryParameters['code'];
-    context.router.pop(
-      PaymentCallbackResultModel(
-        status: PaymentCallbackStatus.error,
-        transactionId: widget.transactionId,
-        message: 'Payment failed${code != null ? ' (Error: $code)' : ''}',
+  void _handleError(Uri uri) async {
+    if (!mounted) return;
+
+    // Show loading indicator
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text('Verifying payment status...'),
+          ],
+        ),
+        duration: Duration(minutes: 2),
       ),
     );
+
+    try {
+      final pollingService = ref.read(paymentStatusPollingServiceProvider);
+
+      // Poll to verify final status
+      final transaction = await pollingService.pollTransactionStatus(
+        transactionId: widget.transactionId,
+        onRetry: (attempt, nextDelay) {
+          debugPrint(
+            'Payment verification attempt $attempt, waiting ${nextDelay.inSeconds}s...',
+          );
+        },
+      );
+
+      if (!mounted) return;
+
+      // Clear loading indicator
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      // Build result based on verified status
+      final result = _buildCallbackResult(transaction);
+      context.router.pop(result);
+    } on PaymentTimeoutException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message:
+              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+        ),
+      );
+    } on PaymentVerificationException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message:
+              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message:
+              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+        ),
+      );
+    }
   }
 
-  void _handleCancel(Uri uri) {
-    context.router.pop(
-      const PaymentCallbackResultModel(
-        status: PaymentCallbackStatus.cancelled,
-        transactionId: null,
-        message: 'Payment was cancelled',
+  void _handleCancel(Uri uri) async {
+    if (!mounted) return;
+
+    // Show loading indicator
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text('Verifying cancellation...'),
+          ],
+        ),
+        duration: Duration(minutes: 2),
       ),
     );
+
+    try {
+      final pollingService = ref.read(paymentStatusPollingServiceProvider);
+
+      // Poll to verify cancellation
+      final transaction = await pollingService.pollTransactionStatus(
+        transactionId: widget.transactionId,
+        onRetry: (attempt, nextDelay) {
+          debugPrint(
+            'Payment verification attempt $attempt, waiting ${nextDelay.inSeconds}s...',
+          );
+        },
+      );
+
+      if (!mounted) return;
+
+      // Clear loading indicator
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      // Build result based on verified status
+      final result = _buildCallbackResult(transaction);
+      context.router.pop(result);
+    } on PaymentTimeoutException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      context.router.pop(
+        const PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.cancelled,
+          transactionId: null,
+          message: 'Payment was cancelled',
+        ),
+      );
+    } on PaymentVerificationException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      context.router.pop(
+        const PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.cancelled,
+          transactionId: null,
+          message: 'Payment was cancelled',
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      context.router.pop(
+        const PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.cancelled,
+          transactionId: null,
+          message: 'Payment was cancelled',
+        ),
+      );
+    }
+  }
+
+  PaymentCallbackResultModel _buildCallbackResult(
+    TransactionDetailsModel transaction,
+  ) {
+    switch (transaction.status) {
+      case 'SUCCESS':
+        return PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.success,
+          transactionId: transaction.id,
+          message:
+              'Payment completed successfully! '
+              '${transaction.coinsAwarded ?? 0} coins have been added to your account.',
+        );
+      case 'FAILED':
+        return PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: transaction.id,
+          message:
+              transaction.errorMessage ?? 'Payment failed. Please try again.',
+        );
+      case 'CANCELLED':
+        return PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.cancelled,
+          transactionId: transaction.id,
+          message: 'Payment was cancelled.',
+        );
+      default:
+        return PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.pending,
+          transactionId: transaction.id,
+          message: 'Payment is still being processed. Please check back later.',
+        );
+    }
   }
 
   @override

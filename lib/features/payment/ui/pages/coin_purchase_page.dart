@@ -236,31 +236,34 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
   void _handlePaymentResult(PaymentCallbackResultModel result, Translations t) {
     switch (result.status) {
       case PaymentCallbackStatus.success:
-        // Invalidate coin balance to refresh
+        // Invalidate coin balance immediately
         ref.invalidate(userCoinBalanceProvider);
 
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            icon: const Icon(
-              LucideIcons.circleCheck,
-              color: Colors.green,
-              size: 64,
-            ),
-            title: Text(t.payment.callback.paymentSuccessful),
-            content: Text(result.message ?? t.payment.callback.coinsAdded),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  context.router.pop(); // Return to previous page
-                },
-                child: Text(t.payment.callback.ok),
+        // Show success dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              icon: const Icon(
+                LucideIcons.circleCheck,
+                color: Colors.green,
+                size: 64,
               ),
-            ],
-          ),
-        );
+              title: Text(t.payment.callback.paymentSuccessful),
+              content: Text(result.message ?? t.payment.callback.coinsAdded),
+              actions: [
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    context.router.pop(); // Return to previous screen
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
         break;
 
       case PaymentCallbackStatus.error:

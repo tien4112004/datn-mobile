@@ -1796,9 +1796,18 @@
     "transactionHistory": {
       "title": "Transaction History",
       "noTransactions": "No transactions yet",
+      "noMatchingTransactions": "No matching transactions",
+      "tryDifferentFilters": "Try adjusting your filters",
       "error": "Error: $error",
       "retry": "Retry",
-      "paymentMethod": "Payment method: $gateway"
+      "paymentMethod": "Payment method: $gateway",
+      "errorPrefix": "Error",
+      "filters": {
+        "status": "Status",
+        "allStatus": "All Status",
+        "gateway": "Payment Method",
+        "allGateways": "All Methods"
+      }
     },
     "transactionDetail": {
       "title": "Transaction Details",

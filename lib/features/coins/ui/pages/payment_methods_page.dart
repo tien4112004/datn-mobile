@@ -209,10 +209,10 @@ class PaymentMethodsPage extends ConsumerWidget {
         return Column(
           children: usageList.map((stat) {
             return UsageBreakdownCard(
-              title: _getRequestTypeLabel(stat.model, t),
+              title: _getRequestTypeLabel(stat.requestType, t),
               coins: stat.totalCoin,
               requests: stat.totalRequests,
-              icon: _getRequestTypeIcon(stat.model, t),
+              icon: _getRequestTypeIcon(stat.requestType, t),
             );
           }).toList(),
         );

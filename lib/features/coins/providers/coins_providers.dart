@@ -45,16 +45,15 @@ final tokenUsageStatsProvider =
       return repository.getTokenUsageStats();
     });
 
-// Token usage by model provider
-final tokenUsageByModelProvider =
-    FutureProvider.autoDispose<List<TokenUsageStatsModel>>((ref) async {
-      final repository = ref.watch(coinsRepositoryProvider);
-      return repository.getTokenUsageByModel();
-    });
+final tokenUsageByModelProvider = FutureProvider<List<TokenUsageStatsModel>>((
+  ref,
+) async {
+  final repository = ref.watch(coinsRepositoryProvider);
+  return repository.getTokenUsageByModel();
+});
 
-// Token usage by request type provider
 final tokenUsageByRequestTypeProvider =
-    FutureProvider.autoDispose<List<TokenUsageStatsModel>>((ref) async {
+    FutureProvider<List<TokenUsageStatsModel>>((ref) async {
       final repository = ref.watch(coinsRepositoryProvider);
       return repository.getTokenUsageByRequestType();
     });

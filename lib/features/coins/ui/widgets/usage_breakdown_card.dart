@@ -1,18 +1,22 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UsageBreakdownCard extends StatelessWidget {
   final String title;
-  final int? tokens;
+  final String? coins;
   final int requests;
   final IconData icon;
+  final String? imagePath;
 
   const UsageBreakdownCard({
     super.key,
     required this.title,
-    this.tokens,
+    this.coins,
     required this.requests,
     required this.icon,
+    this.imagePath,
   });
 
   @override
@@ -29,10 +33,20 @@ class UsageBreakdownCard extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
+              child: imagePath != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.asset(
+                        imagePath!,
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : Icon(
+                      icon,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -47,7 +61,7 @@ class UsageBreakdownCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '$requests requests',
+                    '$requests ${t.payment.paymentMethods.requests}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -55,23 +69,25 @@ class UsageBreakdownCard extends StatelessWidget {
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  tokens != null ? NumberFormat('#,###').format(tokens) : 'N/A',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                Text(
-                  'tokens',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ],
+            Consumer(
+              builder: (context, ref, child) {
+                final t = ref.watch(translationsPod);
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      coins != null
+                          ? '$coins ${t.payment.paymentMethods.coinsLabel}'
+                          : 'N/A',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),

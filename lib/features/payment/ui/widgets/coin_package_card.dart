@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/payment/data/models/coin_package_model.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
-class CoinPackageCard extends StatelessWidget {
+class CoinPackageCard extends ConsumerWidget {
   final CoinPackageModel package;
   final bool isSelected;
   final VoidCallback onTap;
@@ -16,7 +18,8 @@ class CoinPackageCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final totalCoins = package.coins + (package.bonusCoins ?? 0);
     final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
@@ -70,9 +73,9 @@ class CoinPackageCard extends StatelessWidget {
                         color: Colors.amber.shade700,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        'POPULAR',
-                        style: TextStyle(
+                      child: Text(
+                        t.payment.coinPurchase.package.popular,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -104,7 +107,7 @@ class CoinPackageCard extends StatelessWidget {
                             ),
                       ),
                       Text(
-                        'coins',
+                        t.payment.coinPurchase.package.coins,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                         ),
@@ -126,7 +129,7 @@ class CoinPackageCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    '+${NumberFormat('#,###').format(package.bonusCoins)} bonus',
+                    '+${NumberFormat('#,###').format(package.bonusCoins)} ${t.payment.coinPurchase.package.bonus}',
                     style: TextStyle(
                       color: Colors.green.shade700,
                       fontSize: 12,

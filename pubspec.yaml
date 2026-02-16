@@ -74,6 +74,7 @@ dependencies:
   syncfusion_flutter_calendar: ^32.1.23
   fl_chart: ^0.69.2
   webview_flutter: ^4.4.2
+  currency_converter: ^3.0.0
 
 dev_dependencies:
   flutter_test:

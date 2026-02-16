@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
 class TransactionDetailPage extends StatelessWidget {
@@ -15,17 +16,19 @@ class TransactionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction Details'),
+        title: Text(t.payment.transactionDetail.title),
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.copy),
-            tooltip: 'Copy Transaction ID',
+            tooltip: t.payment.transactionDetail.copyTransactionId,
             onPressed: () {
               Clipboard.setData(ClipboardData(text: transaction.id));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Transaction ID copied to clipboard'),
-                  duration: Duration(seconds: 2),
+                SnackBar(
+                  content: Text(
+                    t.payment.transactionDetail.transactionIdCopied,
+                  ),
+                  duration: const Duration(seconds: 2),
                 ),
               );
             },
@@ -164,7 +167,7 @@ class TransactionDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '+${NumberFormat('#,###').format(transaction.coinsAwarded)} coins',
+                      '+${NumberFormat('#,###').format(transaction.coinsAwarded)} ${t.payment.transactionDetail.coins}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -190,7 +193,7 @@ class TransactionDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Transaction Details',
+              t.payment.transactionDetail.transactionDetailsSection,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -198,7 +201,7 @@ class TransactionDetailPage extends StatelessWidget {
             const SizedBox(height: 16),
             _buildDetailRow(
               context,
-              'Transaction ID',
+              t.payment.transactionDetail.transactionId,
               transaction.id,
               icon: LucideIcons.hash,
               copyable: true,
@@ -207,7 +210,7 @@ class TransactionDetailPage extends StatelessWidget {
             if (transaction.description != null)
               _buildDetailRow(
                 context,
-                'Description',
+                t.payment.transactionDetail.description,
                 transaction.description!,
                 icon: LucideIcons.fileText,
               ),
@@ -215,7 +218,7 @@ class TransactionDetailPage extends StatelessWidget {
             if (transaction.referenceCode != null)
               _buildDetailRow(
                 context,
-                'Reference Code',
+                t.payment.transactionDetail.referenceCode,
                 transaction.referenceCode!,
                 icon: LucideIcons.code,
                 copyable: true,
@@ -224,7 +227,7 @@ class TransactionDetailPage extends StatelessWidget {
             if (transaction.gateway != null)
               _buildDetailRow(
                 context,
-                'Payment Gateway',
+                t.payment.transactionDetail.paymentGateway,
                 transaction.gateway!,
                 icon: LucideIcons.creditCard,
               ),
@@ -232,7 +235,7 @@ class TransactionDetailPage extends StatelessWidget {
               const Divider(height: 24),
               _buildDetailRow(
                 context,
-                'Error Message',
+                t.payment.transactionDetail.errorMessage,
                 transaction.errorMessage!,
                 icon: LucideIcons.circleAlert,
                 isError: true,
@@ -255,7 +258,7 @@ class TransactionDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Timeline',
+              t.payment.transactionDetail.timeline,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -263,7 +266,7 @@ class TransactionDetailPage extends StatelessWidget {
             const SizedBox(height: 16),
             _buildTimelineItem(
               context,
-              'Created',
+              t.payment.transactionDetail.created,
               dateFormat.format(transaction.createdAt),
               LucideIcons.clock,
               Colors.blue,
@@ -272,7 +275,7 @@ class TransactionDetailPage extends StatelessWidget {
               const SizedBox(height: 12),
               _buildTimelineItem(
                 context,
-                'Last Updated',
+                t.payment.transactionDetail.lastUpdated,
                 dateFormat.format(transaction.updatedAt!),
                 LucideIcons.refreshCw,
                 Colors.orange,
@@ -282,7 +285,7 @@ class TransactionDetailPage extends StatelessWidget {
               const SizedBox(height: 12),
               _buildTimelineItem(
                 context,
-                'Completed',
+                t.payment.transactionDetail.completed,
                 dateFormat.format(transaction.completedAt!),
                 LucideIcons.circleCheck,
                 Colors.green,
@@ -343,7 +346,9 @@ class TransactionDetailPage extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('$label copied to clipboard'),
+                  content: Text(
+                    t.payment.transactionDetail.copiedToClipboard(label: label),
+                  ),
                   duration: const Duration(seconds: 2),
                 ),
               );

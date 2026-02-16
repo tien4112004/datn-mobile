@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:AIPrimary/features/payment/data/models/checkout_request_model.da
 import 'package:AIPrimary/features/coins/providers/coins_providers.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
 class CoinPurchasePage extends ConsumerStatefulWidget {
@@ -26,10 +28,11 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
   @override
   Widget build(BuildContext context) {
     final packages = ref.watch(coinPackagesProvider);
+    final t = ref.watch(translationsPod);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Purchase Coins'),
+        title: Text(t.payment.coinPurchase.title),
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.history),
@@ -47,7 +50,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
               children: [
                 // Payment Gateway Selection
                 Text(
-                  'Payment Method',
+                  t.payment.coinPurchase.paymentMethod,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -58,7 +61,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                     Expanded(
                       child: _buildGatewayCard(
                         'SEPAY',
-                        'Bank Transfer',
+                        t.payment.coinPurchase.gateways.bankTransfer,
                         LucideIcons.building,
                       ),
                     ),
@@ -66,7 +69,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                     Expanded(
                       child: _buildGatewayCard(
                         'PAYOS',
-                        'QR Code',
+                        t.payment.coinPurchase.gateways.qrCode,
                         LucideIcons.qrCode,
                       ),
                     ),
@@ -75,14 +78,14 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                 const SizedBox(height: 32),
 
                 Text(
-                  'Choose a package',
+                  t.payment.coinPurchase.choosePackage,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Select the coin package that best suits your needs',
+                  t.payment.coinPurchase.choosePackageSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -127,7 +130,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: selectedPackageId != null && !isProcessing
-                      ? _handlePurchase
+                      ? () => _handlePurchase(t)
                       : null,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -143,9 +146,9 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text(
-                          'Continue to Payment',
-                          style: TextStyle(
+                      : Text(
+                          t.payment.coinPurchase.continueToPayment,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -159,7 +162,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
     );
   }
 
-  Future<void> _handlePurchase() async {
+  Future<void> _handlePurchase(Translations t) async {
     if (selectedPackageId == null) return;
 
     setState(() {
@@ -208,14 +211,16 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
 
       // Handle result
       if (result != null) {
-        _handlePaymentResult(result);
+        _handlePaymentResult(result, t);
       }
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to create checkout: ${e.toString()}'),
+          content: Text(
+            t.payment.coinPurchase.failedToCreateCheckout(error: e.toString()),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -228,7 +233,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
     }
   }
 
-  void _handlePaymentResult(PaymentCallbackResultModel result) {
+  void _handlePaymentResult(PaymentCallbackResultModel result, Translations t) {
     switch (result.status) {
       case PaymentCallbackStatus.success:
         // Invalidate coin balance to refresh
@@ -243,17 +248,15 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
               color: Colors.green,
               size: 64,
             ),
-            title: const Text('Payment Successful!'),
-            content: Text(
-              result.message ?? 'Your coins have been added to your account.',
-            ),
+            title: Text(t.payment.callback.paymentSuccessful),
+            content: Text(result.message ?? t.payment.callback.coinsAdded),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   context.router.pop(); // Return to previous page
                 },
-                child: const Text('OK'),
+                child: Text(t.payment.callback.ok),
               ),
             ],
           ),
@@ -263,25 +266,21 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
       case PaymentCallbackStatus.error:
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(result.message ?? 'Payment failed'),
+            content: Text(result.message ?? t.payment.callback.paymentFailed),
             backgroundColor: Colors.red,
           ),
         );
         break;
 
       case PaymentCallbackStatus.cancelled:
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Payment cancelled')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.payment.callback.paymentCancelled)),
+        );
         break;
 
       case PaymentCallbackStatus.pending:
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Payment is being processed. Please check back later.',
-            ),
-          ),
+          SnackBar(content: Text(t.payment.callback.paymentPending)),
         );
         break;
     }

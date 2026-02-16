@@ -10,6 +10,8 @@ abstract class TokenUsageStatsModel with _$TokenUsageStatsModel {
     required int totalRequests,
     String? model,
     String? requestType,
+    String? totalCoin,
+    String? totalMoney,
   }) = _TokenUsageStatsModel;
 
   factory TokenUsageStatsModel.fromJson(Map<String, dynamic> json) =>

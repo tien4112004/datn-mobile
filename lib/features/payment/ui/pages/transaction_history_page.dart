@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
 class TransactionHistoryPage extends ConsumerStatefulWidget {
@@ -25,7 +26,7 @@ class _TransactionHistoryPageState
     final transactionsAsync = ref.watch(userTransactionsProvider(currentPage));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transaction History')),
+      appBar: AppBar(title: Text(t.payment.transactionHistory.title)),
       body: transactionsAsync.when(
         data: (transactions) {
           if (transactions.isEmpty) {
@@ -40,7 +41,7 @@ class _TransactionHistoryPageState
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No transactions yet',
+                    t.payment.transactionHistory.noTransactions,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Theme.of(context).colorScheme.outline,
                     ),
@@ -84,7 +85,7 @@ class _TransactionHistoryPageState
                 onPressed: () {
                   ref.invalidate(userTransactionsProvider(currentPage));
                 },
-                child: const Text('Retry'),
+                child: Text(t.payment.transactionHistory.retry),
               ),
             ],
           ),

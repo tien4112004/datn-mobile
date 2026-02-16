@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/payment/data/source/payment_remote_source.dart';
 import 'package:AIPrimary/features/payment/data/repositories/payment_repository.dart';
@@ -20,38 +21,39 @@ final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
 
 // Predefined coin packages (client-side)
 final coinPackagesProvider = Provider<List<CoinPackageModel>>((ref) {
-  return const [
+  final t = ref.watch(translationsPod);
+  return [
     CoinPackageModel(
       id: 'starter',
-      name: 'Starter Pack',
+      name: t.payment.coinPurchase.packages.starter.name,
       coins: 1000,
       price: 50000, // 50,000 VND
-      description: 'Perfect for trying out',
+      description: t.payment.coinPurchase.packages.starter.description,
     ),
     CoinPackageModel(
       id: 'popular',
-      name: 'Popular Pack',
+      name: t.payment.coinPurchase.packages.popular.name,
       coins: 5000,
       price: 200000, // 200,000 VND
       bonusCoins: 500,
       isPopular: true,
-      description: 'Best value! +500 bonus coins',
+      description: t.payment.coinPurchase.packages.popular.description,
     ),
     CoinPackageModel(
       id: 'premium',
-      name: 'Premium Pack',
+      name: t.payment.coinPurchase.packages.premium.name,
       coins: 10000,
       price: 350000, // 350,000 VND
       bonusCoins: 1500,
-      description: 'Maximum savings! +1,500 bonus coins',
+      description: t.payment.coinPurchase.packages.premium.description,
     ),
     CoinPackageModel(
       id: 'ultimate',
-      name: 'Ultimate Pack',
+      name: t.payment.coinPurchase.packages.ultimate.name,
       coins: 25000,
       price: 800000, // 800,000 VND
       bonusCoins: 5000,
-      description: 'For power users! +5,000 bonus coins',
+      description: t.payment.coinPurchase.packages.ultimate.description,
     ),
   ];
 });

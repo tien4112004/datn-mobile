@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:AIPrimary/features/coins/providers/coins_providers.dart';
 import 'package:AIPrimary/features/coins/ui/widgets/usage_breakdown_card.dart';
 import 'package:AIPrimary/features/coins/data/models/user_coin_model.dart';
 import 'package:AIPrimary/features/coins/data/models/token_usage_stats_model.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
 class PaymentMethodsPage extends ConsumerWidget {
@@ -16,20 +18,21 @@ class PaymentMethodsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final coinBalanceAsync = ref.watch(userCoinBalanceProvider);
     final usageByModelAsync = ref.watch(tokenUsageByModelProvider);
     final usageByTypeAsync = ref.watch(tokenUsageByRequestTypeProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment Methods'),
+        title: Text(t.payment.paymentMethods.title),
         actions: [
           ElevatedButton.icon(
             onPressed: () {
               context.router.push(const CoinPurchaseRoute());
             },
             icon: const Icon(LucideIcons.plus, size: 18),
-            label: const Text('Buy Coins'),
+            label: Text(t.payment.paymentMethods.buyCoin),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
@@ -49,27 +52,27 @@ class PaymentMethodsPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildBalanceCard(context, coinBalanceAsync),
+              _buildBalanceCard(context, coinBalanceAsync, t),
               const SizedBox(height: 24),
 
               Text(
-                'Usage by Model',
+                t.payment.paymentMethods.usageByModel,
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              _buildUsageByModelSection(context, usageByModelAsync),
+              _buildUsageByModelSection(context, usageByModelAsync, t),
               const SizedBox(height: 24),
 
               Text(
-                'Usage by Type',
+                t.payment.paymentMethods.usageByType,
                 style: Theme.of(
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              _buildUsageByTypeSection(context, usageByTypeAsync),
+              _buildUsageByTypeSection(context, usageByTypeAsync, t),
               const SizedBox(height: 24),
             ],
           ),
@@ -81,6 +84,7 @@ class PaymentMethodsPage extends ConsumerWidget {
   Widget _buildBalanceCard(
     BuildContext context,
     AsyncValue<UserCoinModel> coinBalanceAsync,
+    Translations t,
   ) {
     return Container(
       width: double.infinity,
@@ -104,7 +108,7 @@ class PaymentMethodsPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Current Balance',
+            t.payment.paymentMethods.currentBalance,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w500,
@@ -113,7 +117,7 @@ class PaymentMethodsPage extends ConsumerWidget {
           const SizedBox(height: 12),
           coinBalanceAsync.when(
             data: (coinData) => Text(
-              '${NumberFormat('#,###').format(coinData.coin)} Coins',
+              '${NumberFormat('#,###').format(coinData.coin)} ${t.payment.paymentMethods.coinsLabel}',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -121,7 +125,7 @@ class PaymentMethodsPage extends ConsumerWidget {
             ),
             loading: () => const CircularProgressIndicator(color: Colors.white),
             error: (_, _) => Text(
-              'Error loading balance',
+              t.payment.paymentMethods.errorLoadingBalance,
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
@@ -135,6 +139,7 @@ class PaymentMethodsPage extends ConsumerWidget {
   Widget _buildUsageByModelSection(
     BuildContext context,
     AsyncValue<List<TokenUsageStatsModel>> usageAsync,
+    Translations t,
   ) {
     return usageAsync.when(
       data: (usageList) {
@@ -143,7 +148,7 @@ class PaymentMethodsPage extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Text(
-                'No usage data available',
+                t.payment.paymentMethods.noUsageData,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -155,9 +160,10 @@ class PaymentMethodsPage extends ConsumerWidget {
           children: usageList.map((stat) {
             return UsageBreakdownCard(
               title: stat.model ?? 'Unknown Model',
-              tokens: stat.totalTokens,
+              coins: stat.totalCoin,
               requests: stat.totalRequests,
               icon: LucideIcons.cpu,
+              imagePath: _getProviderImage(stat.model),
             );
           }).toList(),
         );
@@ -172,7 +178,7 @@ class PaymentMethodsPage extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'Error loading data',
+            t.payment.paymentMethods.errorLoadingData,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
@@ -183,6 +189,7 @@ class PaymentMethodsPage extends ConsumerWidget {
   Widget _buildUsageByTypeSection(
     BuildContext context,
     AsyncValue<List<TokenUsageStatsModel>> usageAsync,
+    Translations t,
   ) {
     return usageAsync.when(
       data: (usageList) {
@@ -191,7 +198,7 @@ class PaymentMethodsPage extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Text(
-                'No usage data available',
+                t.payment.paymentMethods.noUsageData,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -202,10 +209,10 @@ class PaymentMethodsPage extends ConsumerWidget {
         return Column(
           children: usageList.map((stat) {
             return UsageBreakdownCard(
-              title: _getRequestTypeLabel(stat.requestType),
-              tokens: stat.totalTokens,
+              title: _getRequestTypeLabel(stat.model, t),
+              coins: stat.totalCoin,
               requests: stat.totalRequests,
-              icon: _getRequestTypeIcon(stat.requestType),
+              icon: _getRequestTypeIcon(stat.model, t),
             );
           }).toList(),
         );
@@ -220,7 +227,7 @@ class PaymentMethodsPage extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'Error loading data',
+            t.payment.paymentMethods.errorLoadingData,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
@@ -228,23 +235,23 @@ class PaymentMethodsPage extends ConsumerWidget {
     );
   }
 
-  String _getRequestTypeLabel(String? type) {
-    if (type == null) return 'Unknown';
+  String _getRequestTypeLabel(String? type, Translations t) {
+    if (type == null) return t.payment.paymentMethods.unknown;
     switch (type.toLowerCase()) {
-      case 'text':
-        return 'Text Generation';
+      case 'outline':
+        return t.payment.paymentMethods.outlineGeneration;
       case 'image':
-        return 'Image Generation';
+        return t.payment.paymentMethods.imageGeneration;
       case 'mindmap':
-        return 'Mind Map Creation';
+        return t.payment.paymentMethods.mindMapCreation;
       case 'presentation':
-        return 'Presentation Generation';
+        return t.payment.paymentMethods.presentationGeneration;
       default:
         return type;
     }
   }
 
-  IconData _getRequestTypeIcon(String? type) {
+  IconData _getRequestTypeIcon(String? type, Translations t) {
     if (type == null) return LucideIcons.circleQuestionMark;
     switch (type.toLowerCase()) {
       case 'text':
@@ -258,5 +265,24 @@ class PaymentMethodsPage extends ConsumerWidget {
       default:
         return LucideIcons.circleQuestionMark;
     }
+  }
+
+  String? _getProviderImage(String? model) {
+    if (model == null) return null;
+    final modelLower = model.toLowerCase();
+
+    if (modelLower.contains('gpt') || modelLower.contains('openai')) {
+      return 'assets/images/providers/openai.png';
+    } else if (modelLower.contains('gemini') || modelLower.contains('google')) {
+      return 'assets/images/providers/google.png';
+    } else if (modelLower.contains('deepseek')) {
+      return 'assets/images/providers/deepseek.png';
+    } else if (modelLower.contains('localai')) {
+      return 'assets/images/providers/localai.png';
+    } else if (modelLower.contains('openrouter')) {
+      return 'assets/images/providers/openrouter.png';
+    }
+
+    return null;
   }
 }

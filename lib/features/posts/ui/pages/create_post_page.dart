@@ -46,7 +46,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   String? _selectedAssignmentId;
   int? _maxSubmissions;
   bool _allowRetake = true;
-  bool _shuffleQuestions = false;
   bool _showCorrectAnswers = true;
   bool _showScoreImmediately = false;
   double? _passingScore;
@@ -113,9 +112,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                 : null,
             allowRetake: _selectedType == PostType.exercise
                 ? _allowRetake
-                : null,
-            shuffleQuestions: _selectedType == PostType.exercise
-                ? _shuffleQuestions
                 : null,
             showCorrectAnswers: _selectedType == PostType.exercise
                 ? _showCorrectAnswers
@@ -438,7 +434,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       maxSubmissions: _maxSubmissions,
                       passingScore: _passingScore,
                       allowRetake: _allowRetake,
-                      shuffleQuestions: _shuffleQuestions,
                       showCorrectAnswers: _showCorrectAnswers,
                       showScoreImmediately: _showScoreImmediately,
                       linkedResourcesCount: _linkedResources.length,
@@ -451,8 +446,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                           setState(() => _passingScore = value),
                       onAllowRetakeChanged: (value) =>
                           setState(() => _allowRetake = value),
-                      onShuffleQuestionsChanged: (value) =>
-                          setState(() => _shuffleQuestions = value),
                       onShowCorrectAnswersChanged: (value) =>
                           setState(() => _showCorrectAnswers = value),
                       onShowScoreImmediatelyChanged: (value) =>

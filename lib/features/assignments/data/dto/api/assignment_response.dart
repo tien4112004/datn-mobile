@@ -136,7 +136,6 @@ extension AssignmentResponseMapper on AssignmentResponse {
       totalPoints: totalPoints.toInt(),
       timeLimitMinutes: duration,
       questionOrder: questionOrder,
-      shuffleQuestions: false,
       createdAt: createdAt,
       updatedAt: updatedAt,
       questions: questionEntities,

@@ -6,9 +6,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/widgets/skeleton_card.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -28,8 +26,6 @@ class AssignmentPreviewCard extends ConsumerWidget {
       data: (assignment) {
         final theme = Theme.of(context);
         final colorScheme = theme.colorScheme;
-        final t = ref.watch(translationsPod);
-
         final subject = assignment.subject;
         final subjectColor = _getSubjectColor(subject);
         final subjectIcon = _getSubjectIcon(subject);
@@ -223,7 +219,7 @@ class AssignmentPreviewCard extends ConsumerWidget {
         return Themes.primaryColor; // Primary - Communication
       case Subject.mathematics:
         return const Color(0xFFDC2626); // Red - Logic
-      case Subject.literature:
+      case Subject.vietnamese:
         return const Color(0xFF16A34A); // Green - Creativity
     }
   }
@@ -235,7 +231,7 @@ class AssignmentPreviewCard extends ConsumerWidget {
         return LucideIcons.messageSquare;
       case Subject.mathematics:
         return LucideIcons.calculator;
-      case Subject.literature:
+      case Subject.vietnamese:
         return LucideIcons.bookOpen;
     }
   }

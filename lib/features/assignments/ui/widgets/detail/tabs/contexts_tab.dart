@@ -251,6 +251,8 @@ class _ContextsTabState extends ConsumerState<ContextsTab> {
                                     await ContextSelectorSheet.show(
                                       context,
                                       importedContextIds: importedIds,
+                                      subjectFilter:
+                                          widget.assignment.subject.apiValue,
                                     );
                                 if (selected != null && mounted) {
                                   widget.onImportContext(selected);

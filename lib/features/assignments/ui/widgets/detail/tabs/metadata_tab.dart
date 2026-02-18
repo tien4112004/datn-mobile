@@ -11,13 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class MetadataTab extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
-  final ValueChanged<bool>? onShuffleChanged;
-
   const MetadataTab({
     super.key,
     required this.assignment,
     this.isEditMode = false,
-    this.onShuffleChanged,
   });
 
   @override
@@ -171,59 +168,6 @@ class MetadataTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Shuffle toggle (only in edit mode)
-            if (isEditMode) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant,
-                      width: 1,
-                    ),
-                  ),
-                  child: SwitchListTile(
-                    value: assignment.shuffleQuestions,
-                    onChanged: onShuffleChanged,
-                    title: Text(
-                      t.assignments.detail.metadata.shuffleQuestions,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    subtitle: Text(
-                      t.assignments.detail.metadata.shuffleDescription,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    secondary: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: assignment.shuffleQuestions
-                            ? colorScheme.primaryContainer
-                            : colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        LucideIcons.shuffle,
-                        color: assignment.shuffleQuestions
-                            ? colorScheme.primary
-                            : colorScheme.onSurfaceVariant,
-                        size: 20,
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                  ),
-                ),
-              ),
-            ],
 
             // Bottom padding
             SizedBox(height: isEditMode ? 174.0 : 88.0),

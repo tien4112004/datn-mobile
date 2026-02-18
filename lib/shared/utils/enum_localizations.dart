@@ -54,8 +54,8 @@ extension SubjectLocalization on Subject {
         return t.questionBank.subjects.english;
       case Subject.mathematics:
         return t.questionBank.subjects.mathematics;
-      case Subject.literature:
-        return t.questionBank.subjects.literature;
+      case Subject.vietnamese:
+        return t.questionBank.subjects.vietnamese;
     }
   }
 }

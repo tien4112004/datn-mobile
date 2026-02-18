@@ -6,13 +6,11 @@ class AssignmentSettingsSection extends StatelessWidget {
   final int? maxSubmissions;
   final double? passingScore;
   final bool allowRetake;
-  final bool shuffleQuestions;
   final bool showCorrectAnswers;
   final bool showScoreImmediately;
   final ValueChanged<int?>? onMaxSubmissionsChanged;
   final ValueChanged<double?>? onPassingScoreChanged;
   final ValueChanged<bool>? onAllowRetakeChanged;
-  final ValueChanged<bool>? onShuffleQuestionsChanged;
   final ValueChanged<bool>? onShowCorrectAnswersChanged;
   final ValueChanged<bool>? onShowScoreImmediatelyChanged;
 
@@ -22,13 +20,11 @@ class AssignmentSettingsSection extends StatelessWidget {
     this.maxSubmissions,
     this.passingScore,
     required this.allowRetake,
-    required this.shuffleQuestions,
     required this.showCorrectAnswers,
     required this.showScoreImmediately,
     this.onMaxSubmissionsChanged,
     this.onPassingScoreChanged,
     this.onAllowRetakeChanged,
-    this.onShuffleQuestionsChanged,
     this.onShowCorrectAnswersChanged,
     this.onShowScoreImmediatelyChanged,
   });
@@ -142,23 +138,6 @@ class AssignmentSettingsSection extends StatelessWidget {
                 title: Text('Allow Retake', style: theme.textTheme.bodyMedium),
                 subtitle: Text(
                   'Students can retake the assignment',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-
-              // Shuffle Questions
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                value: shuffleQuestions,
-                onChanged: isDisabled ? null : onShuffleQuestionsChanged,
-                title: Text(
-                  'Shuffle Questions',
-                  style: theme.textTheme.bodyMedium,
-                ),
-                subtitle: Text(
-                  'Randomize question order',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

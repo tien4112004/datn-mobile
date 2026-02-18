@@ -24,9 +24,11 @@ class ContextSelectorSheet {
   ///
   /// [importedContextIds] — IDs of library contexts already imported into
   /// the assignment. These will be shown with an "Added" badge.
+  /// [subjectFilter] — Optional subject API value to filter contexts by.
   static Future<ContextEntity?> show(
     BuildContext context, {
     Set<String> importedContextIds = const {},
+    String? subjectFilter,
   }) {
     return showModalBottomSheet<ContextEntity>(
       context: context,
@@ -40,6 +42,7 @@ class ContextSelectorSheet {
         builder: (context, scrollController) => _ContextSelectorContent(
           scrollController: scrollController,
           importedContextIds: importedContextIds,
+          subjectFilter: subjectFilter,
         ),
       ),
     );
@@ -50,10 +53,12 @@ class ContextSelectorSheet {
 class _ContextSelectorContent extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final Set<String> importedContextIds;
+  final String? subjectFilter;
 
   const _ContextSelectorContent({
     required this.scrollController,
     this.importedContextIds = const {},
+    this.subjectFilter,
   });
 
   @override
@@ -69,6 +74,13 @@ class _ContextSelectorContentState
   void initState() {
     super.initState();
     widget.scrollController.addListener(_onScroll);
+    // Apply subject filter and refresh to get filtered results
+    final controller = ref.read(contextsControllerProvider.notifier);
+    controller.setSubjectFilter(
+      widget.subjectFilter != null ? [widget.subjectFilter!] : null,
+    );
+    // Schedule refresh after build to apply the filter
+    Future.microtask(() => controller.refresh());
   }
 
   @override

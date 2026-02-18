@@ -28,7 +28,6 @@ abstract class PostRepository {
     // Assignment settings (only for Homework type posts)
     int? maxSubmissions,
     bool? allowRetake,
-    bool? shuffleQuestions,
     bool? showCorrectAnswers,
     bool? showScoreImmediately,
     double? passingScore,

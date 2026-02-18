@@ -13,6 +13,7 @@ import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/matrix_cell_editor_sheet.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/matrix_template_selector_sheet.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/metadata_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/questions_tab.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/tabs/contexts_tab.dart';
@@ -260,7 +261,6 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
       final request = AssignmentUpdateRequest(
         title: assignment.title,
         description: assignment.description,
-        duration: assignment.timeLimitMinutes,
         subject: assignment.subject.apiValue,
         grade: assignment.gradeLevel.apiValue,
         questions: assignment.questions.map((q) => q.toRequest()).toList(),
@@ -299,6 +299,55 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
           ),
         );
       }
+    }
+  }
+
+  /// Handle matrix template import
+  Future<void> _handleImportTemplate(AssignmentEntity assignment) async {
+    final t = ref.read(translationsPod);
+
+    // Show template selector sheet
+    final selectedTemplate = await MatrixTemplateSelectorSheet.show(
+      context,
+      assignmentGrade: assignment.gradeLevel.apiValue,
+      assignmentSubject: assignment.subject.apiValue,
+    );
+
+    if (selectedTemplate == null || !mounted) return;
+
+    try {
+      // Import the template matrix
+      await ref
+          .read(
+            detailAssignmentControllerProvider(widget.assignmentId).notifier,
+          )
+          .importMatrixTemplate(selectedTemplate.matrix);
+
+      if (!mounted) return;
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            t.assignments.detail.matrix.templateImported(
+              name: selectedTemplate.name,
+            ),
+          ),
+          backgroundColor: Colors.green.shade600,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.assignments.detail.matrix.templateImportError),
+          backgroundColor: Colors.red.shade600,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -400,21 +449,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
               controller: _tabController,
               children: [
                 // Metadata Tab
-                MetadataTab(
-                  assignment: assignment,
-                  isEditMode: _isEditMode,
-                  onShuffleChanged: _isEditMode
-                      ? (value) async {
-                          await ref
-                              .read(
-                                detailAssignmentControllerProvider(
-                                  widget.assignmentId,
-                                ).notifier,
-                              )
-                              .updateShuffleQuestions(value);
-                        }
-                      : null,
-                ),
+                MetadataTab(assignment: assignment, isEditMode: _isEditMode),
                 // Questions Tab
                 QuestionsTab(
                   assignment: assignment,
@@ -424,7 +459,7 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                     for (final t
                         in assignment.matrix?.dimensions.topics ??
                             <MatrixDimensionTopic>[])
-                      t.id: t.name,
+                      if (t.id != null) t.id!: t.name,
                   },
                   onEditContext: _isEditMode
                       ? (contextEntity) => _handleEditContext(contextEntity)
@@ -535,6 +570,40 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
                           diffIdx,
                           qTypeIdx,
                         )
+                      : null,
+                  onImportTemplate: _isEditMode
+                      ? () => _handleImportTemplate(assignment)
+                      : null,
+                  onAddTopic: _isEditMode && assignment.matrix != null
+                      ? (name) => ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .addTopic(name)
+                      : null,
+                  onRemoveTopic: _isEditMode && assignment.matrix != null
+                      ? (index) => ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .removeTopic(index)
+                      : null,
+                  onUpdateTopic: _isEditMode && assignment.matrix != null
+                      ? (index, {name, hasContext}) => ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .updateTopic(
+                              index,
+                              name: name,
+                              hasContext: hasContext,
+                            )
                       : null,
                 ),
               ],

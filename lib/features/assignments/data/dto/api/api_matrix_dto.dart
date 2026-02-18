@@ -3,20 +3,37 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'api_matrix_dto.g.dart';
 
+/// DTO for a subtopic (chapter) within a topic.
+/// Backend returns subtopics as objects with {id, name}.
+@JsonSerializable()
+class DimensionSubtopicDto {
+  final String? id;
+  final String name;
+
+  const DimensionSubtopicDto({this.id, required this.name});
+
+  factory DimensionSubtopicDto.fromJson(Map<String, dynamic> json) =>
+      _$DimensionSubtopicDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DimensionSubtopicDtoToJson(this);
+}
+
 /// DTO for a topic with optional informational subtopics.
 ///
 /// Topics are now the primary dimension for the matrix structure.
 /// Subtopics are informational metadata and do not affect matrix indexing/filtering.
 @JsonSerializable()
 class MatrixDimensionTopicDto {
-  final String id;
+  final String? id;
   final String name;
-  final List<String>? subtopics; // Informational subtopic names
+  final List<DimensionSubtopicDto>? subtopics;
+  final bool? hasContext; // Whether to use reading passages for this topic
 
   const MatrixDimensionTopicDto({
-    required this.id,
+    this.id,
     required this.name,
     this.subtopics,
+    this.hasContext,
   });
 
   factory MatrixDimensionTopicDto.fromJson(Map<String, dynamic> json) =>
@@ -80,7 +97,11 @@ extension ApiMatrixEntityMapper on ApiMatrixEntity {
             (t) => MatrixDimensionTopicDto(
               id: t.id,
               name: t.name,
-              subtopics: t.subtopics, // Pass through informational subtopics
+              // Convert chapter name strings back to subtopic DTOs
+              subtopics: t.chapters
+                  ?.map((name) => DimensionSubtopicDto(name: name))
+                  .toList(),
+              hasContext: t.hasContext,
             ),
           )
           .toList(),
@@ -104,7 +125,9 @@ extension ApiMatrixDtoMapper on ApiMatrixDto {
             (t) => MatrixDimensionTopic(
               id: t.id,
               name: t.name,
-              subtopics: t.subtopics, // Pass through informational subtopics
+              // Extract just the name strings from subtopic DTOs
+              chapters: t.subtopics?.map((s) => s.name).toList(),
+              hasContext: t.hasContext,
             ),
           )
           .toList(),

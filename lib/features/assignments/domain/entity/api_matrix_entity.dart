@@ -2,14 +2,16 @@
 /// Matches web's `MatrixDimensionTopic` from `@aiprimary/core`.
 /// Subtopics are now informational only (not used for filtering/indexing).
 class MatrixDimensionTopic {
-  final String id;
+  final String? id;
   final String name;
-  final List<String>? subtopics; // Informational subtopic names
+  final List<String>? chapters; // Chapter names from curriculum
+  final bool? hasContext; // Whether to use reading passages for this topic
 
   const MatrixDimensionTopic({
-    required this.id,
+    this.id,
     required this.name,
-    this.subtopics,
+    this.chapters,
+    this.hasContext,
   });
 }
 

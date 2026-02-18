@@ -4,13 +4,17 @@ import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_re
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
 import 'package:AIPrimary/features/assignments/data/repository/assignment_repository_impl.dart';
 import 'package:AIPrimary/features/assignments/data/repository/context_repository_impl.dart';
+import 'package:AIPrimary/features/assignments/data/repository/matrix_template_repository_impl.dart';
 import 'package:AIPrimary/features/assignments/data/source/assignment_remote_source.dart';
 import 'package:AIPrimary/features/assignments/data/source/context_remote_source.dart';
+import 'package:AIPrimary/features/assignments/data/source/matrix_template_remote_source.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/repository/assignment_repository.dart';
 import 'package:AIPrimary/features/assignments/domain/repository/context_repository.dart';
+import 'package:AIPrimary/features/assignments/domain/repository/matrix_template_repository.dart';
 import 'package:AIPrimary/features/assignments/states/assignment_filter_state.dart';
 import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
 import 'package:AIPrimary/shared/utils/matrix_utils.dart';
@@ -19,6 +23,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 part 'assignment_controller.dart';
 part 'context_controller.dart';
+part 'matrix_template_controller.dart';
 
 /// Provider for assignment filter state
 final assignmentFilterProvider = StateProvider<AssignmentFilterState>((ref) {
@@ -111,3 +116,29 @@ final assignmentPostProvider =
       AssignmentEntity,
       String
     >((String postId) => AssignmentPostController(postId: postId));
+
+// ============================================================================
+// Matrix Template Providers
+// ============================================================================
+
+/// Provider for the matrix template remote data source.
+final matrixTemplateRemoteSourceProvider = Provider<MatrixTemplateRemoteSource>(
+  (ref) {
+    return MatrixTemplateRemoteSource(ref.watch(dioPod));
+  },
+);
+
+/// Provider for the matrix template repository.
+final matrixTemplateRepositoryProvider = Provider<MatrixTemplateRepository>((
+  ref,
+) {
+  final dataSource = ref.watch(matrixTemplateRemoteSourceProvider);
+  return MatrixTemplateRepositoryImpl(dataSource);
+});
+
+/// Provider for matrix templates list controller (for template selector).
+/// Manages fetching, searching, and pagination of template library.
+final matrixTemplateControllerProvider =
+    AsyncNotifierProvider<MatrixTemplateController, MatrixTemplateListResult>(
+      () => MatrixTemplateController(),
+    );

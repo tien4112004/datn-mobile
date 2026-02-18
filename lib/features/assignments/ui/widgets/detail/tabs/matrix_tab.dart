@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/detail/assessment_matrix_dashboard.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/topic_editor_sheet.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/matrix_utils.dart';
@@ -22,11 +23,28 @@ class MatrixTab extends ConsumerStatefulWidget {
   /// Parameters: (topicIndex, difficultyIndex, questionTypeIndex)
   final void Function(int, int, int)? onCellTap;
 
+  /// Called when import template button is tapped in edit mode.
+  final VoidCallback? onImportTemplate;
+
+  /// Called when a new topic is added.
+  final void Function(String name)? onAddTopic;
+
+  /// Called when a topic is removed by index.
+  final void Function(int topicIndex)? onRemoveTopic;
+
+  /// Called when a topic is updated.
+  final void Function(int topicIndex, {String? name, bool? hasContext})?
+  onUpdateTopic;
+
   const MatrixTab({
     super.key,
     required this.matrix,
     this.isEditMode = false,
     this.onCellTap,
+    this.onImportTemplate,
+    this.onAddTopic,
+    this.onRemoveTopic,
+    this.onUpdateTopic,
   });
 
   @override
@@ -53,26 +71,42 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
             // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    t.assignments.detail.matrix.title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                      letterSpacing: -0.5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.assignments.detail.matrix.title,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          t.assignments.detail.matrix.distributed(
+                            count: stats.totalActual,
+                          ),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    t.assignments.detail.matrix.distributed(
-                      count: stats.totalActual,
+                  // Import button (only show in edit mode)
+                  if (widget.isEditMode && widget.onImportTemplate != null)
+                    TextButton.icon(
+                      onPressed: widget.onImportTemplate,
+                      icon: const Icon(LucideIcons.download, size: 18),
+                      label: Text(t.assignments.detail.matrix.importButton),
+                      style: TextButton.styleFrom(
+                        foregroundColor: colorScheme.primary,
+                      ),
                     ),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -84,6 +118,32 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
                   ? _buildTopicMatrixTable(context, theme, colorScheme, t)
                   : _buildFlatMatrixTable(context, theme, colorScheme, t),
             ),
+
+            // Add Topic button (edit mode only, topic-based matrix only)
+            if (widget.isEditMode &&
+                widget.onAddTopic != null &&
+                widget.matrix.hasTopicMatrix)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                child: OutlinedButton.icon(
+                  onPressed: () => _showAddTopicSheet(context),
+                  icon: const Icon(LucideIcons.plus, size: 18),
+                  label: Text(t.assignments.detail.matrix.topic.addTopic),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: colorScheme.primary,
+                    side: BorderSide(
+                      color: colorScheme.primary.withValues(alpha: 0.5),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                      horizontal: 16,
+                    ),
+                  ),
+                ),
+              ),
 
             const SizedBox(height: 24),
 
@@ -453,17 +513,56 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
           // Topic name and subtopic chips
           Row(
             children: [
-              // Topic label
-              SizedBox(
-                width: 70,
-                child: Text(
-                  topic.name,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
+              // Topic label (tappable in edit mode)
+              GestureDetector(
+                onTap: widget.isEditMode && widget.onUpdateTopic != null
+                    ? () => _showEditTopicSheet(context, topic, topicIndex)
+                    : null,
+                child: SizedBox(
+                  width: 70,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          topic.name,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: colorScheme.onSurface,
+                            decoration:
+                                widget.isEditMode &&
+                                    widget.onUpdateTopic != null
+                                ? TextDecoration.underline
+                                : null,
+                            decorationColor: colorScheme.primary.withValues(
+                              alpha: 0.5,
+                            ),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                      if (topic.hasContext == true)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Icon(
+                            LucideIcons.bookOpen,
+                            size: 12,
+                            color: Colors.blue.shade600,
+                          ),
+                        ),
+                      if (widget.isEditMode && widget.onUpdateTopic != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Icon(
+                            LucideIcons.pencil,
+                            size: 10,
+                            color: colorScheme.onSurfaceVariant.withValues(
+                              alpha: 0.6,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
                 ),
               ),
               // Difficulty cells (collapsed or expanded)
@@ -519,16 +618,16 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
               ),
             ],
           ),
-          // Subtopics chips (informational)
-          if (topic.subtopics != null && topic.subtopics!.isNotEmpty)
+          // Chapter chips (informational)
+          if (topic.chapters != null && topic.chapters!.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8, left: 70),
               child: Wrap(
                 spacing: 4,
                 runSpacing: 4,
-                children: topic.subtopics!
+                children: topic.chapters!
                     .map(
-                      (subtopic) => Container(
+                      (chapter) => Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 4,
@@ -543,7 +642,7 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
                           ),
                         ),
                         child: Text(
-                          subtopic,
+                          chapter,
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: colorScheme.onSurface,
                             fontSize: 10,
@@ -963,6 +1062,45 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
         ],
       ),
     );
+  }
+
+  // ============================================================================
+  // Topic editor sheet helpers
+  // ============================================================================
+
+  Future<void> _showAddTopicSheet(BuildContext context) async {
+    final result = await showTopicEditorSheet(context: context);
+    if (result == null) return;
+
+    if (result.action == TopicEditorAction.save && result.name != null) {
+      widget.onAddTopic?.call(result.name!);
+    }
+  }
+
+  Future<void> _showEditTopicSheet(
+    BuildContext context,
+    MatrixDimensionTopic topic,
+    int topicIndex,
+  ) async {
+    final apiMatrix = widget.matrix.apiMatrix;
+    final topicCount = apiMatrix?.dimensions.topics.length ?? 1;
+
+    final result = await showTopicEditorSheet(
+      context: context,
+      existingTopic: topic,
+      canDelete: topicCount > 1,
+    );
+    if (result == null) return;
+
+    if (result.action == TopicEditorAction.save) {
+      widget.onUpdateTopic?.call(
+        topicIndex,
+        name: result.name,
+        hasContext: result.hasContext,
+      );
+    } else if (result.action == TopicEditorAction.delete) {
+      widget.onRemoveTopic?.call(topicIndex);
+    }
   }
 
   String _getDifficultyAbbreviation(Difficulty difficulty, dynamic t) {

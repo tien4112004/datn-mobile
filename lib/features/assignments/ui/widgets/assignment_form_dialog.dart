@@ -8,7 +8,7 @@ import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -26,7 +26,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _timeLimitController;
 
   Subject _selectedSubject = Subject.mathematics;
   GradeLevel _selectedGradeLevel = GradeLevel.grade1;
@@ -40,10 +39,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
     _descriptionController = TextEditingController(
       text: widget.assignment?.description,
     );
-    _timeLimitController = TextEditingController(
-      text: widget.assignment?.timeLimitMinutes?.toString(),
-    );
-
     if (widget.assignment != null) {
       _selectedSubject = widget.assignment!.subject;
       _selectedGradeLevel = widget.assignment!.gradeLevel;
@@ -54,7 +49,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-    _timeLimitController.dispose();
+
     super.dispose();
   }
 
@@ -177,28 +172,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _timeLimitController,
-                    decoration: InputDecoration(
-                      labelText: t.assignments.form.timeLimitLabel,
-                      hintText: t.assignments.form.timeLimitHint,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        final minutes = int.tryParse(value);
-                        if (minutes == null || minutes <= 0) {
-                          return t.assignments.form.timeLimitInvalid;
-                        }
-                      }
-                      return null;
-                    },
-                  ),
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -239,17 +212,12 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
-    final timeLimitText = _timeLimitController.text.trim();
-    final timeLimit = timeLimitText.isNotEmpty
-        ? int.tryParse(timeLimitText)
-        : null;
-
     try {
       if (_isEditing) {
         final request = AssignmentUpdateRequest(
           title: title,
           description: description.isEmpty ? null : description,
-          duration: timeLimit,
+
           subject: _selectedSubject.apiValue,
           grade: _selectedGradeLevel.apiValue,
           questions: null, // Questions managed separately
@@ -269,7 +237,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
         final request = AssignmentCreateRequest(
           title: title,
           description: description.isEmpty ? null : description,
-          duration: timeLimit,
+
           subject: _selectedSubject.apiValue,
           grade: _selectedGradeLevel.apiValue,
           questions: [], // Empty initially, add questions later

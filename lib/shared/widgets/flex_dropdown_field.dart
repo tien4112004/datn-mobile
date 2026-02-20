@@ -1,7 +1,9 @@
 import 'package:flex_dropdown/flex_dropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
-class FlexDropdownField<T> extends StatelessWidget {
+class FlexDropdownField<T> extends ConsumerWidget {
   final T value;
   final List<T> items;
   final ValueChanged<T> onChanged;
@@ -28,7 +30,8 @@ class FlexDropdownField<T> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return RawFlexDropDown(
@@ -62,7 +65,11 @@ class FlexDropdownField<T> extends StatelessWidget {
                             selectedItem != null
                                 ? itemLabelBuilder?.call(selectedItem) ??
                                       '$selectedItem'
-                                : 'Select',
+                                : t
+                                      .shared
+                                      .widgets
+                                      .flexDropdownField
+                                      .selectPlaceholder,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         Icon(

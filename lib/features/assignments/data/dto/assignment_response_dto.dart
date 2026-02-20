@@ -49,6 +49,5 @@ extension AssignmentResponseMapper on AssignmentResponseDto {
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     createdAt: createdAt,
-    shuffleQuestions: true,
   );
 }

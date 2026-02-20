@@ -3,27 +3,38 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'api_matrix_dto.g.dart';
 
-/// DTO for a subtopic within a topic group.
+/// DTO for a subtopic (chapter) within a topic.
+/// Backend returns subtopics as objects with {id, name}.
 @JsonSerializable()
-class MatrixSubtopicDto {
-  final String id;
+class DimensionSubtopicDto {
+  final String? id;
   final String name;
 
-  const MatrixSubtopicDto({required this.id, required this.name});
+  const DimensionSubtopicDto({this.id, required this.name});
 
-  factory MatrixSubtopicDto.fromJson(Map<String, dynamic> json) =>
-      _$MatrixSubtopicDtoFromJson(json);
+  factory DimensionSubtopicDto.fromJson(Map<String, dynamic> json) =>
+      _$DimensionSubtopicDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MatrixSubtopicDtoToJson(this);
+  Map<String, dynamic> toJson() => _$DimensionSubtopicDtoToJson(this);
 }
 
-/// DTO for a topic group containing subtopics.
+/// DTO for a topic with optional informational subtopics.
+///
+/// Topics are now the primary dimension for the matrix structure.
+/// Subtopics are informational metadata and do not affect matrix indexing/filtering.
 @JsonSerializable()
 class MatrixDimensionTopicDto {
+  final String? id;
   final String name;
-  final List<MatrixSubtopicDto> subtopics;
+  final List<DimensionSubtopicDto>? subtopics;
+  final bool? hasContext; // Whether to use reading passages for this topic
 
-  const MatrixDimensionTopicDto({required this.name, required this.subtopics});
+  const MatrixDimensionTopicDto({
+    this.id,
+    required this.name,
+    this.subtopics,
+    this.hasContext,
+  });
 
   factory MatrixDimensionTopicDto.fromJson(Map<String, dynamic> json) =>
       _$MatrixDimensionTopicDtoFromJson(json);
@@ -84,10 +95,13 @@ extension ApiMatrixEntityMapper on ApiMatrixEntity {
       topics: dimensions.topics
           .map(
             (t) => MatrixDimensionTopicDto(
+              id: t.id,
               name: t.name,
-              subtopics: t.subtopics
-                  .map((s) => MatrixSubtopicDto(id: s.id, name: s.name))
+              // Convert chapter name strings back to subtopic DTOs
+              subtopics: t.chapters
+                  ?.map((name) => DimensionSubtopicDto(name: name))
                   .toList(),
+              hasContext: t.hasContext,
             ),
           )
           .toList(),
@@ -109,10 +123,11 @@ extension ApiMatrixDtoMapper on ApiMatrixDto {
       topics: dimensions.topics
           .map(
             (t) => MatrixDimensionTopic(
+              id: t.id,
               name: t.name,
-              subtopics: t.subtopics
-                  .map((s) => MatrixSubtopic(id: s.id, name: s.name))
-                  .toList(),
+              // Extract just the name strings from subtopic DTOs
+              chapters: t.subtopics?.map((s) => s.name).toList(),
+              hasContext: t.hasContext,
             ),
           )
           .toList(),

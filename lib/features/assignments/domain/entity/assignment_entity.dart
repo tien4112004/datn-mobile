@@ -17,7 +17,6 @@ class AssignmentEntity {
   final int totalPoints;
   final int? timeLimitMinutes;
   final QuestionOrder? questionOrder;
-  final bool shuffleQuestions;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -40,7 +39,6 @@ class AssignmentEntity {
     required this.status,
     required this.totalQuestions,
     required this.totalPoints,
-    required this.shuffleQuestions,
     this.createdAt,
     this.timeLimitMinutes,
     this.questionOrder,
@@ -74,7 +72,6 @@ class AssignmentEntity {
     QuestionOrder? questionOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? shuffleQuestions,
     List<AssignmentQuestionEntity>? questions,
     List<ContextEntity>? contexts,
     ApiMatrixEntity? matrix,
@@ -93,7 +90,6 @@ class AssignmentEntity {
       questionOrder: questionOrder ?? this.questionOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      shuffleQuestions: shuffleQuestions ?? this.shuffleQuestions,
       questions: questions ?? this.questions,
       contexts: contexts ?? this.contexts,
       matrix: matrix ?? this.matrix,

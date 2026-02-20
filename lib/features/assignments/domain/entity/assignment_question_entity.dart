@@ -26,7 +26,8 @@ class AssignmentQuestionEntity {
   /// Context ID for questions with reading passage, null if standalone
   final String? contextId;
 
-  /// Topic/subtopic ID this question belongs to (from API `chapter` field).
+  /// Topic ID this question belongs to (from API `chapter` field).
+  /// Questions are now bound directly to topics (not subtopics).
   /// Used to compute per-cell actual counts in the matrix.
   final String? topicId;
 

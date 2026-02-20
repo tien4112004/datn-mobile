@@ -11,7 +11,6 @@ part 'assignment_update_request.g.dart';
 class AssignmentUpdateRequest {
   final String? title;
   final String? description;
-  final int? duration; // Duration in minutes (null for no limit)
   final String? subject;
   final String? grade;
   final List<QuestionItemRequest>?
@@ -22,7 +21,6 @@ class AssignmentUpdateRequest {
   const AssignmentUpdateRequest({
     this.title,
     this.description,
-    this.duration,
     this.subject,
     this.grade,
     this.questions,

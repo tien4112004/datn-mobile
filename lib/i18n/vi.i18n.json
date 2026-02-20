@@ -796,7 +796,7 @@
     "subjects": {
       "english": "Tiếng Anh",
       "mathematics": "Toán",
-      "literature": "Ngữ văn"
+      "vietnamese": "Tiếng Việt"
     },
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
@@ -1176,9 +1176,6 @@
       "descriptionLabel": "Mô tả",
       "descriptionHint": "Mô tả ngắn về bài kiểm tra",
       "gradeLevelLabel": "Khối lớp *",
-      "timeLimitLabel": "Thời gian làm bài (phút)",
-      "timeLimitHint": "VD: 60",
-      "timeLimitInvalid": "Vui lòng nhập thời gian hợp lệ",
       "cancel": "Hủy",
       "save": "Lưu",
       "create": "Tạo",
@@ -1199,9 +1196,7 @@
       "gradeLevel": "Khối lớp",
       "totalQuestions": "Tổng số câu hỏi",
       "description": "Mô tả",
-      "noDescription": "Không có mô tả",
-      "shuffleQuestions": "Xáo trộn câu hỏi",
-      "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+      "noDescription": "Không có mô tả"
     },
 
     "actionDock": {
@@ -1298,9 +1293,7 @@
       "subject": "Môn học",
       "grade": "Khối lớp",
       "questions": "Câu hỏi",
-      "editInfo": "Sửa thông tin",
-      "shuffleQuestions": "Xáo trộn câu hỏi",
-      "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+      "editInfo": "Sửa thông tin"
     },
 
     "statuses": {
@@ -1331,7 +1324,7 @@
         "passages": "Đọc hiểu",
         "matrix": "Ma trận"
       },
-    "questionsBreakdown": "Phân bổ câu hỏi",
+      "questionsBreakdown": "Phân bổ câu hỏi",
       "deleteQuestion": {
         "title": "Xóa câu hỏi",
         "message(number)": "Bạn có chắc chắn muốn xóa câu hỏi $number? Hành động này không thể hoàn tác.",
@@ -1352,9 +1345,7 @@
         "gradeLevel": "Khối lớp",
         "totalQuestions": "Tổng số câu hỏi",
         "description": "Mô tả",
-        "noDescription": "Không có mô tả",
-        "shuffleQuestions": "Xáo trộn câu hỏi",
-        "shuffleDescription": "Xáo trộn thứ tự câu hỏi cho mỗi học sinh"
+        "noDescription": "Không có mô tả"
       },
       "questions": {
         "title": "Câu hỏi",
@@ -1380,7 +1371,40 @@
         "pointsLabel": "Điểm",
         "clearCell": "Xóa",
         "cancel": "Hủy",
-        "save": "Lưu"
+        "save": "Lưu",
+        "importButton": "Nhập",
+        "templateImported(name)": "Đã nhập mẫu \"$name\"",
+        "templateImportError": "Không thể nhập mẫu ma trận",
+        "template": {
+          "selectTitle": "Chọn mẫu ma trận",
+          "personalTab": "Cá nhân",
+          "publicTab": "Công khai",
+          "searchHint": "Tìm kiếm mẫu...",
+          "gradeFilter(grade)": "Lớp $grade",
+          "subjectFilter(subject)": "Môn: $subject",
+          "importButton": "Nhập mẫu",
+          "noTemplatesFound": "Không tìm thấy mẫu nào",
+          "tryDifferentSearch": "Thử tìm kiếm hoặc bộ lọc khác",
+          "loadError": "Không thể tải mẫu",
+          "retry": "Thử lại",
+          "publicBadge": "CÔNG KHAI",
+          "incompatible": "Không tương thích",
+          "topicsCount(count)": "$count chủ đề",
+          "questionsCount(count)": "$count câu hỏi",
+          "gradeBadge(grade)": "Lớp $grade"
+        },
+        "topic": {
+          "addTopic": "Thêm chủ đề",
+          "editTopic": "Sửa chủ đề",
+          "topicName": "Tên chủ đề",
+          "topicNameRequired": "Vui lòng nhập tên chủ đề",
+          "hasContext": "Đoạn văn đọc",
+          "hasContextHint": "Cho phép AI sử dụng đoạn văn đọc cho chủ đề này",
+          "chapters": "Chương",
+          "deleteTopic": "Xóa",
+          "deleteTopicConfirm": "Xóa chủ đề này và tất cả ô ma trận liên quan?",
+          "cannotDeleteLastTopic": "Không thể xóa chủ đề cuối cùng"
+        }
       }
     },
 
@@ -1497,7 +1521,7 @@
       "expectedAnswer": "Đáp án đúng",
       "overallFeedback": "Nhận xét chung",
       "overallFeedbackHint": "Nhập nhận xét chung...",
-      "notAnswered": "Chưa có câu trả lời", 
+      "notAnswered": "Chưa có câu trả lời",
       "saveButton": "Lưu điểm",
       "saveSuccess": "Lưu điểm thành công",
       "saveError(error)": "Không thể lưu điểm: $error",
@@ -1574,6 +1598,11 @@
           "audio": "Âm thanh",
           "video": "Video"
         }
+      }
+    },
+    "widgets": {
+      "flexDropdownField": {
+        "selectPlaceholder": "Chọn"
       }
     }
   },

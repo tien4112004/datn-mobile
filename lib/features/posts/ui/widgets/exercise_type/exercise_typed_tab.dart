@@ -18,7 +18,6 @@ class ExerciseTypedTab extends StatelessWidget {
   final int? maxSubmissions;
   final double? passingScore;
   final bool allowRetake;
-  final bool shuffleQuestions;
   final bool showCorrectAnswers;
   final bool showScoreImmediately;
   final int linkedResourcesCount;
@@ -28,7 +27,6 @@ class ExerciseTypedTab extends StatelessWidget {
   final ValueChanged<int?>? onMaxSubmissionsChanged;
   final ValueChanged<double?>? onPassingScoreChanged;
   final ValueChanged<bool>? onAllowRetakeChanged;
-  final ValueChanged<bool>? onShuffleQuestionsChanged;
   final ValueChanged<bool>? onShowCorrectAnswersChanged;
   final ValueChanged<bool>? onShowScoreImmediatelyChanged;
   final Translations translations;
@@ -43,7 +41,6 @@ class ExerciseTypedTab extends StatelessWidget {
     required this.maxSubmissions,
     required this.passingScore,
     required this.allowRetake,
-    required this.shuffleQuestions,
     required this.showCorrectAnswers,
     required this.showScoreImmediately,
     required this.linkedResourcesCount,
@@ -53,7 +50,6 @@ class ExerciseTypedTab extends StatelessWidget {
     this.onMaxSubmissionsChanged,
     this.onPassingScoreChanged,
     this.onAllowRetakeChanged,
-    this.onShuffleQuestionsChanged,
     this.onShowCorrectAnswersChanged,
     this.onShowScoreImmediatelyChanged,
     required this.translations,
@@ -87,13 +83,11 @@ class ExerciseTypedTab extends StatelessWidget {
             maxSubmissions: maxSubmissions,
             passingScore: passingScore,
             allowRetake: allowRetake,
-            shuffleQuestions: shuffleQuestions,
             showCorrectAnswers: showCorrectAnswers,
             showScoreImmediately: showScoreImmediately,
             onMaxSubmissionsChanged: onMaxSubmissionsChanged,
             onPassingScoreChanged: onPassingScoreChanged,
             onAllowRetakeChanged: onAllowRetakeChanged,
-            onShuffleQuestionsChanged: onShuffleQuestionsChanged,
             onShowCorrectAnswersChanged: onShowCorrectAnswersChanged,
             onShowScoreImmediatelyChanged: onShowScoreImmediatelyChanged,
           ),

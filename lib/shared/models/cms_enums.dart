@@ -307,7 +307,7 @@ enum GradeLevel {
 enum Subject {
   english,
   mathematics,
-  literature;
+  vietnamese;
 
   String getLocalizedName(Translations t) {
     switch (this) {
@@ -315,8 +315,8 @@ enum Subject {
         return t.questionBank.subjects.english;
       case Subject.mathematics:
         return t.questionBank.subjects.mathematics;
-      case Subject.literature:
-        return t.questionBank.subjects.literature;
+      case Subject.vietnamese:
+        return t.questionBank.subjects.vietnamese;
     }
   }
 
@@ -326,8 +326,8 @@ enum Subject {
         return 'TA';
       case Subject.mathematics:
         return 'T';
-      case Subject.literature:
-        return 'V';
+      case Subject.vietnamese:
+        return 'TV';
     }
   }
 
@@ -337,14 +337,14 @@ enum Subject {
         return Subject.english;
       case 'T':
         return Subject.mathematics;
-      case 'V':
-        return Subject.literature;
+      case 'TV':
+        return Subject.vietnamese;
       case 'ENGLISH':
         return Subject.english;
       case 'MATHEMATICS':
         return Subject.mathematics;
-      case 'LITERATURE':
-        return Subject.literature;
+      case 'VIETNAMESE':
+        return Subject.vietnamese;
       default:
         return Subject.english;
     }

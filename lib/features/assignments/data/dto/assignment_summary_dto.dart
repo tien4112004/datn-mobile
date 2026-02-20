@@ -56,6 +56,5 @@ extension ExamSummaryMapper on ExamSummaryDto {
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,
     createdAt: createdAt,
-    shuffleQuestions: true,
   );
 }

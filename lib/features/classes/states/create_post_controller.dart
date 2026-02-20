@@ -26,7 +26,6 @@ class CreatePostController extends AsyncNotifier<void> {
     // Assignment settings (only for Homework type posts)
     int? maxSubmissions,
     bool? allowRetake,
-    bool? shuffleQuestions,
     bool? showCorrectAnswers,
     bool? showScoreImmediately,
     double? passingScore,
@@ -49,7 +48,6 @@ class CreatePostController extends AsyncNotifier<void> {
         allowComments: allowComments,
         maxSubmissions: maxSubmissions,
         allowRetake: allowRetake,
-        shuffleQuestions: shuffleQuestions,
         showCorrectAnswers: showCorrectAnswers,
         showScoreImmediately: showScoreImmediately,
         passingScore: passingScore,

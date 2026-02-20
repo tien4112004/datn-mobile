@@ -4,6 +4,8 @@ part of 'controller_provider.dart';
 class ContextsController extends AsyncNotifier<ContextListResult> {
   int _currentPage = 1;
   String? _searchQuery;
+  List<String>? _subjectFilter;
+  bool _isLoadingMore = false;
 
   @override
   Future<ContextListResult> build() async {
@@ -16,18 +18,27 @@ class ContextsController extends AsyncNotifier<ContextListResult> {
       page: _currentPage,
       pageSize: 20,
       search: _searchQuery,
+      subject: _subjectFilter,
     );
+  }
+
+  /// Sets the subject filter and refreshes.
+  void setSubjectFilter(List<String>? subjects) {
+    _subjectFilter = subjects;
   }
 
   /// Sets the search query and refreshes.
   Future<void> setSearch(String? query) async {
     _searchQuery = query;
     _currentPage = 1;
+    _isLoadingMore = false;
     await refresh();
   }
 
   /// Refreshes the context list.
   Future<void> refresh() async {
+    _currentPage = 1;
+    _isLoadingMore = false;
     state = const AsyncLoading();
     state = await AsyncValue.guard(_fetchContexts);
   }
@@ -36,16 +47,19 @@ class ContextsController extends AsyncNotifier<ContextListResult> {
   Future<void> loadNextPage() async {
     final currentState = state.value;
     if (currentState == null) return;
+    if (_isLoadingMore) return;
+    if (!currentState.pagination.hasMore) return;
 
-    if (currentState.pagination.hasMore) {
+    _isLoadingMore = true;
+    try {
       _currentPage++;
 
-      // Append new contexts to existing list
       final repository = ref.read(contextRepositoryProvider);
       final nextPage = await repository.getContexts(
         page: _currentPage,
         pageSize: 20,
         search: _searchQuery,
+        subject: _subjectFilter,
       );
 
       state = AsyncData(
@@ -54,6 +68,8 @@ class ContextsController extends AsyncNotifier<ContextListResult> {
           pagination: nextPage.pagination,
         ),
       );
+    } finally {
+      _isLoadingMore = false;
     }
   }
 }

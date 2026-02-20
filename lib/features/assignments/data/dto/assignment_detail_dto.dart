@@ -28,8 +28,6 @@ class AssignmentDetailDto {
   final int? timeLimitMinutes;
   @JsonKey(name: 'question_order')
   final QuestionOrderDto? questionOrder;
-  @JsonKey(name: 'shuffle_questions', defaultValue: false)
-  final bool shuffleQuestions;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @JsonKey(name: 'updated_at')
@@ -48,7 +46,6 @@ class AssignmentDetailDto {
     required this.totalPoints,
     this.timeLimitMinutes,
     this.questionOrder,
-    this.shuffleQuestions = false,
     required this.createdAt,
     this.updatedAt,
   });
@@ -73,7 +70,6 @@ extension AssignmentDetailMapper on AssignmentDetailDto {
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,
     questionOrder: questionOrder?.toEntity(),
-    shuffleQuestions: shuffleQuestions,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

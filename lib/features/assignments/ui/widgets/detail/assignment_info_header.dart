@@ -6,18 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Header widget displaying assignment info with edit capability and shuffle toggle.
+/// Header widget displaying assignment info with edit capability.
 /// Follows Material Design 3 with claymorphism styling.
 class AssignmentInfoHeader extends ConsumerWidget {
   final AssignmentEntity assignment;
   final bool isEditMode;
-  final ValueChanged<bool>? onShuffleChanged;
 
   const AssignmentInfoHeader({
     super.key,
     required this.assignment,
     this.isEditMode = false,
-    this.onShuffleChanged,
   });
 
   @override
@@ -137,47 +135,6 @@ class AssignmentInfoHeader extends ConsumerWidget {
                 ),
               ],
             ),
-
-            // Shuffle Questions Toggle (only in edit mode)
-            if (isEditMode) ...[
-              const SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: colorScheme.outline.withValues(alpha: 0.3),
-                    width: 1,
-                  ),
-                ),
-                child: SwitchListTile(
-                  value: assignment.shuffleQuestions,
-                  onChanged: onShuffleChanged,
-                  title: Text(
-                    t.assignments.infoHeader.shuffleQuestions,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  subtitle: Text(
-                    t.assignments.infoHeader.shuffleDescription,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  secondary: Icon(
-                    LucideIcons.shuffle,
-                    color: assignment.shuffleQuestions
-                        ? colorScheme.primary
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
-                ),
-              ),
-            ],
           ],
         ),
       ),

@@ -71,14 +71,96 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
 
   DetailAssignmentController({required this.assignmentId});
 
+  /// Standard dimensions — always show all 3 difficulties and 4 question types.
+  static const _standardDifficulties = [
+    'KNOWLEDGE',
+    'COMPREHENSION',
+    'APPLICATION',
+  ];
+  static const _standardQuestionTypes = [
+    'MULTIPLE_CHOICE',
+    'FILL_IN_BLANK',
+    'MATCHING',
+    'OPEN_ENDED',
+  ];
+
   @override
   Future<AssignmentEntity> build() async {
-    return _fetchAssignment(assignmentId);
+    final assignment = await _fetchAssignment(assignmentId);
+    // Normalize matrix to ensure all standard dimensions are present
+    if (assignment.matrix != null) {
+      return assignment.copyWith(matrix: _normalizeMatrix(assignment.matrix!));
+    }
+    return assignment;
   }
 
   Future<AssignmentEntity> _fetchAssignment(String assignmentId) async {
     final repository = ref.read(assignmentRepositoryProvider);
     return repository.getAssignmentById(assignmentId);
+  }
+
+  /// Ensures the matrix has all 3 difficulties and 4 question types.
+  /// Copies existing cell values to their correct positions; missing cells get "0:0".
+  ApiMatrixEntity _normalizeMatrix(ApiMatrixEntity matrix) {
+    final existingDiffs = matrix.dimensions.difficulties;
+    final existingTypes = matrix.dimensions.questionTypes;
+
+    // If already standard, return as-is
+    if (_listEquals(existingDiffs, _standardDifficulties) &&
+        _listEquals(existingTypes, _standardQuestionTypes)) {
+      return matrix;
+    }
+
+    // Build index maps: existing dimension value → existing index
+    final diffIndexMap = <String, int>{};
+    for (int i = 0; i < existingDiffs.length; i++) {
+      diffIndexMap[existingDiffs[i]] = i;
+    }
+    final typeIndexMap = <String, int>{};
+    for (int i = 0; i < existingTypes.length; i++) {
+      typeIndexMap[existingTypes[i]] = i;
+    }
+
+    // Rebuild matrix with standard dimensions
+    final newMatrix = <List<List<String>>>[];
+    for (int t = 0; t < matrix.matrix.length; t++) {
+      final topicRow = <List<String>>[];
+      for (final stdDiff in _standardDifficulties) {
+        final diffRow = <String>[];
+        for (final stdType in _standardQuestionTypes) {
+          final oldDiffIdx = diffIndexMap[stdDiff];
+          final oldTypeIdx = typeIndexMap[stdType];
+          if (oldDiffIdx != null &&
+              oldTypeIdx != null &&
+              t < matrix.matrix.length &&
+              oldDiffIdx < matrix.matrix[t].length &&
+              oldTypeIdx < matrix.matrix[t][oldDiffIdx].length) {
+            diffRow.add(matrix.matrix[t][oldDiffIdx][oldTypeIdx]);
+          } else {
+            diffRow.add('0:0');
+          }
+        }
+        topicRow.add(diffRow);
+      }
+      newMatrix.add(topicRow);
+    }
+
+    return matrix.copyWith(
+      dimensions: MatrixDimensions(
+        topics: matrix.dimensions.topics,
+        difficulties: _standardDifficulties,
+        questionTypes: _standardQuestionTypes,
+      ),
+      matrix: newMatrix,
+    );
+  }
+
+  static bool _listEquals(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   /// Refreshes the assignment details.
@@ -169,7 +251,7 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
   /// Update a single cell in the matrix (optimistic local update only).
   /// Server sync happens when the user presses Save.
   Future<void> updateMatrixCell(
-    int subtopicIndex,
+    int topicIndex,
     int difficultyIndex,
     int questionTypeIndex,
     String cellValue,
@@ -178,13 +260,13 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     if (currentAssignment.matrix == null) return;
 
     final newMatrix = currentAssignment.matrix!.deepCopyMatrix();
-    newMatrix[subtopicIndex][difficultyIndex][questionTypeIndex] = cellValue;
+    newMatrix[topicIndex][difficultyIndex][questionTypeIndex] = cellValue;
 
     // Recalculate totals from all cells
     int totalCount = 0;
     double totalPts = 0.0;
-    for (final subtopic in newMatrix) {
-      for (final difficulty in subtopic) {
+    for (final topic in newMatrix) {
+      for (final difficulty in topic) {
         for (final cell in difficulty) {
           final parsed = parseCellValue(cell);
           totalCount += parsed.count;
@@ -204,20 +286,148 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
     );
   }
 
-  /// Update shuffle questions setting.
-  Future<void> updateShuffleQuestions(bool shuffle) async {
+  /// Imports a matrix template, replacing the current assignment matrix.
+  /// Local state update only — server sync happens when user presses Save.
+  Future<void> importMatrixTemplate(ApiMatrixEntity templateMatrix) async {
     final currentAssignment = await future;
 
-    // Update local state optimistically
-    state = AsyncData(currentAssignment.copyWith(shuffleQuestions: shuffle));
+    state = AsyncData(
+      currentAssignment.copyWith(matrix: _normalizeMatrix(templateMatrix)),
+    );
+  }
 
-    // Sync to server (use UpdateAssignmentController for proper update)
-    final repository = ref.read(assignmentRepositoryProvider);
-    await repository.updateAssignment(
-      assignmentId,
-      const AssignmentUpdateRequest(
-        // Note: API might not support shuffle field yet
-        // This is a placeholder until API is updated
+  /// Add a new topic to the matrix dimensions and append an empty row.
+  Future<void> addTopic(String name) async {
+    final currentAssignment = await future;
+    if (currentAssignment.matrix == null) return;
+
+    final matrixData = currentAssignment.matrix!;
+    final dims = matrixData.dimensions;
+
+    // Create new topic
+    final newTopic = MatrixDimensionTopic(name: name);
+
+    // Append topic to dimensions
+    final newTopics = [...dims.topics, newTopic];
+    final newDimensions = MatrixDimensions(
+      topics: newTopics,
+      difficulties: dims.difficulties,
+      questionTypes: dims.questionTypes,
+    );
+
+    // Append empty row to matrix
+    final newMatrix = matrixData.deepCopyMatrix();
+    newMatrix.add(
+      List.generate(
+        dims.difficulties.length,
+        (_) => List.filled(dims.questionTypes.length, '0:0'),
+      ),
+    );
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        matrix: matrixData.copyWith(
+          dimensions: newDimensions,
+          matrix: newMatrix,
+        ),
+      ),
+    );
+  }
+
+  /// Remove a topic from the matrix dimensions and its corresponding row.
+  /// Also removes questions associated with the topic.
+  Future<void> removeTopic(int topicIndex) async {
+    final currentAssignment = await future;
+    if (currentAssignment.matrix == null) return;
+
+    final matrixData = currentAssignment.matrix!;
+    final dims = matrixData.dimensions;
+
+    // Guard: minimum 1 topic
+    if (dims.topics.length <= 1) return;
+    if (topicIndex < 0 || topicIndex >= dims.topics.length) return;
+
+    final removedTopic = dims.topics[topicIndex];
+
+    // Remove topic from dimensions
+    final newTopics = [...dims.topics]..removeAt(topicIndex);
+    final newDimensions = MatrixDimensions(
+      topics: newTopics,
+      difficulties: dims.difficulties,
+      questionTypes: dims.questionTypes,
+    );
+
+    // Remove corresponding row from matrix
+    final newMatrix = matrixData.deepCopyMatrix()..removeAt(topicIndex);
+
+    // Recalculate totals
+    int totalCount = 0;
+    double totalPts = 0.0;
+    for (final topic in newMatrix) {
+      for (final difficulty in topic) {
+        for (final cell in difficulty) {
+          final parsed = parseCellValue(cell);
+          totalCount += parsed.count;
+          totalPts += parsed.points;
+        }
+      }
+    }
+
+    // Remove questions with matching topicId
+    final updatedQuestions = removedTopic.id != null
+        ? currentAssignment.questions
+              .where((q) => q.topicId != removedTopic.id)
+              .toList()
+        : currentAssignment.questions;
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        matrix: matrixData.copyWith(
+          dimensions: newDimensions,
+          matrix: newMatrix,
+          totalQuestions: totalCount,
+          totalPoints: totalPts.toInt(),
+        ),
+        questions: updatedQuestions,
+      ),
+    );
+  }
+
+  /// Update a topic's properties (name, chapters, hasContext).
+  Future<void> updateTopic(
+    int topicIndex, {
+    String? name,
+    List<String>? chapters,
+    bool? hasContext,
+  }) async {
+    final currentAssignment = await future;
+    if (currentAssignment.matrix == null) return;
+
+    final matrixData = currentAssignment.matrix!;
+    final dims = matrixData.dimensions;
+
+    if (topicIndex < 0 || topicIndex >= dims.topics.length) return;
+
+    final existing = dims.topics[topicIndex];
+    final updated = MatrixDimensionTopic(
+      id: existing.id,
+      name: name ?? existing.name,
+      chapters: chapters ?? existing.chapters,
+      hasContext: hasContext ?? existing.hasContext,
+    );
+
+    final newTopics = [...dims.topics];
+    newTopics[topicIndex] = updated;
+
+    final newDimensions = MatrixDimensions(
+      topics: newTopics,
+      difficulties: dims.difficulties,
+      questionTypes: dims.questionTypes,
+    );
+
+    state = AsyncData(
+      currentAssignment.copyWith(
+        matrix: matrixData.copyWith(dimensions: newDimensions),
       ),
     );
   }

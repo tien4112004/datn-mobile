@@ -317,7 +317,7 @@ class _AssignmentSelectorSheetState
         return LucideIcons.messageSquare;
       case Subject.mathematics:
         return LucideIcons.calculator;
-      case Subject.literature:
+      case Subject.vietnamese:
         return LucideIcons.bookOpen;
     }
   }
@@ -341,7 +341,7 @@ class _AssignmentSelectionTile extends ConsumerWidget {
         return Themes.primaryColor;
       case Subject.mathematics:
         return const Color(0xFFDC2626);
-      case Subject.literature:
+      case Subject.vietnamese:
         return const Color(0xFF16A34A);
     }
   }
@@ -352,7 +352,7 @@ class _AssignmentSelectionTile extends ConsumerWidget {
         return LucideIcons.messageSquare;
       case Subject.mathematics:
         return LucideIcons.calculator;
-      case Subject.literature:
+      case Subject.vietnamese:
         return LucideIcons.bookOpen;
     }
   }

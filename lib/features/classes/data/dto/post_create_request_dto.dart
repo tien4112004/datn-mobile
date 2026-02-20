@@ -18,7 +18,6 @@ class PostCreateRequestDto {
   // Assignment settings (only for Homework type posts)
   final int? maxSubmissions;
   final bool? allowRetake;
-  final bool? shuffleQuestions;
   final bool? showCorrectAnswers;
   final bool? showScoreImmediately;
   final double? passingScore;
@@ -36,7 +35,6 @@ class PostCreateRequestDto {
     this.allowComments,
     this.maxSubmissions,
     this.allowRetake,
-    this.shuffleQuestions,
     this.showCorrectAnswers,
     this.showScoreImmediately,
     this.passingScore,

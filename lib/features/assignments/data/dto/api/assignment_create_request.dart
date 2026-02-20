@@ -10,7 +10,6 @@ part 'assignment_create_request.g.dart';
 class AssignmentCreateRequest {
   final String title;
   final String? description;
-  final int? duration; // Duration in minutes (null for no limit)
   final String? subject;
   final String? grade;
   final List<QuestionItemRequest>? questions;
@@ -19,7 +18,6 @@ class AssignmentCreateRequest {
   const AssignmentCreateRequest({
     required this.title,
     this.description,
-    this.duration,
     this.subject,
     this.grade,
     this.questions,

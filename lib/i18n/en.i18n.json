@@ -792,7 +792,7 @@
     "subjects": {
       "english": "English",
       "mathematics": "Mathematics",
-      "literature": "Literature"
+      "vietnamese": "Vietnamese"
     },
     "viewing": {
       "imageNotAvailable": "Image not available",
@@ -1173,9 +1173,6 @@
       "descriptionLabel": "Description",
       "descriptionHint": "Brief description of the assignment",
       "gradeLevelLabel": "Grade Level *",
-      "timeLimitLabel": "Time Limit (minutes)",
-      "timeLimitHint": "e.g., 60",
-      "timeLimitInvalid": "Please enter a valid time limit",
       "cancel": "Cancel",
       "save": "Save",
       "create": "Create",
@@ -1197,9 +1194,7 @@
       "gradeLevel": "Grade Level",
       "totalQuestions": "Total Questions",
       "description": "Description",
-      "noDescription": "No Description Provided",
-      "shuffleQuestions": "Shuffle Questions",
-      "shuffleDescription": "Randomize question order for each student"
+      "noDescription": "No Description Provided"
     },
 
     "actionDock": {
@@ -1297,9 +1292,7 @@
       "subject": "Subject",
       "grade": "Grade",
       "questions": "Questions",
-      "editInfo": "Edit Info",
-      "shuffleQuestions": "Shuffle Questions",
-      "shuffleDescription": "Randomize question order for each student"
+      "editInfo": "Edit Info"
     },
 
     "statuses": {
@@ -1351,9 +1344,7 @@
         "gradeLevel": "Grade Level",
         "totalQuestions": "Total Questions",
         "description": "Description",
-        "noDescription": "No Description Provided",
-        "shuffleQuestions": "Shuffle Questions",
-        "shuffleDescription": "Randomize question order for each student"
+        "noDescription": "No Description Provided"
       },
       "questions": {
         "title": "Questions",
@@ -1379,7 +1370,40 @@
         "pointsLabel": "Points",
         "clearCell": "Clear",
         "cancel": "Cancel",
-        "save": "Save"
+        "save": "Save",
+        "importButton": "Import",
+        "templateImported(name)": "Template \"$name\" imported",
+        "templateImportError": "Failed to import template",
+        "template": {
+          "selectTitle": "Select Matrix Template",
+          "personalTab": "Personal",
+          "publicTab": "Public",
+          "searchHint": "Search templates...",
+          "gradeFilter(grade)": "Grade $grade",
+          "subjectFilter(subject)": "Subject: $subject",
+          "importButton": "Import Template",
+          "noTemplatesFound": "No templates found",
+          "tryDifferentSearch": "Try a different search or filter",
+          "loadError": "Failed to load templates",
+          "retry": "Retry",
+          "publicBadge": "PUBLIC",
+          "incompatible": "Incompatible",
+          "topicsCount(count)": "$count topics",
+          "questionsCount(count)": "$count questions",
+          "gradeBadge(grade)": "Grade $grade"
+        },
+        "topic": {
+          "addTopic": "Add Topic",
+          "editTopic": "Edit Topic",
+          "topicName": "Topic Name",
+          "topicNameRequired": "Topic name is required",
+          "hasContext": "Reading Passage",
+          "hasContextHint": "Enable AI to use reading passages for this topic",
+          "chapters": "Chapters",
+          "deleteTopic": "Delete",
+          "deleteTopicConfirm": "Delete this topic and all its matrix cells?",
+          "cannotDeleteLastTopic": "Cannot delete the last topic"
+        }
       }
     },
 
@@ -1573,6 +1597,11 @@
           "audio": "Audio",
           "video": "Video"
         }
+      }
+    },
+    "widgets": {
+      "flexDropdownField": {
+        "selectPlaceholder": "Select"
       }
     }
   },

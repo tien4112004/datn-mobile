@@ -41,20 +41,17 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
-            debugPrint('🌐 Page started loading: $url');
             setState(() {
               currentUrl = url;
               isLoading = true;
             });
           },
           onPageFinished: (url) {
-            debugPrint('✅ Page finished loading: $url');
             setState(() {
               isLoading = false;
             });
           },
           onNavigationRequest: (request) {
-            debugPrint('📍 Navigation request: ${request.url}');
             final uri = Uri.parse(request.url);
 
             // Check for callback URLs
@@ -71,11 +68,7 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
 
             return NavigationDecision.navigate;
           },
-          onWebResourceError: (error) {
-            debugPrint('❌ WebView error: ${error.description}');
-            debugPrint('   Error type: ${error.errorType}');
-            debugPrint('   URL: ${error.url}');
-          },
+          onWebResourceError: (error) {},
         ),
       )
       ..loadRequest(Uri.parse(widget.checkoutUrl));
@@ -260,83 +253,19 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
   void _handleCancel(Uri uri) async {
     if (!mounted) return;
 
-    // Show loading indicator
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    scaffoldMessenger.showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(t.payment.webview.verifyingCancellation),
-          ],
-        ),
-        duration: const Duration(minutes: 2),
+    // Explicitly notify backend to mark transaction CANCELLED (best-effort)
+    final repository = ref.read(paymentRepositoryProvider);
+    await repository.cancelTransaction(widget.transactionId);
+
+    if (!mounted) return;
+
+    context.router.pop(
+      PaymentCallbackResultModel(
+        status: PaymentCallbackStatus.cancelled,
+        transactionId: widget.transactionId,
+        message: t.payment.webview.messages.cancelled,
       ),
     );
-
-    try {
-      final pollingService = ref.read(paymentStatusPollingServiceProvider);
-
-      // Poll to verify cancellation
-      final transaction = await pollingService.pollTransactionStatus(
-        transactionId: widget.transactionId,
-        onRetry: (attempt, nextDelay) {
-          debugPrint(
-            'Payment verification attempt $attempt, waiting ${nextDelay.inSeconds}s...',
-          );
-        },
-      );
-
-      if (!mounted) return;
-
-      // Clear loading indicator
-      scaffoldMessenger.hideCurrentSnackBar();
-
-      // Build result based on verified status
-      final result = _buildCallbackResult(transaction);
-      context.router.pop(result);
-    } on PaymentTimeoutException {
-      if (!mounted) return;
-      scaffoldMessenger.hideCurrentSnackBar();
-
-      context.router.pop(
-        PaymentCallbackResultModel(
-          status: PaymentCallbackStatus.cancelled,
-          transactionId: null,
-          message: t.payment.webview.messages.cancelled,
-        ),
-      );
-    } on PaymentVerificationException {
-      if (!mounted) return;
-      scaffoldMessenger.hideCurrentSnackBar();
-
-      context.router.pop(
-        PaymentCallbackResultModel(
-          status: PaymentCallbackStatus.cancelled,
-          transactionId: null,
-          message: t.payment.webview.messages.cancelled,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      scaffoldMessenger.hideCurrentSnackBar();
-
-      context.router.pop(
-        PaymentCallbackResultModel(
-          status: PaymentCallbackStatus.cancelled,
-          transactionId: null,
-          message: t.payment.webview.messages.cancelled,
-        ),
-      );
-    }
   }
 
   PaymentCallbackResultModel _buildCallbackResult(

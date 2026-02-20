@@ -9,4 +9,5 @@ abstract class PaymentRepository {
     int page = 1,
     int size = 10,
   });
+  Future<void> cancelTransaction(String transactionId);
 }

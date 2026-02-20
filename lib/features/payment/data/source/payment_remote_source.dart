@@ -26,4 +26,10 @@ abstract class PaymentRemoteSource {
   @GET('/payments/user/transactions')
   Future<ServerResponseDto<PaginatedTransactionResponseModel>>
   getUserTransactions(@Query('page') int page, @Query('size') int size);
+
+  @GET('/payments/callback/cancel')
+  Future<ServerResponseDto<String>> cancelTransaction(
+    @Query('transactionId') String? transactionId,
+    @Query('referenceCode') String? referenceCode,
+  );
 }

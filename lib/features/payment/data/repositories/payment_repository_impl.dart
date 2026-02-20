@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:AIPrimary/features/payment/data/repositories/payment_repository.dart';
 import 'package:AIPrimary/features/payment/data/source/payment_remote_source.dart';
 import 'package:AIPrimary/features/payment/data/models/checkout_request_model.dart';
@@ -39,5 +40,15 @@ class PaymentRepositoryImpl implements PaymentRepository {
     final response = await _remoteSource.getUserTransactions(page, size);
     // The response.data contains PaginatedTransactionResponseModel with a 'data' field
     return response.data?.data ?? [];
+  }
+
+  @override
+  Future<void> cancelTransaction(String transactionId) async {
+    try {
+      await _remoteSource.cancelTransaction(transactionId, null);
+    } catch (e) {
+      // Best-effort: swallow errors — user intent to cancel is clear
+      debugPrint('cancelTransaction failed (ignored): $e');
+    }
   }
 }

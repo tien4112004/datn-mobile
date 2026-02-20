@@ -1769,5 +1769,134 @@
       "openEnded": "Tự luận",
       "fillInBlank": "Điền vào chỗ trống"
     }
+  },
+  "payment": {
+    "paymentMethods": {
+      "title": "Phương thức thanh toán",
+      "buyCoin": "Mua Coins",
+      "currentBalance": "Số dư hiện tại",
+      "coinsLabel": "Coins",
+      "usageByModel": "Sử dụng theo mô hình",
+      "usageByType": "Sử dụng theo loại",
+      "noUsageData": "Chưa có dữ liệu sử dụng",
+      "errorLoadingBalance": "Lỗi khi tải số dư",
+      "errorLoadingData": "Lỗi khi tải dữ liệu",
+      "requests": "yêu cầu",
+      "unknown": "Không xác định",
+      "outlineGeneration": "Tạo dàn ý",
+      "imageGeneration": "Tạo hình ảnh",
+      "mindMapCreation": "Tạo sơ đồ tư duy",
+      "presentationGeneration": "Tạo thuyết trình"
+    },
+    "coinPurchase": {
+      "title": "Mua Coins",
+      "paymentMethod": "Phương thức thanh toán",
+      "choosePackage": "Chọn gói",
+      "choosePackageSubtitle": "Chọn gói coin phù hợp nhất với nhu cầu của bạn",
+      "continueToPayment": "Tiếp tục thanh toán",
+      "failedToCreateCheckout": "Tạo thanh toán thất bại: $error",
+      "gateways": {
+        "bankTransfer": "Chuyển khoản ngân hàng",
+        "qrCode": "Mã QR"
+      },
+      "package": {
+        "popular": "PHỔ BIẾN",
+        "coins": "coins",
+        "bonus": "thưởng"
+      },
+      "packages": {
+        "starter": {
+          "name": "Gói Khởi Đầu",
+          "description": "Hoàn hảo để dùng thử"
+        },
+        "popular": {
+          "name": "Gói Phổ Biến",
+          "description": "Giá trị tốt nhất! +500 coins thưởng"
+        },
+        "premium": {
+          "name": "Gói Cao Cấp",
+          "description": "Tiết kiệm tối đa! +1.500 coins thưởng"
+        },
+        "ultimate": {
+          "name": "Gói Tối Thượng",
+          "description": "Dành cho người dùng chuyên nghiệp! +5.000 coins thưởng"
+        }
+      }
+    },
+    "transactionHistory": {
+      "title": "Lịch sử giao dịch",
+      "noTransactions": "Chưa có giao dịch nào",
+      "noMatchingTransactions": "Không có giao dịch phù hợp",
+      "tryDifferentFilters": "Thử điều chỉnh bộ lọc của bạn",
+      "error": "Lỗi: $error",
+      "retry": "Thử lại",
+      "paymentMethod": "Phương thức thanh toán: $gateway",
+      "errorPrefix": "Lỗi",
+      "filters": {
+        "status": "Trạng thái",
+        "allStatus": "Tất cả trạng thái",
+        "gateway": "Phương thức thanh toán",
+        "allGateways": "Tất cả phương thức"
+      }
+    },
+    "transactionDetail": {
+      "title": "Chi tiết giao dịch",
+      "copyTransactionId": "Sao chép ID giao dịch",
+      "transactionIdCopied": "Đã sao chép ID giao dịch",
+      "copiedToClipboard": "Đã sao chép $label",
+      "coins": "coins",
+      "transactionDetailsSection": "Chi tiết giao dịch",
+      "timeline": "Thời gian",
+      "transactionId": "ID giao dịch",
+      "description": "Mô tả",
+      "referenceCode": "Mã tham chiếu",
+      "paymentGateway": "Cổng thanh toán",
+      "errorMessage": "Thông báo lỗi",
+      "created": "Tạo lúc",
+      "lastUpdated": "Cập nhật lần cuối",
+      "completed": "Hoàn thành"
+    },
+    "status": {
+      "success": "THÀNH CÔNG",
+      "pending": "ĐANG XỬ LÝ",
+      "failed": "THẤT BẠI",
+      "cancelled": "ĐÃ HỦY",
+      "messages": {
+        "success": "Thanh toán thành công",
+        "pending": "Thanh toán đang được xử lý",
+        "failed": "Thanh toán thất bại",
+        "cancelled": "Thanh toán đã bị hủy",
+        "unknown": "Trạng thái không xác định"
+      }
+    },
+    "callback": {
+      "paymentSuccessful": "Thanh toán thành công!",
+      "coinsAdded": "Coins đã được thêm vào tài khoản của bạn.",
+      "paymentFailed": "Thanh toán thất bại",
+      "paymentCancelled": "Thanh toán đã bị hủy",
+      "paymentPending": "Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau.",
+      "ok": "OK"
+    },
+    "webview": {
+      "title": "Hoàn tất thanh toán",
+      "verifyingPayment": "Đang xác minh trạng thái thanh toán...",
+      "verifyingCancellation": "Đang xác minh hủy thanh toán...",
+      "cancelDialog": {
+        "title": "Hủy thanh toán?",
+        "message": "Bạn có chắc chắn muốn hủy thanh toán này không?",
+        "no": "Không",
+        "yesCancel": "Có, Hủy"
+      },
+      "messages": {
+        "successWithCoins": "Thanh toán thành công! $coins coins đã được thêm vào tài khoản của bạn.",
+        "failedDefault": "Thanh toán thất bại. Vui lòng thử lại.",
+        "failedWithCode": "Thanh toán thất bại (Lỗi: $code). Vui lòng thử lại.",
+        "cancelled": "Thanh toán đã bị hủy.",
+        "processing": "Thanh toán vẫn đang được xử lý. Vui lòng kiểm tra lại sau.",
+        "timeoutSuccess": "Xác minh thanh toán mất nhiều thời gian hơn dự kiến. Vui lòng kiểm tra lịch sử giao dịch của bạn sau vài phút.",
+        "verificationFailed": "Không thể xác minh trạng thái thanh toán. Thanh toán của bạn có thể vẫn đang được xử lý. Kiểm tra lịch sử giao dịch hoặc liên hệ hỗ trợ.",
+        "unexpectedError": "Đã xảy ra lỗi khi xác minh thanh toán. Vui lòng thử lại."
+      }
+    }
   }
 }

@@ -16,7 +16,12 @@ class PresentationGenerateController
           .read(presentationGenerateServiceProvider)
           .generateOutline(outlineData);
 
-      return PresentationGenerateState.outlineSuccess(response);
+      var generatedResult = PresentationGenerateState.outlineSuccess(response);
+      ref
+          .read(presentationFormControllerProvider.notifier)
+          .setOutline(generatedResult.outlineResponse ?? '');
+
+      return generatedResult;
     });
   }
 

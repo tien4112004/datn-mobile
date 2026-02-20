@@ -179,9 +179,18 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
         ),
 
         if (isLoading)
-          Container(
-            color: Colors.black26,
-            child: const Center(child: CircularProgressIndicator()),
+          Consumer(
+            builder: (context, ref, child) {
+              final theme = Theme.of(context);
+              return Container(
+                color: Colors.black26,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              );
+            },
           ),
       ],
     );

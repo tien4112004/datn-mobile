@@ -1768,5 +1768,134 @@
       "matching": "Matching",
       "openEnded": "Open Ended"
     }
+  },
+  "payment": {
+    "paymentMethods": {
+      "title": "Payment Methods",
+      "buyCoin": "Buy Coins",
+      "currentBalance": "Current Balance",
+      "coinsLabel": "Coins",
+      "usageByModel": "Usage by Model",
+      "usageByType": "Usage by Type",
+      "noUsageData": "No usage data available",
+      "errorLoadingBalance": "Error loading balance",
+      "errorLoadingData": "Error loading data",
+      "requests": "requests",
+      "unknown": "Unknown",
+      "outlineGeneration": "Outline Generation",
+      "imageGeneration": "Image Generation",
+      "mindMapCreation": "Mind Map Creation",
+      "presentationGeneration": "Presentation Generation"
+    },
+    "coinPurchase": {
+      "title": "Purchase Coins",
+      "paymentMethod": "Payment Method",
+      "choosePackage": "Choose a package",
+      "choosePackageSubtitle": "Select the coin package that best suits your needs",
+      "continueToPayment": "Continue to Payment",
+      "failedToCreateCheckout": "Failed to create checkout: $error",
+      "gateways": {
+        "bankTransfer": "Bank Transfer",
+        "qrCode": "QR Code"
+      },
+      "package": {
+        "popular": "POPULAR",
+        "coins": "coins",
+        "bonus": "bonus"
+      },
+      "packages": {
+        "starter": {
+          "name": "Starter Pack",
+          "description": "Perfect for trying out"
+        },
+        "popular": {
+          "name": "Popular Pack",
+          "description": "Best value! +500 bonus coins"
+        },
+        "premium": {
+          "name": "Premium Pack",
+          "description": "Maximum savings! +1,500 bonus coins"
+        },
+        "ultimate": {
+          "name": "Ultimate Pack",
+          "description": "For power users! +5,000 bonus coins"
+        }
+      }
+    },
+    "transactionHistory": {
+      "title": "Transaction History",
+      "noTransactions": "No transactions yet",
+      "noMatchingTransactions": "No matching transactions",
+      "tryDifferentFilters": "Try adjusting your filters",
+      "error": "Error: $error",
+      "retry": "Retry",
+      "paymentMethod": "Payment method: $gateway",
+      "errorPrefix": "Error",
+      "filters": {
+        "status": "Status",
+        "allStatus": "All Status",
+        "gateway": "Payment Method",
+        "allGateways": "All Methods"
+      }
+    },
+    "transactionDetail": {
+      "title": "Transaction Details",
+      "copyTransactionId": "Copy Transaction ID",
+      "transactionIdCopied": "Transaction ID copied to clipboard",
+      "copiedToClipboard": "$label copied to clipboard",
+      "coins": "coins",
+      "transactionDetailsSection": "Transaction Details",
+      "timeline": "Timeline",
+      "transactionId": "Transaction ID",
+      "description": "Description",
+      "referenceCode": "Reference Code",
+      "paymentGateway": "Payment Gateway",
+      "errorMessage": "Error Message",
+      "created": "Created",
+      "lastUpdated": "Last Updated",
+      "completed": "Completed"
+    },
+    "status": {
+      "success": "SUCCESS",
+      "pending": "PENDING",
+      "failed": "FAILED",
+      "cancelled": "CANCELLED",
+      "messages": {
+        "success": "Payment completed successfully",
+        "pending": "Payment is being processed",
+        "failed": "Payment failed",
+        "cancelled": "Payment was cancelled",
+        "unknown": "Unknown status"
+      }
+    },
+    "callback": {
+      "paymentSuccessful": "Payment Successful!",
+      "coinsAdded": "Your coins have been added to your account.",
+      "paymentFailed": "Payment failed",
+      "paymentCancelled": "Payment cancelled",
+      "paymentPending": "Payment is being processed. Please check back later.",
+      "ok": "OK"
+    },
+    "webview": {
+      "title": "Complete Payment",
+      "verifyingPayment": "Verifying payment status...",
+      "verifyingCancellation": "Verifying cancellation...",
+      "cancelDialog": {
+        "title": "Cancel Payment?",
+        "message": "Are you sure you want to cancel this payment?",
+        "no": "No",
+        "yesCancel": "Yes, Cancel"
+      },
+      "messages": {
+        "successWithCoins": "Payment completed successfully! $coins coins have been added to your account.",
+        "failedDefault": "Payment failed. Please try again.",
+        "failedWithCode": "Payment failed (Error: $code). Please try again.",
+        "cancelled": "Payment was cancelled.",
+        "processing": "Payment is still being processed. Please check back later.",
+        "timeoutSuccess": "Payment verification is taking longer than expected. Please check your transaction history in a few minutes.",
+        "verificationFailed": "Unable to verify payment status. Your payment may still be processing. Check transaction history or contact support.",
+        "unexpectedError": "An error occurred while verifying payment. Please try again."
+      }
+    }
   }
 }

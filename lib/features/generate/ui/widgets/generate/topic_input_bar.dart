@@ -2,6 +2,9 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/features/coins/ui/widgets/coin_balance_indicator.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Bottom input bar for entering presentation topics with attach and generate actions.
 ///
@@ -32,36 +35,52 @@ class TopicInputBar extends ConsumerWidget {
     final formState = ref.watch(this.formState);
     final generateStateAsync = ref.watch(generateState);
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        border: Border(top: BorderSide(color: context.borderColor)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Coin balance banner
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(color: context.surfaceColor),
+          alignment: Alignment.topRight,
+          child: CoinBalanceIndicator(
+            onTap: () {
+              context.router.push(const PaymentMethodsRoute());
+            },
           ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            _buildAttachButton(context),
-            const SizedBox(width: 8),
-            _buildTextInput(context),
-            const SizedBox(width: 8),
-            _buildGenerateButton(
-              context,
-              formState.isValid,
-              generateStateAsync,
-            ),
-          ],
         ),
-      ),
+        // Input bar
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: context.surfaceColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -5),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildAttachButton(context),
+                const SizedBox(width: 8),
+                _buildTextInput(context),
+                const SizedBox(width: 8),
+                _buildGenerateButton(
+                  context,
+                  formState.isValid,
+                  generateStateAsync,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

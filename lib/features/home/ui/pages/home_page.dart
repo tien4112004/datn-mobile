@@ -14,6 +14,8 @@ import 'package:AIPrimary/features/home/ui/widgets/dashboard_resource_banner.dar
 import 'package:AIPrimary/features/home/ui/widgets/dashboard_modals.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/features/coins/providers/coins_providers.dart';
+import 'package:shimmer/shimmer.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -132,54 +134,92 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
             const SizedBox(width: 8),
-            Container(
-              margin: const EdgeInsets.only(right: 16, top: 4, bottom: 4),
-              child: Material(
-                color: Colors.transparent,
-                child: Ink(
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade50,
-                    borderRadius: Themes.boxRadius,
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      // TODO: Navigate to credits/purchase page
-                      debugPrint('Credits tapped');
-                    },
-                    borderRadius: Themes.boxRadius,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+            Consumer(
+              builder: (context, ref, child) {
+                final coinBalanceAsync = ref.watch(userCoinBalanceProvider);
+
+                return Container(
+                  margin: const EdgeInsets.only(right: 16, top: 4, bottom: 4),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade50,
+                        borderRadius: Themes.boxRadius,
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            LucideIcons.coins,
-                            size: 20,
-                            color: Colors.amber.shade700,
+                      child: InkWell(
+                        onTap: () {
+                          context.router.push(const PaymentMethodsRoute());
+                        },
+                        borderRadius: Themes.boxRadius,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '1,250 credits', // TODO: Replace with actual user credits
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                              color: Colors.amber.shade900,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                LucideIcons.coins,
+                                size: 20,
+                                color: Colors.amber.shade700,
+                              ),
+                              const SizedBox(width: 6),
+                              coinBalanceAsync.when(
+                                data: (coinData) => Text(
+                                  '${_formatNumber(coinData.coin)} coins',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Colors.amber.shade900,
+                                  ),
+                                ),
+                                loading: () => SizedBox(
+                                  width: 80,
+                                  height: 14,
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.amber.shade200,
+                                    highlightColor: Colors.amber.shade100,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                error: (_, _) => Text(
+                                  '-- coins',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Colors.amber.shade900,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         );
       },
     );
+  }
+
+  String _formatNumber(int number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(1)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(1)}K';
+    }
+    return number.toString();
   }
 
   @override

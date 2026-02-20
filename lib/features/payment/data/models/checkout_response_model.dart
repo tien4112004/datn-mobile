@@ -10,7 +10,6 @@ abstract class CheckoutResponseModel with _$CheckoutResponseModel {
     required String checkoutUrl,
     String? orderInvoiceNumber,
     String? gate,
-    Map<String, String>? formFields,
     String? referenceCode,
     double? amount,
     String? status,

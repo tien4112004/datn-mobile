@@ -1,7 +1,5 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/auth/controllers/providers.dart';
-// ignore: unused_import
-import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +43,6 @@ class _SignInFormState extends ConsumerState<SignInForm> {
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
     final authControllerNotifier = ref.watch(authControllerPod.notifier);
-    final authController = ref.watch(authControllerPod);
 
     return Form(
       key: _formKey,
@@ -107,9 +104,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                   Text(
                     t.auth.signIn.rememberMe,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: authController.isLoading
-                          ? colorScheme.primary.withAlpha(50)
-                          : colorScheme.primary,
+                      color: colorScheme.primary,
                     ),
                   ),
                 ],
@@ -119,9 +114,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
                 child: Text(
                   t.auth.signIn.forgotPassword,
                   style: TextStyle(
-                    color: authController.isLoading
-                        ? colorScheme.primary.withAlpha(50)
-                        : colorScheme.primary,
+                    color: colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

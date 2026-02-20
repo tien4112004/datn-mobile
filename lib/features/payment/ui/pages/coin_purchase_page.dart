@@ -203,7 +203,6 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
         PaymentWebViewRoute(
           checkoutUrl: checkoutResponse.checkoutUrl,
           transactionId: checkoutResponse.transactionId,
-          formFields: checkoutResponse.formFields,
         ),
       );
 

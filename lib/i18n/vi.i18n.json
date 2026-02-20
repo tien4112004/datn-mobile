@@ -1847,6 +1847,27 @@
       "paymentCancelled": "Thanh toán đã bị hủy",
       "paymentPending": "Thanh toán đang được xử lý. Vui lòng kiểm tra lại sau.",
       "ok": "OK"
+    },
+    "webview": {
+      "title": "Hoàn tất thanh toán",
+      "verifyingPayment": "Đang xác minh trạng thái thanh toán...",
+      "verifyingCancellation": "Đang xác minh hủy thanh toán...",
+      "cancelDialog": {
+        "title": "Hủy thanh toán?",
+        "message": "Bạn có chắc chắn muốn hủy thanh toán này không?",
+        "no": "Không",
+        "yesCancel": "Có, Hủy"
+      },
+      "messages": {
+        "successWithCoins": "Thanh toán thành công! $coins coins đã được thêm vào tài khoản của bạn.",
+        "failedDefault": "Thanh toán thất bại. Vui lòng thử lại.",
+        "failedWithCode": "Thanh toán thất bại (Lỗi: $code). Vui lòng thử lại.",
+        "cancelled": "Thanh toán đã bị hủy.",
+        "processing": "Thanh toán vẫn đang được xử lý. Vui lòng kiểm tra lại sau.",
+        "timeoutSuccess": "Xác minh thanh toán mất nhiều thời gian hơn dự kiến. Vui lòng kiểm tra lịch sử giao dịch của bạn sau vài phút.",
+        "verificationFailed": "Không thể xác minh trạng thái thanh toán. Thanh toán của bạn có thể vẫn đang được xử lý. Kiểm tra lịch sử giao dịch hoặc liên hệ hỗ trợ.",
+        "unexpectedError": "Đã xảy ra lỗi khi xác minh thanh toán. Vui lòng thử lại."
+      }
     }
   }
 }

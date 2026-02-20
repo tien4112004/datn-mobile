@@ -1846,6 +1846,27 @@
       "paymentCancelled": "Payment cancelled",
       "paymentPending": "Payment is being processed. Please check back later.",
       "ok": "OK"
+    },
+    "webview": {
+      "title": "Complete Payment",
+      "verifyingPayment": "Verifying payment status...",
+      "verifyingCancellation": "Verifying cancellation...",
+      "cancelDialog": {
+        "title": "Cancel Payment?",
+        "message": "Are you sure you want to cancel this payment?",
+        "no": "No",
+        "yesCancel": "Yes, Cancel"
+      },
+      "messages": {
+        "successWithCoins": "Payment completed successfully! $coins coins have been added to your account.",
+        "failedDefault": "Payment failed. Please try again.",
+        "failedWithCode": "Payment failed (Error: $code). Please try again.",
+        "cancelled": "Payment was cancelled.",
+        "processing": "Payment is still being processed. Please check back later.",
+        "timeoutSuccess": "Payment verification is taking longer than expected. Please check your transaction history in a few minutes.",
+        "verificationFailed": "Unable to verify payment status. Your payment may still be processing. Check transaction history or contact support.",
+        "unexpectedError": "An error occurred while verifying payment. Please try again."
+      }
     }
   }
 }

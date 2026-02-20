@@ -7,18 +7,17 @@ import 'package:AIPrimary/features/payment/data/models/payment_callback_result_m
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
 import 'package:AIPrimary/features/payment/domain/exceptions/payment_exceptions.dart';
 import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 @RoutePage()
 class PaymentWebViewPage extends ConsumerStatefulWidget {
   final String checkoutUrl;
   final String transactionId;
-  final Map<String, String>? formFields;
 
   const PaymentWebViewPage({
     super.key,
     required this.checkoutUrl,
     required this.transactionId,
-    this.formFields,
   });
 
   @override
@@ -78,130 +77,8 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
             debugPrint('   URL: ${error.url}');
           },
         ),
-      );
-
-    // If formFields are provided, generate and submit HTML form
-    if (widget.formFields != null && widget.formFields!.isNotEmpty) {
-      final html = _generateAutoSubmitForm();
-      _controller.loadHtmlString(html);
-    } else {
-      // Otherwise, just load the URL directly
-      _controller.loadRequest(Uri.parse(widget.checkoutUrl));
-    }
-  }
-
-  String _generateAutoSubmitForm() {
-    // Properly escape HTML attribute values
-    String escapeHtml(String value) {
-      return value
-          .replaceAll('&', '&amp;')
-          .replaceAll('"', '&quot;')
-          .replaceAll("'", '&#39;')
-          .replaceAll('<', '&lt;')
-          .replaceAll('>', '&gt;');
-    }
-
-    final formInputs = widget.formFields!.entries
-        .map(
-          (entry) =>
-              '<input type="hidden" name="${escapeHtml(entry.key)}" value="${escapeHtml(entry.value)}">',
-        )
-        .join('\n        ');
-
-    return '''
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src *;">
-    <title>Processing Payment...</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            margin: 20px auto;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        h2 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-        }
-        p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        .debug {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            font-size: 12px;
-            max-width: 90%;
-            word-break: break-all;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="spinner"></div>
-        <h2>Redirecting to Payment Gateway</h2>
-        <p>Please wait while we redirect you...</p>
-        <div class="debug" id="debugInfo"></div>
-    </div>
-    <form id="paymentForm" action="${escapeHtml(widget.checkoutUrl)}" method="POST" accept-charset="UTF-8">
-        $formInputs
-    </form>
-    <script>
-        // Debug: Show form action
-        document.getElementById('debugInfo').innerHTML = 'Submitting to: ${escapeHtml(widget.checkoutUrl)}';
-
-        // Auto-submit the form after a brief delay
-        window.onload = function() {
-            console.log('Form data:');
-            var form = document.getElementById('paymentForm');
-            var formData = new FormData(form);
-            for (var pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
-
-            setTimeout(function() {
-                try {
-                    document.getElementById('debugInfo').innerHTML += '<br>Submitting form...';
-                    form.submit();
-                } catch(e) {
-                    document.getElementById('debugInfo').innerHTML += '<br>Error: ' + e.message;
-                    console.error('Form submission error:', e);
-                }
-            }, 1000);
-        };
-    </script>
-</body>
-</html>
-    ''';
+      )
+      ..loadRequest(Uri.parse(widget.checkoutUrl));
   }
 
   void _handleSuccess(Uri uri) async {
@@ -210,10 +87,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
     // Show loading indicator
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
@@ -221,11 +98,11 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 12),
-            Text('Verifying payment status...'),
+            const SizedBox(width: 12),
+            Text(t.payment.webview.verifyingPayment),
           ],
         ),
-        duration: Duration(minutes: 2),
+        duration: const Duration(minutes: 2),
       ),
     );
 
@@ -259,9 +136,7 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.pending,
           transactionId: widget.transactionId,
-          message:
-              'Payment verification is taking longer than expected. '
-              'Please check your transaction history in a few minutes.',
+          message: t.payment.webview.messages.timeoutSuccess,
         ),
       );
     } on PaymentVerificationException {
@@ -273,10 +148,7 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.pending,
           transactionId: widget.transactionId,
-          message:
-              'Unable to verify payment status. '
-              'Your payment may still be processing. '
-              'Check transaction history or contact support.',
+          message: t.payment.webview.messages.verificationFailed,
         ),
       );
     } catch (e) {
@@ -288,8 +160,7 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'An error occurred while verifying payment. Please try again.',
+          message: t.payment.webview.messages.unexpectedError,
         ),
       );
     }
@@ -301,10 +172,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
     // Show loading indicator
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
@@ -312,11 +183,11 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 12),
-            Text('Verifying payment status...'),
+            const SizedBox(width: 12),
+            Text(t.payment.webview.verifyingPayment),
           ],
         ),
-        duration: Duration(minutes: 2),
+        duration: const Duration(minutes: 2),
       ),
     );
 
@@ -350,8 +221,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     } on PaymentVerificationException {
@@ -363,8 +235,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     } catch (e) {
@@ -376,8 +249,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     }
@@ -389,10 +263,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
     // Show loading indicator
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.showSnackBar(
-      const SnackBar(
+      SnackBar(
         content: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
@@ -400,11 +274,11 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 12),
-            Text('Verifying cancellation...'),
+            const SizedBox(width: 12),
+            Text(t.payment.webview.verifyingCancellation),
           ],
         ),
-        duration: Duration(minutes: 2),
+        duration: const Duration(minutes: 2),
       ),
     );
 
@@ -434,10 +308,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
       scaffoldMessenger.hideCurrentSnackBar();
 
       context.router.pop(
-        const PaymentCallbackResultModel(
+        PaymentCallbackResultModel(
           status: PaymentCallbackStatus.cancelled,
           transactionId: null,
-          message: 'Payment was cancelled',
+          message: t.payment.webview.messages.cancelled,
         ),
       );
     } on PaymentVerificationException {
@@ -445,10 +319,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
       scaffoldMessenger.hideCurrentSnackBar();
 
       context.router.pop(
-        const PaymentCallbackResultModel(
+        PaymentCallbackResultModel(
           status: PaymentCallbackStatus.cancelled,
           transactionId: null,
-          message: 'Payment was cancelled',
+          message: t.payment.webview.messages.cancelled,
         ),
       );
     } catch (e) {
@@ -456,10 +330,10 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
       scaffoldMessenger.hideCurrentSnackBar();
 
       context.router.pop(
-        const PaymentCallbackResultModel(
+        PaymentCallbackResultModel(
           status: PaymentCallbackStatus.cancelled,
           transactionId: null,
-          message: 'Payment was cancelled',
+          message: t.payment.webview.messages.cancelled,
         ),
       );
     }
@@ -473,28 +347,29 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         return PaymentCallbackResultModel(
           status: PaymentCallbackStatus.success,
           transactionId: transaction.id,
-          message:
-              'Payment completed successfully! '
-              '${transaction.coinsAwarded ?? 0} coins have been added to your account.',
+          message: t.payment.webview.messages.successWithCoins(
+            coins: transaction.coinsAwarded ?? 0,
+          ),
         );
       case 'FAILED':
         return PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: transaction.id,
           message:
-              transaction.errorMessage ?? 'Payment failed. Please try again.',
+              transaction.errorMessage ??
+              t.payment.webview.messages.failedDefault,
         );
       case 'CANCELLED':
         return PaymentCallbackResultModel(
           status: PaymentCallbackStatus.cancelled,
           transactionId: transaction.id,
-          message: 'Payment was cancelled.',
+          message: t.payment.webview.messages.cancelled,
         );
       default:
         return PaymentCallbackResultModel(
           status: PaymentCallbackStatus.pending,
           transactionId: transaction.id,
-          message: 'Payment is still being processed. Please check back later.',
+          message: t.payment.webview.messages.processing,
         );
     }
   }

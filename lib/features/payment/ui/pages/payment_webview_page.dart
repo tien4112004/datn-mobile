@@ -297,8 +297,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     } on PaymentVerificationException {
@@ -310,8 +311,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     } catch (e) {
@@ -323,8 +325,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         PaymentCallbackResultModel(
           status: PaymentCallbackStatus.error,
           transactionId: widget.transactionId,
-          message:
-              'Payment failed${code != null ? ' (Error: $code)' : ''}. Please try again.',
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
         ),
       );
     }

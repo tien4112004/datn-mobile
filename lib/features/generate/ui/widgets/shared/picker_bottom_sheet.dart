@@ -72,45 +72,48 @@ class _PickerBottomSheetState extends State<PickerBottomSheet> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: Stack(
           children: [
-            CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverList.list(
-                  children: [
-                    const SizedBox(height: 12),
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: isDark ? Colors.grey[600] : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(2),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 64),
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverList.list(
+                    children: [
+                      const SizedBox(height: 12),
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: isDark ? Colors.grey[600] : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.grey[900],
-                      ),
-                    ),
-                    if (widget.subTitle != null) ...[
-                      const SizedBox(height: 8),
-                      DefaultTextStyle(
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.title,
                         style: TextStyle(
-                          fontSize: 14,
-                          color: isDark ? Colors.white70 : Colors.grey[700],
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.grey[900],
                         ),
-                        child: Text(widget.subTitle!),
                       ),
+                      if (widget.subTitle != null) ...[
+                        const SizedBox(height: 8),
+                        DefaultTextStyle(
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: isDark ? Colors.white70 : Colors.grey[700],
+                          ),
+                          child: Text(widget.subTitle!),
+                        ),
+                      ],
+                      widget.child,
                     ],
-                    widget.child,
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             if (widget.saveButton != null)
               Positioned(

@@ -57,6 +57,46 @@ class GeneralPickerOptions {
     );
   }
 
+  /// Generic picker for any list of values (e.g. enums).
+  ///
+  /// [title] — title of the bottom sheet
+  /// [values] — all available values to pick from
+  /// [labelOf] — returns the display label for a value
+  /// [isSelected] — returns true if this value is the current selection
+  /// [onSelected] — called with the chosen value; the sheet is popped automatically
+  static void showEnumPicker<T>({
+    required BuildContext context,
+    required String title,
+    required List<T> values,
+    required String Function(T) labelOf,
+    required bool Function(T) isSelected,
+    required void Function(T) onSelected,
+  }) {
+    PickerBottomSheet.show(
+      context: context,
+      title: title,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: values.map((value) {
+          final selected = isSelected(value);
+          return ListTile(
+            title: Text(labelOf(value)),
+            trailing: selected
+                ? Icon(
+                    Icons.check_circle_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                : null,
+            onTap: () {
+              onSelected(value);
+              Navigator.pop(context);
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   static Widget buildOptionsRow(
     BuildContext context,
     dynamic formState,

@@ -237,11 +237,15 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
                     child: TextButton(
                       onPressed: () {
                         GenerationSettingsSheet.show(
-                          context,
-                          ImageWidgetOptions().buildAllSettings(t),
-                          ModelType.image,
-                          t.generate.generationSettings.title,
-                          t.generate.generationSettings.done,
+                          context: context,
+                          optionWidgets: ImageWidgetOptions().buildAllSettings(
+                            t,
+                          ),
+                          modelType: ModelType.image,
+                          title: t.generate.generationSettings.title,
+                          buttonText: t.generate.generationSettings.done,
+                          selectedModel: formState.selectedModel,
+                          onModelChanged: formController.updateModel,
                         );
                       },
                       child: Text(t.generate.advancedSettings),

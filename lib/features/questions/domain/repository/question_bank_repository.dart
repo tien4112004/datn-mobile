@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/questions/domain/entity/generate_questions_request_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_create_request_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -44,4 +45,12 @@ abstract class QuestionBankRepository {
 
   /// Deletes a question permanently.
   Future<void> deleteQuestion(String id);
+
+  /// Generates questions using AI based on the provided request parameters.
+  Future<List<QuestionBankItemEntity>> generateQuestions(
+    GenerateQuestionsRequestEntity request,
+  );
+
+  /// Submits a question for review to be published to the public bank.
+  Future<void> publishQuestion(String questionId);
 }

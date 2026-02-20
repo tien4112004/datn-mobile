@@ -116,4 +116,9 @@ class QuestionBankController extends AsyncNotifier<QuestionBankState> {
       );
     });
   }
+
+  Future<void> publishQuestion(String questionId) async {
+    final repository = ref.read(questionBankRepositoryProvider);
+    await repository.publishQuestion(questionId);
+  }
 }

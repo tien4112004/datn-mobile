@@ -982,6 +982,8 @@ class _MatrixTabState extends ConsumerState<MatrixTab> {
         return t.assignments.matrix.com;
       case Difficulty.application:
         return t.assignments.matrix.appAbbr;
+      case Difficulty.advancedApplication:
+        return 'Adv';
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/generate/enum/generator_type.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_loading.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
@@ -118,14 +120,38 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
           loadingWidget: () => const QuestionBankLoading(),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.router.push(const QuestionCreateRoute());
-        },
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        icon: const Icon(Icons.add_rounded),
-        label: Text(t.questionBank.addQuestion),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: 'fab_generate',
+            onPressed: () {
+              ref.read(generatorTypeProvider.notifier).state =
+                  GeneratorType.question;
+              context.router.push(const GenerateRoute());
+            },
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            icon: const Icon(Icons.auto_awesome_rounded),
+            label: const Text('Generate with AI'),
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton.extended(
+            heroTag: 'fab_create',
+            onPressed: () {
+              context.router.push(const QuestionCreateRoute());
+            },
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            icon: const Icon(Icons.add_rounded),
+            label: Text(t.questionBank.addQuestion),
+          ),
+        ],
       ),
     );
   }

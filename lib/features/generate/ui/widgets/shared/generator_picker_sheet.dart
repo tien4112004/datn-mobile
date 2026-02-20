@@ -2,6 +2,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/enum/generator_type.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/features/questions/states/question_generation_provider.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -97,6 +98,9 @@ class _GeneratorPickerSheetState extends ConsumerState<GeneratorPickerSheet> {
         case GeneratorType.image:
           ref.read(imageFormControllerProvider.notifier).reset();
           ref.read(imageGenerateControllerProvider.notifier).reset();
+          break;
+        case GeneratorType.question:
+          ref.read(questionGenerationProvider.notifier).clearResults();
           break;
       }
     }

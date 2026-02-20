@@ -137,6 +137,7 @@ class AppRouter extends RootStackRouter {
       path: '/questions/:questionId/edit',
     ),
     AutoRoute(page: QuestionCreateRoute.page, path: '/questions/create'),
+    AutoRoute(page: QuestionGenerateRoute.page, path: '/questions/generate'),
     AutoRoute(
       page: AssignmentQuestionEditRoute.page,
       path: '/assignments/questions/edit',

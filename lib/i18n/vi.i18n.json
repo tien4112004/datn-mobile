@@ -353,7 +353,8 @@
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
-      "mindmap": "Sơ đồ tư duy"
+      "mindmap": "Sơ đồ tư duy",
+      "question": "Ngân hàng câu hỏi"
     },
     "resourceTypes": {
       "document": "Tài liệu",

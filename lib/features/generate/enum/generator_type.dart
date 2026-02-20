@@ -5,7 +5,8 @@ import 'package:AIPrimary/i18n/strings.g.dart';
 enum GeneratorType {
   presentation(ResourceType.presentation),
   image(ResourceType.image),
-  mindmap(ResourceType.mindmap);
+  mindmap(ResourceType.mindmap),
+  question(ResourceType.question);
 
   final ResourceType resourceType;
 
@@ -19,6 +20,8 @@ enum GeneratorType {
         return t.generate.generatorTypes.image;
       case GeneratorType.mindmap:
         return t.generate.generatorTypes.mindmap;
+      case GeneratorType.question:
+        return t.generate.generatorTypes.question;
     }
   }
 }

@@ -353,7 +353,8 @@
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",
-      "mindmap": "Mindmap"
+      "mindmap": "Mindmap",
+      "question": "Question Bank"
     },
     "resourceTypes": {
       "document": "Document",

@@ -542,6 +542,8 @@ class AssessmentMatrixDashboard extends ConsumerWidget {
         return t.assignments.matrix.comp;
       case Difficulty.application:
         return t.assignments.matrix.app;
+      case Difficulty.advancedApplication:
+        return 'Adv';
     }
   }
 

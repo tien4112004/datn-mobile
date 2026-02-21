@@ -35,27 +35,10 @@ void showAdvancedAssignmentFilterDialog({
       builder: (context, setState) {
         // Create filter configs with draft state
         final filterConfigs = List<BaseFilterConfig>.of([
-          FilterConfig<AssignmentStatus>(
-            label: t.assignments.filters.status,
-            icon: LucideIcons.info,
-            options: AssignmentStatus.values,
-            allLabel: t.assignments.filters.allStatus,
-            allIcon: LucideIcons.list,
-            selectedValue: draftState.statusFilter,
-            onChanged: (value) {
-              setState(() {
-                draftState = draftState.copyWith(statusFilter: value);
-              });
-            },
-            displayNameBuilder: (value) => value.getLocalizedName(t),
-            iconBuilder: (status) => AssignmentStatus.getStatusIcon(status),
-          ),
           FilterConfig<GradeLevel>(
             label: t.assignments.filters.gradeLevel,
             icon: LucideIcons.graduationCap,
             options: GradeLevel.values,
-            allLabel: t.assignments.filters.allGrades,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.gradeLevelFilter,
             onChanged: (value) {
               setState(() {
@@ -68,8 +51,6 @@ void showAdvancedAssignmentFilterDialog({
             label: t.assignments.filters.subject,
             icon: LucideIcons.bookOpen,
             options: Subject.values,
-            allLabel: t.assignments.filters.allSubjects,
-            allIcon: LucideIcons.list,
             selectedValue: draftState.subjectFilter,
             onChanged: (value) {
               setState(() {
@@ -84,7 +65,7 @@ void showAdvancedAssignmentFilterDialog({
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Filter chips display
-            _buildFiltersSection(context, filterConfigs, t),
+            _buildFiltersSection(context, filterConfigs, ref, t),
             const SizedBox(height: 16),
             // TODO: Add topic filter input field here if needed
           ],
@@ -115,6 +96,7 @@ void showAdvancedAssignmentFilterDialog({
 Widget _buildFiltersSection(
   BuildContext context,
   List<BaseFilterConfig> filters,
+  WidgetRef ref,
   dynamic t,
 ) {
   final theme = Theme.of(context);
@@ -148,7 +130,7 @@ Widget _buildFiltersSection(
           return FilterChipButton(
             filter: filter,
             onTap: () {
-              FilterChipButton.showFilterPicker(context, filter);
+              FilterChipButton.showFilterPicker(context, filter, ref);
             },
           );
         }).toList(),

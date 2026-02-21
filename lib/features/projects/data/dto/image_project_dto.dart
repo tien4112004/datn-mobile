@@ -36,8 +36,8 @@ extension ImageProjectMapper on ImageProjectDto {
     imageUrl: url, // Map url to imageUrl for UI
     mediaType: mediaType,
     fileSize: fileSize,
-    createdAt: DateTime.parse(createdAt),
-    updatedAt: DateTime.parse(updatedAt),
+    createdAt: DateTime.parse(createdAt).toLocal(),
+    updatedAt: DateTime.parse(updatedAt).toLocal(),
     description: null, // Not provided by API
   );
 }

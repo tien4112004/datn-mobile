@@ -30,8 +30,8 @@ extension PresentationMinimalMapper on PresentationMinimalDto {
     return PresentationMinimal(
       id: id,
       title: title,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
+      createdAt: createdAt?.toLocal(),
+      updatedAt: updatedAt?.toLocal(),
       thumbnail: thumbnail,
     );
   }

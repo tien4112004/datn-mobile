@@ -34,8 +34,6 @@ class QuestionBankHeader extends ConsumerWidget {
         label: t.questionBank.filters.grade,
         icon: LucideIcons.graduationCap,
         options: GradeLevel.values,
-        allLabel: t.questionBank.filters.allGrades,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.gradeFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(gradeFilter: value);
@@ -47,8 +45,6 @@ class QuestionBankHeader extends ConsumerWidget {
         label: t.questionBank.filters.subject,
         icon: LucideIcons.bookOpen,
         options: Subject.values,
-        allLabel: t.questionBank.filters.allSubjects,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.subjectFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(subjectFilter: value);
@@ -60,8 +56,6 @@ class QuestionBankHeader extends ConsumerWidget {
         label: t.questionBank.filters.type,
         icon: LucideIcons.circleQuestionMark,
         options: QuestionType.values,
-        allLabel: t.questionBank.filters.allTypes,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.questionTypeFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(
@@ -75,8 +69,6 @@ class QuestionBankHeader extends ConsumerWidget {
         label: t.questionBank.filters.difficulty,
         icon: LucideIcons.gauge,
         options: Difficulty.values,
-        allLabel: t.questionBank.filters.allDifficulties,
-        allIcon: LucideIcons.list,
         selectedValue: filterState.difficultyFilter,
         onChanged: (value) {
           filterNotifier.state = filterState.copyWith(difficultyFilter: value);

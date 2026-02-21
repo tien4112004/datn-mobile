@@ -176,7 +176,9 @@
       "discard": "Bỏ qua"
     },
     "optional": "(Tùy chọn)",
-    "none": "Không"
+    "none": "Không",
+    "all": "Tất cả",
+    "filterBy": "Lọc theo $label"
   },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",
@@ -227,7 +229,9 @@
     "mindmaps": {
       "title": "Sơ đồ tư duy",
       "search_mindmaps": "Tìm kiếm sơ đồ tư duy...",
-      "all_mindmaps": "Tất cả sơ đồ tư duy"
+      "all_mindmaps": "Tất cả sơ đồ tư duy",
+      "webViewNotSupported": "WebView không được hỗ trợ trên nền tảng này.",
+      "loadingMindmap": "Đang tải sơ đồ tư duy..."
     },
     "images": {
       "title": "Hình ảnh",
@@ -396,7 +400,13 @@
       "cancelGenerationMessage": "Bạn có chắc chắn muốn hủy quá trình tạo bài thuyết trình?",
       "cancelGenerationTitle": "Hủy tạo?",
       "goBack": "Quay lại",
-      "generating": "Đang tạo bài thuyết trình"
+      "generating": "Đang tạo bài thuyết trình",
+      "startingGeneration": "Bắt đầu tạo...",
+      "generatingSubtitle": "Điều này có thể mất một chút thời gian",
+      "error": "Lỗi",
+      "failedToCreatePresentation": "Không thể tạo bài thuyết trình",
+      "unknownError": "Đã xảy ra lỗi không xác định",
+      "retry": "Thử lại"
     },
     "outlineEditor": {
       "title": "Chỉnh sửa dàn ý",
@@ -796,7 +806,7 @@
     "subjects": {
       "english": "Tiếng Anh",
       "mathematics": "Toán",
-      "vietnamese": "Tiếng Việt"
+      "literature": "Tiếng Việt"
     },
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
@@ -1256,8 +1266,6 @@
 
     "filters": {
       "title": "Bộ lọc bài kiểm tra",
-      "status": "Trạng thái",
-      "allStatus": "Tất cả trạng thái",
       "gradeLevel": "Khối lớp",
       "allGrades": "Tất cả khối lớp",
       "subject": "Môn học",

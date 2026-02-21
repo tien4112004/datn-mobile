@@ -9,7 +9,9 @@ class PresentationRepositoryImpl implements PresentationRepository {
     // This mapper was created in the presentation_dto.dart as a extension method.
     // PresentationDto presentationDto = presentation.toDto();
     // LOGIC...
-    _remoteSource.createPresentation(presentation.toDto());
+    _remoteSource.createPresentation(
+      presentation.toDto() as CreatePresentationRequestDto,
+    );
     throw UnimplementedError();
   }
 

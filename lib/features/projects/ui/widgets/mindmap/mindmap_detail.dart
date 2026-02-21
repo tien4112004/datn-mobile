@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -26,12 +27,14 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
+
     if (InAppWebViewPlatform.instance == null) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
           child: Text(
-            'WebView is not supported on this platform.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            t.projects.mindmaps.webViewNotSupported,
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
       );
@@ -62,19 +65,20 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
 
   // ignore: unused_element
   Widget _buildLoading() {
+    final t = ref.watch(translationsPod);
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
                   Text(
-                    'Loading presentation...',
-                    style: TextStyle(color: Colors.grey),
+                    t.projects.mindmaps.loadingMindmap,
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
@@ -88,8 +92,8 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
 
   Widget _buildCloseButton() {
     return Positioned(
-      top: !_isWebViewLoading ? 48 : 8,
-      right: 8,
+      top: 16,
+      left: 16,
       child: Material(
         color: Colors.white.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(20),
@@ -107,7 +111,9 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   }
 
   Widget _buildWebView({required String mindmapId}) {
-    final url = '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId';
+    final locale = ref.read(translationsPod).$meta.locale.languageCode;
+    final url =
+        '${Config.mindmapBaseUrl}/mindmap/embed/$mindmapId?locale=$locale';
     return AuthenticatedWebView(
       webViewUrl: url,
       enableZoom: false,

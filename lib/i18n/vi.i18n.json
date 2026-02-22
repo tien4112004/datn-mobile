@@ -566,6 +566,16 @@
       "retry": "Thử lại",
       "shareFailed": "Chia sẻ hình ảnh thất bại: $error",
       "generateFirst": "Vui lòng thử tạo một hình ảnh trước"
+    },
+    "questionGenerate": {
+      "generateMoreHint": "Tạo thêm về chủ đề khác..."
+    },
+    "questionGenerateResult": {
+      "title(count)": "Đã tạo $count câu hỏi",
+      "saveAll": "Lưu tất cả",
+      "generateMore": "Tạo thêm",
+      "savedSuccess": "Đã lưu câu hỏi vào ngân hàng",
+      "saveFailed(error)": "Lưu thất bại: $error"
     }
   },
   "questionBank": {
@@ -579,6 +589,7 @@
     "back": "Quay lại",
     "continue_": "Tiếp tục",
     "addQuestion": "Thêm câu hỏi",
+    "generateWithAI": "Tạo với AI",
     "infoText": "Câu hỏi này sẽ chỉ được tạo riêng cho bài tập này",
     "editQuestionTitle": "Sửa câu hỏi $number",
     "bankTypes": {

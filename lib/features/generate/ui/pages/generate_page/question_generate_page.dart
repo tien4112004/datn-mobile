@@ -1,9 +1,9 @@
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
-import 'package:AIPrimary/features/questions/ui/widgets/question_list_card.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_widget_options.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
@@ -13,7 +13,6 @@ import 'package:AIPrimary/features/questions/states/question_generation_provider
 import 'package:AIPrimary/features/questions/states/question_generation_state.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
-import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -78,19 +77,10 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
     await ref
         .read(questionGenerationProvider.notifier)
         .generateQuestions(entity);
-  }
 
-  Future<void> _handleSaveAll() async {
-    try {
-      await ref.read(questionGenerationProvider.notifier).saveAll();
-      if (mounted) {
-        SnackbarUtils.showSuccess(context, t.questionBank.deleteDialog.success);
-        context.router.maybePop();
-      }
-    } catch (e) {
-      if (mounted) {
-        SnackbarUtils.showError(context, 'Failed to save: $e');
-      }
+    final state = ref.read(questionGenerationProvider);
+    if (mounted && state.generatedQuestions.isNotEmpty) {
+      context.router.push(const QuestionGenerateResultRoute());
     }
   }
 
@@ -139,8 +129,6 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
       ),
     );
   }
-
-  // ── Main scrollable content ─────────────────────────────────────────────────
 
   Widget _buildMainContent(
     BuildContext context,
@@ -305,31 +293,6 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
             ),
             const SizedBox(height: 32),
           ],
-
-          // Results
-          if (hasResults) ...[
-            Row(
-              children: [
-                Icon(
-                  LucideIcons.listChecks,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '${genState.generatedQuestions.length} questions generated',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ...genState.generatedQuestions.map(
-              (item) => QuestionListCard(item: item, showActions: false),
-            ),
-            const SizedBox(height: 80),
-          ],
         ],
       ),
     );
@@ -366,17 +329,6 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
             Expanded(child: _buildTextInput(context, hasResults)),
             const SizedBox(width: 8),
 
-            // Save All button (when results exist)
-            if (hasResults) ...[
-              _buildIconButton(
-                color: isLoading ? _disabledColor(context) : Colors.teal,
-                onTap: isLoading ? null : _handleSaveAll,
-                isLoading: isLoading,
-                icon: LucideIcons.save,
-              ),
-              const SizedBox(width: 8),
-            ],
-
             // Generate button
             _buildIconButton(
               color: _isValid && !isLoading
@@ -408,7 +360,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
         onChanged: (_) => setState(() {}),
         decoration: InputDecoration(
           hintText: hasResults
-              ? 'Generate more on another topic...'
+              ? t.generate.questionGenerate.generateMoreHint
               : t.generate.enterTopicHint,
           hintStyle: TextStyle(
             color: context.isDarkMode ? Colors.grey[500] : Colors.grey[400],

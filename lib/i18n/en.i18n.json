@@ -566,6 +566,16 @@
       "retry": "Retry",
       "shareFailed": "Failed to share image: $error",
       "generateFirst": "Please try generating an image first"
+    },
+    "questionGenerate": {
+      "generateMoreHint": "Generate more on another topic..."
+    },
+    "questionGenerateResult": {
+      "title(count)": "$count questions generated",
+      "saveAll": "Save All",
+      "generateMore": "Generate More",
+      "savedSuccess": "Questions saved to bank",
+      "saveFailed(error)": "Failed to save: $error"
     }
   },
   "questionBank": {
@@ -579,6 +589,7 @@
     "back": "Back",
     "continue_": "Continue",
     "addQuestion": "Add Question",
+    "generateWithAI": "Generate with AI",
     "infoText": "This question will be created for this assignment only",
     "editQuestionTitle": "Edit Question $number",
     "bankTypes": {

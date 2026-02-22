@@ -5,15 +5,15 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Minimal Metadata Footer - Displays technical details at the bottom
 class QuestionMetadataSection extends ConsumerWidget {
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String? ownerId;
   final String? chapter;
 
   const QuestionMetadataSection({
     super.key,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.ownerId,
     this.chapter,
   });
@@ -50,22 +50,24 @@ class QuestionMetadataSection extends ConsumerWidget {
               children: [
                 if (chapter != null && chapter!.isNotEmpty)
                   Text(t.questionBank.detail.chapter(chapter: chapter!)),
-                Text(
-                  t.questionBank.detail.created(
-                    date: DateFormatHelper.formatFullDateTime(
-                      createdAt,
-                      ref: ref,
+                if (createdAt != null)
+                  Text(
+                    t.questionBank.detail.created(
+                      date: DateFormatHelper.formatFullDateTime(
+                        createdAt!,
+                        ref: ref,
+                      ),
                     ),
                   ),
-                ),
-                Text(
-                  t.questionBank.detail.lastUpdated(
-                    date: DateFormatHelper.formatFullDateTime(
-                      updatedAt,
-                      ref: ref,
+                if (updatedAt != null)
+                  Text(
+                    t.questionBank.detail.lastUpdated(
+                      date: DateFormatHelper.formatFullDateTime(
+                        updatedAt!,
+                        ref: ref,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

@@ -188,9 +188,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
             icon: const Icon(LucideIcons.send, size: 20),
             onPressed: () => _showPublishDialog(context, questionItem, t),
             tooltip: 'Publish to Public Bank',
-            style: IconButton.styleFrom(
-              foregroundColor: colorScheme.secondary,
-            ),
+            style: IconButton.styleFrom(foregroundColor: colorScheme.secondary),
           ),
           IconButton(
             icon: const Icon(LucideIcons.pencil, size: 20),
@@ -230,7 +228,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                   await ref
                       .read(questionBankProvider.notifier)
                       .publishQuestion(questionItem.id);
-                  if (mounted) {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
@@ -240,11 +238,9 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                     );
                   }
                 } catch (e) {
-                  if (mounted) {
+                  if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Failed to submit: $e'),
-                      ),
+                      SnackBar(content: Text('Failed to submit: $e')),
                     );
                   }
                 }

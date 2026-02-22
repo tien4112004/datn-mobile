@@ -9,6 +9,7 @@ class GenerateQuestionsRequestEntity {
   final String? provider;
   final String? model;
   final String? prompt;
+  final String? chapter;
 
   GenerateQuestionsRequestEntity({
     required this.topic,
@@ -19,5 +20,6 @@ class GenerateQuestionsRequestEntity {
     this.provider,
     this.model,
     this.prompt,
+    this.chapter,
   });
 }

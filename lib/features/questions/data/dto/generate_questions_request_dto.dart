@@ -14,6 +14,7 @@ class GenerateQuestionsRequestDto {
   final String? provider;
   final String? model;
   final String? prompt;
+  final String? chapter;
 
   GenerateQuestionsRequestDto({
     required this.topic,
@@ -24,6 +25,7 @@ class GenerateQuestionsRequestDto {
     this.provider,
     this.model,
     this.prompt,
+    this.chapter,
   });
 
   factory GenerateQuestionsRequestDto.fromJson(Map<String, dynamic> json) =>

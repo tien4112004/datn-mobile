@@ -30,12 +30,9 @@ class ExamFiltersBar extends ConsumerWidget {
           options: GradeLevel.values,
           displayNameBuilder: (grade) => grade.getLocalizedName(t),
           onChanged: onGradeLevelChanged,
-          allLabel: t.assignments.filters.allGrades,
-          allIcon: LucideIcons.list,
         ),
       ],
       onClearFilters: onClearFilters,
     );
   }
-
 }

@@ -253,6 +253,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
   void _handleCancel(Uri uri) async {
     if (!mounted) return;
 
+    // Capture ScaffoldMessenger before any async gap
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     // Explicitly notify backend to mark transaction CANCELLED (best-effort)
     final repository = ref.read(paymentRepositoryProvider);
     await repository.cancelTransaction(widget.transactionId);

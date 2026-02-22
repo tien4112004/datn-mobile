@@ -33,6 +33,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
 
   GradeLevel _grade = GradeLevel.grade1;
   Subject _subject = Subject.mathematics;
+  String? _selectedChapter;
   final Set<QuestionType> _selectedTypes = {QuestionType.multipleChoice};
   final Map<Difficulty, int> _difficultyCounts = {
     for (final d in Difficulty.values) d: 0,
@@ -72,6 +73,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
       prompt: _promptController.text.trim().isEmpty
           ? null
           : _promptController.text.trim(),
+      chapter: _selectedChapter,
     );
 
     await ref
@@ -93,8 +95,15 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
         selectedTypes: _selectedTypes,
         difficultyCounts: _difficultyCounts,
         promptController: _promptController,
-        onGradeChanged: (g) => setState(() => _grade = g),
-        onSubjectChanged: (s) => setState(() => _subject = s),
+        selectedChapter: _selectedChapter,
+        onGradeChanged: (g) => setState(() {
+          _grade = g;
+          _selectedChapter = null;
+        }),
+        onSubjectChanged: (s) => setState(() {
+          _subject = s;
+          _selectedChapter = null;
+        }),
         onTypesChanged: (types) => setState(() {
           _selectedTypes
             ..clear()
@@ -105,6 +114,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
             ..clear()
             ..addAll(counts);
         }),
+        onChapterChanged: (c) => setState(() => _selectedChapter = c),
       ).buildAllSettings(t),
       modelType: ModelType.text,
       title: t.generate.generationSettings.title,
@@ -210,7 +220,10 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
                     values: GradeLevel.values,
                     labelOf: (g) => g.getLocalizedName(t),
                     isSelected: (g) => g == _grade,
-                    onSelected: (g) => setState(() => _grade = g),
+                    onSelected: (g) => setState(() {
+                      _grade = g;
+                      _selectedChapter = null;
+                    }),
                   ),
                 ),
                 OptionChip(
@@ -222,7 +235,10 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
                     values: Subject.values,
                     labelOf: (s) => s.getLocalizedName(t),
                     isSelected: (s) => s == _subject,
-                    onSelected: (s) => setState(() => _subject = s),
+                    onSelected: (s) => setState(() {
+                      _subject = s;
+                      _selectedChapter = null;
+                    }),
                   ),
                 ),
                 OptionChip(

@@ -122,6 +122,7 @@ class QuestionBankRepositoryImpl implements QuestionBankRepository {
       provider: request.provider,
       model: request.model,
       prompt: request.prompt,
+      chapter: request.chapter,
     );
 
     final response = await _remoteSource.generateQuestions(dto);

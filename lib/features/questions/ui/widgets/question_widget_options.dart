@@ -1,25 +1,26 @@
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:AIPrimary/features/questions/data/dto/chapter_response_dto.dart';
+import 'package:AIPrimary/features/questions/states/chapter_provider.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Widget option builders for [QuestionGeneratePage]'s [GenerationSettingsSheet].
-///
-/// Mirrors the pattern of [PresentationWidgetOptions] but uses plain
-/// [StatefulBuilder] callbacks rather than Riverpod providers, since the
-/// question page manages its own local state.
 class QuestionWidgetOptions {
   final GradeLevel grade;
   final Subject subject;
   final Set<QuestionType> selectedTypes;
   final Map<Difficulty, int> difficultyCounts;
   final TextEditingController promptController;
+  final String? selectedChapter;
   final void Function(GradeLevel) onGradeChanged;
   final void Function(Subject) onSubjectChanged;
   final void Function(Set<QuestionType>) onTypesChanged;
   final void Function(Map<Difficulty, int>) onDifficultyChanged;
+  final void Function(String?) onChapterChanged;
 
   const QuestionWidgetOptions({
     required this.grade,
@@ -31,13 +32,16 @@ class QuestionWidgetOptions {
     required this.onSubjectChanged,
     required this.onTypesChanged,
     required this.onDifficultyChanged,
+    required this.onChapterChanged,
+    this.selectedChapter,
   });
 
   List<Widget> buildAllSettings(Translations t) {
     return [
-      _buildGradeSetting(t),
-      const SizedBox(height: 8),
-      _buildSubjectSetting(t),
+      // Grade, subject, and chapter share one StatefulBuilder so that changing
+      // grade/subject triggers a rebuild of the Consumer inside, causing it to
+      // re-watch chaptersProvider with the updated args (loading state fires).
+      _buildGradeSubjectChapter(t),
       const SizedBox(height: 8),
       _buildTypesSetting(t),
       const SizedBox(height: 8),
@@ -47,37 +51,126 @@ class QuestionWidgetOptions {
     ];
   }
 
-  Widget _buildGradeSetting(Translations t) {
-    return StatefulBuilder(
-      builder: (context, set) => SettingItem(
-        label: t.generate.presentationGenerate.grade,
-        child: FlexDropdownField<GradeLevel>(
-          value: grade,
-          items: GradeLevel.values,
-          itemBuilder: (_, g) => Text(g.getLocalizedName(t)),
-          onChanged: (g) {
-            onGradeChanged(g);
-            set(() {});
-          },
-        ),
-      ),
-    );
-  }
+  Widget _buildGradeSubjectChapter(Translations t) {
+    final localGrade = [grade];
+    final localSubject = [subject];
+    final localChapter = [selectedChapter];
 
-  Widget _buildSubjectSetting(Translations t) {
     return StatefulBuilder(
-      builder: (context, set) => SettingItem(
-        label: t.generate.presentationGenerate.subject,
-        child: FlexDropdownField<Subject>(
-          value: subject,
-          items: Subject.values,
-          itemBuilder: (_, s) => Text(s.getLocalizedName(t)),
-          onChanged: (s) {
-            onSubjectChanged(s);
-            set(() {});
-          },
-        ),
-      ),
+      builder: (context, set) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Grade
+            SettingItem(
+              label: t.generate.presentationGenerate.grade,
+              child: FlexDropdownField<GradeLevel>(
+                value: localGrade[0],
+                items: GradeLevel.values,
+                itemBuilder: (_, g) => Text(g.getLocalizedName(t)),
+                onChanged: (g) {
+                  localGrade[0] = g;
+                  localChapter[0] = null;
+                  onGradeChanged(g);
+                  onChapterChanged(null);
+                  set(() {});
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Subject
+            SettingItem(
+              label: t.generate.presentationGenerate.subject,
+              child: FlexDropdownField<Subject>(
+                value: localSubject[0],
+                items: Subject.values,
+                itemBuilder: (_, s) => Text(s.getLocalizedName(t)),
+                onChanged: (s) {
+                  localSubject[0] = s;
+                  localChapter[0] = null;
+                  onSubjectChanged(s);
+                  onChapterChanged(null);
+                  set(() {});
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Chapter — Consumer is inside StatefulBuilder so it rebuilds
+            // (and re-watches the correct provider) whenever grade/subject change.
+            Consumer(
+              builder: (context, ref, _) {
+                final chaptersAsync = ref.watch(
+                  chaptersProvider((
+                    grade: localGrade[0],
+                    subject: localSubject[0],
+                  )),
+                );
+
+                return StatefulBuilder(
+                  builder: (context, chapterSet) {
+                    return SettingItem(
+                      label: t.questionBank.chapter.title,
+                      child: chaptersAsync.when(
+                        loading: () => const SizedBox(
+                          height: 48,
+                          child: Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        ),
+                        error: (_, _) =>
+                            Text(t.questionBank.chapter.failedToLoad),
+                        data: (chapters) {
+                          if (chapters.isEmpty) {
+                            return Text(
+                              t.questionBank.chapter.noAvailable,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                            );
+                          }
+
+                          final items = <ChapterResponseDto?>[
+                            null,
+                            ...chapters,
+                          ];
+                          final currentValue = localChapter[0] == null
+                              ? null
+                              : chapters.cast<ChapterResponseDto?>().firstWhere(
+                                  (c) => c?.name == localChapter[0],
+                                  orElse: () => null,
+                                );
+
+                          return FlexDropdownField<ChapterResponseDto?>(
+                            value: currentValue,
+                            items: items,
+                            itemBuilder: (_, c) => Text(
+                              c?.name ?? t.questionBank.chapter.noChapter,
+                            ),
+                            onChanged: (c) {
+                              localChapter[0] = c?.name;
+                              onChapterChanged(c?.name);
+                              chapterSet(() {});
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -111,13 +204,18 @@ class QuestionWidgetOptions {
   }
 
   Widget _buildDifficultySetting(Translations t) {
+    // ADVANCED_APPLICATION is excluded from question generation.
+    final difficulties = Difficulty.values
+        .where((d) => d != Difficulty.advancedApplication)
+        .toList();
+
     return StatefulBuilder(
       builder: (context, set) {
         final theme = Theme.of(context);
         return SettingItem(
           label: t.common.difficulty,
           child: Column(
-            children: Difficulty.values
+            children: difficulties
                 .map(
                   (d) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),

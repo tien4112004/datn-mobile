@@ -888,7 +888,9 @@
     "deleteDialog": {
       "title": "Delete Class",
       "message": "Are you sure you want to delete \"$className\"?",
-      "notImplemented": "Delete not implemented yet"
+      "notImplemented": "Delete not implemented yet",
+      "deleteSuccess": "Class deleted successfully",
+      "deleteError": "Failed to delete class: $error"
     },
     "editPage": {
       "title": "Edit Class",
@@ -1068,7 +1070,7 @@
       "selectResources": "Select Resources",
       "configurePermissions": "Configure Permissions",
       "selectedCount": "$count selected",
-      "continue": "Continue",
+      "continue_": "Continue",
       "done": "Done"
     },
     "assignmentSelector": {

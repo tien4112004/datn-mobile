@@ -1,6 +1,7 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
+import 'package:AIPrimary/features/posts/ui/widgets/exercise_type/due_date_section.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/shared/post_editor_section.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/shared/post_options_section.dart';
 import 'package:AIPrimary/shared/widgets/richtext_toolbar.dart';
@@ -33,6 +34,7 @@ class _UpdatePostPageState extends ConsumerState<UpdatePostPage> {
   PostType? _selectedType;
   bool _allowComments = true;
   bool _isLoading = true;
+  DateTime? _dueDate;
 
   @override
   void initState() {
@@ -53,6 +55,7 @@ class _UpdatePostPageState extends ConsumerState<UpdatePostPage> {
           // Initialize form with post data
           _selectedType = post.type;
           _allowComments = post.allowComments;
+          _dueDate = post.dueDate;
 
           // Dispose old controller before creating new one
           _quillController.dispose();
@@ -119,6 +122,7 @@ class _UpdatePostPageState extends ConsumerState<UpdatePostPage> {
             content: markdown,
             type: _selectedType!,
             allowComments: _allowComments,
+            dueDate: _dueDate,
           );
 
       if (mounted) {
@@ -132,6 +136,24 @@ class _UpdatePostPageState extends ConsumerState<UpdatePostPage> {
           t.classes.postUpsert.actionError(action: action, error: e.toString()),
         );
       }
+    }
+  }
+
+  Future<void> _pickDueDate() async {
+    final t = ref.read(translationsPod);
+    final now = DateTime.now();
+    final initialDate = _dueDate ?? now.add(const Duration(days: 7));
+
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      helpText: t.classes.postUpsert.selectDueDate,
+    );
+
+    if (pickedDate != null && mounted) {
+      setState(() => _dueDate = pickedDate);
     }
   }
 
@@ -267,6 +289,17 @@ class _UpdatePostPageState extends ConsumerState<UpdatePostPage> {
                                   setState(() => _allowComments = value);
                                 },
                         ),
+
+                        // Due Date Section (exercise posts only)
+                        if (_selectedType == PostType.exercise) ...[
+                          const SizedBox(height: 16),
+                          DueDateSection(
+                            dueDate: _dueDate,
+                            isDisabled: isSubmitting,
+                            onPickDueDate: _pickDueDate,
+                            translations: t,
+                          ),
+                        ],
 
                         const SizedBox(height: 16),
 

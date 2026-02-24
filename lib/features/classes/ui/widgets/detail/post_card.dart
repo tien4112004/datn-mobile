@@ -99,6 +99,8 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('PostCard: ${widget.post.id} ${widget.post.assignmentId}');
+
     final t = ref.watch(translationsPod);
     final isStudent = ref.watch(userRolePod) == UserRole.student;
     return Padding(
@@ -173,6 +175,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                           setState(() => _showComments = !_showComments),
                       createdAt: widget.post.createdAt,
                       updatedAt: widget.post.updatedAt,
+                      dueDate: widget.post.type == PostType.exercise
+                          ? widget.post.dueDate
+                          : null,
                     ),
 
                     // Comments section (expandable)

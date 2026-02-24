@@ -888,7 +888,9 @@
     "deleteDialog": {
       "title": "Xóa lớp học",
       "message": "Bạn có chắc chắn muốn xóa \"$className\"?",
-      "notImplemented": "Chức năng xóa chưa được triển khai"
+      "notImplemented": "Chức năng xóa chưa được triển khai",
+      "deleteSuccess": "Đã xóa lớp học thành công",
+      "deleteError": "Xóa lớp học thất bại: $error"
     },
     "editPage": {
       "title": "Sửa lớp học",
@@ -1068,7 +1070,7 @@
       "selectResources": "Chọn tài nguyên",
       "configurePermissions": "Cấu hình quyền",
       "selectedCount": "Đã chọn $count",
-      "continue": "Tiếp tục",
+      "continue_": "Tiếp tục",
       "done": "Xong"
     },
     "assignmentSelector": {

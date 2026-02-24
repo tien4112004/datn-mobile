@@ -9,6 +9,7 @@ class PostEntity {
   final String authorId;
   final String authorName;
   final String authorEmail;
+  final String? authorAvatarUrl;
   final String content;
   final PostType type;
   final List<String> attachments;
@@ -27,6 +28,7 @@ class PostEntity {
     required this.authorId,
     required this.authorName,
     required this.authorEmail,
+    this.authorAvatarUrl,
     required this.content,
     required this.type,
     required this.attachments,
@@ -47,6 +49,7 @@ class PostEntity {
     String? authorId,
     String? authorName,
     String? authorEmail,
+    String? authorAvatarUrl,
     String? content,
     PostType? type,
     List<String>? attachments,
@@ -65,6 +68,7 @@ class PostEntity {
       authorId: authorId ?? this.authorId,
       authorName: authorName ?? this.authorName,
       authorEmail: authorEmail ?? this.authorEmail,
+      authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
       content: content ?? this.content,
       type: type ?? this.type,
       attachments: attachments ?? this.attachments,

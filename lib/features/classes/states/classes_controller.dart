@@ -86,3 +86,22 @@ class UpdateClassController extends AsyncNotifier<void> {
     });
   }
 }
+
+/// Controller for deleting a class.
+class DeleteClassController extends AsyncNotifier<void> {
+  @override
+  FutureOr<void> build() {
+    // Initial state - no operation
+  }
+
+  /// Deletes a class and refreshes the list.
+  Future<void> deleteClass(String classId) async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(classRepositoryProvider);
+      await repository.deleteClass(classId);
+      ref.invalidate(classesControllerProvider);
+    });
+  }
+}

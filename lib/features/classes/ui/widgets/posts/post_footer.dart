@@ -12,6 +12,7 @@ class PostFooter extends ConsumerWidget {
   final VoidCallback onToggleComments;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? dueDate;
 
   const PostFooter({
     super.key,
@@ -21,6 +22,7 @@ class PostFooter extends ConsumerWidget {
     required this.onToggleComments,
     required this.createdAt,
     required this.updatedAt,
+    this.dueDate,
   });
 
   @override
@@ -61,8 +63,43 @@ class PostFooter extends ConsumerWidget {
             ),
 
           const Spacer(),
+
+          // Due date (exercise posts only)
+          if (dueDate != null) _DueDateLabel(dueDate: dueDate!),
         ],
       ),
+    );
+  }
+}
+
+class _DueDateLabel extends StatelessWidget {
+  final DateTime dueDate;
+
+  const _DueDateLabel({required this.dueDate});
+
+  bool get _isOverdue => dueDate.isBefore(DateTime.now());
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final color = _isOverdue ? colorScheme.error : colorScheme.onSurfaceVariant;
+    final formattedDate =
+        '${dueDate.day.toString().padLeft(2, '0')}/${dueDate.month.toString().padLeft(2, '0')}/${dueDate.year}';
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(LucideIcons.calendarClock, size: 13, color: color),
+        const SizedBox(width: 4),
+        Text(
+          formattedDate,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: color,
+            fontWeight: _isOverdue ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+      ],
     );
   }
 }

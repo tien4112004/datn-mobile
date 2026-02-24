@@ -29,4 +29,7 @@ abstract class ClassRepository {
     String? settings,
     bool? isActive,
   });
+
+  /// Deletes a class by ID.
+  Future<void> deleteClass(String classId);
 }

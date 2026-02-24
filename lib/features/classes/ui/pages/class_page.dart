@@ -141,7 +141,7 @@ class _ClassListContent extends ConsumerWidget {
               onDelete: isStudent
                   ? null
                   : () {
-                      _showDeleteConfirmation(context, classEntity, t);
+                      _showDeleteConfirmation(context, ref, classEntity, t);
                     },
             );
           },
@@ -152,6 +152,7 @@ class _ClassListContent extends ConsumerWidget {
 
   void _showDeleteConfirmation(
     BuildContext context,
+    WidgetRef ref,
     ClassEntity classEntity,
     dynamic t,
   ) {
@@ -168,12 +169,31 @@ class _ClassListContent extends ConsumerWidget {
             child: Text(t.classes.cancel),
           ),
           FilledButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(dialogContext);
-              // TODO: Implement delete class
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.classes.deleteDialog.notImplemented)),
-              );
+              try {
+                await ref
+                    .read(deleteClassControllerProvider.notifier)
+                    .deleteClass(classEntity.id);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(t.classes.deleteDialog.deleteSuccess),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        t.classes.deleteDialog.deleteError(error: e.toString()),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  );
+                }
+              }
             },
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,

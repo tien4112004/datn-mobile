@@ -12,12 +12,14 @@ class AuthorResponseDto {
   final String firstName;
   final String lastName;
   final String email;
+  final String? avatarUrl;
 
   const AuthorResponseDto({
     required this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
+    this.avatarUrl,
   });
 
   factory AuthorResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -77,6 +79,7 @@ extension PostResponseMapper on PostResponseDto {
     authorId: author.id,
     authorName: author.fullName,
     authorEmail: author.email,
+    authorAvatarUrl: author.avatarUrl,
     content: content,
     type: PostType.fromName(type),
     attachments: attachments ?? [],

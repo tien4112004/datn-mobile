@@ -69,4 +69,9 @@ class ClassRepositoryImpl implements ClassRepository {
     final response = await _remoteDataSource.updateClass(classId, request);
     return response.data!.toEntity();
   }
+
+  @override
+  Future<void> deleteClass(String classId) async {
+    await _remoteDataSource.deleteClass(classId);
+  }
 }

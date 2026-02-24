@@ -92,7 +92,8 @@ enum QuestionType {
 enum Difficulty {
   knowledge,
   comprehension,
-  application;
+  application,
+  advancedApplication;
 
   String getLocalizedName(Translations t) {
     switch (this) {
@@ -102,6 +103,8 @@ enum Difficulty {
         return t.questionBank.difficulties.comprehension;
       case Difficulty.application:
         return t.questionBank.difficulties.application;
+      case Difficulty.advancedApplication:
+        return 'Advanced Application';
     }
   }
 
@@ -113,6 +116,8 @@ enum Difficulty {
         return 'Comprehension';
       case Difficulty.application:
         return 'Application';
+      case Difficulty.advancedApplication:
+        return 'Advanced Application';
     }
   }
 
@@ -124,6 +129,8 @@ enum Difficulty {
         return 'COMPREHENSION';
       case Difficulty.application:
         return 'APPLICATION';
+      case Difficulty.advancedApplication:
+        return 'ADVANCED_APPLICATION';
     }
   }
 
@@ -135,6 +142,8 @@ enum Difficulty {
         return Difficulty.comprehension;
       case 'APPLICATION':
         return Difficulty.application;
+      case 'ADVANCED_APPLICATION':
+        return Difficulty.advancedApplication;
       default:
         return Difficulty.knowledge;
     }
@@ -148,6 +157,8 @@ enum Difficulty {
         return LucideIcons.book;
       case Difficulty.application:
         return LucideIcons.book;
+      case Difficulty.advancedApplication:
+        return LucideIcons.bookOpen;
     }
   }
 
@@ -159,6 +170,8 @@ enum Difficulty {
         return Colors.blue;
       case Difficulty.application:
         return Colors.orange;
+      case Difficulty.advancedApplication:
+        return Colors.red;
     }
   }
 
@@ -170,6 +183,8 @@ enum Difficulty {
         return Difficulty.comprehension;
       case 'APPLICATION':
         return Difficulty.application;
+      case 'ADVANCED_APPLICATION':
+        return Difficulty.advancedApplication;
       default:
         return Difficulty.knowledge;
     }

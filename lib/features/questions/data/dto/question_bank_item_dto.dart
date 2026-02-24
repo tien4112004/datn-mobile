@@ -32,8 +32,8 @@ class QuestionBankItemDto {
   @DataJsonConverter()
   final Map<String, dynamic> data;
   final String? ownerId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String grade;
   final String? chapter;
   final String? subject;
@@ -48,8 +48,8 @@ class QuestionBankItemDto {
     this.titleImageUrl,
     required this.data,
     this.ownerId,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.grade,
     this.chapter,
     this.subject,

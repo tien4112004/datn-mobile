@@ -1,3 +1,6 @@
+import 'package:AIPrimary/features/questions/data/dto/generate_questions_request_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/generated_questions_response_dto.dart';
+import 'package:AIPrimary/features/questions/data/dto/publish_request_dto.dart';
 import 'package:AIPrimary/features/questions/data/dto/question_bank_response_dto.dart';
 import 'package:AIPrimary/features/questions/data/dto/question_bank_item_dto.dart';
 import 'package:AIPrimary/features/questions/data/dto/question_batch_response_dto.dart';
@@ -62,4 +65,16 @@ abstract class QuestionBankRemoteSource {
     @Query('grade') String? grade,
     @Query('subject') String? subject,
   });
+
+  /// Generate questions using AI based on topic, grade, subject and difficulty requirements.
+  @POST('/question-bank/generate')
+  Future<ServerResponseDto<GeneratedQuestionsResponseDto>> generateQuestions(
+    @Body() GenerateQuestionsRequestDto request,
+  );
+
+  /// Submit a question for review to be published to the public bank.
+  @POST('/questions/publish/{questionId}')
+  Future<ServerResponseDto<PublishRequestDto>> publishQuestion(
+    @Path('questionId') String questionId,
+  );
 }

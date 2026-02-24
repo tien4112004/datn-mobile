@@ -6,8 +6,8 @@ class QuestionBankItemEntity {
   final String id;
   final BaseQuestion question;
   final String? ownerId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final GradeLevel? grade;
   final String? chapter;
   final Subject? subject;
@@ -17,8 +17,8 @@ class QuestionBankItemEntity {
     required this.id,
     required this.question,
     this.ownerId,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.grade,
     this.chapter,
     this.subject,

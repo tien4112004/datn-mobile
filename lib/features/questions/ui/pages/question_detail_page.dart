@@ -183,15 +183,73 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
         ),
       ),
       actions: [
-        if (isOwner)
+        if (isOwner) ...[
+          IconButton(
+            icon: const Icon(LucideIcons.send, size: 20),
+            onPressed: () => _showPublishDialog(context, questionItem, t),
+            tooltip: 'Publish to Public Bank',
+            style: IconButton.styleFrom(foregroundColor: colorScheme.secondary),
+          ),
           IconButton(
             icon: const Icon(LucideIcons.pencil, size: 20),
             onPressed: _navigateToEdit,
             tooltip: t.questionBank.editQuestion,
             style: IconButton.styleFrom(foregroundColor: colorScheme.primary),
           ),
+        ],
         const SizedBox(width: 8),
       ],
+    );
+  }
+
+  void _showPublishDialog(
+    BuildContext context,
+    QuestionBankItemEntity questionItem,
+    dynamic t,
+  ) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          icon: const Icon(Icons.send_rounded, size: 40),
+          title: const Text('Publish to Public Bank'),
+          content: const Text(
+            'Submit this question for review to be added to the public bank?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+                try {
+                  await ref
+                      .read(questionBankProvider.notifier)
+                      .publishQuestion(questionItem.id);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Question submitted for review successfully',
+                        ),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to submit: $e')),
+                    );
+                  }
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
     );
   }
 

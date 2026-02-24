@@ -253,6 +253,9 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
   void _handleCancel(Uri uri) async {
     if (!mounted) return;
 
+    // Capture ScaffoldMessenger before any async gap
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     // Explicitly notify backend to mark transaction CANCELLED (best-effort)
     final repository = ref.read(paymentRepositoryProvider);
     await repository.cancelTransaction(widget.transactionId);
@@ -266,6 +269,71 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
         message: t.payment.webview.messages.cancelled,
       ),
     );
+
+    try {
+      final pollingService = ref.read(paymentStatusPollingServiceProvider);
+
+      // Poll to verify final status
+      final transaction = await pollingService.pollTransactionStatus(
+        transactionId: widget.transactionId,
+        onRetry: (attempt, nextDelay) {
+          debugPrint(
+            'Payment verification attempt $attempt, waiting ${nextDelay.inSeconds}s...',
+          );
+        },
+      );
+
+      if (!mounted) return;
+
+      // Clear loading indicator
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      // Build result based on verified status
+      final result = _buildCallbackResult(transaction);
+      context.router.pop(result);
+    } on PaymentTimeoutException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
+        ),
+      );
+    } on PaymentVerificationException {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      scaffoldMessenger.hideCurrentSnackBar();
+
+      final code = uri.queryParameters['code'];
+      context.router.pop(
+        PaymentCallbackResultModel(
+          status: PaymentCallbackStatus.error,
+          transactionId: widget.transactionId,
+          message: code != null
+              ? t.payment.webview.messages.failedWithCode(code: code)
+              : t.payment.webview.messages.failedDefault,
+        ),
+      );
+    }
   }
 
   PaymentCallbackResultModel _buildCallbackResult(

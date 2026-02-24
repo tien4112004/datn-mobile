@@ -232,11 +232,15 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                 child: TextButton(
                   onPressed: () {
                     GenerationSettingsSheet.show(
-                      context,
-                      MindmapWidgetOptions().buildAllSettings(t),
-                      ModelType.text,
-                      t.generate.generationSettings.title,
-                      t.generate.generationSettings.done,
+                      context: context,
+                      optionWidgets: MindmapWidgetOptions().buildAllSettings(t),
+                      modelType: ModelType.text,
+                      title: t.generate.generationSettings.title,
+                      buttonText: t.generate.generationSettings.done,
+                      language: formState.language,
+                      onLanguageChanged: formController.updateLanguage,
+                      selectedModel: formState.selectedModel,
+                      onModelChanged: formController.updateModel,
                     );
                   },
                   child: Text(t.generate.advancedSettings),

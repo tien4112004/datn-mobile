@@ -260,11 +260,16 @@ class _PresentationGeneratePageState
                 child: TextButton(
                   onPressed: () {
                     GenerationSettingsSheet.show(
-                      context,
-                      PresentationWidgetOptions().buildAllSettings(t),
-                      ModelType.text,
-                      t.generate.generationSettings.title,
-                      t.generate.generationSettings.done,
+                      context: context,
+                      optionWidgets: PresentationWidgetOptions()
+                          .buildAllSettings(t),
+                      modelType: ModelType.text,
+                      title: t.generate.generationSettings.title,
+                      buttonText: t.generate.generationSettings.done,
+                      language: formState.language,
+                      onLanguageChanged: formController.updateLanguage,
+                      selectedModel: formState.outlineModel,
+                      onModelChanged: formController.updateOutlineModel,
                     );
                   },
                   child: Text(t.generate.advancedSettings),

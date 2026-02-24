@@ -26,6 +26,8 @@ extension DifficultyLocalization on Difficulty {
         return t.questionBank.difficulties.comprehension;
       case Difficulty.application:
         return t.questionBank.difficulties.application;
+      case Difficulty.advancedApplication:
+        return 'Advanced Application';
     }
   }
 }

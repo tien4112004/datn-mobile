@@ -137,6 +137,11 @@ class AppRouter extends RootStackRouter {
       path: '/questions/:questionId/edit',
     ),
     AutoRoute(page: QuestionCreateRoute.page, path: '/questions/create'),
+    AutoRoute(page: QuestionGenerateRoute.page, path: '/questions/generate'),
+    AutoRoute(
+      page: QuestionGenerateResultRoute.page,
+      path: '/questions/generate/result',
+    ),
     AutoRoute(
       page: AssignmentQuestionEditRoute.page,
       path: '/assignments/questions/edit',
@@ -146,11 +151,5 @@ class AppRouter extends RootStackRouter {
       path: '/assignments/questions/create',
     ),
     AutoRoute(page: ContextEditRoute.page, path: '/assignments/context/edit'),
-
-    // Demo
-    AutoRoute(
-      page: QuestionRendererDemoRoute.page,
-      path: '/demo/question-renderer',
-    ),
   ];
 }

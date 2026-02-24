@@ -1,5 +1,4 @@
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
-
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
@@ -11,35 +10,49 @@ import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Bottom sheet for configuring presentation generation settings.
+/// Bottom sheet for configuring generation settings.
 class GenerationSettingsSheet extends ConsumerWidget {
-  final NotifierProvider formControllerProvider;
   final List<Widget> optionWidgets;
-  final List<String> _availableLanguages = ['English', 'Vietnamese'];
+  final List<String> _availableLanguages = const ['English', 'Vietnamese'];
   final ModelType modelType;
 
-  GenerationSettingsSheet({
+  final String? language;
+  final ValueChanged<String>? onLanguageChanged;
+  final AIModel? selectedModel;
+  final ValueChanged<AIModel>? onModelChanged;
+
+  const GenerationSettingsSheet({
     super.key,
-    required this.formControllerProvider,
     required this.optionWidgets,
     required this.modelType,
+    this.language,
+    this.onLanguageChanged,
+    this.selectedModel,
+    this.onModelChanged,
   });
 
   /// Shows the generation settings bottom sheet.
-  static void show(
-    BuildContext context,
-    List<Widget> optionWidgets,
-    ModelType modelType,
-    String title,
-    String buttonText,
-  ) {
+  static void show({
+    required BuildContext context,
+    required List<Widget> optionWidgets,
+    required ModelType modelType,
+    required String title,
+    required String buttonText,
+    String? language,
+    ValueChanged<String>? onLanguageChanged,
+    AIModel? selectedModel,
+    ValueChanged<AIModel>? onModelChanged,
+  }) {
     PickerBottomSheet.show(
       context: context,
       title: title,
       child: GenerationSettingsSheet(
-        formControllerProvider: presentationFormControllerProvider,
         optionWidgets: optionWidgets,
         modelType: modelType,
+        language: language,
+        onLanguageChanged: onLanguageChanged,
+        selectedModel: selectedModel,
+        onModelChanged: onModelChanged,
       ),
       saveButton: _buildDoneButton(context, buttonText),
     );
@@ -47,9 +60,6 @@ class GenerationSettingsSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = ref.watch(formControllerProvider);
-    final formController = ref.read(formControllerProvider.notifier);
-
     final t = ref.watch(translationsPod);
 
     return Padding(
@@ -61,12 +71,22 @@ class GenerationSettingsSheet extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ...optionWidgets.expand(
-            (widget) => [widget, const SizedBox(height: 16)],
+            (widget) => [widget, const SizedBox(height: 8)],
           ),
-          _buildLanguageSetting(formState, formController, t),
-          const SizedBox(height: 16),
-          _buildModelSetting(ref, formState, formController, modelType, t),
-          const SizedBox(height: 24),
+          if (language != null && onLanguageChanged != null) ...[
+            _buildLanguageSetting(language!, onLanguageChanged!, t),
+            const SizedBox(height: 16),
+          ],
+          if (onModelChanged != null) ...[
+            _buildModelSetting(
+              ref,
+              selectedModel,
+              onModelChanged!,
+              modelType,
+              t,
+            ),
+            const SizedBox(height: 24),
+          ],
         ],
       ),
     );
@@ -74,8 +94,8 @@ class GenerationSettingsSheet extends ConsumerWidget {
 
   /// Language setting.
   Widget _buildLanguageSetting(
-    dynamic formState,
-    dynamic formController,
+    String currentLanguage,
+    ValueChanged<String> onChanged,
     Translations t,
   ) {
     return SettingItem(
@@ -83,11 +103,13 @@ class GenerationSettingsSheet extends ConsumerWidget {
       child: StatefulBuilder(
         builder: (context, setSheetState) {
           return FlexDropdownField<String>(
-            value: formState.language,
+            value: currentLanguage,
             items: _availableLanguages,
             onChanged: (value) {
-              formController.updateLanguage(value);
-              setSheetState(() {});
+              onChanged(value);
+              setSheetState(() {
+                currentLanguage = value;
+              });
             },
           );
         },
@@ -98,8 +120,8 @@ class GenerationSettingsSheet extends ConsumerWidget {
   /// AI model setting with async loading from modelsControllerPod.
   Widget _buildModelSetting(
     WidgetRef ref,
-    dynamic formState,
-    dynamic formController,
+    AIModel? currentModel,
+    ValueChanged<AIModel> onModelChanged,
     ModelType modelType,
     Translations t,
   ) {
@@ -119,16 +141,15 @@ class GenerationSettingsSheet extends ConsumerWidget {
 
               return StatefulBuilder(
                 builder: (context, setSheetState) {
-                  final selectedModel = models.firstWhere(
+                  var initialModel = models.firstWhere(
                     (m) =>
                         m.displayName ==
-                        (formState.outlineModel?.displayName ??
-                            models.first.displayName),
+                        (currentModel?.displayName ?? models.first.displayName),
                     orElse: () => models.first,
                   );
 
                   return FlexDropdownField<AIModel>(
-                    value: selectedModel,
+                    value: initialModel,
                     items: models,
                     itemBuilder: (context, model) {
                       final logoPath = ProviderLogoUtils.getLogoPath(
@@ -146,8 +167,10 @@ class GenerationSettingsSheet extends ConsumerWidget {
                       );
                     },
                     onChanged: (model) {
-                      formController.updateOutlineModel(model);
-                      setSheetState(() {});
+                      onModelChanged(model);
+                      setSheetState(() {
+                        initialModel = model;
+                      });
                     },
                   );
                 },

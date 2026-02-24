@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/generate/enum/generator_type.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_loading.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
+import 'package:AIPrimary/shared/widgets/multi_fab_menu.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -118,14 +121,29 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
           loadingWidget: () => const QuestionBankLoading(),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.router.push(const QuestionCreateRoute());
-        },
-        elevation: 8,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        icon: const Icon(Icons.add_rounded),
-        label: Text(t.questionBank.addQuestion),
+      floatingActionButton: MultiFabMenu(
+        actions: [
+          FabAction(
+            heroTag: 'fab_generate',
+            icon: Icons.auto_awesome_rounded,
+            label: t.questionBank.generateWithAI,
+            elevation: 4,
+            onPressed: () {
+              ref.read(generatorTypeProvider.notifier).state =
+                  GeneratorType.question;
+              context.router.push(const GenerateRoute());
+            },
+          ),
+          FabAction(
+            heroTag: 'fab_create',
+            icon: Icons.add_rounded,
+            label: t.questionBank.addQuestion,
+            elevation: 8,
+            onPressed: () {
+              context.router.push(const QuestionCreateRoute());
+            },
+          ),
+        ],
       ),
     );
   }

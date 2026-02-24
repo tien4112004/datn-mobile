@@ -6,6 +6,7 @@ import 'package:AIPrimary/features/generate/ui/pages/generate_page/mindmap_gener
 import 'package:AIPrimary/features/generate/ui/pages/generate_page/presentation_generate_page.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/generator_picker_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/resource_generation_appbar.dart';
+import 'package:AIPrimary/features/generate/ui/pages/generate_page/question_generate_page.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,7 @@ class GeneratePage extends ConsumerWidget {
           GeneratorType.presentation => const PresentationGeneratePage(),
           GeneratorType.mindmap => const MindmapGeneratePage(),
           GeneratorType.image => const ImageGeneratePage(),
+          GeneratorType.question => const QuestionGeneratePage(),
         },
       ),
     );

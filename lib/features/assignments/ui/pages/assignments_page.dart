@@ -89,15 +89,10 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
     ThemeData theme,
     Translations t,
   ) {
-    final filterState = ref.watch(assignmentFilterProvider);
-    final AppLocale locale = t.$meta.locale;
-
     return SliverAppBar(
       pinned: true,
       floating: false,
-      expandedHeight: (filterState.hasActiveFilters || locale == AppLocale.vi)
-          ? 220
-          : 180,
+      expandedHeight: 180,
       backgroundColor: colorScheme.surface,
       surfaceTintColor: colorScheme.surface,
       title: Text(

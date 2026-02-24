@@ -1,12 +1,10 @@
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
-import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/model_picker_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
-import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
-import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
+import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -78,13 +76,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
             const SizedBox(height: 16),
           ],
           if (onModelChanged != null) ...[
-            _buildModelSetting(
-              ref,
-              selectedModel,
-              onModelChanged!,
-              modelType,
-              t,
-            ),
+            _buildModelSetting(selectedModel, onModelChanged!, modelType, t),
             const SizedBox(height: 24),
           ],
         ],
@@ -92,7 +84,7 @@ class GenerationSettingsSheet extends ConsumerWidget {
     );
   }
 
-  /// Language setting.
+  /// Language setting — opens a picker bottom sheet.
   Widget _buildLanguageSetting(
     String currentLanguage,
     ValueChanged<String> onChanged,
@@ -102,24 +94,40 @@ class GenerationSettingsSheet extends ConsumerWidget {
       label: t.generate.mindmapGenerate.selectLanguage,
       child: StatefulBuilder(
         builder: (context, setSheetState) {
-          return FlexDropdownField<String>(
-            value: currentLanguage,
-            items: _availableLanguages,
-            onChanged: (value) {
-              onChanged(value);
-              setSheetState(() {
-                currentLanguage = value;
-              });
-            },
+          return PickerButton(
+            label: currentLanguage,
+            onTap: () => PickerBottomSheet.show(
+              context: context,
+              title: t.generate.mindmapGenerate.selectLanguage,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: _availableLanguages.map((lang) {
+                  final isSelected = currentLanguage == lang;
+                  return ListTile(
+                    title: Text(lang),
+                    trailing: isSelected
+                        ? Icon(
+                            Icons.check_circle_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : null,
+                    onTap: () {
+                      onChanged(lang);
+                      setSheetState(() => currentLanguage = lang);
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
           );
         },
       ),
     );
   }
 
-  /// AI model setting with async loading from modelsControllerPod.
+  /// AI model setting — opens a [ModelPickerSheet] bottom sheet.
   Widget _buildModelSetting(
-    WidgetRef ref,
     AIModel? currentModel,
     ValueChanged<AIModel> onModelChanged,
     ModelType modelType,
@@ -127,67 +135,23 @@ class GenerationSettingsSheet extends ConsumerWidget {
   ) {
     return SettingItem(
       label: t.generate.mindmapGenerate.selectModel,
-      child: Consumer(
-        builder: (context, ref, _) {
-          final modelsAsync = ref.watch(modelsControllerPod(modelType));
-          return modelsAsync.easyWhen(
-            data: (state) {
-              final models = state.availableModels
-                  .where((m) => m.isEnabled)
-                  .toList();
-              if (models.isEmpty) {
-                return Text(t.generate.mindmapGenerate.noModelsAvailable);
-              }
-
-              return StatefulBuilder(
-                builder: (context, setSheetState) {
-                  var initialModel = models.firstWhere(
-                    (m) =>
-                        m.displayName ==
-                        (currentModel?.displayName ?? models.first.displayName),
-                    orElse: () => models.first,
-                  );
-
-                  return FlexDropdownField<AIModel>(
-                    value: initialModel,
-                    items: models,
-                    itemBuilder: (context, model) {
-                      final logoPath = ProviderLogoUtils.getLogoPath(
-                        model.provider,
-                      );
-                      return Row(
-                        children: [
-                          Image.asset(logoPath, width: 20, height: 20),
-                          const SizedBox(width: 12),
-                          Text(
-                            model.displayName,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      );
-                    },
-                    onChanged: (model) {
-                      onModelChanged(model);
-                      setSheetState(() {
-                        initialModel = model;
-                      });
-                    },
-                  );
-                },
-              );
-            },
-            loadingWidget: () => const SizedBox(
-              height: 48,
-              child: Center(
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
+      child: StatefulBuilder(
+        builder: (context, setSheetState) {
+          return PickerButton(
+            label:
+                currentModel?.displayName ??
+                t.generate.mindmapGenerate.selectModel,
+            onTap: () => ModelPickerSheet.show(
+              context: context,
+              title: t.generate.mindmapGenerate.selectModel,
+              selectedModelName: currentModel?.displayName,
+              t: t,
+              onModelSelected: (model) {
+                onModelChanged(model);
+                setSheetState(() => currentModel = model);
+              },
+              modelType: modelType,
             ),
-            errorWidget: (_, _) =>
-                Text(t.generate.mindmapGenerate.failedToLoadModels),
           );
         },
       ),

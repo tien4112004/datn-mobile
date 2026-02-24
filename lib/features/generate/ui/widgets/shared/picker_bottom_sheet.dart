@@ -50,14 +50,14 @@ class _PickerBottomSheetState extends State<PickerBottomSheet> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return DraggableScrollableSheet(
-      maxChildSize: 0.9,
+      maxChildSize: 1,
       key: _scrollKey,
       controller: _controller,
       snap: true,
       snapSizes: [0.5, 0.9],
       expand: true,
       builder: (context, scrollController) {
-        return _buildContent(isDark, scrollController);
+        return Expanded(child: _buildContent(isDark, scrollController));
       },
     );
   }
@@ -68,70 +68,81 @@ class _PickerBottomSheetState extends State<PickerBottomSheet> {
         color: context.surfaceColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 64),
-              child: CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverList.list(
-                    children: [
-                      const SizedBox(height: 12),
-                      Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: isDark ? Colors.grey[600] : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        widget.title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.grey[900],
-                        ),
-                      ),
-                      if (widget.subTitle != null) ...[
-                        const SizedBox(height: 8),
-                        DefaultTextStyle(
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isDark ? Colors.white70 : Colors.grey[700],
-                          ),
-                          child: Text(widget.subTitle!),
+      child: Column(
+        children: [
+          // Fixed drag handle
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[600] : Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 64),
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: [
+                        SliverList.list(
+                          children: [
+                            const SizedBox(height: 16),
+                            Text(
+                              widget.title,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : Colors.grey[900],
+                              ),
+                            ),
+                            if (widget.subTitle != null) ...[
+                              const SizedBox(height: 8),
+                              DefaultTextStyle(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : Colors.grey[700],
+                                ),
+                                child: Text(widget.subTitle!),
+                              ),
+                            ],
+                            widget.child,
+                          ],
                         ),
                       ],
-                      widget.child,
-                    ],
+                    ),
                   ),
+                  if (widget.saveButton != null)
+                    Positioned(
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: context.surfaceColor,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                          ),
+                        ),
+                        child: widget.saveButton!,
+                      ),
+                    ),
                 ],
               ),
             ),
-            if (widget.saveButton != null)
-              Positioned(
-                bottom: 16,
-                left: 0,
-                right: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: context.surfaceColor,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                  ),
-                  child: widget.saveButton!,
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

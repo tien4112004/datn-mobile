@@ -1,11 +1,11 @@
 import 'dart:core';
 
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
-import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,13 +38,19 @@ class PresentationWidgetOptions {
           label: t.generate.presentationGenerate.selectSlideCount,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return FlexDropdownField<int>(
-                value: formPresentationState.slideCount,
-                items: availableSlideCounts,
-                onChanged: (value) {
-                  formController.updateSlideCount(value);
-                  setSheetState(() {});
-                },
+              return PickerButton(
+                label: '${formPresentationState.slideCount}',
+                onTap: () => GeneralPickerOptions.showEnumPicker<int>(
+                  context: context,
+                  title: t.generate.presentationGenerate.selectSlideCount,
+                  values: availableSlideCounts,
+                  labelOf: (v) => '$v',
+                  isSelected: (v) => v == formPresentationState.slideCount,
+                  onSelected: (v) {
+                    formController.updateSlideCount(v);
+                    setSheetState(() {});
+                  },
+                ),
               );
             },
           ),
@@ -60,22 +66,33 @@ class PresentationWidgetOptions {
         final formController = ref.read(
           presentationFormControllerProvider.notifier,
         );
+        final gradeOptions = [null, ...GradeLevel.values];
 
         return SettingItem(
           label: t.generate.presentationGenerate.grade,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return FlexDropdownField<String?>(
-                value: formState.grade,
-                items: [null, ...GradeLevel.values.map((g) => g.apiValue)],
-                itemLabelBuilder: (v) {
-                  if (v == null) return t.generate.presentationGenerate.none;
-                  return GradeLevel.fromApiValue(v).getLocalizedName(t);
-                },
-                onChanged: (value) {
-                  formController.updateGrade(value);
-                  setSheetState(() {});
-                },
+              final currentLabel = formState.grade == null
+                  ? t.generate.presentationGenerate.none
+                  : GradeLevel.fromApiValue(
+                      formState.grade!,
+                    ).getLocalizedName(t);
+
+              return PickerButton(
+                label: currentLabel,
+                onTap: () => GeneralPickerOptions.showEnumPicker<GradeLevel?>(
+                  context: context,
+                  title: t.generate.presentationGenerate.grade,
+                  values: gradeOptions,
+                  labelOf: (g) => g == null
+                      ? t.generate.presentationGenerate.none
+                      : g.getLocalizedName(t),
+                  isSelected: (g) => g?.apiValue == formState.grade,
+                  onSelected: (g) {
+                    formController.updateGrade(g?.apiValue);
+                    setSheetState(() {});
+                  },
+                ),
               );
             },
           ),
@@ -91,22 +108,33 @@ class PresentationWidgetOptions {
         final formController = ref.read(
           presentationFormControllerProvider.notifier,
         );
+        final subjectOptions = [null, ...Subject.values];
 
         return SettingItem(
           label: t.generate.presentationGenerate.subject,
           child: StatefulBuilder(
             builder: (context, setSheetState) {
-              return FlexDropdownField<String?>(
-                value: formState.subject,
-                items: [null, ...Subject.values.map((s) => s.apiValue)],
-                itemLabelBuilder: (v) {
-                  if (v == null) return t.generate.presentationGenerate.none;
-                  return Subject.fromApiValue(v).getLocalizedName(t);
-                },
-                onChanged: (value) {
-                  formController.updateSubject(value);
-                  setSheetState(() {});
-                },
+              final currentLabel = formState.subject == null
+                  ? t.generate.presentationGenerate.none
+                  : Subject.fromApiValue(
+                      formState.subject!,
+                    ).getLocalizedName(t);
+
+              return PickerButton(
+                label: currentLabel,
+                onTap: () => GeneralPickerOptions.showEnumPicker<Subject?>(
+                  context: context,
+                  title: t.generate.presentationGenerate.subject,
+                  values: subjectOptions,
+                  labelOf: (s) => s == null
+                      ? t.generate.presentationGenerate.none
+                      : s.getLocalizedName(t),
+                  isSelected: (s) => s?.apiValue == formState.subject,
+                  onSelected: (s) {
+                    formController.updateSubject(s?.apiValue);
+                    setSheetState(() {});
+                  },
+                ),
               );
             },
           ),

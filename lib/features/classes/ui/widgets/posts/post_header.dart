@@ -32,7 +32,10 @@ class PostHeader extends ConsumerWidget {
       child: Row(
         children: [
           // Author avatar
-          PostAuthorAvatar(authorName: post.authorName),
+          PostAuthorAvatar(
+            authorName: post.authorName,
+            avatarUrl: post.authorAvatarUrl,
+          ),
           const SizedBox(width: 12),
 
           // Author info and pin indicator

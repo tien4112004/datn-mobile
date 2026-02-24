@@ -81,7 +81,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     }
 
     final assignmentAsync = ref.read(
-      assignmentPublicProvider(widget.assignmentId),
+      assignmentByPostIdProvider(widget.postId!),
     );
 
     final assignment = assignmentAsync.value;
@@ -230,7 +230,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
   void _showQuestionNavigator(BuildContext context, int totalQuestions) {
     final assignment = ref
-        .read(assignmentPublicProvider(widget.assignmentId))
+        .read(assignmentByPostIdProvider(widget.postId!))
         .value;
 
     if (assignment == null) return;
@@ -354,7 +354,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     final t = ref.read(translationsPod);
 
     final assignment = ref
-        .read(assignmentPublicProvider(widget.assignmentId))
+        .read(assignmentByPostIdProvider(widget.postId!))
         .value;
 
     if (assignment == null) return const SizedBox.shrink();
@@ -459,7 +459,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     final colorScheme = theme.colorScheme;
 
     final assignmentAsync = ref.watch(
-      assignmentPublicProvider(widget.assignmentId),
+      assignmentByPostIdProvider(widget.postId!),
     );
 
     return SafeArea(
@@ -627,7 +627,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     AnswerEntity? currentAnswer,
   ) {
     final assignment = ref
-        .read(assignmentPublicProvider(widget.assignmentId))
+        .read(assignmentByPostIdProvider(widget.postId!))
         .value;
 
     if (assignment == null) return const SizedBox.shrink();

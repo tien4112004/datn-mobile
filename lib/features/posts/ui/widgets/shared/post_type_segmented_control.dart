@@ -1,9 +1,10 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
-import 'package:AIPrimary/features/classes/ui/extensions/post_type_extension.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Segmented control for selecting post type
-class PostTypeSegmentedControl extends StatelessWidget {
+class PostTypeSegmentedControl extends ConsumerWidget {
   final PostType selectedType;
   final ValueChanged<PostType> onTypeChanged;
   final bool enabled;
@@ -16,9 +17,10 @@ class PostTypeSegmentedControl extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Opacity(
       opacity: enabled ? 1.0 : 0.6,
@@ -57,7 +59,7 @@ class PostTypeSegmentedControl extends StatelessWidget {
                         : null,
                   ),
                   child: Text(
-                    type.createPageLabel,
+                    type.getLocalizedName(t),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: isSelected

@@ -119,10 +119,14 @@ extension QuestionResponseMapper on QuestionResponse {
     Map<String, dynamic> data,
   ) {
     final optionsList = (data['options'] as List<dynamic>?) ?? [];
-    final options = optionsList.map((opt) {
-      final optMap = opt as Map<String, dynamic>;
+    final options = optionsList.asMap().entries.map((entry) {
+      final index = entry.key;
+      final optMap = entry.value as Map<String, dynamic>;
+      final rawId = optMap['id']?.toString() ?? '';
       return MultipleChoiceOption(
-        id: optMap['id']?.toString() ?? '',
+        // Fall back to index-based id if the API returns null/empty,
+        // so each option always has a unique identifier.
+        id: rawId.isNotEmpty ? rawId : 'option_$index',
         text: optMap['text']?.toString() ?? '',
         imageUrl: optMap['imageUrl']?.toString(),
         isCorrect: optMap['isCorrect'] as bool? ?? false,

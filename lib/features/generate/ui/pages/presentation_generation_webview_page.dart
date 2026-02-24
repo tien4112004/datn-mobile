@@ -359,7 +359,9 @@ class _PresentationGenerationWebViewPageState
                     children: [
                       ProjectsRoute(
                         children: [
-                          PresentationDetailRoute(presentationId: _presentationId!),
+                          PresentationDetailRoute(
+                            presentationId: _presentationId!,
+                          ),
                         ],
                       ),
                     ],

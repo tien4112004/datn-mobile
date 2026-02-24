@@ -44,3 +44,9 @@ final updateClassControllerProvider =
     AsyncNotifierProvider<UpdateClassController, void>(
       () => UpdateClassController(),
     );
+
+/// Provider for deleting a class.
+final deleteClassControllerProvider =
+    AsyncNotifierProvider<DeleteClassController, void>(
+      () => DeleteClassController(),
+    );

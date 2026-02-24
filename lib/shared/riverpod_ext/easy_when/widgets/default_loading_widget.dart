@@ -26,7 +26,7 @@ class DefaultLoadingWidget extends ConsumerWidget {
     // Build the loading indicator based on style
     final indicator = config.style == LoadingStyle.circular
         ? CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(color),
+            valueColor: AlwaysStoppedAnimation(context.primaryColor),
             strokeWidth: 4.0,
           )
         : SizedBox(

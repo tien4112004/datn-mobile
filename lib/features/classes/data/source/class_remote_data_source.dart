@@ -42,4 +42,8 @@ abstract class ClassRemoteDataSource {
     @Path('classId') String classId,
     @Body() Map<String, dynamic> request,
   );
+
+  /// Deletes a class by ID.
+  @DELETE('/classes/{classId}')
+  Future<void> deleteClass(@Path('classId') String classId);
 }

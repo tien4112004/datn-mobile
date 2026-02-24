@@ -806,7 +806,7 @@
     "subjects": {
       "english": "Tiếng Anh",
       "mathematics": "Toán",
-      "literature": "Tiếng Việt"
+      "vietnamese": "Tiếng Việt"
     },
     "viewing": {
       "imageNotAvailable": "Không có hình ảnh",
@@ -1845,6 +1845,34 @@
         "allStatus": "Tất cả trạng thái",
         "gateway": "Phương thức thanh toán",
         "allGateways": "Tất cả phương thức"
+      },
+      "tabs": {
+        "transactions": "Giao dịch",
+        "coinUsage": "Sử dụng Coin"
+      },
+      "coinUsage": {
+        "noHistory": "Chưa có lịch sử sử dụng coin",
+        "typeLabels": {
+          "add": "Nạp coin",
+          "subtract": "Sử dụng",
+          "unknown": "Khác"
+        },
+        "sourceLabels": {
+          "sepay": "Chuyển khoản (Sepay)",
+          "payos": "Thanh toán PayOS",
+          "outline": "Tạo dàn ý",
+          "presentation": "Tạo bài trình bày",
+          "mindmap": "Tạo sơ đồ tư duy",
+          "refineMindmapNode": "Tinh chỉnh nút mindmap",
+          "expandMindmapNode": "Mở rộng nút mindmap",
+          "refineMindmapBranch": "Tinh chỉnh nhánh mindmap",
+          "refineContent": "Tinh chỉnh nội dung",
+          "transformLayout": "Chuyển đổi bố cục",
+          "refineElementText": "Tinh chỉnh văn bản",
+          "refineCombinedText": "Tinh chỉnh văn bản kết hợp",
+          "image": "Tạo hình ảnh",
+          "unknown": "Khác"
+        }
       }
     },
     "transactionDetail": {

@@ -1,5 +1,8 @@
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_assignment_from_matrix_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_full_assignment_request.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_draft_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 
 /// Repository interface for assignment data operations.
@@ -30,6 +33,16 @@ abstract class AssignmentRepository {
 
   /// Gets an assignment by post ID.
   Future<AssignmentEntity> getAssignmentByPostId(String postId);
+
+  /// Generates an assignment by picking questions from the question bank.
+  Future<AssignmentDraftEntity> generateAssignmentFromMatrix(
+    GenerateAssignmentFromMatrixRequest request,
+  );
+
+  /// Generates an assignment with AI creating all questions from scratch.
+  Future<AssignmentDraftEntity> generateFullAssignment(
+    GenerateFullAssignmentRequest request,
+  );
 }
 
 /// Result object containing the assignment list and pagination info.

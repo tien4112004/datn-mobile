@@ -17,7 +17,23 @@ class FloatingActionMenu extends ConsumerStatefulWidget {
   final VoidCallback? onAddFromBank;
   final VoidCallback? onCreateNew;
 
-  const FloatingActionMenu({super.key, this.onAddFromBank, this.onCreateNew});
+  /// Optional overrides for labels (default: translations)
+  final String? addFromBankLabel;
+  final String? createNewLabel;
+
+  /// Optional overrides for icons (default: LucideIcons.library / LucideIcons.plus)
+  final IconData? addFromBankIcon;
+  final IconData? createNewIcon;
+
+  const FloatingActionMenu({
+    super.key,
+    this.onAddFromBank,
+    this.onCreateNew,
+    this.addFromBankLabel,
+    this.createNewLabel,
+    this.addFromBankIcon,
+    this.createNewIcon,
+  });
 
   @override
   ConsumerState<FloatingActionMenu> createState() => _FloatingActionMenuState();
@@ -93,8 +109,9 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
             children: [
               // From Bank Option
               _buildSpeedDialItem(
-                icon: LucideIcons.library,
-                label: t.assignments.floatingMenu.fromBank,
+                icon: widget.addFromBankIcon ?? LucideIcons.library,
+                label:
+                    widget.addFromBankLabel ?? t.assignments.floatingMenu.fromBank,
                 color: colorScheme.primary,
                 delay: 0,
                 onTap: () => _handleAction(widget.onAddFromBank),
@@ -104,8 +121,9 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
 
               // Create New Option
               _buildSpeedDialItem(
-                icon: LucideIcons.plus,
-                label: t.assignments.floatingMenu.createNew,
+                icon: widget.createNewIcon ?? LucideIcons.plus,
+                label:
+                    widget.createNewLabel ?? t.assignments.floatingMenu.createNew,
                 color: colorScheme.tertiary,
                 delay: 50,
                 onTap: () => _handleAction(widget.onCreateNew),

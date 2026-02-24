@@ -62,6 +62,19 @@ extension SubjectLocalization on Subject {
   }
 }
 
+extension MissingQuestionStrategyLocalization on MissingQuestionStrategy {
+  String localizedName(Translations t) {
+    switch (this) {
+      case MissingQuestionStrategy.reportGaps:
+        return t.assignments.generate.strategy.reportGaps;
+      case MissingQuestionStrategy.generateWithAi:
+        return t.assignments.generate.strategy.generateWithAi;
+      case MissingQuestionStrategy.failFast:
+        return t.assignments.generate.strategy.failFast;
+    }
+  }
+}
+
 extension AssignmentStatusLocalization on AssignmentStatus {
   String localizedName(Translations t) {
     switch (this) {

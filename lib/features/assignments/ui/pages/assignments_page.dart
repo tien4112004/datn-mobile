@@ -1,11 +1,15 @@
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_card.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_header.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_loading.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
+import 'package:AIPrimary/features/generate/enum/generator_type.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -73,11 +77,13 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showCreateExamDialog(context),
-        icon: const Icon(LucideIcons.plus),
-        label: Text(t.assignments.createExam),
-        elevation: 2,
+      floatingActionButton: FloatingActionMenu(
+        onAddFromBank: () => _showCreateExamDialog(context),
+        onCreateNew: () => _navigateToGenerate(context, ref),
+        addFromBankLabel: t.assignments.form.create,
+        createNewLabel: t.assignments.generate.title,
+        addFromBankIcon: LucideIcons.filePlus,
+        createNewIcon: LucideIcons.sparkles,
       ),
     );
   }
@@ -128,5 +134,10 @@ class _AssignmentsPageState extends ConsumerState<AssignmentsPage> {
       context: context,
       builder: (context) => const AssignmentFormDialog(),
     );
+  }
+
+  void _navigateToGenerate(BuildContext context, WidgetRef ref) {
+    ref.read(generatorTypeProvider.notifier).state = GeneratorType.assignment;
+    context.router.push(const GenerateRoute());
   }
 }

@@ -354,7 +354,8 @@
       "presentation": "Presentation",
       "image": "Image",
       "mindmap": "Mindmap",
-      "question": "Question Bank"
+      "question": "Question Bank",
+      "assignment": "Assignment"
     },
     "resourceTypes": {
       "document": "Document",
@@ -1428,6 +1429,41 @@
           "deleteTopicConfirm": "Delete this topic and all its matrix cells?",
           "cannotDeleteLastTopic": "Cannot delete the last topic"
         }
+      }
+    },
+
+    "generate": {
+      "title": "Generate Assignment",
+      "subtitle": "AI-powered assignment generator",
+      "modeBank": "Question Bank",
+      "modeFull": "Full AI",
+      "matrixLabel": "Matrix Template",
+      "selectTemplate": "Select Template",
+      "noTemplateSelected": "No template selected",
+      "includePersonal": "Include My Questions",
+      "generating": "Generating…",
+      "strategy": {
+        "label": "Missing Questions Strategy",
+        "reportGaps": "Report Gaps",
+        "generateWithAi": "Generate with AI",
+        "failFast": "Fail Fast"
+      }
+    },
+
+    "draftReview": {
+      "title": "Review Draft",
+      "complete": "Complete",
+      "incomplete": "Incomplete",
+      "noGaps": "All requirements met",
+      "gaps(count)": "Gaps ($count)",
+      "totalQuestions(n)": "$n Questions",
+      "totalPoints(n)": "$n Points",
+      "save": "Save as Assignment",
+      "regenerate": "Regenerate",
+      "gapCard": {
+        "required": "Required",
+        "available": "Available",
+        "missing": "Missing"
       }
     },
 

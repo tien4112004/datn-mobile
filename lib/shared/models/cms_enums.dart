@@ -414,6 +414,37 @@ enum AssignmentStatus {
   }
 }
 
+/// Strategy for handling missing questions when generating from matrix.
+enum MissingQuestionStrategy {
+  reportGaps,
+  generateWithAi,
+  failFast;
+
+  String get apiValue {
+    switch (this) {
+      case MissingQuestionStrategy.reportGaps:
+        return 'REPORT_GAPS';
+      case MissingQuestionStrategy.generateWithAi:
+        return 'GENERATE_WITH_AI';
+      case MissingQuestionStrategy.failFast:
+        return 'FAIL_FAST';
+    }
+  }
+
+  static MissingQuestionStrategy fromApiValue(String v) {
+    switch (v.toUpperCase()) {
+      case 'REPORT_GAPS':
+        return MissingQuestionStrategy.reportGaps;
+      case 'GENERATE_WITH_AI':
+        return MissingQuestionStrategy.generateWithAi;
+      case 'FAIL_FAST':
+        return MissingQuestionStrategy.failFast;
+      default:
+        return MissingQuestionStrategy.reportGaps;
+    }
+  }
+}
+
 /// Context type enumeration for questions requiring context.
 enum ContextType {
   readingPassage,

@@ -1,6 +1,9 @@
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/assignment_draft_response.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_assignment_from_matrix_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_full_assignment_request.dart';
 import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -53,5 +56,19 @@ abstract class AssignmentRemoteSource {
   @GET('/posts/{postId}/assignment')
   Future<ServerResponseDto<AssignmentResponse>> getAssignmentByPostId(
     @Path('postId') String postId,
+  );
+
+  /// Generate assignment by picking questions from the question bank per matrix.
+  /// POST /assignments/generate-from-matrix
+  @POST('/assignments/generate-from-matrix')
+  Future<ServerResponseDto<AssignmentDraftResponse>> generateAssignmentFromMatrix(
+    @Body() GenerateAssignmentFromMatrixRequest request,
+  );
+
+  /// Generate assignment with AI creating all questions from scratch.
+  /// POST /assignments/generate-full-assignment
+  @POST('/assignments/generate-full-assignment')
+  Future<ServerResponseDto<AssignmentDraftResponse>> generateFullAssignment(
+    @Body() GenerateFullAssignmentRequest request,
   );
 }

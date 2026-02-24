@@ -1,4 +1,6 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/assignments/states/controller_provider.dart'
+    as assign;
 import 'package:AIPrimary/features/generate/enum/generator_type.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
@@ -101,6 +103,13 @@ class _GeneratorPickerSheetState extends ConsumerState<GeneratorPickerSheet> {
           break;
         case GeneratorType.question:
           ref.read(questionGenerationProvider.notifier).clearResults();
+          break;
+        case GeneratorType.assignment:
+          ref
+              .read(
+                assign.assignmentGenerationControllerProvider.notifier,
+              )
+              .clearDraft();
           break;
       }
     }

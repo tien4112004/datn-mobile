@@ -354,7 +354,8 @@
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
       "mindmap": "Sơ đồ tư duy",
-      "question": "Ngân hàng câu hỏi"
+      "question": "Ngân hàng câu hỏi",
+      "assignment": "Bài tập"
     },
     "resourceTypes": {
       "document": "Tài liệu",
@@ -1425,6 +1426,41 @@
           "deleteTopicConfirm": "Xóa chủ đề này và tất cả ô ma trận liên quan?",
           "cannotDeleteLastTopic": "Không thể xóa chủ đề cuối cùng"
         }
+      }
+    },
+
+    "generate": {
+      "title": "Tạo Bài Tập",
+      "subtitle": "Trình tạo bài tập bằng AI",
+      "modeBank": "Ngân hàng câu hỏi",
+      "modeFull": "AI toàn phần",
+      "matrixLabel": "Ma trận đề thi",
+      "selectTemplate": "Chọn mẫu",
+      "noTemplateSelected": "Chưa chọn mẫu",
+      "includePersonal": "Bao gồm câu hỏi của tôi",
+      "generating": "Đang tạo…",
+      "strategy": {
+        "label": "Chiến lược khi thiếu câu hỏi",
+        "reportGaps": "Báo cáo thiếu",
+        "generateWithAi": "Tạo bằng AI",
+        "failFast": "Báo lỗi ngay"
+      }
+    },
+
+    "draftReview": {
+      "title": "Xem lại bản nháp",
+      "complete": "Đầy đủ",
+      "incomplete": "Chưa đủ",
+      "noGaps": "Đã đáp ứng đủ yêu cầu",
+      "gaps(count)": "Thiếu ($count)",
+      "totalQuestions(n)": "$n câu hỏi",
+      "totalPoints(n)": "$n điểm",
+      "save": "Lưu thành bài tập",
+      "regenerate": "Tạo lại",
+      "gapCard": {
+        "required": "Yêu cầu",
+        "available": "Hiện có",
+        "missing": "Thiếu"
       }
     },
 

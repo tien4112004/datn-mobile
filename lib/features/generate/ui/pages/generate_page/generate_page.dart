@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/generate/enum/generator_type.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/ui/pages/generate_page/assignment_generate_page.dart';
 import 'package:AIPrimary/features/generate/ui/pages/generate_page/image_generate_page.dart';
 import 'package:AIPrimary/features/generate/ui/pages/generate_page/mindmap_generate_page.dart';
 import 'package:AIPrimary/features/generate/ui/pages/generate_page/presentation_generate_page.dart';
@@ -33,6 +34,7 @@ class GeneratePage extends ConsumerWidget {
           GeneratorType.mindmap => const MindmapGeneratePage(),
           GeneratorType.image => const ImageGeneratePage(),
           GeneratorType.question => const QuestionGeneratePage(),
+          GeneratorType.assignment => const AssignmentGeneratePage(),
         },
       ),
     );

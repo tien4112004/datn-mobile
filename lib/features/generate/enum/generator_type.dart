@@ -6,7 +6,8 @@ enum GeneratorType {
   presentation(ResourceType.presentation),
   image(ResourceType.image),
   mindmap(ResourceType.mindmap),
-  question(ResourceType.question);
+  question(ResourceType.question),
+  assignment(ResourceType.assignment);
 
   final ResourceType resourceType;
 
@@ -22,6 +23,8 @@ enum GeneratorType {
         return t.generate.generatorTypes.mindmap;
       case GeneratorType.question:
         return t.generate.generatorTypes.question;
+      case GeneratorType.assignment:
+        return t.generate.generatorTypes.assignment;
     }
   }
 }

@@ -1,7 +1,10 @@
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_response.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_assignment_from_matrix_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_full_assignment_request.dart';
 import 'package:AIPrimary/features/assignments/data/source/assignment_remote_source.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_draft_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/repository/assignment_repository.dart';
 
@@ -87,6 +90,32 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
 
     if (response.data == null) {
       throw Exception('Assignment not found for post');
+    }
+
+    return response.data!.toEntity();
+  }
+
+  @override
+  Future<AssignmentDraftEntity> generateAssignmentFromMatrix(
+    GenerateAssignmentFromMatrixRequest request,
+  ) async {
+    final response = await _remoteSource.generateAssignmentFromMatrix(request);
+
+    if (response.data == null) {
+      throw Exception('Failed to generate assignment from matrix');
+    }
+
+    return response.data!.toEntity();
+  }
+
+  @override
+  Future<AssignmentDraftEntity> generateFullAssignment(
+    GenerateFullAssignmentRequest request,
+  ) async {
+    final response = await _remoteSource.generateFullAssignment(request);
+
+    if (response.data == null) {
+      throw Exception('Failed to generate full assignment');
     }
 
     return response.data!.toEntity();

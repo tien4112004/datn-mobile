@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_create_request.dart';
 import 'package:AIPrimary/features/assignments/data/dto/api/assignment_update_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_assignment_from_matrix_request.dart';
+import 'package:AIPrimary/features/assignments/data/dto/api/generate_full_assignment_request.dart';
 import 'package:AIPrimary/features/assignments/data/repository/assignment_repository_impl.dart';
 import 'package:AIPrimary/features/assignments/data/repository/context_repository_impl.dart';
 import 'package:AIPrimary/features/assignments/data/repository/matrix_template_repository_impl.dart';
@@ -9,6 +11,7 @@ import 'package:AIPrimary/features/assignments/data/source/assignment_remote_sou
 import 'package:AIPrimary/features/assignments/data/source/context_remote_source.dart';
 import 'package:AIPrimary/features/assignments/data/source/matrix_template_remote_source.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
+import 'package:AIPrimary/features/assignments/domain/entity/assignment_draft_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
@@ -22,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 part 'assignment_controller.dart';
+part 'assignment_generation_controller.dart';
 part 'context_controller.dart';
 part 'matrix_template_controller.dart';
 
@@ -141,4 +145,14 @@ final matrixTemplateRepositoryProvider = Provider<MatrixTemplateRepository>((
 final matrixTemplateControllerProvider =
     AsyncNotifierProvider<MatrixTemplateController, MatrixTemplateListResult>(
       () => MatrixTemplateController(),
+    );
+
+// ============================================================================
+// Assignment Generation Providers
+// ============================================================================
+
+/// Provider that holds the current assignment draft from AI generation.
+final assignmentGenerationControllerProvider =
+    AsyncNotifierProvider<AssignmentGenerationController, AssignmentDraftEntity?>(
+      AssignmentGenerationController.new,
     );

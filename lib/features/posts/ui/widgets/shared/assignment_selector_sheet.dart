@@ -242,8 +242,6 @@ class _AssignmentSelectorSheetState
                 iconBuilder: (subject) => _getSubjectIcon(subject),
                 onChanged: (subject) =>
                     setState(() => _filterSubject = subject),
-                allLabel: t.classes.assignmentSelector.allSubjects,
-                allIcon: LucideIcons.book,
               ),
               FilterConfig<GradeLevel>(
                 label: t.classes.assignmentSelector.grade,
@@ -252,8 +250,6 @@ class _AssignmentSelectorSheetState
                 options: GradeLevel.values,
                 displayNameBuilder: (grade) => grade.getLocalizedName(t),
                 onChanged: (grade) => setState(() => _filterGrade = grade),
-                allLabel: t.classes.assignmentSelector.allGrades,
-                allIcon: LucideIcons.graduationCap,
               ),
             ],
             onClearFilters: _clearFilters,

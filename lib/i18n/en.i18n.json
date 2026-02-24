@@ -1848,6 +1848,34 @@
         "allStatus": "All Status",
         "gateway": "Payment Method",
         "allGateways": "All Methods"
+      },
+      "tabs": {
+        "transactions": "Transactions",
+        "coinUsage": "Coin Usage"
+      },
+      "coinUsage": {
+        "noHistory": "No coin usage history yet",
+        "typeLabels": {
+          "add": "Purchased",
+          "subtract": "Used",
+          "unknown": "Other"
+        },
+        "sourceLabels": {
+          "sepay": "Bank Transfer (Sepay)",
+          "payos": "PayOS Payment",
+          "outline": "Generate Outline",
+          "presentation": "Generate Presentation",
+          "mindmap": "Generate Mindmap",
+          "refineMindmapNode": "Refine Mindmap Node",
+          "expandMindmapNode": "Expand Mindmap Node",
+          "refineMindmapBranch": "Refine Mindmap Branch",
+          "refineContent": "Refine Content",
+          "transformLayout": "Transform Layout",
+          "refineElementText": "Refine Element Text",
+          "refineCombinedText": "Refine Combined Text",
+          "image": "Generate Image",
+          "unknown": "Other"
+        }
       }
     },
     "transactionDetail": {

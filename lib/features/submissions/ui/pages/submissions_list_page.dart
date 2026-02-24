@@ -183,8 +183,6 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
                           onChanged: (status) {
                             setState(() => _filterStatus = status);
                           },
-                          allLabel: t.submissions.list.filterAll,
-                          allIcon: LucideIcons.fileText,
                         ),
                         FilterConfig<SubmissionSortOption>(
                           label: t.submissions.list.sortBy,
@@ -196,8 +194,6 @@ class _SubmissionsListPageState extends ConsumerState<SubmissionsListPage> {
                           onChanged: (sort) {
                             setState(() => _sortBy = sort);
                           },
-                          allLabel: t.submissions.list.filterAll,
-                          allIcon: LucideIcons.arrowUpDown,
                         ),
                       ],
                       onClearFilters: () {

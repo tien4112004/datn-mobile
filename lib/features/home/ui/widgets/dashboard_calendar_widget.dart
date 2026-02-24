@@ -1,6 +1,7 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/home/data/models/calendar_event_model.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -9,7 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 /// Material 3 Calendar Widget with Syncfusion Calendar
-class DashboardCalendarWidget extends StatefulWidget {
+class DashboardCalendarWidget extends ConsumerStatefulWidget {
   final List<CalendarEventModel> events;
   final Function(CalendarEventModel)? onEventTap;
 
@@ -20,11 +21,12 @@ class DashboardCalendarWidget extends StatefulWidget {
   });
 
   @override
-  State<DashboardCalendarWidget> createState() =>
+  ConsumerState<DashboardCalendarWidget> createState() =>
       _DashboardCalendarWidgetState();
 }
 
-class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
+class _DashboardCalendarWidgetState
+    extends ConsumerState<DashboardCalendarWidget> {
   DateTime? _selectedDate;
   List<CalendarEventModel> _selectedDateEvents = [];
 
@@ -39,6 +41,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final dataSource = _CalendarDataSource(widget.events, colorScheme);
+    final t = ref.read(translationsPod);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +52,7 @@ class _DashboardCalendarWidgetState extends State<DashboardCalendarWidget> {
             Icon(LucideIcons.calendar, color: colorScheme.primary, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Calendar',
+              t.home.dashboard.calendar.title,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),

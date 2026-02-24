@@ -1,7 +1,9 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Assignment settings section for exercise posts
-class AssignmentSettingsSection extends StatelessWidget {
+class AssignmentSettingsSection extends ConsumerWidget {
   final bool isDisabled;
   final int? maxSubmissions;
   final double? passingScore;
@@ -30,9 +32,10 @@ class AssignmentSettingsSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -45,7 +48,7 @@ class AssignmentSettingsSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Assignment Settings',
+                t.classes.assignmentSettings.title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,7 +60,7 @@ class AssignmentSettingsSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Max Submissions',
+                      t.classes.assignmentSettings.maxSubmissions,
                       style: theme.textTheme.bodyMedium,
                     ),
                   ),
@@ -67,7 +70,8 @@ class AssignmentSettingsSection extends StatelessWidget {
                       enabled: !isDisabled,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: 'Unlimited',
+                        hintText:
+                            t.classes.assignmentSettings.maxSubmissionsHint,
                         filled: true,
                         fillColor: colorScheme.surface,
                         border: OutlineInputBorder(
@@ -95,7 +99,7 @@ class AssignmentSettingsSection extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Passing Score (%)',
+                      t.classes.assignmentSettings.passingScore,
                       style: theme.textTheme.bodyMedium,
                     ),
                   ),
@@ -105,7 +109,7 @@ class AssignmentSettingsSection extends StatelessWidget {
                       enabled: !isDisabled,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        hintText: '0-100',
+                        hintText: t.classes.assignmentSettings.passingScoreHint,
                         filled: true,
                         fillColor: colorScheme.surface,
                         border: OutlineInputBorder(
@@ -135,9 +139,12 @@ class AssignmentSettingsSection extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 value: allowRetake,
                 onChanged: isDisabled ? null : onAllowRetakeChanged,
-                title: Text('Allow Retake', style: theme.textTheme.bodyMedium),
+                title: Text(
+                  t.classes.assignmentSettings.allowRetake,
+                  style: theme.textTheme.bodyMedium,
+                ),
                 subtitle: Text(
-                  'Students can retake the assignment',
+                  t.classes.assignmentSettings.allowRetakeDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -150,11 +157,11 @@ class AssignmentSettingsSection extends StatelessWidget {
                 value: showCorrectAnswers,
                 onChanged: isDisabled ? null : onShowCorrectAnswersChanged,
                 title: Text(
-                  'Show Correct Answers',
+                  t.classes.assignmentSettings.showCorrectAnswers,
                   style: theme.textTheme.bodyMedium,
                 ),
                 subtitle: Text(
-                  'Display correct answers after submission',
+                  t.classes.assignmentSettings.showCorrectAnswersDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -167,11 +174,11 @@ class AssignmentSettingsSection extends StatelessWidget {
                 value: showScoreImmediately,
                 onChanged: isDisabled ? null : onShowScoreImmediatelyChanged,
                 title: Text(
-                  'Show Score Immediately',
+                  t.classes.assignmentSettings.showScoreImmediately,
                   style: theme.textTheme.bodyMedium,
                 ),
                 subtitle: Text(
-                  'Display score right after submission',
+                  t.classes.assignmentSettings.showScoreImmediatelyDesc,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

@@ -2,6 +2,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -23,10 +24,11 @@ class AssignmentSelectionSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     // If no assignment selected, show placeholder
     if (assignmentId == null) {
-      return _buildPlaceholder(theme, colorScheme);
+      return _buildPlaceholder(theme, t, colorScheme);
     }
 
     // Fetch assignment details
@@ -46,12 +48,13 @@ class AssignmentSelectionSection extends ConsumerWidget {
       ),
       loading: () => _buildLoading(theme, colorScheme),
       error: (error, stack) =>
-          _buildPlaceholder(theme, colorScheme, hasError: true),
+          _buildPlaceholder(theme, t, colorScheme, hasError: true),
     );
   }
 
   Widget _buildPlaceholder(
     ThemeData theme,
+    Translations t,
     ColorScheme colorScheme, {
     bool hasError = false,
   }) {
@@ -97,7 +100,7 @@ class AssignmentSelectionSection extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Assignment',
+                        t.classes.assignmentSelection.assignment,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
@@ -105,7 +108,9 @@ class AssignmentSelectionSection extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        hasError ? 'Failed to load' : 'Select assignment',
+                        hasError
+                            ? t.classes.assignmentSelection.failedToLoad
+                            : t.classes.assignmentSelection.selectAssignment,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: hasError
                               ? colorScheme.error
@@ -170,7 +175,7 @@ class AssignmentSelectionSection extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Assignment',
+                      t.classes.assignmentSelection.assignment,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -178,7 +183,7 @@ class AssignmentSelectionSection extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Loading...',
+                      t.classes.assignmentSelection.loading,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: colorScheme.onSurfaceVariant.withValues(
                           alpha: 0.6,
@@ -283,7 +288,9 @@ class AssignmentSelectionSection extends ConsumerWidget {
                           const SizedBox(width: 6),
                           _buildBadge(
                             theme,
-                            label: '$totalQuestions Q',
+                            label: t.classes.assignmentSelection.questionsCount(
+                              count: totalQuestions,
+                            ),
                             color: colorScheme.tertiary,
                           ),
                         ],

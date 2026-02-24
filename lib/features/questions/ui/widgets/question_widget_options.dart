@@ -1,9 +1,10 @@
+import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
+import 'package:AIPrimary/shared/widgets/picker_button.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
-import 'package:AIPrimary/features/questions/data/dto/chapter_response_dto.dart';
 import 'package:AIPrimary/features/questions/states/chapter_provider.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
-import 'package:AIPrimary/shared/widgets/flex_dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -64,17 +65,22 @@ class QuestionWidgetOptions {
             // Grade
             SettingItem(
               label: t.generate.presentationGenerate.grade,
-              child: FlexDropdownField<GradeLevel>(
-                value: localGrade[0],
-                items: GradeLevel.values,
-                itemBuilder: (_, g) => Text(g.getLocalizedName(t)),
-                onChanged: (g) {
-                  localGrade[0] = g;
-                  localChapter[0] = null;
-                  onGradeChanged(g);
-                  onChapterChanged(null);
-                  set(() {});
-                },
+              child: PickerButton(
+                label: localGrade[0].getLocalizedName(t),
+                onTap: () => GeneralPickerOptions.showEnumPicker<GradeLevel>(
+                  context: context,
+                  title: t.generate.presentationGenerate.grade,
+                  values: GradeLevel.values,
+                  labelOf: (g) => g.getLocalizedName(t),
+                  isSelected: (g) => g == localGrade[0],
+                  onSelected: (g) {
+                    localGrade[0] = g;
+                    localChapter[0] = null;
+                    onGradeChanged(g);
+                    onChapterChanged(null);
+                    set(() {});
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -82,17 +88,22 @@ class QuestionWidgetOptions {
             // Subject
             SettingItem(
               label: t.generate.presentationGenerate.subject,
-              child: FlexDropdownField<Subject>(
-                value: localSubject[0],
-                items: Subject.values,
-                itemBuilder: (_, s) => Text(s.getLocalizedName(t)),
-                onChanged: (s) {
-                  localSubject[0] = s;
-                  localChapter[0] = null;
-                  onSubjectChanged(s);
-                  onChapterChanged(null);
-                  set(() {});
-                },
+              child: PickerButton(
+                label: localSubject[0].getLocalizedName(t),
+                onTap: () => GeneralPickerOptions.showEnumPicker<Subject>(
+                  context: context,
+                  title: t.generate.presentationGenerate.subject,
+                  values: Subject.values,
+                  labelOf: (s) => s.getLocalizedName(t),
+                  isSelected: (s) => s == localSubject[0],
+                  onSelected: (s) {
+                    localSubject[0] = s;
+                    localChapter[0] = null;
+                    onSubjectChanged(s);
+                    onChapterChanged(null);
+                    set(() {});
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -138,28 +149,41 @@ class QuestionWidgetOptions {
                             );
                           }
 
-                          final items = <ChapterResponseDto?>[
-                            null,
-                            ...chapters,
-                          ];
-                          final currentValue = localChapter[0] == null
-                              ? null
-                              : chapters.cast<ChapterResponseDto?>().firstWhere(
-                                  (c) => c?.name == localChapter[0],
-                                  orElse: () => null,
-                                );
-
-                          return FlexDropdownField<ChapterResponseDto?>(
-                            value: currentValue,
-                            items: items,
-                            itemBuilder: (_, c) => Text(
-                              c?.name ?? t.questionBank.chapter.noChapter,
+                          return PickerButton(
+                            label:
+                                localChapter[0] ??
+                                t.questionBank.chapter.noChapter,
+                            onTap: () => PickerBottomSheet.show(
+                              context: context,
+                              title: t.questionBank.chapter.title,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _ChapterTile(
+                                    label: t.questionBank.chapter.noChapter,
+                                    isSelected: localChapter[0] == null,
+                                    onTap: () {
+                                      localChapter[0] = null;
+                                      onChapterChanged(null);
+                                      chapterSet(() {});
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  ...chapters.map(
+                                    (c) => _ChapterTile(
+                                      label: c.name,
+                                      isSelected: localChapter[0] == c.name,
+                                      onTap: () {
+                                        localChapter[0] = c.name;
+                                        onChapterChanged(c.name);
+                                        chapterSet(() {});
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            onChanged: (c) {
-                              localChapter[0] = c?.name;
-                              onChapterChanged(c?.name);
-                              chapterSet(() {});
-                            },
                           );
                         },
                       ),
@@ -307,6 +331,33 @@ class QuestionWidgetOptions {
           alignLabelWithHint: true,
         ),
       ),
+    );
+  }
+}
+
+/// Single list tile inside the chapter picker sheet.
+class _ChapterTile extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ChapterTile({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(label),
+      trailing: isSelected
+          ? Icon(
+              Icons.check_circle_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            )
+          : null,
+      onTap: onTap,
     );
   }
 }

@@ -1085,6 +1085,26 @@
       "grade": "Grade",
       "allGrades": "All Grades"
     },
+    "assignmentSettings": {
+      "title": "Assignment Settings",
+      "maxSubmissions": "Max Submissions",
+      "maxSubmissionsHint": "Unlimited",
+      "passingScore": "Passing Score (%)",
+      "passingScoreHint": "0-100",
+      "allowRetake": "Allow Retake",
+      "allowRetakeDesc": "Students can retake the assignment",
+      "showCorrectAnswers": "Show Correct Answers",
+      "showCorrectAnswersDesc": "Display correct answers after submission",
+      "showScoreImmediately": "Show Score Immediately",
+      "showScoreImmediatelyDesc": "Display score right after submission"
+    },
+    "assignmentSelection": {
+      "assignment": "Assignment",
+      "selectAssignment": "Select assignment",
+      "failedToLoad": "Failed to load",
+      "loading": "Loading...",
+      "questionsCount": "$count Q"
+    },
     "editForm": {
       "editing": "Editing Class",
       "teacher": "Teacher: $teacherName",

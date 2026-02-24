@@ -1,4 +1,8 @@
+import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
@@ -425,62 +429,47 @@ class _AssignmentQuestionCreatePageState
 
           // Type & Difficulty row
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Question Type selector
               Expanded(
-                child: DropdownButtonFormField<QuestionType>(
-                  initialValue: formState.type,
-                  decoration: InputDecoration(
-                    labelText: t.questionBank.form.type,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                child: SettingItem(
+                  label: t.questionBank.form.type,
+                  child: PickerButton(
+                    label: formState.type.getLocalizedName(t),
+                    onTap: () =>
+                        GeneralPickerOptions.showEnumPicker<QuestionType>(
+                          context: context,
+                          title: t.questionBank.form.type,
+                          values: QuestionType.values,
+                          labelOf: (type) => type.getLocalizedName(t),
+                          isSelected: (type) => type == formState.type,
+                          onSelected: (value) => ref
+                              .read(questionFormProvider.notifier)
+                              .updateType(value),
+                        ),
                   ),
-                  items: QuestionType.values.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Text(type.getLocalizedName(t)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref.read(questionFormProvider.notifier).updateType(value);
-                    }
-                  },
                 ),
               ),
               const SizedBox(width: 12),
-              // Difficulty Selector
+              // Difficulty selector
               Expanded(
-                child: DropdownButtonFormField<Difficulty>(
-                  initialValue: formState.difficulty,
-                  decoration: InputDecoration(
-                    labelText: t.common.difficulty,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                child: SettingItem(
+                  label: t.common.difficulty,
+                  child: PickerButton(
+                    label: formState.difficulty.getLocalizedName(t),
+                    onTap: () =>
+                        GeneralPickerOptions.showEnumPicker<Difficulty>(
+                          context: context,
+                          title: t.common.difficulty,
+                          values: Difficulty.values,
+                          labelOf: (d) => d.getLocalizedName(t),
+                          isSelected: (d) => d == formState.difficulty,
+                          onSelected: (value) => ref
+                              .read(questionFormProvider.notifier)
+                              .updateDifficulty(value),
+                        ),
                   ),
-                  items: Difficulty.values.map((difficulty) {
-                    return DropdownMenuItem(
-                      value: difficulty,
-                      child: Text(difficulty.getLocalizedName(t)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref
-                          .read(questionFormProvider.notifier)
-                          .updateDifficulty(value);
-                    }
-                  },
                 ),
               ),
             ],
@@ -537,33 +526,57 @@ class _AssignmentQuestionCreatePageState
 
   Widget _buildTopicSelector(ThemeData theme, ColorScheme colorScheme) {
     final t = ref.watch(translationsPod);
-    return DropdownButtonFormField<String>(
-      initialValue: _currentTopicId,
-      decoration: InputDecoration(
-        labelText: t.assignments.subtopic,
-        prefixIcon: const Icon(LucideIcons.bookmark, size: 20),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      items: [
-        DropdownMenuItem<String>(
-          value: "",
-          child: Text(
-            t.common.none,
-            style: TextStyle(color: colorScheme.onSurfaceVariant),
+    final selectedName = _currentTopicId == null || _currentTopicId!.isEmpty
+        ? t.common.none
+        : widget.availableTopics
+              .firstWhere(
+                (top) => top.id == _currentTopicId,
+                orElse: () => widget.availableTopics.first,
+              )
+              .name;
+
+    return SettingItem(
+      label: t.assignments.subtopic,
+      child: PickerButton(
+        label: selectedName,
+        onTap: () => PickerBottomSheet.show(
+          context: context,
+          title: t.assignments.subtopic,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(t.common.none),
+                trailing: (_currentTopicId == null || _currentTopicId!.isEmpty)
+                    ? Icon(
+                        Icons.check_circle_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () {
+                  setState(() => _currentTopicId = null);
+                  Navigator.pop(context);
+                },
+              ),
+              ...widget.availableTopics.map(
+                (topic) => ListTile(
+                  title: Text(topic.name),
+                  trailing: _currentTopicId == topic.id
+                      ? Icon(
+                          Icons.check_circle_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                  onTap: () {
+                    setState(() => _currentTopicId = topic.id);
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        ...widget.availableTopics.map((topic) {
-          return DropdownMenuItem<String>(
-            value: topic.id,
-            child: Text(topic.name),
-          );
-        }),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _currentTopicId = value;
-        });
-      },
+      ),
     );
   }
 

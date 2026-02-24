@@ -31,8 +31,8 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
   final FocusNode _topicFocusNode = FocusNode();
   late final t = ref.watch(translationsPod);
 
-  GradeLevel _grade = GradeLevel.grade1;
-  Subject _subject = Subject.mathematics;
+  GradeLevel? _grade;
+  Subject? _subject;
   String? _selectedChapter;
   final Set<QuestionType> _selectedTypes = {QuestionType.multipleChoice};
   final Map<Difficulty, int> _difficultyCounts = {
@@ -51,6 +51,8 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
 
   bool get _isValid =>
       _topicController.text.trim().isNotEmpty &&
+      _grade != null &&
+      _subject != null &&
       _selectedTypes.isNotEmpty &&
       _difficultyCounts.values.any((c) => c > 0);
 
@@ -64,8 +66,8 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
 
     final entity = GenerateQuestionsRequestEntity(
       topic: _topicController.text.trim(),
-      grade: _grade,
-      subject: _subject,
+      grade: _grade!,
+      subject: _subject!,
       questionsPerDifficulty: activeCounts,
       questionTypes: _selectedTypes.toList(),
       provider: _selectedModel?.provider,
@@ -90,8 +92,8 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
     GenerationSettingsSheet.show(
       context: context,
       optionWidgets: QuestionWidgetOptions(
-        grade: _grade,
-        subject: _subject,
+        grade: _grade ?? GradeLevel.grade1,
+        subject: _subject ?? Subject.mathematics,
         selectedTypes: _selectedTypes,
         difficultyCounts: _difficultyCounts,
         promptController: _promptController,
@@ -213,7 +215,9 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
               GeneralPickerOptions.buildOptionsRow(context, null, null, [
                 OptionChip(
                   icon: LucideIcons.graduationCap,
-                  label: _grade.getLocalizedName(t),
+                  label:
+                      _grade?.getLocalizedName(t) ??
+                      t.generate.presentationGenerate.grade,
                   onTap: () => GeneralPickerOptions.showEnumPicker<GradeLevel>(
                     context: context,
                     title: t.generate.presentationGenerate.grade,
@@ -228,7 +232,9 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
                 ),
                 OptionChip(
                   icon: LucideIcons.bookOpen,
-                  label: _subject.getLocalizedName(t),
+                  label:
+                      _subject?.getLocalizedName(t) ??
+                      t.generate.presentationGenerate.subject,
                   onTap: () => GeneralPickerOptions.showEnumPicker<Subject>(
                     context: context,
                     title: t.generate.presentationGenerate.subject,

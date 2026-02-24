@@ -28,7 +28,7 @@ class ExamplePromptSuggestions extends ConsumerWidget {
         if (prompts.isEmpty) return const SizedBox.shrink();
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -54,6 +54,7 @@ class ExamplePromptSuggestions extends ConsumerWidget {
                       horizontal: 12,
                       vertical: 8,
                     ),
+                    constraints: const BoxConstraints(maxWidth: 180),
                     decoration: BoxDecoration(
                       color: context.isDarkMode
                           ? Colors.grey[800]?.withValues(alpha: 0.5)
@@ -62,6 +63,9 @@ class ExamplePromptSuggestions extends ConsumerWidget {
                     ),
                     child: Text(
                       prompt.prompt,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
                       style: TextStyle(
                         fontSize: 12,
                         color: context.bodyTextColor,

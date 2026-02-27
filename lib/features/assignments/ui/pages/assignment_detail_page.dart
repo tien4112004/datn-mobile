@@ -613,115 +613,133 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
           // Floating Action Menu (only in edit mode and Questions tab)
           floatingActionButton: _isEditMode && _tabController.index == 1
               ? FloatingActionMenu(
-                  onAddFromBank: () async {
-                    final navigator = context.router;
+                  items: [
+                    FloatingActionMenuItem(
+                      label: t.assignments.floatingMenu.fromBank,
+                      icon: LucideIcons.library,
+                      color: colorScheme.primary,
+                      onTap: () async {
+                        final navigator = context.router;
 
-                    // Navigate to question bank picker
-                    final assignmentQuestions = await navigator
-                        .push<List<AssignmentQuestionEntity>>(
-                          const QuestionBankPickerRoute(),
-                        );
+                        // Navigate to question bank picker
+                        final assignmentQuestions = await navigator
+                            .push<List<AssignmentQuestionEntity>>(
+                              const QuestionBankPickerRoute(),
+                            );
 
-                    if (assignmentQuestions == null || !mounted) return;
+                        if (assignmentQuestions == null || !mounted) return;
 
-                    // Extract unique contextIds from selected questions
-                    final contextIds = assignmentQuestions
-                        .where((q) => q.contextId != null)
-                        .map((q) => q.contextId!)
-                        .toSet()
-                        .toList();
+                        // Extract unique contextIds from selected questions
+                        final contextIds = assignmentQuestions
+                            .where((q) => q.contextId != null)
+                            .map((q) => q.contextId!)
+                            .toSet()
+                            .toList();
 
-                    // No contexts — add questions directly
-                    if (contextIds.isEmpty) {
-                      await ref
-                          .read(
-                            detailAssignmentControllerProvider(
-                              widget.assignmentId,
-                            ).notifier,
-                          )
-                          .addQuestions(assignmentQuestions);
-                      return;
-                    }
+                        // No contexts — add questions directly
+                        if (contextIds.isEmpty) {
+                          await ref
+                              .read(
+                                detailAssignmentControllerProvider(
+                                  widget.assignmentId,
+                                ).notifier,
+                              )
+                              .addQuestions(assignmentQuestions);
+                          return;
+                        }
 
-                    // Contexts exist — fetch and clone them
-                    List<ContextEntity> fetchedContexts;
-                    try {
-                      final repository = ref.read(contextRepositoryProvider);
-                      fetchedContexts = await repository.getContextsByIds(
-                        contextIds,
-                      );
-                    } catch (e) {
-                      if (mounted) {
-                        final t = ref.read(translationsPod);
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(t.assignments.context.failedToLoad),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                      }
-                      return;
-                    }
+                        // Contexts exist — fetch and clone them
+                        List<ContextEntity> fetchedContexts;
+                        try {
+                          final repository = ref.read(
+                            contextRepositoryProvider,
+                          );
+                          fetchedContexts = await repository.getContextsByIds(
+                            contextIds,
+                          );
+                        } catch (e) {
+                          if (mounted) {
+                            final t = ref.read(translationsPod);
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  t.assignments.context.failedToLoad,
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
+                          return;
+                        }
 
-                    if (!mounted) return;
+                        if (!mounted) return;
 
-                    // Clone contexts and build ID mapping
-                    final contextIdMap = <String, String>{};
-                    final contextController = ref.read(
-                      assignmentContextsControllerProvider(
-                        widget.assignmentId,
-                      ).notifier,
-                    );
-
-                    for (final sourceContext in fetchedContexts) {
-                      final cloned = contextController.cloneContext(
-                        sourceContext,
-                      );
-                      await contextController.addContext(cloned);
-                      contextIdMap[sourceContext.id] = cloned.id;
-                    }
-
-                    // Remap contextIds in questions
-                    final remappedQuestions = assignmentQuestions.map((q) {
-                      if (q.contextId != null &&
-                          contextIdMap.containsKey(q.contextId)) {
-                        return q.copyWith(contextId: contextIdMap[q.contextId]);
-                      }
-                      return q;
-                    }).toList();
-
-                    // Add questions with remapped contextIds
-                    await ref
-                        .read(
-                          detailAssignmentControllerProvider(
+                        // Clone contexts and build ID mapping
+                        final contextIdMap = <String, String>{};
+                        final contextController = ref.read(
+                          assignmentContextsControllerProvider(
                             widget.assignmentId,
                           ).notifier,
-                        )
-                        .addQuestions(remappedQuestions);
-                  },
-                  onCreateNew: () async {
-                    // Navigate to question create page for assignment
-                    final result = await context.router
-                        .push<AssignmentQuestionEntity>(
-                          AssignmentQuestionCreateRoute(
-                            defaultPoints: 10.0,
-                            assignmentContexts: contextsMap.values.toList(),
-                            availableTopics:
-                                assignment.matrix?.dimensions.topics ?? [],
-                          ),
                         );
 
-                    if (result != null && mounted) {
-                      // Add the new question to assignment
-                      await ref
-                          .read(
-                            detailAssignmentControllerProvider(
-                              widget.assignmentId,
-                            ).notifier,
-                          )
-                          .addQuestions([result]);
-                    }
-                  },
+                        for (final sourceContext in fetchedContexts) {
+                          final cloned = contextController.cloneContext(
+                            sourceContext,
+                          );
+                          await contextController.addContext(cloned);
+                          contextIdMap[sourceContext.id] = cloned.id;
+                        }
+
+                        // Remap contextIds in questions
+                        final remappedQuestions = assignmentQuestions.map((q) {
+                          if (q.contextId != null &&
+                              contextIdMap.containsKey(q.contextId)) {
+                            return q.copyWith(
+                              contextId: contextIdMap[q.contextId],
+                            );
+                          }
+                          return q;
+                        }).toList();
+
+                        // Add questions with remapped contextIds
+                        await ref
+                            .read(
+                              detailAssignmentControllerProvider(
+                                widget.assignmentId,
+                              ).notifier,
+                            )
+                            .addQuestions(remappedQuestions);
+                      },
+                    ),
+                    FloatingActionMenuItem(
+                      label: t.assignments.floatingMenu.createNew,
+                      icon: LucideIcons.plus,
+                      color: colorScheme.tertiary,
+                      onTap: () async {
+                        // Navigate to question create page for assignment
+                        final result = await context.router
+                            .push<AssignmentQuestionEntity>(
+                              AssignmentQuestionCreateRoute(
+                                defaultPoints: 10.0,
+                                assignmentContexts: contextsMap.values.toList(),
+                                availableTopics:
+                                    assignment.matrix?.dimensions.topics ?? [],
+                              ),
+                            );
+
+                        if (result != null && mounted) {
+                          // Add the new question to assignment
+                          await ref
+                              .read(
+                                detailAssignmentControllerProvider(
+                                  widget.assignmentId,
+                                ).notifier,
+                              )
+                              .addQuestions([result]);
+                        }
+                      },
+                    ),
+                  ],
                 )
               : null,
 

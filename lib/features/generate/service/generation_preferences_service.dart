@@ -21,6 +21,8 @@ class GenerationPreferencesService {
       'generation_pref_image_generate_model_id';
   static const _keyMindmapTextModelId = 'generation_pref_mindmap_text_model_id';
   static const _keyMindmapLanguage = 'generation_pref_mindmap_language';
+  static const _keyQuestionTextModelId =
+      'generation_pref_question_text_model_id';
   static const _keyAppLocale = 'generation_pref_app_locale';
 
   final SharedPreferences _sharedPrefs;
@@ -87,6 +89,16 @@ class GenerationPreferencesService {
 
   String? getMindmapLanguage() {
     return _sharedPrefs.getString(_keyMindmapLanguage);
+  }
+
+  // --- Question Generation ---
+
+  Future<void> saveQuestionTextModelId(int modelId) async {
+    await _sharedPrefs.setInt(_keyQuestionTextModelId, modelId);
+  }
+
+  int? getQuestionTextModelId() {
+    return _sharedPrefs.getInt(_keyQuestionTextModelId);
   }
 
   // --- App Locale ---

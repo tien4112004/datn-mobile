@@ -350,6 +350,7 @@
   "generate": {
     "enterTopicHint": "Bạn đang nghĩ gì?",
     "advancedSettings": "Cài đặt nâng cao",
+    "model":"Mô hình",
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",

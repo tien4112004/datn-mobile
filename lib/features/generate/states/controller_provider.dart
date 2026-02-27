@@ -14,7 +14,10 @@ import 'package:AIPrimary/features/generate/states/mindmap/mindmap_form_state.da
 import 'package:AIPrimary/features/generate/states/mindmap/mindmap_generate_state.dart';
 import 'package:AIPrimary/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:AIPrimary/features/generate/states/presentations/presentation_generate_state.dart';
+import 'package:AIPrimary/features/generate/states/questions/question_generate_form_state.dart';
 import 'package:AIPrimary/features/generate/states/theme/theme_provider.dart';
+import 'package:AIPrimary/features/questions/domain/entity/generate_questions_request_entity.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/models/model_info.dart';
 import 'package:AIPrimary/shared/models/slide_viewport.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +34,7 @@ part 'presentations/presentation_form_controller.dart';
 part 'outline/outline_editing_controller.dart';
 part 'mindmap/mindmap_form_controller.dart';
 part 'mindmap/mindmap_generate_controller.dart';
+part 'questions/question_generate_form_controller.dart';
 part 'models/models_pod.dart';
 
 /// Provider for the presentation generation controller.
@@ -74,6 +78,12 @@ final imageFormControllerProvider =
 final imageGenerateControllerProvider =
     AsyncNotifierProvider<ImageGenerateController, ImageGenerateState>(
       ImageGenerateController.new,
+    );
+
+/// Provider for the question generate form controller.
+final questionGenerateFormControllerProvider =
+    NotifierProvider<QuestionGenerateFormController, QuestionGenerateFormState>(
+      QuestionGenerateFormController.new,
     );
 
 /// Provider for tracking the active generator type.

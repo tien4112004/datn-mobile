@@ -13,11 +13,31 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// - Smooth stagger animation (300ms)
 /// - Material 3 design
 /// - Backdrop overlay when expanded
-class FloatingActionMenu extends ConsumerStatefulWidget {
-  final VoidCallback? onAddFromBank;
-  final VoidCallback? onCreateNew;
+class FloatingActionMenuItem {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color? color;
 
-  const FloatingActionMenu({super.key, this.onAddFromBank, this.onCreateNew});
+  const FloatingActionMenuItem({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    this.color,
+  });
+}
+
+class FloatingActionMenu extends ConsumerStatefulWidget {
+  final List<FloatingActionMenuItem> items;
+  final IconData? mainIcon;
+  final String? mainLabel;
+
+  const FloatingActionMenu({
+    super.key,
+    required this.items,
+    this.mainIcon,
+    this.mainLabel,
+  });
 
   @override
   ConsumerState<FloatingActionMenu> createState() => _FloatingActionMenuState();
@@ -90,27 +110,31 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // From Bank Option
-              _buildSpeedDialItem(
-                icon: LucideIcons.library,
-                label: t.assignments.floatingMenu.fromBank,
-                color: colorScheme.primary,
-                delay: 0,
-                onTap: () => _handleAction(widget.onAddFromBank),
-              ),
+            children: widget.items.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              final defaultColors = [
+                colorScheme.primary,
+                colorScheme.tertiary,
+                colorScheme.secondary,
+                colorScheme.error,
+              ];
+              final itemColor =
+                  item.color ?? defaultColors[index % defaultColors.length];
 
-              const SizedBox(height: 12),
-
-              // Create New Option
-              _buildSpeedDialItem(
-                icon: LucideIcons.plus,
-                label: t.assignments.floatingMenu.createNew,
-                color: colorScheme.tertiary,
-                delay: 50,
-                onTap: () => _handleAction(widget.onCreateNew),
-              ),
-            ],
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: index == widget.items.length - 1 ? 0 : 12,
+                ),
+                child: _buildSpeedDialItem(
+                  icon: item.icon,
+                  label: item.label,
+                  color: itemColor,
+                  delay: index * 50,
+                  onTap: () => _handleAction(item.onTap),
+                ),
+              );
+            }).toList(),
           ),
         ),
 
@@ -123,12 +147,17 @@ class _FloatingActionMenuState extends ConsumerState<FloatingActionMenu>
             elevation: _isExpanded ? 8 : 2,
             icon: RotationTransition(
               turns: _rotationAnimation,
-              child: Icon(_isExpanded ? LucideIcons.x : LucideIcons.plus),
+              child: Icon(
+                _isExpanded
+                    ? LucideIcons.x
+                    : (widget.mainIcon ?? LucideIcons.plus),
+              ),
             ),
             label: Text(
               _isExpanded
                   ? t.assignments.floatingMenu.close
-                  : t.assignments.floatingMenu.addQuestion,
+                  : (widget.mainLabel ??
+                        t.assignments.floatingMenu.addQuestion),
               style: theme.textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

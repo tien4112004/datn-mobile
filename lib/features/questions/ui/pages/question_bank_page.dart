@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
 import 'package:AIPrimary/features/generate/enum/generator_type.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_loading.dart';
@@ -13,7 +14,6 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
-import 'package:AIPrimary/shared/widgets/multi_fab_menu.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -121,25 +121,25 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
           loadingWidget: () => const QuestionBankLoading(),
         ),
       ),
-      floatingActionButton: MultiFabMenu(
-        actions: [
-          FabAction(
-            heroTag: 'fab_generate',
-            icon: Icons.auto_awesome_rounded,
+      floatingActionButton: FloatingActionMenu(
+        mainIcon: LucideIcons.plus,
+        mainLabel: t.questionBank.addQuestion,
+        items: [
+          FloatingActionMenuItem(
             label: t.questionBank.generateWithAI,
-            elevation: 4,
-            onPressed: () {
+            icon: Icons.auto_awesome_rounded,
+            color: colorScheme.primary,
+            onTap: () {
               ref.read(generatorTypeProvider.notifier).state =
                   GeneratorType.question;
               context.router.push(const GenerateRoute());
             },
           ),
-          FabAction(
-            heroTag: 'fab_create',
-            icon: Icons.add_rounded,
+          FloatingActionMenuItem(
             label: t.questionBank.addQuestion,
-            elevation: 8,
-            onPressed: () {
+            icon: LucideIcons.plus,
+            color: colorScheme.tertiary,
+            onTap: () {
               context.router.push(const QuestionCreateRoute());
             },
           ),

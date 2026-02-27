@@ -49,6 +49,7 @@
     "helpCenter": "Help Center",
     "contactUs": "Contact Us",
     "logOut": "Log Out",
+    "logOutConfirmation": "Are you sure you want to log out?",
     "save": "Save",
     "languageBottomSheet": {
       "title": "Language",

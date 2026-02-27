@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:uuid/uuid.dart';
 
 /// Page for creating a new question specifically for an assignment.
 ///
@@ -128,7 +129,7 @@ class _AssignmentQuestionCreatePageState
 
     // Create AssignmentQuestionEntity
     final assignmentQuestion = AssignmentQuestionEntity(
-      questionBankId: null, // New question, not from bank
+      questionBankId: const Uuid().v4(), // New question, not from bank
       question: question,
       points: _currentPoints,
       isNewQuestion: true,

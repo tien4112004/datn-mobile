@@ -16,10 +16,13 @@ import 'package:AIPrimary/features/assignments/domain/repository/assignment_repo
 import 'package:AIPrimary/features/assignments/domain/repository/context_repository.dart';
 import 'package:AIPrimary/features/assignments/domain/repository/matrix_template_repository.dart';
 import 'package:AIPrimary/features/assignments/states/assignment_filter_state.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/utils/matrix_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:uuid/uuid.dart';
 
 part 'assignment_controller.dart';
 part 'context_controller.dart';

@@ -1,4 +1,3 @@
-import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
@@ -212,7 +211,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
       ref.read(loadingOverlayPod.notifier).state = false;
 
       // Pop back to preview page (which will refresh and show the new submission)
-      context.router.popUntilRouteWithName(AssignmentPreviewRoute.name);
+      context.router.pop();
     } catch (e) {
       // Hide loading overlay on error
       ref.read(loadingOverlayPod.notifier).state = false;

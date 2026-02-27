@@ -145,9 +145,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
           'pairs': matchingQuestion.data.pairs
               .map(
                 (pair) => {
-                  'leftText': pair.left,
+                  'left': pair.left,
                   'leftImageUrl': pair.leftImageUrl,
-                  'rightText': pair.right,
+                  'right': pair.right,
                   'rightImageUrl': pair.rightImageUrl,
                 },
               )

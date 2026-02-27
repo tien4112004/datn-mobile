@@ -12,7 +12,6 @@ import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart
 import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/models/language_enums.dart';
@@ -210,43 +209,6 @@ class _PresentationGeneratePageState
                 formState,
                 formController,
                 [
-                  // Grade (optional)
-                  OptionChip(
-                    icon: LucideIcons.graduationCap,
-                    label: formState.grade != null
-                        ? GradeLevel.fromApiValue(
-                            formState.grade!,
-                          ).getLocalizedName(t)
-                        : t.generate.presentationGenerate.grade,
-                    onTap: () =>
-                        GeneralPickerOptions.showEnumPicker<GradeLevel>(
-                          context: context,
-                          title: t.generate.presentationGenerate.grade,
-                          values: GradeLevel.values,
-                          labelOf: (g) => g.getLocalizedName(t),
-                          isSelected: (g) => formState.grade == g.apiValue,
-                          onSelected: (g) =>
-                              formController.updateGrade(g.apiValue),
-                        ),
-                  ),
-                  // Subject (optional)
-                  OptionChip(
-                    icon: LucideIcons.bookOpen,
-                    label: formState.subject != null
-                        ? Subject.fromApiValue(
-                            formState.subject!,
-                          ).getLocalizedName(t)
-                        : t.generate.presentationGenerate.subject,
-                    onTap: () => GeneralPickerOptions.showEnumPicker<Subject>(
-                      context: context,
-                      title: t.generate.presentationGenerate.subject,
-                      values: Subject.values,
-                      labelOf: (s) => s.getLocalizedName(t),
-                      isSelected: (s) => formState.subject == s.apiValue,
-                      onSelected: (s) =>
-                          formController.updateSubject(s.apiValue),
-                    ),
-                  ),
                   OptionChip(
                     icon: LucideIcons.listOrdered,
                     label: t.generate.presentationGenerate.slidesCount(

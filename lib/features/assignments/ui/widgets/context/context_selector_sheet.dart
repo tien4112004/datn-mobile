@@ -1,6 +1,7 @@
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -186,7 +187,7 @@ class _ContextSelectorContentState
 
           // Context list
           Expanded(
-            child: contextsAsync.when(
+            child: contextsAsync.easyWhen(
               data: (result) {
                 if (result.contexts.isEmpty) {
                   return _buildEmptyState(theme, colorScheme, t);
@@ -226,8 +227,7 @@ class _ContextSelectorContentState
                   },
                 );
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) =>
+              errorWidget: (error, stack) =>
                   _buildErrorState(theme, colorScheme, error, t),
             ),
           ),

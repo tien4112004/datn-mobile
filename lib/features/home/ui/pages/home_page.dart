@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
@@ -70,7 +71,7 @@ class _HomeView extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // Summary Metrics Cards
-              summaryAsync.when(
+              summaryAsync.easyWhen(
                 data: (summary) => DashboardSummaryMetrics(
                   summary: summary,
                   onTotalClassesTap: () =>
@@ -78,8 +79,8 @@ class _HomeView extends ConsumerWidget {
                   onPendingGradingTap: () =>
                       showPendingGradingModal(context, ref),
                 ),
-                loading: () => const DashboardSummaryMetricsShimmer(),
-                error: (error, stack) =>
+                loadingWidget: () => const DashboardSummaryMetricsShimmer(),
+                errorWidget: (error, stack) =>
                     Center(child: Text(t.home.dashboard.error.loadingSummary)),
               ),
               const SizedBox(height: 24),
@@ -93,19 +94,19 @@ class _HomeView extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // Calendar Widget
-              calendarAsync.when(
+              calendarAsync.easyWhen(
                 data: (events) => DashboardCalendarWidget(events: events),
-                loading: () => const DashboardCalendarShimmer(),
-                error: (error, stack) => const SizedBox.shrink(),
+                loadingWidget: () => const DashboardCalendarShimmer(),
+                errorWidget: (error, stack) => const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),
 
               // Recent Documents
-              recentDocsAsync.when(
+              recentDocsAsync.easyWhen(
                 data: (documents) =>
                     DashboardRecentDocuments(documents: documents),
-                loading: () => const DashboardRecentDocumentsShimmer(),
-                error: (error, stack) => const SizedBox.shrink(),
+                loadingWidget: () => const DashboardRecentDocumentsShimmer(),
+                errorWidget: (error, stack) => const SizedBox.shrink(),
               ),
               const SizedBox(height: 24),
             ],
@@ -166,7 +167,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 color: Colors.amber.shade700,
                               ),
                               const SizedBox(width: 6),
-                              coinBalanceAsync.when(
+                              coinBalanceAsync.easyWhen(
                                 data: (coinData) => Text(
                                   '${_formatNumber(coinData.coin)} coins',
                                   style: TextStyle(
@@ -175,7 +176,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     color: Colors.amber.shade900,
                                   ),
                                 ),
-                                loading: () => SizedBox(
+                                loadingWidget: () => SizedBox(
                                   width: 80,
                                   height: 14,
                                   child: Shimmer.fromColors(
@@ -189,7 +190,7 @@ class _HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     ),
                                   ),
                                 ),
-                                error: (_, _) => Text(
+                                errorWidget: (_, _) => Text(
                                   '-- coins',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,

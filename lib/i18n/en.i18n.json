@@ -350,6 +350,7 @@
   "generate": {
     "enterTopicHint": "What is on your mind?",
     "advancedSettings": "Advanced Settings",
+    "model":"Mô hình",
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",

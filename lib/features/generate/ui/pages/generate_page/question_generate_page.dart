@@ -1,14 +1,16 @@
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
+import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/states/questions/question_generate_form_state.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_widget_options.dart';
+import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
-import 'package:AIPrimary/features/questions/domain/entity/generate_questions_request_entity.dart';
 import 'package:AIPrimary/features/questions/states/question_generation_provider.dart';
 import 'package:AIPrimary/features/questions/states/question_generation_state.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -31,52 +33,22 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
   final FocusNode _topicFocusNode = FocusNode();
   late final t = ref.watch(translationsPod);
 
-  GradeLevel? _grade;
-  Subject? _subject;
-  String? _selectedChapter;
-  final Set<QuestionType> _selectedTypes = {QuestionType.multipleChoice};
-  final Map<Difficulty, int> _difficultyCounts = {
-    for (final d in Difficulty.values) d: 0,
-  };
-  AIModel? _selectedModel;
-  final TextEditingController _promptController = TextEditingController();
-
   @override
   void dispose() {
     _topicController.dispose();
     _topicFocusNode.dispose();
-    _promptController.dispose();
     super.dispose();
   }
 
-  bool get _isValid =>
-      _topicController.text.trim().isNotEmpty &&
-      _grade != null &&
-      _subject != null &&
-      _selectedTypes.isNotEmpty &&
-      _difficultyCounts.values.any((c) => c > 0);
+  QuestionGenerateFormController get _formController =>
+      ref.read(questionGenerateFormControllerProvider.notifier);
 
   Future<void> _handleGenerate() async {
     _topicFocusNode.unfocus();
-    if (!_isValid) return;
+    final formState = ref.read(questionGenerateFormControllerProvider);
+    if (!formState.isValid) return;
 
-    final activeCounts = Map.fromEntries(
-      _difficultyCounts.entries.where((e) => e.value > 0),
-    );
-
-    final entity = GenerateQuestionsRequestEntity(
-      topic: _topicController.text.trim(),
-      grade: _grade!,
-      subject: _subject!,
-      questionsPerDifficulty: activeCounts,
-      questionTypes: _selectedTypes.toList(),
-      provider: _selectedModel?.provider,
-      model: _selectedModel?.id.toString(),
-      prompt: _promptController.text.trim().isEmpty
-          ? null
-          : _promptController.text.trim(),
-      chapter: _selectedChapter,
-    );
+    final entity = _formController.toRequestEntity();
 
     await ref
         .read(questionGenerationProvider.notifier)
@@ -88,54 +60,68 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
     }
   }
 
-  void _showAdvancedSettings() {
+  void _showAdvancedSettings(QuestionGenerateFormState formState) {
+    // Local mutable copies so StatefulBuilder inside QuestionWidgetOptions
+    // can see mutations immediately (it closes over these references).
+    // Changes are also pushed to the provider so the parent page stays in sync.
+    final localTypes = Set<QuestionType>.from(formState.selectedTypes);
+    final localCounts = Map<Difficulty, int>.from(formState.difficultyCounts);
+
+    final promptController = TextEditingController(text: formState.prompt);
+    promptController.addListener(
+      () => _formController.updatePrompt(promptController.text),
+    );
+
     GenerationSettingsSheet.show(
       context: context,
       optionWidgets: QuestionWidgetOptions(
-        grade: _grade ?? GradeLevel.grade1,
-        subject: _subject ?? Subject.mathematics,
-        selectedTypes: _selectedTypes,
-        difficultyCounts: _difficultyCounts,
-        promptController: _promptController,
-        selectedChapter: _selectedChapter,
-        onGradeChanged: (g) => setState(() {
-          _grade = g;
-          _selectedChapter = null;
-        }),
-        onSubjectChanged: (s) => setState(() {
-          _subject = s;
-          _selectedChapter = null;
-        }),
-        onTypesChanged: (types) => setState(() {
-          _selectedTypes
+        grade: formState.grade,
+        subject: formState.subject,
+        selectedTypes: localTypes,
+        difficultyCounts: localCounts,
+        promptController: promptController,
+        selectedChapter: formState.chapter,
+        onGradeChanged: (g) => _formController.updateGrade(g),
+        onSubjectChanged: (s) => _formController.updateSubject(s),
+        onTypesChanged: (types) {
+          localTypes
             ..clear()
             ..addAll(types);
-        }),
-        onDifficultyChanged: (counts) => setState(() {
-          _difficultyCounts
+          _formController.updateSelectedTypes(types);
+        },
+        onDifficultyChanged: (counts) {
+          localCounts
             ..clear()
             ..addAll(counts);
-        }),
-        onChapterChanged: (c) => setState(() => _selectedChapter = c),
+          _formController.updateDifficultyCounts(counts);
+        },
+        onChapterChanged: (c) => _formController.updateChapter(c),
       ).buildAllSettings(t),
       modelType: ModelType.text,
       title: t.generate.generationSettings.title,
       buttonText: t.generate.generationSettings.done,
-      selectedModel: _selectedModel,
-      onModelChanged: (model) => setState(() => _selectedModel = model),
+      selectedModel: formState.selectedModel,
+      onModelChanged: (model) => _formController.updateModel(model),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final genState = ref.watch(questionGenerationProvider);
+    final formState = ref.watch(questionGenerateFormControllerProvider);
+
+    // Keep topic controller in sync with provider state
+    if (_topicController.text != formState.topic) {
+      _topicController.text = formState.topic;
+    }
+
     return Scaffold(
       backgroundColor: Themes.theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(child: _buildMainContent(context, genState)),
-            _buildBottomBar(context, genState),
+            Expanded(child: _buildMainContent(context, genState, formState)),
+            _buildBottomBar(context, genState, formState),
           ],
         ),
       ),
@@ -145,17 +131,15 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
   Widget _buildMainContent(
     BuildContext context,
     QuestionGenerationState genState,
+    QuestionGenerateFormState formState,
   ) {
     final hasResults = genState.generatedQuestions.isNotEmpty;
-    final activeDifficultyCount = _difficultyCounts.values.fold(
-      0,
-      (a, b) => a + b,
-    );
-    final typeLabel = _selectedTypes.isEmpty
+    final activeDifficultyCount = formState.totalQuestionCount;
+    final typeLabel = formState.selectedTypes.isEmpty
         ? t.questionBank.filters.type
-        : _selectedTypes.length == 1
-        ? _selectedTypes.first.displayName
-        : '${_selectedTypes.length} ${t.questionBank.filters.type.toLowerCase()}';
+        : formState.selectedTypes.length == 1
+        ? formState.selectedTypes.first.displayName
+        : '${formState.selectedTypes.length} ${t.questionBank.filters.type.toLowerCase()}';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -215,55 +199,63 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
               GeneralPickerOptions.buildOptionsRow(context, null, null, [
                 OptionChip(
                   icon: LucideIcons.graduationCap,
-                  label:
-                      _grade?.getLocalizedName(t) ??
-                      t.generate.presentationGenerate.grade,
+                  label: formState.grade.getLocalizedName(t),
                   onTap: () => GeneralPickerOptions.showEnumPicker<GradeLevel>(
                     context: context,
                     title: t.generate.presentationGenerate.grade,
                     values: GradeLevel.values,
                     labelOf: (g) => g.getLocalizedName(t),
-                    isSelected: (g) => g == _grade,
-                    onSelected: (g) => setState(() {
-                      _grade = g;
-                      _selectedChapter = null;
-                    }),
+                    isSelected: (g) => g == formState.grade,
+                    onSelected: (g) => _formController.updateGrade(g),
                   ),
                 ),
                 OptionChip(
                   icon: LucideIcons.bookOpen,
-                  label:
-                      _subject?.getLocalizedName(t) ??
-                      t.generate.presentationGenerate.subject,
+                  label: formState.subject.getLocalizedName(t),
                   onTap: () => GeneralPickerOptions.showEnumPicker<Subject>(
                     context: context,
                     title: t.generate.presentationGenerate.subject,
                     values: Subject.values,
                     labelOf: (s) => s.getLocalizedName(t),
-                    isSelected: (s) => s == _subject,
-                    onSelected: (s) => setState(() {
-                      _subject = s;
-                      _selectedChapter = null;
-                    }),
+                    isSelected: (s) => s == formState.subject,
+                    onSelected: (s) => _formController.updateSubject(s),
                   ),
                 ),
                 OptionChip(
                   icon: LucideIcons.listChecks,
                   label: typeLabel,
-                  onTap: _showAdvancedSettings,
+                  onTap: () => _showAdvancedSettings(formState),
                 ),
                 OptionChip(
                   icon: LucideIcons.layers,
                   label: activeDifficultyCount == 0
                       ? t.common.difficulty
                       : '$activeDifficultyCount q.',
-                  onTap: _showAdvancedSettings,
+                  onTap: () => _showAdvancedSettings(formState),
+                ),
+                OptionChip(
+                  icon: LucideIcons.bot,
+                  label:
+                      formState.selectedModel?.displayName ??
+                      t.generate.presentationGenerate.selectModel,
+                  logoPath: formState.selectedModel != null
+                      ? ProviderLogoUtils.getLogoPath(
+                          formState.selectedModel!.provider,
+                        )
+                      : null,
+                  onTap: () => GeneralPickerOptions.showModelPicker(
+                    context,
+                    selectedModel: formState.selectedModel,
+                    modelType: ModelType.text,
+                    onSelected: (m) => _formController.updateModel(m),
+                    t: t,
+                  ),
                 ),
               ], t),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: _showAdvancedSettings,
+                  onPressed: () => _showAdvancedSettings(formState),
                   child: Text(t.generate.advancedSettings),
                 ),
               ),
@@ -310,7 +302,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
               headerText: t.generate.presentationGenerate.tryTheseTopics,
               onSuggestionTap: (suggestion) {
                 _topicController.text = suggestion;
-                setState(() {});
+                _formController.updateTopic(suggestion);
               },
             ),
             const SizedBox(height: 32),
@@ -325,6 +317,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
   Widget _buildBottomBar(
     BuildContext context,
     QuestionGenerationState genState,
+    QuestionGenerateFormState formState,
   ) {
     final hasResults = genState.generatedQuestions.isNotEmpty;
     final isLoading = genState.isLoading;
@@ -353,13 +346,13 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
 
             // Generate button
             _buildIconButton(
-              color: _isValid && !isLoading
+              color: formState.isValid && !isLoading
                   ? cs.primary
                   : _disabledColor(context),
-              onTap: _isValid && !isLoading ? _handleGenerate : null,
+              onTap: formState.isValid && !isLoading ? _handleGenerate : null,
               isLoading: isLoading,
               icon: Icons.arrow_upward_rounded,
-              iconColor: _isValid ? Colors.white : Colors.grey[500],
+              iconColor: formState.isValid ? Colors.white : Colors.grey[500],
             ),
           ],
         ),
@@ -379,7 +372,7 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
         focusNode: _topicFocusNode,
         maxLines: null,
         textInputAction: TextInputAction.newline,
-        onChanged: (_) => setState(() {}),
+        onChanged: (value) => _formController.updateTopic(value),
         decoration: InputDecoration(
           hintText: hasResults
               ? t.generate.questionGenerate.generateMoreHint

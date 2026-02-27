@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/projects/data/repository/repository_provider.dart';
 import 'package:AIPrimary/features/projects/domain/entity/presentation_minimal.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/enum/sort_option.dart';
@@ -10,6 +11,7 @@ import 'package:AIPrimary/features/projects/ui/widgets/presentation/presentation
 import 'package:AIPrimary/features/projects/ui/widgets/presentation/presentation_grid_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/view_preference_pod.dart';
+import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -310,12 +312,12 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         ),
         newPageErrorIndicatorBuilder: (context) =>
             _NewPageErrorIndicator(onRetry: fetchNextPage),
-        noMoreItemsIndicatorBuilder: (context) => const Padding(
-          padding: EdgeInsets.all(16),
+        noMoreItemsIndicatorBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              'No more presentations',
-              style: TextStyle(color: Colors.grey),
+              t.projects.no_more_presentations,
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -373,12 +375,12 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
         ),
         newPageErrorIndicatorBuilder: (context) =>
             _NewPageErrorIndicator(onRetry: fetchNextPage),
-        noMoreItemsIndicatorBuilder: (context) => const Padding(
-          padding: EdgeInsets.all(16),
+        noMoreItemsIndicatorBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              'No more presentations',
-              style: TextStyle(color: Colors.grey),
+              t.projects.no_more_presentations,
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -410,13 +412,70 @@ class _PresentationListPageState extends ConsumerState<PresentationListPage> {
               onTap: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);
-                // TODO: Implement delete
+                _confirmDelete(context, presentation, t);
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _confirmDelete(
+    BuildContext context,
+    PresentationMinimal presentation,
+    dynamic t,
+  ) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(t.projects.presentations.deleteDialog.title),
+        content: Text(
+          t.projects.presentations.deleteDialog.message(
+            title: presentation.title,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(t.common.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              _deletePresentation(presentation);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(t.common.delete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deletePresentation(PresentationMinimal presentation) async {
+    final t = ref.read(translationsPod);
+    try {
+      await ref
+          .read(presentationRepositoryProvider)
+          .deletePresentation(presentation.id);
+      if (mounted) {
+        SnackbarUtils.showSuccess(
+          context,
+          t.projects.presentations.deleteDialog.success,
+        );
+        ref.read(presentationPagingControllerPod).refresh();
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.projects.presentations.deleteDialog.error,
+        );
+      }
+    }
   }
 }
 

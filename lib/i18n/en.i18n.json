@@ -175,14 +175,26 @@
     "presentations": {
       "title": "Presentation",
       "search_presentations": "Search presentations...",
-      "all_presentations": "All Presentations"
+      "all_presentations": "All Presentations",
+      "deleteDialog": {
+        "title": "Delete Presentation",
+        "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
+        "success": "Presentation deleted successfully",
+        "error": "Failed to delete presentation"
+      }
     },
     "mindmaps": {
       "title": "Mindmap",
       "search_mindmaps": "Search mindmaps...",
       "all_mindmaps": "All Mindmaps",
       "webViewNotSupported": "WebView is not supported on this platform.",
-      "loadingMindmap": "Loading mindmap..."
+      "loadingMindmap": "Loading mindmap...",
+      "deleteDialog": {
+        "title": "Delete Mindmap",
+        "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
+        "success": "Mindmap deleted successfully",
+        "error": "Failed to delete mindmap"
+      }
     },
     "images": {
       "title": "Image",

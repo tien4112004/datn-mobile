@@ -12,4 +12,6 @@ abstract class PresentationRepository {
     String sort = "desc",
     String? search,
   });
+
+  Future<void> deletePresentation(String id);
 }

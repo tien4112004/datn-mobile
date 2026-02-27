@@ -18,7 +18,6 @@ class AssignmentDetailDto {
   final String subject;
   @JsonKey(name: 'grade_level')
   final String gradeLevel;
-  final String status;
   final String difficulty;
   @JsonKey(name: 'total_questions')
   final int totalQuestions;
@@ -40,7 +39,6 @@ class AssignmentDetailDto {
     this.description,
     required this.subject,
     required this.gradeLevel,
-    required this.status,
     required this.difficulty,
     required this.totalQuestions,
     required this.totalPoints,
@@ -65,7 +63,6 @@ extension AssignmentDetailMapper on AssignmentDetailDto {
     description: description,
     subject: Subject.fromApiValue(subject),
     gradeLevel: GradeLevel.fromApiValue(gradeLevel),
-    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

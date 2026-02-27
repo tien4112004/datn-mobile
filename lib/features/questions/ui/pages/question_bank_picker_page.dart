@@ -426,11 +426,11 @@ class _QuestionBankPickerPageState
           ),
 
           // Bottom action bar
-          if (_selectedQuestions.isNotEmpty)
+          if (_selectedQuestions.isNotEmpty) ...[
             Positioned(
+              bottom: 0,
               left: 0,
               right: 0,
-              bottom: 0,
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -444,6 +444,7 @@ class _QuestionBankPickerPageState
                   ],
                 ),
                 child: SafeArea(
+                  top: false,
                   child: Row(
                     children: [
                       Expanded(
@@ -465,6 +466,7 @@ class _QuestionBankPickerPageState
                 ),
               ),
             ),
+          ],
         ],
       ),
     );

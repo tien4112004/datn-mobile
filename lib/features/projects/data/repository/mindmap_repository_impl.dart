@@ -38,4 +38,9 @@ class MindmapRepositoryImpl implements MindmapRepository {
 
     return dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [];
   }
+
+  @override
+  Future<void> deleteMindmap(String id) {
+    return _remoteSource.deleteMindmap(id);
+  }
 }

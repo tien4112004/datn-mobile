@@ -15,6 +15,7 @@ import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/models/language_enums.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -261,9 +262,9 @@ class _PresentationGeneratePageState
                   // Language
                   OptionChip(
                     icon: LucideIcons.languages,
-                    label: formState.language.isEmpty
-                        ? t.locale_en
-                        : formState.language,
+                    label: Language.fromApiValue(
+                      formState.language,
+                    ).getDisplayName(t),
                     onTap: () => GeneralPickerOptions.showLanguagePicker(
                       context,
                       formController,

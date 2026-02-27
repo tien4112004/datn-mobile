@@ -25,7 +25,9 @@ class MindmapFormController extends Notifier<MindmapFormState> {
       });
     }
 
-    return MindmapFormState(language: savedLanguage ?? 'English');
+    final normalizedLanguage =
+        (savedLanguage == 'vi' || savedLanguage == 'Vietnamese') ? 'vi' : 'en';
+    return MindmapFormState(language: normalizedLanguage);
   }
 
   void updateTopic(String topic) {

@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart
 import 'package:AIPrimary/features/generate/ui/widgets/shared/model_picker_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/models/language_enums.dart';
 import 'package:flutter/material.dart';
 
 class GeneralPickerOptions {
@@ -12,18 +13,15 @@ class GeneralPickerOptions {
     dynamic formState,
     dynamic t,
   ) {
-    /// Available languages for presentation generation
-    List<String> availableLanguages = [t.locale_en, t.locale_vi];
-
     PickerBottomSheet.show(
       context: context,
       title: t.generate.presentationGenerate.selectLanguage,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        children: availableLanguages.map((language) {
-          final isSelected = formState.language == language;
+        children: Language.values.map((lang) {
+          final isSelected = formState.language == lang.apiValue;
           return ListTile(
-            title: Text(language),
+            title: Text(lang.getDisplayName(t)),
             trailing: isSelected
                 ? Icon(
                     Icons.check_circle_rounded,
@@ -31,7 +29,7 @@ class GeneralPickerOptions {
                   )
                 : null,
             onTap: () {
-              formController.updateLanguage(language);
+              formController.updateLanguage(lang.apiValue);
               Navigator.pop(context);
             },
           );

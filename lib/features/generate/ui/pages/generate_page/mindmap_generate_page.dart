@@ -12,8 +12,8 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_op
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
-import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/models/language_enums.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
@@ -193,49 +193,12 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
                     ),
                   ),
 
-                  // Grade (optional)
-                  OptionChip(
-                    icon: LucideIcons.graduationCap,
-                    label: formState.grade != null
-                        ? GradeLevel.fromApiValue(
-                            formState.grade!,
-                          ).getLocalizedName(t)
-                        : t.generate.presentationGenerate.grade,
-                    onTap: () =>
-                        GeneralPickerOptions.showEnumPicker<GradeLevel>(
-                          context: context,
-                          title: t.generate.presentationGenerate.grade,
-                          values: GradeLevel.values,
-                          labelOf: (g) => g.getLocalizedName(t),
-                          isSelected: (g) => formState.grade == g.apiValue,
-                          onSelected: (g) =>
-                              formController.updateGrade(g.apiValue),
-                        ),
-                  ),
-                  // Subject (optional)
-                  OptionChip(
-                    icon: LucideIcons.bookOpen,
-                    label: formState.subject != null
-                        ? Subject.fromApiValue(
-                            formState.subject!,
-                          ).getLocalizedName(t)
-                        : t.generate.presentationGenerate.subject,
-                    onTap: () => GeneralPickerOptions.showEnumPicker<Subject>(
-                      context: context,
-                      title: t.generate.presentationGenerate.subject,
-                      values: Subject.values,
-                      labelOf: (s) => s.getLocalizedName(t),
-                      isSelected: (s) => formState.subject == s.apiValue,
-                      onSelected: (s) =>
-                          formController.updateSubject(s.apiValue),
-                    ),
-                  ),
                   // Language
                   OptionChip(
                     icon: LucideIcons.languages,
-                    label: formState.language.isEmpty
-                        ? t.locale_en
-                        : formState.language,
+                    label: Language.fromApiValue(
+                      formState.language,
+                    ).getDisplayName(t),
                     onTap: () => GeneralPickerOptions.showLanguagePicker(
                       context,
                       formController,

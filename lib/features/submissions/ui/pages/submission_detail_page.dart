@@ -5,6 +5,7 @@ import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_bl
 import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_after_assess.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_after_assess.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/open_ended/open_ended_after_assess.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/answer_entity.dart';
 import 'package:AIPrimary/features/submissions/domain/entity/submission_entity.dart';
 import 'package:AIPrimary/features/submissions/states/controller_provider.dart';
@@ -256,7 +257,7 @@ class SubmissionDetailPage extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     int questionNumber,
-    question,
+    BaseQuestion question,
     AnswerEntity answer,
     Translations t,
   ) {
@@ -265,29 +266,29 @@ class SubmissionDetailPage extends ConsumerWidget {
 
     Widget questionWidget;
 
-    switch (answer.type) {
+    switch (question.type) {
       case QuestionType.multipleChoice:
         questionWidget = MultipleChoiceAfterAssess(
-          question: question,
+          question: question as MultipleChoiceQuestion,
           studentAnswer:
               (answer as MultipleChoiceAnswerEntity).selectedOptionId,
         );
         break;
       case QuestionType.fillInBlank:
         questionWidget = FillInBlankAfterAssess(
-          question: question,
+          question: question as FillInBlankQuestion,
           studentAnswers: (answer as FillInBlankAnswerEntity).blankAnswers,
         );
         break;
       case QuestionType.matching:
         questionWidget = MatchingAfterAssess(
-          question: question,
+          question: question as MatchingQuestion,
           studentAnswers: (answer as MatchingAnswerEntity).matchedPairs,
         );
         break;
       case QuestionType.openEnded:
         questionWidget = OpenEndedAfterAssess(
-          question: question,
+          question: question as OpenEndedQuestion,
           studentAnswer: (answer as OpenEndedAnswerEntity).response,
         );
         break;

@@ -14,7 +14,6 @@ class ExamSummaryDto {
   final String subject;
   @JsonKey(name: 'grade_level')
   final String gradeLevel;
-  final String status;
   @JsonKey(name: 'total_questions')
   final int totalQuestions;
   @JsonKey(name: 'created_at')
@@ -25,7 +24,6 @@ class ExamSummaryDto {
     required this.title,
     required this.subject,
     required this.gradeLevel,
-    required this.status,
     required this.totalQuestions,
     required this.createdAt,
   });
@@ -51,7 +49,6 @@ extension ExamSummaryMapper on ExamSummaryDto {
     description: description,
     subject: Subject.fromApiValue(subject),
     gradeLevel: GradeLevel.fromApiValue(gradeLevel),
-    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     timeLimitMinutes: timeLimitMinutes,

@@ -2,6 +2,7 @@ import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.d
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/context_entity.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/context/context_display_card.dart';
+import 'package:AIPrimary/features/questions/domain/entity/question_entity.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/fill_in_blank/fill_in_blank_doing.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/matching/matching_doing.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/multiple_choice/multiple_choice_doing.dart';
@@ -267,10 +268,11 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
   }
 
   /// Helper to check if groups need to be rebuilt
-  int _getExpectedGroupCount(AssignmentEntity assignment) {
-    // Simple heuristic: if assignment has changed, rebuild
-    return assignment.questions.length;
+  String _getAssignmentFingerprint(AssignmentEntity assignment) {
+    return assignment.questions.map((q) => q.question.id).join(',');
   }
+
+  String _lastAssignmentFingerprint = '';
 
   /// Gets the title for the current group
   String _getGroupTitle(QuestionGroup group) {
@@ -347,18 +349,13 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
   }
 
   /// Builds the widget for a question group (context group or standalone)
-  Widget _buildGroupWidget(QuestionGroup group) {
+  Widget _buildGroupWidget(
+    QuestionGroup group,
+    AnswerCollectionState answerState,
+  ) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.read(translationsPod);
-
-    final assignment = ref
-        .read(assignmentByPostIdProvider(widget.postId!))
-        .value;
-
-    if (assignment == null) return const SizedBox.shrink();
-
-    final answerState = ref.watch(answerCollectionProvider(assignment));
 
     if (group.isContextGroup && group.context != null) {
       // Context group: show context + all questions
@@ -400,7 +397,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
           // All questions in this group
           ...group.questions.asMap().entries.map((entry) {
             final index = entry.key;
-            final question = entry.value;
+            final assignmentQuestion = entry.value;
             final questionNumber = group.startingDisplayNumber + index;
 
             return Padding(
@@ -430,9 +427,8 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                   ),
                   const SizedBox(height: 12),
                   _buildQuestionWidget(
-                    question.question.type,
-                    question.question.id,
-                    answerState.answers[question.question.id],
+                    assignmentQuestion.question,
+                    answerState.answers[assignmentQuestion.question.id],
                   ),
                 ],
               ),
@@ -442,11 +438,10 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
       );
     } else {
       // Standalone question
-      final question = group.questions.first;
+      final assignmentQuestion = group.questions.first;
       return _buildQuestionWidget(
-        question.question.type,
-        question.question.id,
-        answerState.answers[question.question.id],
+        assignmentQuestion.question,
+        answerState.answers[assignmentQuestion.question.id],
       );
     }
   }
@@ -475,10 +470,12 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
             );
           }
 
-          // Build question groups
+          // Build question groups only when the assignment questions change
+          final fingerprint = _getAssignmentFingerprint(assignment);
           if (_questionGroups.isEmpty ||
-              _questionGroups.length != _getExpectedGroupCount(assignment)) {
+              fingerprint != _lastAssignmentFingerprint) {
             _questionGroups = _buildQuestionGroups(assignment);
+            _lastAssignmentFingerprint = fingerprint;
             // Ensure current group index is valid
             if (_currentGroupIndex >= _questionGroups.length) {
               _currentGroupIndex = 0;
@@ -550,6 +547,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
                       padding: const EdgeInsets.all(16),
                       child: _buildGroupWidget(
                         _questionGroups[_currentGroupIndex],
+                        answerState,
                       ),
                     ),
                   ),
@@ -621,8 +619,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
   }
 
   Widget _buildQuestionWidget(
-    QuestionType type,
-    String questionId,
+    BaseQuestion question,
     AnswerEntity? currentAnswer,
   ) {
     final assignment = ref
@@ -631,19 +628,16 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
     if (assignment == null) return const SizedBox.shrink();
 
-    final assignmentQuestion = assignment.questions.firstWhere(
-      (q) => q.question.id == questionId,
-    );
-    final question = assignmentQuestion.question;
-
     final answerController = ref.read(
       answerCollectionProvider(assignment).notifier,
     );
 
-    switch (type) {
+    final questionId = question.id;
+
+    switch (question.type) {
       case QuestionType.multipleChoice:
         return MultipleChoiceDoing(
-          question: question as dynamic,
+          question: question as MultipleChoiceQuestion,
           selectedAnswer: currentAnswer is MultipleChoiceAnswerEntity
               ? currentAnswer.selectedOptionId
               : null,
@@ -659,7 +653,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
       case QuestionType.fillInBlank:
         return FillInBlankDoing(
-          question: question as dynamic,
+          question: question as FillInBlankQuestion,
           answers: currentAnswer is FillInBlankAnswerEntity
               ? currentAnswer.blankAnswers
               : {},
@@ -675,7 +669,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
       case QuestionType.matching:
         return MatchingDoing(
-          question: question as dynamic,
+          question: question as MatchingQuestion,
           answers: currentAnswer is MatchingAnswerEntity
               ? currentAnswer.matchedPairs
               : {},
@@ -688,7 +682,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
       case QuestionType.openEnded:
         return OpenEndedDoing(
-          question: question as dynamic,
+          question: question as OpenEndedQuestion,
           answer: currentAnswer is OpenEndedAnswerEntity
               ? currentAnswer.response
               : null,

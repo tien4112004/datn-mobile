@@ -16,6 +16,9 @@ class OutlineGenerateRequest {
   /// The subject area for the content (max 100 chars)
   final String? subject;
 
+  /// File URLs to use as source material for generation
+  final List<String>? fileUrls;
+
   const OutlineGenerateRequest({
     required this.topic,
     required this.slideCount,
@@ -24,6 +27,7 @@ class OutlineGenerateRequest {
     required this.provider,
     this.grade,
     this.subject,
+    this.fileUrls,
   });
 
   factory OutlineGenerateRequest.fromJson(Map<String, dynamic> json) =>
@@ -43,6 +47,7 @@ class OutlineGenerateRequest {
     String? provider,
     String? grade,
     String? subject,
+    List<String>? fileUrls,
   }) {
     return OutlineGenerateRequest(
       topic: topic ?? this.topic,
@@ -52,6 +57,7 @@ class OutlineGenerateRequest {
       provider: provider ?? this.provider,
       grade: grade ?? this.grade,
       subject: subject ?? this.subject,
+      fileUrls: fileUrls ?? this.fileUrls,
     );
   }
 }

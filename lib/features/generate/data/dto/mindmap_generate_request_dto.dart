@@ -31,6 +31,9 @@ class MindmapGenerateRequestDto {
   /// The subject area for the content (max 100 chars)
   final String? subject;
 
+  /// File URLs to use as source material for generation
+  final List<String>? fileUrls;
+
   const MindmapGenerateRequestDto({
     required this.topic,
     required this.model,
@@ -40,6 +43,7 @@ class MindmapGenerateRequestDto {
     this.maxBranchesPerNode,
     this.grade,
     this.subject,
+    this.fileUrls,
   });
 
   factory MindmapGenerateRequestDto.fromJson(Map<String, dynamic> json) =>

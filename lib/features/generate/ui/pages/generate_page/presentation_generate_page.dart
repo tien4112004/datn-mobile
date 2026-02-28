@@ -15,8 +15,10 @@ import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/models/language_enums.dart';
+import 'package:AIPrimary/shared/services/media_service_provider.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -82,8 +84,41 @@ class _PresentationGeneratePageState
         .updateTopic(_topicController.text);
   }
 
+  Future<void> _handleDocumentAttach() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.single;
+    if (file.path == null) return;
+
+    if (!mounted) return;
+    ref.read(loadingOverlayPod.notifier).state = true;
+    try {
+      final mediaService = ref.read(mediaServiceProvider);
+      final response = await mediaService.uploadMedia(filePath: file.path!);
+      if (mounted) {
+        ref
+            .read(presentationFormControllerProvider.notifier)
+            .addFileUrl(response.cdnUrl);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(context, 'Failed to upload file: $e');
+      }
+    } finally {
+      if (mounted) {
+        ref.read(loadingOverlayPod.notifier).state = false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final formState = ref.watch(presentationFormControllerProvider);
+
     // Listen for generation completion
     ref.listen(presentationGenerateControllerProvider, (previous, next) {
       next.when(
@@ -128,6 +163,11 @@ class _PresentationGeneratePageState
       );
     });
 
+    // Build file display names from URLs (use filename from URL)
+    final fileNames = formState.fileUrls
+        .map((url) => _extractFileName(url))
+        .toList();
+
     return Scaffold(
       backgroundColor: Themes.theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -141,14 +181,38 @@ class _PresentationGeneratePageState
               topicFocusNode: _topicFocusNode,
               generateState: presentationGenerateControllerProvider,
               formState: presentationFormControllerProvider,
-              onAttachFile: () => AttachFileSheet.show(context: context, t: t),
+              onAttachFile: () => AttachFileSheet.show(
+                context: context,
+                t: t,
+                onDocumentTap: _handleDocumentAttach,
+              ),
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
+              attachedFileNames: fileNames,
+              onRemoveFile: (name) {
+                final url = formState.fileUrls.firstWhere(
+                  (u) => _extractFileName(u) == name,
+                  orElse: () => '',
+                );
+                if (url.isNotEmpty) {
+                  ref
+                      .read(presentationFormControllerProvider.notifier)
+                      .removeFileUrl(url);
+                }
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _extractFileName(String url) {
+    try {
+      return Uri.parse(url).pathSegments.last;
+    } catch (_) {
+      return url;
+    }
   }
 
   Widget _buildMainContent(BuildContext context) {

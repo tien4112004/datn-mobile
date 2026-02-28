@@ -87,6 +87,16 @@ class PresentationFormController extends Notifier<PresentationFormState> {
     state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
+  void addFileUrl(String url) {
+    final updated = [...state.fileUrls, url];
+    state = state.copyWith(fileUrls: updated);
+  }
+
+  void removeFileUrl(String url) {
+    final updated = state.fileUrls.where((u) => u != url).toList();
+    state = state.copyWith(fileUrls: updated);
+  }
+
   // Outline management
   void setOutline(String outline) {
     state = state.copyWith(outline: outline, currentStep: 2);
@@ -104,7 +114,7 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       imageModel: state.imageModel,
       themeId: state.themeId,
       theme: state.theme,
-      // User-input fields use defaults: topic='', slideCount=5, outline='', currentStep=1, etc.
+      // User-input fields use defaults: topic='', slideCount=5, outline='', currentStep=1, fileUrls=[], etc.
     );
   }
 
@@ -125,6 +135,7 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       provider: outlineModel.provider,
       grade: state.grade,
       subject: state.subject,
+      fileUrls: state.fileUrls.isNotEmpty ? state.fileUrls : null,
     );
   }
 
@@ -191,6 +202,7 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       others: othersData,
       grade: state.grade,
       subject: state.subject,
+      fileUrls: state.fileUrls.isNotEmpty ? state.fileUrls : null,
     );
   }
 }

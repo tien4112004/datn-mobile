@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/coins/ui/widgets/coin_balance_indicator.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Bottom input bar for entering presentation topics with attach and generate actions.
 ///
@@ -19,6 +20,12 @@ class TopicInputBar extends ConsumerWidget {
   final AsyncNotifierProvider generateState;
   final String hintText;
 
+  /// Attached file names/urls to display as chips above the input
+  final List<String> attachedFileNames;
+
+  /// Called when the user taps the remove button on a file chip
+  final void Function(String fileName)? onRemoveFile;
+
   const TopicInputBar({
     super.key,
     required this.topicController,
@@ -28,6 +35,8 @@ class TopicInputBar extends ConsumerWidget {
     required this.formState,
     required this.generateState,
     required this.hintText,
+    this.attachedFileNames = const [],
+    this.onRemoveFile,
   });
 
   @override
@@ -64,23 +73,64 @@ class TopicInputBar extends ConsumerWidget {
           ),
           child: SafeArea(
             top: false,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildAttachButton(context),
-                const SizedBox(width: 8),
-                _buildTextInput(context),
-                const SizedBox(width: 8),
-                _buildGenerateButton(
-                  context,
-                  formState.isValid,
-                  generateStateAsync,
+                // File chips row
+                if (attachedFileNames.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: attachedFileNames
+                        .map((name) => _buildFileChip(context, name))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                // Input row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _buildAttachButton(context),
+                    const SizedBox(width: 8),
+                    _buildTextInput(context),
+                    const SizedBox(width: 8),
+                    _buildGenerateButton(
+                      context,
+                      formState.isValid,
+                      generateStateAsync,
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildFileChip(BuildContext context, String name) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Chip(
+      avatar: Icon(LucideIcons.fileText, size: 14, color: colorScheme.primary),
+      label: Text(
+        name,
+        style: TextStyle(fontSize: 12, color: colorScheme.primary),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+      deleteIcon: Icon(
+        Icons.close,
+        size: 14,
+        color: colorScheme.primary.withValues(alpha: 0.7),
+      ),
+      onDeleted: onRemoveFile != null ? () => onRemoveFile!(name) : null,
+      backgroundColor: colorScheme.primary.withValues(alpha: 0.08),
+      side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.2)),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      visualDensity: VisualDensity.compact,
     );
   }
 

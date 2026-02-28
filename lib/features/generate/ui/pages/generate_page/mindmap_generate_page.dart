@@ -12,10 +12,13 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_op
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
+import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/models/language_enums.dart';
+import 'package:AIPrimary/shared/services/media_service_provider.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -80,11 +83,47 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
         .updateTopic(_topicController.text);
   }
 
+  Future<void> _handleDocumentAttach() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.single;
+    if (file.path == null) return;
+
+    if (!mounted) return;
+    ref.read(loadingOverlayPod.notifier).state = true;
+    try {
+      final mediaService = ref.read(mediaServiceProvider);
+      final response = await mediaService.uploadMedia(filePath: file.path!);
+      if (mounted) {
+        ref
+            .read(mindmapFormControllerProvider.notifier)
+            .addFileUrl(response.cdnUrl);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(context, 'Failed to upload file: $e');
+      }
+    } finally {
+      if (mounted) {
+        ref.read(loadingOverlayPod.notifier).state = false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final formState = ref.watch(mindmapFormControllerProvider);
 
     // Note: Generation is now handled by WebView page, no listener needed here
+
+    final fileNames = formState.fileUrls
+        .map((url) => _extractFileName(url))
+        .toList();
 
     return Scaffold(
       backgroundColor: context.isDarkMode
@@ -101,14 +140,38 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
               topicFocusNode: _topicFocusNode,
               generateState: mindmapGenerateControllerProvider,
               formState: mindmapFormControllerProvider,
-              onAttachFile: () => AttachFileSheet.show(context: context, t: t),
+              onAttachFile: () => AttachFileSheet.show(
+                context: context,
+                t: t,
+                onDocumentTap: _handleDocumentAttach,
+              ),
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
+              attachedFileNames: fileNames,
+              onRemoveFile: (name) {
+                final url = formState.fileUrls.firstWhere(
+                  (u) => _extractFileName(u) == name,
+                  orElse: () => '',
+                );
+                if (url.isNotEmpty) {
+                  ref
+                      .read(mindmapFormControllerProvider.notifier)
+                      .removeFileUrl(url);
+                }
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _extractFileName(String url) {
+    try {
+      return Uri.parse(url).pathSegments.last;
+    } catch (_) {
+      return url;
+    }
   }
 
   Widget _buildMainContent(BuildContext context) {
@@ -268,8 +331,8 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     // Validate form before navigating
     final formState = ref.read(mindmapFormControllerProvider);
     if (!formState.isValid) {
-      // Form requires topic and model to be set
-      if (formState.topic.trim().isEmpty) {
+      // Form requires topic or file, and model to be set
+      if (formState.topic.trim().isEmpty && formState.fileUrls.isEmpty) {
         SnackbarUtils.showError(context, t.generate.enterTopicHint);
       } else if (formState.selectedModel == null) {
         SnackbarUtils.showError(

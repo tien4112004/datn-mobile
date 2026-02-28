@@ -64,6 +64,16 @@ class MindmapFormController extends Notifier<MindmapFormState> {
     state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
+  void addFileUrl(String url) {
+    final updated = [...state.fileUrls, url];
+    state = state.copyWith(fileUrls: updated);
+  }
+
+  void removeFileUrl(String url) {
+    final updated = state.fileUrls.where((u) => u != url).toList();
+    state = state.copyWith(fileUrls: updated);
+  }
+
   void reset() {
     // Preserve preference-related fields, only clear user-input fields
     state = MindmapFormState(

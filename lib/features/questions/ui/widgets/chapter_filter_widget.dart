@@ -169,12 +169,14 @@ class _ChapterFilterWidgetState extends ConsumerState<ChapterFilterWidget> {
               spacing: 8,
               runSpacing: 8,
               children: chapters.map((chapter) {
-                final isSelected = _localSelectedChapters.contains(chapter.id);
+                final isSelected = _localSelectedChapters.contains(
+                  chapter.name,
+                );
                 return FilterChip(
                   label: Text(chapter.name),
                   selected: isSelected,
                   showCheckmark: true,
-                  onSelected: (selected) => _toggleChapter(chapter.id),
+                  onSelected: (selected) => _toggleChapter(chapter.name),
                   selectedColor: colorScheme.primaryContainer,
                   checkmarkColor: colorScheme.onPrimaryContainer,
                   side: BorderSide(

@@ -21,6 +21,24 @@ enum QuestionType {
     }
   }
 
+  static String getLocalizedNameFromDisplayName(
+    Translations t,
+    String questionType,
+  ) {
+    switch (questionType) {
+      case 'Multiple Choice':
+        return t.questionBank.questionTypes.multipleChoice;
+      case 'Matching':
+        return t.questionBank.questionTypes.matching;
+      case 'Open Ended':
+        return t.questionBank.questionTypes.openEnded;
+      case 'Fill in Blank':
+        return t.questionBank.questionTypes.fillInBlank;
+      default:
+        return questionType;
+    }
+  }
+
   String get displayName {
     switch (this) {
       case QuestionType.multipleChoice:
@@ -92,8 +110,7 @@ enum QuestionType {
 enum Difficulty {
   knowledge,
   comprehension,
-  application,
-  advancedApplication;
+  application;
 
   String getLocalizedName(Translations t) {
     switch (this) {
@@ -103,8 +120,6 @@ enum Difficulty {
         return t.questionBank.difficulties.comprehension;
       case Difficulty.application:
         return t.questionBank.difficulties.application;
-      case Difficulty.advancedApplication:
-        return 'Advanced Application';
     }
   }
 
@@ -116,8 +131,6 @@ enum Difficulty {
         return 'Comprehension';
       case Difficulty.application:
         return 'Application';
-      case Difficulty.advancedApplication:
-        return 'Advanced Application';
     }
   }
 
@@ -129,8 +142,6 @@ enum Difficulty {
         return 'COMPREHENSION';
       case Difficulty.application:
         return 'APPLICATION';
-      case Difficulty.advancedApplication:
-        return 'ADVANCED_APPLICATION';
     }
   }
 
@@ -142,8 +153,6 @@ enum Difficulty {
         return Difficulty.comprehension;
       case 'APPLICATION':
         return Difficulty.application;
-      case 'ADVANCED_APPLICATION':
-        return Difficulty.advancedApplication;
       default:
         return Difficulty.knowledge;
     }
@@ -157,8 +166,6 @@ enum Difficulty {
         return LucideIcons.book;
       case Difficulty.application:
         return LucideIcons.book;
-      case Difficulty.advancedApplication:
-        return LucideIcons.bookOpen;
     }
   }
 
@@ -170,8 +177,6 @@ enum Difficulty {
         return Colors.blue;
       case Difficulty.application:
         return Colors.orange;
-      case Difficulty.advancedApplication:
-        return Colors.red;
     }
   }
 
@@ -183,8 +188,6 @@ enum Difficulty {
         return Difficulty.comprehension;
       case 'APPLICATION':
         return Difficulty.application;
-      case 'ADVANCED_APPLICATION':
-        return Difficulty.advancedApplication;
       default:
         return Difficulty.knowledge;
     }

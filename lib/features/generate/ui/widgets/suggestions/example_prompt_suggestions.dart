@@ -1,5 +1,7 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/states/example_prompt/example_prompt_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,9 +23,10 @@ class ExamplePromptSuggestions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final asyncPrompts = ref.watch(examplePromptsProvider(type));
 
-    return asyncPrompts.when(
+    return asyncPrompts.easyWhen(
       data: (prompts) {
         if (prompts.isEmpty) return const SizedBox.shrink();
 
@@ -78,8 +81,14 @@ class ExamplePromptSuggestions extends ConsumerWidget {
           ],
         );
       },
-      loading: () => _buildSkeleton(context),
-      error: (_, _) => const SizedBox.shrink(),
+      loadingWidget: () => _buildSkeleton(context),
+      errorWidget: (_, _) {
+        // Message to user
+        return Text(
+          t.generate.examplePromptSuggestions.loadingPromptsError,
+          style: TextStyle(color: context.bodyTextColor),
+        );
+      },
     );
   }
 
@@ -90,7 +99,7 @@ class ExamplePromptSuggestions extends ConsumerWidget {
     final widths = [90.0, 120.0, 70.0, 110.0];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),

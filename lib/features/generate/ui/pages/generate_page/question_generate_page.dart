@@ -223,7 +223,10 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
                 ),
                 OptionChip(
                   icon: LucideIcons.listChecks,
-                  label: typeLabel,
+                  label: QuestionType.getLocalizedNameFromDisplayName(
+                    t,
+                    typeLabel,
+                  ),
                   onTap: () => _showAdvancedSettings(formState),
                 ),
                 OptionChip(

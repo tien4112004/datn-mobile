@@ -581,6 +581,9 @@
       "shareFailed": "Failed to share image: $error",
       "generateFirst": "Please try generating an image first"
     },
+    "examplePromptSuggestions": {
+      "loadingPromptsError": "Oh no, something went wrong with loading prompts"
+    },
     "questionGenerate": {
       "generateMoreHint": "Generate more on another topic..."
     },

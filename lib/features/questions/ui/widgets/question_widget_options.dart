@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
+import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
@@ -208,7 +209,7 @@ class QuestionWidgetOptions {
           children: QuestionType.values.map((type) {
             final isSelected = selectedTypes.contains(type);
             return FilterChip(
-              label: Text(type.displayName),
+              label: Text(type.localizedName(t)),
               selected: isSelected,
               onSelected: (selected) {
                 final next = Set<QuestionType>.from(selectedTypes);
@@ -228,10 +229,7 @@ class QuestionWidgetOptions {
   }
 
   Widget _buildDifficultySetting(Translations t) {
-    // ADVANCED_APPLICATION is excluded from question generation.
-    final difficulties = Difficulty.values
-        .where((d) => d != Difficulty.advancedApplication)
-        .toList();
+    final difficulties = Difficulty.values;
 
     return StatefulBuilder(
       builder: (context, set) {
@@ -254,7 +252,7 @@ class QuestionWidgetOptions {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Expanded(child: Text(d.displayName)),
+                        Expanded(child: Text(d.localizedName(t))),
                         IconButton.outlined(
                           onPressed: difficultyCounts[d]! > 0
                               ? () {

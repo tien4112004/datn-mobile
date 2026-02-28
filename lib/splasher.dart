@@ -1,6 +1,8 @@
 import 'package:AIPrimary/core/services/notification/notification_service.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
+import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/features/projects/states/controller_provider.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/app/view/app.dart';
@@ -21,6 +23,21 @@ class _SplasherState extends ConsumerState<Splasher> {
   @override
   void initState() {
     super.initState();
+    NotificationService().setOnMessageReceived((message) {
+      final typeString = message.data['type'] as String?;
+      if (typeString == null) return;
+      try {
+        final type = NotificationType.fromString(typeString);
+        debugPrint('Notification type: $type');
+        if (type == NotificationType.sharedPresentation ||
+            type == NotificationType.sharedMindmap) {
+          debugPrint('Shared resource notification received');
+          ref.read(sharedResourcesControllerProvider.notifier).refresh();
+        }
+      } catch (_) {
+        // Unknown type - ignore
+      }
+    });
   }
 
   Future<void> _registerExistingToken() async {

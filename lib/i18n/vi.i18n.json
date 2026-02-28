@@ -581,6 +581,9 @@
       "shareFailed": "Chia sẻ hình ảnh thất bại: $error",
       "generateFirst": "Vui lòng thử tạo một hình ảnh trước"
     },
+    "examplePromptSuggestions": {
+      "loadingPromptsError": "Đã xảy ra lỗi khi tải các gợi ý"
+    },
     "questionGenerate": {
       "generateMoreHint": "Tạo thêm về chủ đề khác..."
     },

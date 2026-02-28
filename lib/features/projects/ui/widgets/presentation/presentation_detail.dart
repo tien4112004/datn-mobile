@@ -1,11 +1,13 @@
+import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/desktop_hint_button.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
+import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:AIPrimary/features/projects/domain/entity/presentation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
-import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
-import 'package:AIPrimary/core/config/config.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// React app's PresentationEmbedPage.
@@ -41,13 +43,18 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   @override
   Widget build(BuildContext context) {
     if (InAppWebViewPlatform.instance == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Presentation Detail')),
-        body: const Center(
-          child: Text(
-            'WebView is not supported on this platform.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
+      return const Scaffold(
+        appBar: CustomAppBar(title: 'Presentation Detail'),
+        body: Stack(
+          children: [
+            Center(
+              child: Text(
+                'WebView is not supported on this platform.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ),
+            DesktopHintDialog(),
+          ],
         ),
       );
     }
@@ -62,6 +69,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
 
   Widget _buildContent(Presentation presentation) {
     return Scaffold(
+      appBar: const CustomAppBar(title: 'Presentation Detail'),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
@@ -72,7 +80,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
                 color: Colors.white,
                 child: const Center(child: CircularProgressIndicator()),
               ),
-            if (widget.onClose != null) _buildCloseButton(),
+            const DesktopHintDialog(),
           ],
         ),
       ),

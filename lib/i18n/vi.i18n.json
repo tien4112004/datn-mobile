@@ -246,6 +246,12 @@
         "error": "Không thể xóa sơ đồ tư duy"
       }
     },
+    "desktopHint": {
+      "buttonLabel": "Chế độ Chỉnh sửa",
+      "dialogTitle": "Tốt hơn trên máy tính",
+      "dialogMessage": "Chế độ chỉnh sửa được thiết kế cho màn hình rộng. Để có trải nghiệm chỉnh sửa đầy đủ, hãy mở trên máy tính xách tay hoặc màn hình PC bằng phiên bản web.",
+      "dialogAction": "Đã hiểu"
+    },
     "images": {
       "title": "Hình ảnh",
       "search_images": "Tìm kiếm hình ảnh...",

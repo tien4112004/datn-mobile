@@ -7,6 +7,7 @@ import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
 import 'package:AIPrimary/features/auth/service/service_provider.dart';
 import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 import 'package:AIPrimary/features/projects/states/controller_provider.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,6 +109,10 @@ class AuthController extends AsyncNotifier<AuthState> {
       ref.invalidate(recentDocumentsControllerProvider);
       ref.invalidate(presentationsControllerProvider);
       ref.invalidate(mindmapsControllerProvider);
+      ref.invalidate(userAllTransactionsProvider);
+      ref.invalidate(userTransactionsProvider);
+      ref.invalidate(transactionDetailsProvider);
+      ref.invalidate(createCheckoutProvider);
 
       return AuthState(isAuthenticated: false);
     });

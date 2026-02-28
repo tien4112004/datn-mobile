@@ -76,15 +76,18 @@ final tokenUsageStatsProvider =
       return repository.getTokenUsageStats();
     });
 
-final tokenUsageByModelProvider = FutureProvider<List<TokenUsageStatsModel>>((
-  ref,
-) async {
-  final repository = ref.watch(coinsRepositoryProvider);
-  return repository.getTokenUsageByModel();
-});
+final tokenUsageByModelProvider =
+    FutureProvider.autoDispose<List<TokenUsageStatsModel>>((ref) async {
+      final repository = ref.watch(coinsRepositoryProvider);
+      final userProfile = ref.watch(userControllerPod);
+      if (userProfile.value == null) return [];
+      return repository.getTokenUsageByModel();
+    });
 
 final tokenUsageByRequestTypeProvider =
-    FutureProvider<List<TokenUsageStatsModel>>((ref) async {
+    FutureProvider.autoDispose<List<TokenUsageStatsModel>>((ref) async {
       final repository = ref.watch(coinsRepositoryProvider);
+      final userProfile = ref.watch(userControllerPod);
+      if (userProfile.value == null) return [];
       return repository.getTokenUsageByRequestType();
     });

@@ -11,7 +11,6 @@ class AssignmentResponseDto {
   final String id;
   final String ownerId;
   final String title;
-  final String status;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
@@ -19,7 +18,6 @@ class AssignmentResponseDto {
     required this.id,
     required this.ownerId,
     required this.title,
-    required this.status,
     required this.createdAt,
   });
 
@@ -45,7 +43,6 @@ extension AssignmentResponseMapper on AssignmentResponseDto {
     description: description,
     subject: Subject.fromApiValue(subject),
     gradeLevel: gradeLevel,
-    status: AssignmentStatus.fromApiValue(status),
     totalQuestions: totalQuestions,
     totalPoints: totalPoints,
     createdAt: createdAt,

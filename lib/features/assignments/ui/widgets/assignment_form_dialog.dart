@@ -136,20 +136,6 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: t.assignments.form.descriptionLabel,
-                      hintText: t.assignments.form.descriptionHint,
-                      alignLabelWithHint: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    maxLines: 3,
-                    textCapitalization: TextCapitalization.sentences,
-                  ),
-                  const SizedBox(height: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -171,6 +157,20 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
                         },
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      labelText: t.assignments.form.descriptionLabel,
+                      hintText: t.assignments.form.descriptionHint,
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    maxLines: 3,
+                    textCapitalization: TextCapitalization.sentences,
                   ),
                   const SizedBox(height: 24),
                   Row(

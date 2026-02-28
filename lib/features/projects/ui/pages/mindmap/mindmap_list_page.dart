@@ -1,5 +1,6 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/features/projects/data/repository/repository_provider.dart';
 import 'package:AIPrimary/features/projects/domain/entity/mindmap_minimal.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/enum/sort_option.dart';
@@ -10,6 +11,7 @@ import 'package:AIPrimary/features/projects/ui/widgets/mindmap/mindmap_tile.dart
 import 'package:AIPrimary/features/projects/ui/widgets/mindmap/mindmap_grid_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/view_preference_pod.dart';
+import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -306,12 +308,12 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
         ),
         newPageErrorIndicatorBuilder: (context) =>
             _NewPageErrorIndicator(onRetry: fetchNextPage),
-        noMoreItemsIndicatorBuilder: (context) => const Padding(
-          padding: EdgeInsets.all(16),
+        noMoreItemsIndicatorBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              'No more mindmaps',
-              style: TextStyle(color: Colors.grey),
+              t.projects.no_more_mindmaps,
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -367,12 +369,12 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
         ),
         newPageErrorIndicatorBuilder: (context) =>
             _NewPageErrorIndicator(onRetry: fetchNextPage),
-        noMoreItemsIndicatorBuilder: (context) => const Padding(
-          padding: EdgeInsets.all(16),
+        noMoreItemsIndicatorBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              'No more mindmaps',
-              style: TextStyle(color: Colors.grey),
+              t.projects.no_more_mindmaps,
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         ),
@@ -401,13 +403,62 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
               onTap: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);
-                // TODO: Implement delete
+                _confirmDelete(context, mindmap, t);
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _confirmDelete(BuildContext context, MindmapMinimal mindmap, dynamic t) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(t.projects.mindmaps.deleteDialog.title),
+        content: Text(
+          t.projects.mindmaps.deleteDialog.message(title: mindmap.title),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(t.common.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              _deleteMindmap(mindmap);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(t.common.delete),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteMindmap(MindmapMinimal mindmap) async {
+    final t = ref.read(translationsPod);
+    try {
+      await ref.read(mindmapRepositoryProvider).deleteMindmap(mindmap.id);
+      if (mounted) {
+        SnackbarUtils.showSuccess(
+          context,
+          t.projects.mindmaps.deleteDialog.success,
+        );
+        ref.read(mindmapPagingControllerPod).refresh();
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.projects.mindmaps.deleteDialog.error,
+        );
+      }
+    }
   }
 }
 

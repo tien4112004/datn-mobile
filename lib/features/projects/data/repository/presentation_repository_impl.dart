@@ -53,4 +53,9 @@ class PresentationRepositoryImpl implements PresentationRepository {
               dtoResponse.data?.map((dto) => dto.toEntity()).toList() ?? [],
         );
   }
+
+  @override
+  Future<void> deletePresentation(String id) {
+    return _remoteSource.deletePresentation(id);
+  }
 }

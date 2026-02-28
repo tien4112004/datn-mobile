@@ -4,13 +4,11 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 /// Follows the same pattern as Question Bank filters.
 class AssignmentFilterState {
   final String? searchQuery;
-  final AssignmentStatus? statusFilter;
   final GradeLevel? gradeLevelFilter;
   final Subject? subjectFilter;
 
   const AssignmentFilterState({
     this.searchQuery,
-    this.statusFilter,
     this.gradeLevelFilter,
     this.subjectFilter,
   });
@@ -19,7 +17,6 @@ class AssignmentFilterState {
   AssignmentFilterParams getFilterParams() {
     return AssignmentFilterParams(
       search: searchQuery,
-      status: statusFilter,
       gradeLevel: gradeLevelFilter?.apiValue,
       subject: subjectFilter?.apiValue,
     );
@@ -28,7 +25,6 @@ class AssignmentFilterState {
   /// Create a copy with updated values
   AssignmentFilterState copyWith({
     Object? searchQuery = _undefinedAssignment,
-    Object? statusFilter = _undefinedAssignment,
     Object? gradeLevelFilter = _undefinedAssignment,
     Object? subjectFilter = _undefinedAssignment,
   }) {
@@ -36,9 +32,6 @@ class AssignmentFilterState {
       searchQuery: searchQuery == _undefinedAssignment
           ? this.searchQuery
           : searchQuery as String?,
-      statusFilter: statusFilter == _undefinedAssignment
-          ? this.statusFilter
-          : statusFilter as AssignmentStatus?,
       gradeLevelFilter: gradeLevelFilter == _undefinedAssignment
           ? this.gradeLevelFilter
           : gradeLevelFilter as GradeLevel?,
@@ -56,7 +49,6 @@ class AssignmentFilterState {
   /// Check if any filters are active
   bool get hasActiveFilters =>
       searchQuery != null && searchQuery!.isNotEmpty ||
-      statusFilter != null ||
       gradeLevelFilter != null ||
       subjectFilter != null;
 
@@ -64,7 +56,6 @@ class AssignmentFilterState {
   int get activeFilterCount {
     int count = 0;
     if (searchQuery != null && searchQuery!.isNotEmpty) count++;
-    if (statusFilter != null) count++;
     if (gradeLevelFilter != null) count++;
     if (subjectFilter != null) count++;
     return count;
@@ -77,14 +68,8 @@ const Object _undefinedAssignment = Object();
 /// Parameters for API calls
 class AssignmentFilterParams {
   final String? search;
-  final AssignmentStatus? status;
   final String? gradeLevel;
   final String? subject;
 
-  const AssignmentFilterParams({
-    this.search,
-    this.status,
-    this.gradeLevel,
-    this.subject,
-  });
+  const AssignmentFilterParams({this.search, this.gradeLevel, this.subject});
 }

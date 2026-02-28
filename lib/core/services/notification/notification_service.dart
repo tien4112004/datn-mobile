@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 typedef OnTokenReceived = Future<void> Function(String token);
+typedef OnMessageReceived = void Function(RemoteMessage message);
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -18,9 +19,14 @@ class NotificationService {
 
   static Completer<void>? _initCompleter;
   OnTokenReceived? _onTokenReceived;
+  OnMessageReceived? _onMessageReceived;
 
   void setOnTokenReceived(OnTokenReceived callback) {
     _onTokenReceived = callback;
+  }
+
+  void setOnMessageReceived(OnMessageReceived callback) {
+    _onMessageReceived = callback;
   }
 
   Future<void> initialize() async {
@@ -47,6 +53,7 @@ class NotificationService {
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         _showLocalNotification(message);
+        _onMessageReceived?.call(message);
       });
 
       FirebaseMessaging.onMessageOpenedApp.listen(_handleMessageOpenedApp);
@@ -69,15 +76,25 @@ class NotificationService {
       alert: true,
       badge: true,
       sound: true,
+      announcement: true,
+      criticalAlert: true,
+      provisional: true,
     );
   }
+
+  static const _channelId = 'high_importance_channel';
+  static const _channelName = 'High Importance Notifications';
 
   Future<void> _initializeLocalNotifications() async {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const DarwinInitializationSettings iosSettings =
-        DarwinInitializationSettings();
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     const InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
@@ -88,29 +105,58 @@ class NotificationService {
       initSettings,
       onDidReceiveNotificationResponse: _handleLocalNotificationTap,
     );
+
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(
+          const AndroidNotificationChannel(
+            _channelId,
+            _channelName,
+            importance: Importance.max,
+            playSound: true,
+            enableVibration: true,
+          ),
+        );
+
+    // Ensure foreground FCM messages also show alert + sound on iOS
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
   }
 
   Future<void> _showLocalNotification(RemoteMessage message) async {
-    RemoteNotification? notification = message.notification;
-    AndroidNotification? android = message.notification?.android;
+    final title =
+        message.notification?.title ?? message.data['title'] as String?;
+    final body = message.notification?.body ?? message.data['body'] as String?;
 
-    if (notification != null && android != null) {
-      await _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'high_importance_channel',
-            'High Importance Notifications',
-            importance: Importance.max,
-            priority: Priority.high,
-          ),
-          iOS: DarwinNotificationDetails(),
+    if (title == null && body == null) return;
+
+    await _localNotifications.show(
+      message.hashCode,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          _channelId,
+          _channelName,
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
         ),
-        payload: jsonEncode(message.data),
-      );
-    }
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+      payload: jsonEncode(message.data),
+    );
   }
 
   void _handleMessageOpenedApp(RemoteMessage message) {

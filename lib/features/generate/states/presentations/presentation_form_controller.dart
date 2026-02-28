@@ -28,7 +28,9 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       });
     }
 
-    return PresentationFormState(language: savedLanguage ?? 'English');
+    final normalizedLanguage =
+        (savedLanguage == 'vi' || savedLanguage == 'Vietnamese') ? 'vi' : 'en';
+    return PresentationFormState(language: normalizedLanguage);
   }
 
   // Step 1 updates

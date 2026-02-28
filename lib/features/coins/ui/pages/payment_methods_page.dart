@@ -1,5 +1,6 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -115,20 +116,13 @@ class PaymentMethodsPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 12),
-          coinBalanceAsync.when(
+          coinBalanceAsync.easyWhen(
             data: (coinData) => Text(
               '${NumberFormat('#,###').format(coinData.coin)} ${t.payment.paymentMethods.coinsLabel}',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
-            ),
-            loading: () => const CircularProgressIndicator(color: Colors.white),
-            error: (_, _) => Text(
-              t.payment.paymentMethods.errorLoadingBalance,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
             ),
           ),
         ],
@@ -141,7 +135,7 @@ class PaymentMethodsPage extends ConsumerWidget {
     AsyncValue<List<TokenUsageStatsModel>> usageAsync,
     Translations t,
   ) {
-    return usageAsync.when(
+    return usageAsync.easyWhen(
       data: (usageList) {
         if (usageList.isEmpty) {
           return Center(
@@ -168,13 +162,7 @@ class PaymentMethodsPage extends ConsumerWidget {
           }).toList(),
         );
       },
-      loading: () => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (error, _) => Center(
+      errorWidget: (error, _) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
@@ -191,7 +179,7 @@ class PaymentMethodsPage extends ConsumerWidget {
     AsyncValue<List<TokenUsageStatsModel>> usageAsync,
     Translations t,
   ) {
-    return usageAsync.when(
+    return usageAsync.easyWhen(
       data: (usageList) {
         if (usageList.isEmpty) {
           return Center(
@@ -217,13 +205,7 @@ class PaymentMethodsPage extends ConsumerWidget {
           }).toList(),
         );
       },
-      loading: () => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (error, _) => Center(
+      errorWidget: (error, _) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(

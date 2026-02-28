@@ -462,23 +462,6 @@ class _AssignmentSelectionTile extends ConsumerWidget {
                   ],
                 ),
               ),
-
-              // Status indicator
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: _getStatusColor(
-                    assignment.status,
-                    colorScheme,
-                  ).withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Icon(
-                  AssignmentStatus.getStatusIcon(assignment.status),
-                  size: 16,
-                  color: _getStatusColor(assignment.status, colorScheme),
-                ),
-              ),
             ],
           ),
         ),
@@ -516,20 +499,5 @@ class _AssignmentSelectionTile extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Color _getStatusColor(AssignmentStatus status, ColorScheme colorScheme) {
-    switch (status) {
-      case AssignmentStatus.completed:
-        return const Color(0xFF16A34A);
-      case AssignmentStatus.draft:
-        return colorScheme.tertiary;
-      case AssignmentStatus.generating:
-        return Themes.primaryColor;
-      case AssignmentStatus.error:
-        return colorScheme.error;
-      case AssignmentStatus.archived:
-        return colorScheme.outline;
-    }
   }
 }

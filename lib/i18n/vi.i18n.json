@@ -115,6 +115,7 @@
     "helpCenter": "Trung tâm trợ giúp",
     "contactUs": "Liên hệ chúng tôi",
     "logOut": "Đăng xuất",
+    "logOutConfirmation": "Bạn có chắc chắn muốn đăng xuất không?",
     "save": "Lưu",
     "languageBottomSheet": {
       "title": "Ngôn ngữ",
@@ -224,14 +225,26 @@
     "presentations": {
       "title": "Bài thuyết trình",
       "search_presentations": "Tìm kiếm bài thuyết trình...",
-      "all_presentations": "Tất cả bài thuyết trình"
+      "all_presentations": "Tất cả bài thuyết trình",
+      "deleteDialog": {
+        "title": "Xóa bài thuyết trình",
+        "message": "Bạn có chắc chắn muốn xóa \"$title\"? Hành động này không thể hoàn tác.",
+        "success": "Xóa bài thuyết trình thành công",
+        "error": "Không thể xóa bài thuyết trình"
+      }
     },
     "mindmaps": {
       "title": "Sơ đồ tư duy",
       "search_mindmaps": "Tìm kiếm sơ đồ tư duy...",
       "all_mindmaps": "Tất cả sơ đồ tư duy",
       "webViewNotSupported": "WebView không được hỗ trợ trên nền tảng này.",
-      "loadingMindmap": "Đang tải sơ đồ tư duy..."
+      "loadingMindmap": "Đang tải sơ đồ tư duy...",
+      "deleteDialog": {
+        "title": "Xóa sơ đồ tư duy",
+        "message": "Bạn có chắc chắn muốn xóa \"$title\"? Hành động này không thể hoàn tác.",
+        "success": "Xóa sơ đồ tư duy thành công",
+        "error": "Không thể xóa sơ đồ tư duy"
+      }
     },
     "images": {
       "title": "Hình ảnh",
@@ -567,6 +580,9 @@
       "retry": "Thử lại",
       "shareFailed": "Chia sẻ hình ảnh thất bại: $error",
       "generateFirst": "Vui lòng thử tạo một hình ảnh trước"
+    },
+    "examplePromptSuggestions": {
+      "loadingPromptsError": "Đã xảy ra lỗi khi tải các gợi ý"
     },
     "questionGenerate": {
       "generateMoreHint": "Tạo thêm về chủ đề khác..."

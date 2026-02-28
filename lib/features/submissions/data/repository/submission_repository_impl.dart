@@ -22,7 +22,7 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
     required List<AnswerEntity> answers,
   }) async {
     try {
-      final request = answers.toCreateRequest(postId, studentId);
+      final request = answers.toCreateRequest(studentId, postId);
       final response = await _remoteSource.createSubmission(postId, request);
 
       if (response.data == null) {

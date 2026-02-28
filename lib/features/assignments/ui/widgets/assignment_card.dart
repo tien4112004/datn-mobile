@@ -3,7 +3,6 @@ import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/features/assignments/ui/pages/assignment_detail_page.dart';
 import 'package:AIPrimary/features/assignments/ui/widgets/assignment_form_dialog.dart';
-import 'package:AIPrimary/features/assignments/ui/widgets/status_badge.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,8 +74,6 @@ class AssignmentCard extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    StatusBadge(status: assignment.status),
                   ],
                 ),
 
@@ -277,21 +274,19 @@ class AssignmentCard extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (assignment.isEditable)
-          IconButton(
-            onPressed: () => _showEditDialog(context),
-            icon: const Icon(LucideIcons.pencil, size: 18),
-            tooltip: t.assignments.card.edit,
-            visualDensity: VisualDensity.compact,
-          ),
+        IconButton(
+          onPressed: () => _showEditDialog(context),
+          icon: const Icon(LucideIcons.pencil, size: 18),
+          tooltip: t.assignments.card.edit,
+          visualDensity: VisualDensity.compact,
+        ),
         // Duplicate and Archive features not supported by current API
-        if (assignment.isDeletable)
-          IconButton(
-            onPressed: () => _deleteAssignment(context, ref, t),
-            icon: Icon(LucideIcons.trash2, size: 18, color: colorScheme.error),
-            tooltip: t.assignments.card.delete,
-            visualDensity: VisualDensity.compact,
-          ),
+        IconButton(
+          onPressed: () => _deleteAssignment(context, ref, t),
+          icon: Icon(LucideIcons.trash2, size: 18, color: colorScheme.error),
+          tooltip: t.assignments.card.delete,
+          visualDensity: VisualDensity.compact,
+        ),
       ],
     );
   }

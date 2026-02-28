@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/generate/ui/widgets/shared/model_picker_sheet
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
+import 'package:AIPrimary/shared/models/language_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Bottom sheet for configuring generation settings.
 class GenerationSettingsSheet extends ConsumerWidget {
   final List<Widget> optionWidgets;
-  final List<String> _availableLanguages = const ['English', 'Vietnamese'];
   final ModelType modelType;
 
   final String? language;
@@ -95,16 +95,16 @@ class GenerationSettingsSheet extends ConsumerWidget {
       child: StatefulBuilder(
         builder: (context, setSheetState) {
           return PickerButton(
-            label: currentLanguage,
+            label: Language.fromApiValue(currentLanguage).getDisplayName(t),
             onTap: () => PickerBottomSheet.show(
               context: context,
               title: t.generate.mindmapGenerate.selectLanguage,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: _availableLanguages.map((lang) {
-                  final isSelected = currentLanguage == lang;
+                children: Language.values.map((lang) {
+                  final isSelected = currentLanguage == lang.apiValue;
                   return ListTile(
-                    title: Text(lang),
+                    title: Text(lang.getDisplayName(t)),
                     trailing: isSelected
                         ? Icon(
                             Icons.check_circle_rounded,
@@ -112,8 +112,8 @@ class GenerationSettingsSheet extends ConsumerWidget {
                           )
                         : null,
                     onTap: () {
-                      onChanged(lang);
-                      setSheetState(() => currentLanguage = lang);
+                      onChanged(lang.apiValue);
+                      setSheetState(() => currentLanguage = lang.apiValue);
                       Navigator.pop(context);
                     },
                   );

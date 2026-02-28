@@ -433,6 +433,8 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
   }
 
   /// Sync questions and contexts to the server.
+  /// Generates UUIDs for any questions that do not yet have an ID,
+  /// ensuring the backend can identify each question on fetch.
   Future<void> _syncQuestionsToServer(
     List<AssignmentQuestionEntity> questions,
   ) async {
@@ -442,12 +444,53 @@ class DetailAssignmentController extends AsyncNotifier<AssignmentEntity> {
         ref.read(assignmentContextsControllerProvider(assignmentId)).value ??
         [];
 
+    // Ensure every question has an ID before making the request.
+    // Questions created inline (isNewQuestion=true) start with an empty
+    // question.id; without a stable ID the student-side answer map keys
+    // all collapse to "" and only the last answer is submitted.
+    final questionsWithIds = _ensureQuestionIds(questions);
+
+    // Update local state so the in-memory assignment also reflects the
+    // newly generated IDs (avoids a round-trip re-fetch).
+    final currentAssignment = state.value;
+    if (currentAssignment != null) {
+      state = AsyncData(
+        currentAssignment.copyWith(questions: questionsWithIds),
+      );
+    }
+
     final request = AssignmentUpdateRequest(
-      questions: questions.map((q) => q.toRequest()).toList(),
+      questions: questionsWithIds.map((q) => q.toRequest()).toList(),
       contexts: contexts.map((c) => c.toRequest()).toList(),
     );
 
     await repository.updateAssignment(assignmentId, request);
+  }
+
+  /// Returns a new list where every question with an empty [BaseQuestion.id]
+  /// has been assigned a fresh UUID.
+  List<AssignmentQuestionEntity> _ensureQuestionIds(
+    List<AssignmentQuestionEntity> questions,
+  ) {
+    return questions.map((q) {
+      if (q.question.id.isNotEmpty) return q;
+      final newId = const Uuid().v4();
+      return q.copyWith(question: _setQuestionId(q.question, newId));
+    }).toList();
+  }
+
+  /// Returns a copy of [question] with [id] set.
+  BaseQuestion _setQuestionId(BaseQuestion question, String id) {
+    switch (question.type) {
+      case QuestionType.multipleChoice:
+        return (question as MultipleChoiceQuestion).copyWith(id: id);
+      case QuestionType.fillInBlank:
+        return (question as FillInBlankQuestion).copyWith(id: id);
+      case QuestionType.matching:
+        return (question as MatchingQuestion).copyWith(id: id);
+      case QuestionType.openEnded:
+        return (question as OpenEndedQuestion).copyWith(id: id);
+    }
   }
 }
 

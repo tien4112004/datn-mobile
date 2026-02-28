@@ -12,4 +12,6 @@ abstract class MindmapRepository {
     String sort = "desc",
     String? search,
   });
+
+  Future<void> deleteMindmap(String id);
 }

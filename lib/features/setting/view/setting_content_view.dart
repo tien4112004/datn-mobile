@@ -46,118 +46,120 @@ class SettingContentView extends ConsumerWidget {
 
     // final userStateNotifier = ref.watch(userControllerProvider.notifier);
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SettingProfilePicture(),
-            const SizedBox(height: 20),
-            SettingSection(
-              title: t.accountSetting,
-              options: [
-                // FOR TESTING ONLY
-                SettingOption(
-                  title: t.personalInformation,
-                  onPressed: () => _navigateWithFallback(
-                    context,
-                    ref,
-                    '/personal-information',
-                  ),
-                  icon: LucideIcons.user,
-                ),
-                SettingOption(
-                  title: t.passwordAndSecurity,
-                  onPressed: () => _navigateWithFallback(
-                    context,
-                    ref,
-                    'password-and-security',
-                  ),
-                  icon: LucideIcons.lock,
-                ),
-                SettingOption(
-                  title: t.paymentMethods,
-                  onPressed: () =>
-                      _navigateWithFallback(context, ref, 'payment-methods'),
-                  icon: LucideIcons.creditCard,
-                ),
-              ],
-            ),
-            SettingSection(
-              title: t.settings.appSettings,
-              options: [
-                SettingOption(
-                  title: t.settings.notifications,
-                  onPressed: () => _navigateWithFallback(
-                    context,
-                    ref,
-                    'notification-settings',
-                  ),
-                  icon: LucideIcons.bell,
-                ),
-                SettingOption(
-                  title: t.settings.language,
-                  onPressed: () => showLanguageBottomSheet(context, ref),
-                  icon: LucideIcons.earth,
-                ),
-                SettingOption(
-                  title: t.settings.theme,
-                  onPressed: () => showThemeBottomSheet(context, ref),
-                  icon: LucideIcons.palette,
-                ),
-              ],
-            ),
-            SettingSection(
-              title: t.settings.support,
-              options: [
-                SettingOption(
-                  title: t.settings.helpCenter,
-                  onPressed: () =>
-                      _navigateWithFallback(context, ref, 'help-center'),
-                  icon: LucideIcons.headphones,
-                ),
-                SettingOption(
-                  title: t.settings.contactUs,
-                  onPressed: () =>
-                      _navigateWithFallback(context, ref, 'contact-us'),
-                  icon: LucideIcons.mail,
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 12.0,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                height: 48.0,
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        try {
-                          ref.read(authControllerPod.notifier).signOut();
-                        } catch (e) {
-                          // Ignore
-                        } finally {
-                          context.router.replaceAll([const SignInRoute()]);
-                        }
-                      },
-                      child: Text(
-                        t.settings.logOut,
-                        style: const TextStyle(fontSize: 20),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SettingProfilePicture(),
+                  const SizedBox(height: 20),
+                  SettingSection(
+                    title: t.accountSetting,
+                    options: [
+                      // FOR TESTING ONLY
+                      SettingOption(
+                        title: t.personalInformation,
+                        onPressed: () => _navigateWithFallback(
+                          context,
+                          ref,
+                          '/personal-information',
+                        ),
+                        icon: LucideIcons.user,
                       ),
-                    );
-                  },
-                ),
+                      // SettingOption(
+                      //   title: t.passwordAndSecurity,
+                      //   onPressed: () => _navigateWithFallback(
+                      //     context,
+                      //     ref,
+                      //     'password-and-security',
+                      //   ),
+                      //   icon: LucideIcons.lock,
+                      // ),
+                      SettingOption(
+                        title: t.paymentMethods,
+                        onPressed: () => _navigateWithFallback(
+                          context,
+                          ref,
+                          '/payment-methods',
+                        ),
+                        icon: LucideIcons.creditCard,
+                      ),
+                    ],
+                  ),
+                  SettingSection(
+                    title: t.settings.appSettings,
+                    options: [
+                      SettingOption(
+                        title: t.settings.language,
+                        onPressed: () => showLanguageBottomSheet(context, ref),
+                        icon: LucideIcons.earth,
+                      ),
+                      SettingOption(
+                        title: t.settings.theme,
+                        onPressed: () => showThemeBottomSheet(context, ref),
+                        icon: LucideIcons.palette,
+                      ),
+                    ],
+                  ),
+                  // SettingSection(
+                  //   title: t.settings.support,
+                  //   options: [
+                  //     SettingOption(
+                  //       title: t.settings.helpCenter,
+                  //       onPressed: () =>
+                  //           _navigateWithFallback(context, ref, 'help-center'),
+                  //       icon: LucideIcons.headphones,
+                  //     ),
+                  //     SettingOption(
+                  //       title: t.settings.contactUs,
+                  //       onPressed: () =>
+                  //           _navigateWithFallback(context, ref, 'contact-us'),
+                  //       icon: LucideIcons.mail,
+                  //     ),
+                  //   ],
+                  // ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 12.0,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48.0,
+              child: Consumer(
+                builder: (context, ref, child) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      try {
+                        ref.read(authControllerPod.notifier).signOut();
+                      } catch (e) {
+                        // Ignore
+                      } finally {
+                        context.router.replaceAll([const SignInRoute()]);
+                      }
+                    },
+                    child: Text(
+                      t.settings.logOut,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -21,7 +21,7 @@ class AssignmentResponse {
   final List<QuestionResponse>? questions;
   final List<ContextResponse>? contexts;
   final ApiMatrixDto? matrix;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final DateTime? updatedAt;
 
   const AssignmentResponse({
@@ -131,7 +131,6 @@ extension AssignmentResponseMapper on AssignmentResponse {
       description: description,
       subject: parsedSubject ?? Subject.mathematics, // Default to mathematics
       gradeLevel: gradeLevel,
-      status: AssignmentStatus.completed, // Default status
       totalQuestions: totalQuestions,
       totalPoints: totalPoints.toInt(),
       timeLimitMinutes: duration,

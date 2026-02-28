@@ -1,18 +1,21 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/projects/domain/entity/recent_document.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/recent_document_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Material 3 Recent Documents - Horizontal Scrollable List
-class DashboardRecentDocuments extends StatelessWidget {
+class DashboardRecentDocuments extends ConsumerWidget {
   final List<RecentDocument> documents;
 
   const DashboardRecentDocuments({super.key, required this.documents});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
@@ -32,7 +35,7 @@ class DashboardRecentDocuments extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Recent Documents',
+                    t.home.dashboard.recentDocuments.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -56,7 +59,7 @@ class DashboardRecentDocuments extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'No recent documents',
+                    t.home.dashboard.recentDocuments.empty.title,
                     style: TextStyle(
                       color: colorScheme.outline,
                       fontWeight: FontWeight.w500,

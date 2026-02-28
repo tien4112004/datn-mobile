@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/setting/widget/setting_category/setting_option.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +30,9 @@ class SettingSection extends StatelessWidget {
           subtitle: Container(
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
-              borderRadius: const BorderRadius.all(Radius.circular(24)),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(Themes.boxRadiusValue),
+              ),
             ),
             child: Column(
               children: options.asMap().entries.map((entry) {

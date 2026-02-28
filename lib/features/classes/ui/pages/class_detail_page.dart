@@ -265,9 +265,7 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                         context: context,
                         builder: (context) => AlertDialog(
                           title: Text(t.settings.logOut),
-                          content: const Text(
-                            'Are you sure you want to log out?',
-                          ),
+                          content: Text(t.settings.logOutConfirmation),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),

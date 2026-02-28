@@ -26,8 +26,6 @@ extension DifficultyLocalization on Difficulty {
         return t.questionBank.difficulties.comprehension;
       case Difficulty.application:
         return t.questionBank.difficulties.application;
-      case Difficulty.advancedApplication:
-        return 'Advanced Application';
     }
   }
 }
@@ -58,23 +56,6 @@ extension SubjectLocalization on Subject {
         return t.questionBank.subjects.mathematics;
       case Subject.vietnamese:
         return t.questionBank.subjects.vietnamese;
-    }
-  }
-}
-
-extension AssignmentStatusLocalization on AssignmentStatus {
-  String localizedName(Translations t) {
-    switch (this) {
-      case AssignmentStatus.draft:
-        return t.assignments.statuses.draft;
-      case AssignmentStatus.generating:
-        return t.assignments.statuses.generating;
-      case AssignmentStatus.completed:
-        return t.assignments.statuses.completed;
-      case AssignmentStatus.error:
-        return t.assignments.statuses.error;
-      case AssignmentStatus.archived:
-        return t.assignments.statuses.archived;
     }
   }
 }

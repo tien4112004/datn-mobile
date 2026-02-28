@@ -5,7 +5,6 @@ import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
 import 'package:AIPrimary/features/auth/controllers/providers.dart';
-import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:flash/flash_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,23 +82,6 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
     final approuter = ref.watch(autorouterProvider);
     final currentTheme = ref.watch(themeControllerProvider);
     final translations = ref.watch(translationsPod);
-    final isLoading = ref.watch(loadingOverlayPod);
-    debugPrint('Loading overlay state: $isLoading');
-
-    // Global listener for auth state changes to manage loading overlay
-    ref.listen(authControllerPod, (previous, next) {
-      next.when(
-        data: (state) {
-          ref.read(loadingOverlayPod.notifier).state = false;
-        },
-        loading: () {
-          ref.read(loadingOverlayPod.notifier).state = true;
-        },
-        error: (error, stackTrace) {
-          ref.read(loadingOverlayPod.notifier).state = false;
-        },
-      );
-    });
 
     return Stack(
       alignment: Alignment.center,
@@ -177,21 +159,6 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
             ).monitorConnection();
           },
         ),
-
-        if (isLoading)
-          Consumer(
-            builder: (context, ref, child) {
-              final theme = Theme.of(context);
-              return Container(
-                color: Colors.black26,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              );
-            },
-          ),
       ],
     );
   }

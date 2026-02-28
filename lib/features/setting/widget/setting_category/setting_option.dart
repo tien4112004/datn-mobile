@@ -23,6 +23,7 @@ class SettingOption extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      shape: const RoundedRectangleBorder(borderRadius: Themes.boxRadius),
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(

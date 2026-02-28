@@ -12,7 +12,6 @@ class AssignmentEntity {
   final String? description;
   final Subject subject;
   final GradeLevel gradeLevel;
-  final AssignmentStatus status;
   final int totalQuestions;
   final int totalPoints;
   final int? timeLimitMinutes;
@@ -36,7 +35,6 @@ class AssignmentEntity {
     this.description,
     required this.subject,
     required this.gradeLevel,
-    required this.status,
     required this.totalQuestions,
     required this.totalPoints,
     this.createdAt,
@@ -48,16 +46,6 @@ class AssignmentEntity {
     this.matrix,
   });
 
-  /// Check if the exam is editable (draft or error status).
-  bool get isEditable =>
-      status == AssignmentStatus.draft || status == AssignmentStatus.error;
-
-  /// Check if the exam can be deleted.
-  bool get isDeletable => status == AssignmentStatus.draft;
-
-  /// Check if the exam is ready for use.
-  bool get isReady => status == AssignmentStatus.completed;
-
   AssignmentEntity copyWith({
     String? assignmentId,
     String? teacherId,
@@ -65,7 +53,6 @@ class AssignmentEntity {
     String? description,
     Subject? subject,
     GradeLevel? gradeLevel,
-    AssignmentStatus? status,
     int? totalQuestions,
     int? totalPoints,
     int? timeLimitMinutes,
@@ -83,7 +70,6 @@ class AssignmentEntity {
       description: description ?? this.description,
       subject: subject ?? this.subject,
       gradeLevel: gradeLevel ?? this.gradeLevel,
-      status: status ?? this.status,
       totalQuestions: totalQuestions ?? this.totalQuestions,
       totalPoints: totalPoints ?? this.totalPoints,
       timeLimitMinutes: timeLimitMinutes ?? this.timeLimitMinutes,

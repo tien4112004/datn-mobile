@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -57,7 +58,7 @@ class AuthenticatedWebView extends ConsumerStatefulWidget {
 
 class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
   String? _accessToken;
-  bool _tokenInjected = false;
+  bool _tokenLoaded = false;
 
   @override
   void initState() {
@@ -67,58 +68,48 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
 
   Future<void> _loadTokens() async {
     final secureStorage = ref.read(secureStoragePod);
-    _accessToken = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
-    debugPrint('Access token loaded: ${_accessToken != null ? "Yes" : "No"}');
+    final token = await secureStorage.read(key: R.ACCESS_TOKEN_KEY);
+    debugPrint(
+      '[AuthWebView] Access token loaded: ${token != null ? "Yes" : "No"}',
+    );
     if (mounted) {
-      setState(() {});
+      setState(() {
+        _accessToken = token;
+        _tokenLoaded = true;
+      });
     }
   }
 
-  /// Injects the access token into the webview's localStorage
-  /// This must be called before the React app initializes
-  Future<void> _injectToken(InAppWebViewController controller) async {
+  /// Builds the user script that injects the token at document start,
+  /// before any page scripts (including React) run.
+  UnmodifiableListView<UserScript> _buildUserScripts() {
     if (_accessToken == null || _accessToken!.isEmpty) {
-      debugPrint('[AuthWebView] No token to inject');
-      return;
+      return UnmodifiableListView([]);
     }
-
-    if (_tokenInjected) {
-      debugPrint('[AuthWebView] Token already injected, skipping');
-      return;
-    }
-
-    try {
-      // Inject token into localStorage
-      await controller.evaluateJavascript(
-        source:
-            '''
-        (function() {
-          try {
-            localStorage.setItem('access_token', '$_accessToken');
-            console.info('[AuthWebView] Token injected into localStorage');
-          } catch (e) {
-            console.error('[AuthWebView] Failed to inject token:', e);
-          }
-        })();
-      ''',
-      );
-
-      _tokenInjected = true;
-      debugPrint('[AuthWebView] Token successfully injected into localStorage');
-    } catch (e) {
-      debugPrint('[AuthWebView] Error injecting token: $e');
-    }
+    return UnmodifiableListView([
+      UserScript(
+        source: "localStorage.setItem('access_token', '$_accessToken');",
+        injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
+      ),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Building AuthenticatedWebView for URL: ${widget.webViewUrl}');
+    // Wait until token is loaded before building the WebView, so
+    // initialUserScripts can include the token from the very first load.
+    if (!_tokenLoaded) {
+      return const SizedBox.shrink();
+    }
+
+    debugPrint('[AuthWebView] Building WebView for URL: ${widget.webViewUrl}');
 
     return InAppWebView(
       initialUrlRequest: URLRequest(
         url: WebUri.uri(Uri.parse(widget.webViewUrl)),
         headers: widget.additionalHeaders,
       ),
+      initialUserScripts: _buildUserScripts(),
       initialSettings: InAppWebViewSettings(
         javaScriptEnabled: true,
         domStorageEnabled: true,
@@ -142,32 +133,8 @@ class _AuthenticatedWebViewState extends ConsumerState<AuthenticatedWebView> {
         debugPrint('[AuthWebView] WebView created');
         widget.onWebViewCreated?.call(controller);
       },
-      onLoadStart: (controller, url) async {
-        debugPrint('[AuthWebView] onLoadStart - URL: $url');
-
-        // Inject token into localStorage before React app initializes
-        await _injectToken(controller);
-      },
       onLoadStop: (controller, url) async {
         debugPrint('[AuthWebView] onLoadStop - URL: $url');
-
-        // Debug: Check if token was successfully injected
-        try {
-          final hasTokenInStorage = await controller.evaluateJavascript(
-            source: 'localStorage.getItem("access_token") !== null',
-          );
-          debugPrint('[AuthWebView] Token in localStorage: $hasTokenInStorage');
-
-          if (hasTokenInStorage == true) {
-            final tokenLength = await controller.evaluateJavascript(
-              source: '(localStorage.getItem("access_token") || "").length',
-            );
-            debugPrint('[AuthWebView] Token length: $tokenLength');
-          }
-        } catch (e) {
-          debugPrint('[AuthWebView] Error checking localStorage: $e');
-        }
-
         await widget.onLoadStop?.call(controller, url);
       },
       onReceivedError: widget.onReceivedError,

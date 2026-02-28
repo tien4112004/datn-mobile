@@ -35,6 +35,9 @@ abstract class ProjectsRemoteSource {
     @Body() CreatePresentationRequestDto presentation,
   );
 
+  @DELETE("/presentations/{id}")
+  Future<void> deletePresentation(@Path("id") String id);
+
   // /presentations?page=1&pageSize=20&sort=desc
   @GET("/presentations")
   Future<ServerResponseDto<List<PresentationMinimalDto>>>
@@ -80,6 +83,9 @@ abstract class ProjectsRemoteSource {
   Future<ServerResponseDto<MindmapDto>> createMindmap(
     @Body() CreateMindmapRequestDto mindmap,
   );
+
+  @DELETE("/mindmaps/{id}")
+  Future<void> deleteMindmap(@Path("id") String id);
 
   // Recent documents endpoints
   @GET("/recent-documents")

@@ -136,9 +136,9 @@ class QuestionFormState {
           'pairs': matchingPairs
               .map(
                 (pair) => {
-                  'leftText': pair.leftText,
+                  'left': pair.leftText,
                   'leftImageUrl': pair.leftImageUrl,
-                  'rightText': pair.rightText,
+                  'right': pair.rightText,
                   'rightImageUrl': pair.rightImageUrl,
                 },
               )

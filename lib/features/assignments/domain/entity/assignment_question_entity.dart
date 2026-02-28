@@ -102,7 +102,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
   /// Convert to QuestionItemRequest for API submission
   QuestionItemRequest toRequest() {
     return QuestionItemRequest(
-      id: isNewQuestion ? null : questionBankId,
+      id: question.id.isNotEmpty
+          ? question.id
+          : (isNewQuestion ? null : questionBankId),
       type: question.type.apiValue,
       difficulty: question.difficulty.apiValue,
       title: question.title,
@@ -145,9 +147,9 @@ extension AssignmentQuestionMapper on AssignmentQuestionEntity {
           'pairs': matchingQuestion.data.pairs
               .map(
                 (pair) => {
-                  'leftText': pair.left,
+                  'left': pair.left,
                   'leftImageUrl': pair.leftImageUrl,
-                  'rightText': pair.right,
+                  'right': pair.right,
                   'rightImageUrl': pair.rightImageUrl,
                 },
               )

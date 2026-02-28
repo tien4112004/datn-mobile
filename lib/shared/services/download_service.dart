@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -274,9 +275,10 @@ class DownloadService {
   }
 
   /// Saves [content] as a text file named [fileName] in the device Downloads
-  /// folder (Android) or app Documents folder (iOS).
+  /// folder and returns the saved file path.
   ///
-  /// Returns the full path of the saved file.
+  /// Uses the `downloadsfolder` package for reliable cross-platform access to
+  /// the public Downloads directory.
   Future<String> saveTextFile({
     required String fileName,
     required String content,
@@ -288,31 +290,19 @@ class DownloadService {
 
     final sanitized = _sanitizeFilename(fileName);
 
-    String downloadPath;
-    try {
-      final externalDir = await getExternalStorageDirectory();
-      if (externalDir != null) {
-        downloadPath = externalDir.path.replaceAll(
-          '/Android/data/com.example.aiprimary/files',
-          '/Download',
-        );
-      } else {
-        final docsDir = await getApplicationDocumentsDirectory();
-        downloadPath = docsDir.path;
-      }
-    } catch (_) {
-      final docsDir = await getApplicationDocumentsDirectory();
-      downloadPath = docsDir.path;
+    // Write to a temp file first, then copy into the Downloads folder.
+    final tempDir = await getTemporaryDirectory();
+    final tempFile = File('${tempDir.path}/$sanitized');
+    await tempFile.writeAsString(content);
+
+    final success = await copyFileIntoDownloadFolder(tempFile.path, sanitized);
+    if (success != true) {
+      throw Exception('Failed to save file to Downloads folder');
     }
 
-    final directory = Directory(downloadPath);
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
-    }
-
-    final filePath = '$downloadPath/$sanitized';
-    await File(filePath).writeAsString(content);
-    return filePath;
+    // Return the final Downloads path.
+    final downloadsDir = await getDownloadDirectory();
+    return '${downloadsDir.path}/$sanitized';
   }
 
   Future<bool> checkStoragePermission() async {

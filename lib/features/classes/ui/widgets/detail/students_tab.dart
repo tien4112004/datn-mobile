@@ -1,3 +1,6 @@
+import 'package:AIPrimary/features/assignments/ui/widgets/detail/floating_action_menu.dart';
+import 'package:AIPrimary/features/classes/states/controller_provider.dart'
+    as class_provider;
 import 'package:AIPrimary/features/students/domain/entity/student_credential.dart';
 import 'package:AIPrimary/features/students/domain/entity/student_import_result.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -19,7 +22,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Students tab showing all students in the class.
-/// Reuses the existing students module components for consistency.
 class StudentsTab extends ConsumerWidget {
   final String classId;
 
@@ -32,6 +34,16 @@ class StudentsTab extends ConsumerWidget {
     final userRole = ref.watch(userRolePod);
     final isStudent = userRole == UserRole.student;
 
+    final csvService = StudentCsvService(ref.read(downloadServiceProvider));
+
+    // Resolve the class name for export filenames (falls back to classId).
+    final className =
+        ref
+            .watch(class_provider.detailClassControllerProvider(classId))
+            .value
+            ?.name ??
+        classId;
+
     return Scaffold(
       body: studentsState.easyWhen(
         data: (listState) => RefreshIndicator(
@@ -41,6 +53,16 @@ class StudentsTab extends ConsumerWidget {
             classId: classId,
             students: listState.value,
             t: t,
+            onExportCsv: isStudent
+                ? null
+                : () => _showExportSheet(
+                    context,
+                    ref,
+                    listState.value,
+                    t,
+                    csvService,
+                    className,
+                  ),
           ),
         ),
         onRetry: () =>
@@ -48,49 +70,39 @@ class StudentsTab extends ConsumerWidget {
       ),
       floatingActionButton: isStudent
           ? null
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // CSV actions button
-                Semantics(
-                  label: t.classes.students.csvActions,
-                  button: true,
-                  child: FloatingActionButton.small(
-                    heroTag: 'csv_actions_$classId',
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      _showCsvActionsSheet(context, ref, t);
-                    },
-                    tooltip: t.classes.students.csvActions,
-                    child: const Icon(LucideIcons.fileSpreadsheet),
-                  ),
+          : FloatingActionMenu(
+              mainIcon: LucideIcons.userPlus,
+              mainLabel: t.classes.students.addStudent,
+              items: [
+                FloatingActionMenuItem(
+                  label: t.classes.students.addManually,
+                  icon: LucideIcons.userPlus,
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    context.router.push(StudentCreateRoute(classId: classId));
+                  },
                 ),
-                const SizedBox(height: 8),
-                // Add single student button
-                Semantics(
-                  label: t.classes.students.addStudent,
-                  button: true,
-                  hint: t.classes.students.addHint,
-                  child: FloatingActionButton(
-                    heroTag: 'add_student_$classId',
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      context.router.push(StudentCreateRoute(classId: classId));
-                    },
-                    child: const Icon(LucideIcons.userPlus),
-                  ),
+                FloatingActionMenuItem(
+                  label: t.classes.students.fromFile,
+                  icon: LucideIcons.fileUp,
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _showFileActionsSheet(context, ref, t, csvService);
+                  },
                 ),
               ],
             ),
     );
   }
 
-  void _showCsvActionsSheet(BuildContext context, WidgetRef ref, dynamic t) {
-    final studentsState = ref.read(studentsControllerProvider(classId));
-    final students = studentsState.value?.value ?? [];
-    final csvService = StudentCsvService(ref.read(downloadServiceProvider));
+  // ── File actions sheet (import + download template) ──────────────────────
 
+  void _showFileActionsSheet(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic t,
+    StudentCsvService csvService,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -102,27 +114,9 @@ class StudentsTab extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Handle indicator
-              Container(
-                width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                child: Text(
-                  t.classes.students.csvActions,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              _sheetHandle(context),
+              _sheetTitle(context, t.classes.students.fileActions),
               const Divider(height: 1),
-              // Import from CSV
               ListTile(
                 leading: const Icon(LucideIcons.upload),
                 title: Text(t.classes.students.importFromCsv),
@@ -132,20 +126,6 @@ class StudentsTab extends ConsumerWidget {
                   _handleImportCsv(context, ref, t, csvService);
                 },
               ),
-              // Export to CSV
-              ListTile(
-                leading: const Icon(LucideIcons.download),
-                title: Text(t.classes.students.exportToCsv),
-                subtitle: Text(t.classes.students.exportHint),
-                enabled: students.isNotEmpty,
-                onTap: students.isNotEmpty
-                    ? () {
-                        Navigator.of(sheetContext).pop();
-                        _handleExportCsv(context, students, t, csvService);
-                      }
-                    : null,
-              ),
-              // Download template
               ListTile(
                 leading: const Icon(LucideIcons.fileDown),
                 title: Text(t.classes.students.downloadTemplate),
@@ -162,6 +142,72 @@ class StudentsTab extends ConsumerWidget {
     );
   }
 
+  // ── Export sheet (download to device + share) ────────────────────────────
+
+  void _showExportSheet(
+    BuildContext context,
+    WidgetRef ref,
+    List students,
+    dynamic t,
+    StudentCsvService csvService,
+    String className,
+  ) {
+    if (students.isEmpty) return;
+
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _sheetHandle(context),
+              _sheetTitle(context, t.classes.students.exportOptions),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(LucideIcons.hardDriveDownload),
+                title: Text(t.classes.students.downloadToDevice),
+                subtitle: Text(t.classes.students.downloadToDeviceHint),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _handleExportToDevice(
+                    context,
+                    students,
+                    t,
+                    csvService,
+                    className,
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(LucideIcons.share2),
+                title: Text(t.classes.students.shareFile),
+                subtitle: Text(t.classes.students.shareFileHint),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _handleShareCsv(
+                    context,
+                    ref,
+                    students,
+                    t,
+                    csvService,
+                    className,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Handlers ─────────────────────────────────────────────────────────────
+
   Future<void> _handleImportCsv(
     BuildContext context,
     WidgetRef ref,
@@ -170,7 +216,6 @@ class StudentsTab extends ConsumerWidget {
   ) async {
     final file = await csvService.pickCsvFile();
     if (file == null) return;
-
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -197,7 +242,6 @@ class StudentsTab extends ConsumerWidget {
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).clearSnackBars();
-
       await _showImportResultDialog(context, result, t);
     } catch (e) {
       if (!context.mounted) return;
@@ -211,16 +255,17 @@ class StudentsTab extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleExportCsv(
+  Future<void> _handleExportToDevice(
     BuildContext context,
     List students,
     dynamic t,
     StudentCsvService csvService,
+    String className,
   ) async {
     try {
       final savedPath = await csvService.exportStudentsToCsv(
         students.cast(),
-        fileName: 'students_class_$classId.csv',
+        fileName: _buildExportFileName(className),
       );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -230,6 +275,34 @@ class StudentsTab extends ConsumerWidget {
           duration: const Duration(seconds: 4),
         ),
       );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.exportFailed(error: e.toString())),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleShareCsv(
+    BuildContext context,
+    WidgetRef ref,
+    List students,
+    dynamic t,
+    StudentCsvService csvService,
+    String className,
+  ) async {
+    try {
+      final exportFileName = _buildExportFileName(className);
+      final tempPath = await csvService.exportStudentsToCsvTemp(
+        students.cast(),
+        fileName: exportFileName,
+      );
+      await ref
+          .read(shareServiceProvider)
+          .shareFile(filePath: tempPath, subject: exportFileName);
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -267,6 +340,22 @@ class StudentsTab extends ConsumerWidget {
     }
   }
 
+  /// Builds a filename in the format `class_<className>_<yyyyMMdd_HHmmss>.csv`.
+  /// Sanitises the class name by replacing whitespace/special chars with `_`.
+  String _buildExportFileName(String className) {
+    final sanitised = className
+        .trim()
+        .replaceAll(RegExp(r'[^\w\u00C0-\u024F]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .toLowerCase();
+    final now = DateTime.now();
+    final ts =
+        '${now.year}${_pad(now.month)}${_pad(now.day)}_${_pad(now.hour)}${_pad(now.minute)}${_pad(now.second)}';
+    return 'class_${sanitised}_$ts.csv';
+  }
+
+  String _pad(int n) => n.toString().padLeft(2, '0');
+
   Future<void> _showImportResultDialog(
     BuildContext context,
     StudentImportResult result,
@@ -278,18 +367,43 @@ class StudentsTab extends ConsumerWidget {
       builder: (dialogContext) => _ImportResultDialog(result: result, t: t),
     );
   }
+
+  // ── Shared sheet widgets ──────────────────────────────────────────────────
+
+  Widget _sheetHandle(BuildContext context) => Container(
+    width: 36,
+    height: 4,
+    margin: const EdgeInsets.only(bottom: 12),
+    decoration: BoxDecoration(
+      color: Theme.of(context).colorScheme.outlineVariant,
+      borderRadius: BorderRadius.circular(2),
+    ),
+  );
+
+  Widget _sheetTitle(BuildContext context, String title) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+    child: Text(
+      title,
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    ),
+  );
 }
 
-/// Content widget for the Students tab.
+// ── Content ───────────────────────────────────────────────────────────────────
+
 class _StudentsContent extends ConsumerWidget {
   final String classId;
   final List students;
   final dynamic t;
+  final VoidCallback? onExportCsv;
 
   const _StudentsContent({
     required this.classId,
     required this.students,
     required this.t,
+    this.onExportCsv,
   });
 
   @override
@@ -309,28 +423,24 @@ class _StudentsContent extends ConsumerWidget {
     final isStudent = ref.watch(userRolePod) == UserRole.student;
     final currentUserId = ref.watch(userIdPod);
 
-    // Sort students to show current student first if viewing as a student
     final sortedStudents = List.from(students);
     if (isStudent) {
       sortedStudents.sort((a, b) {
-        // Current student comes first
         if (a.userId == currentUserId) return -1;
         if (b.userId == currentUserId) return 1;
-        // Maintain original order for others
         return 0;
       });
     }
 
     return Column(
       children: [
-        // Enhanced count header
         EnhancedCountHeader(
           icon: LucideIcons.users,
           title: t.classes.students.classRoster,
           count: students.length,
           countLabel: t.classes.students.student,
+          onExportCsv: onExportCsv,
         ),
-        // Student list with animations
         Expanded(
           child: Semantics(
             label: t.classes.students.studentCount(count: students.length),
@@ -386,85 +496,73 @@ class _StudentsContent extends ConsumerWidget {
           ),
         ),
         actions: [
-          Semantics(
-            label: t.classes.cancel,
-            button: true,
-            child: TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(t.classes.cancel),
-            ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(t.classes.cancel),
           ),
-          Semantics(
-            label: t.classes.students.confirmRemove(
-              studentName: student.fullName,
-            ),
-            button: true,
-            child: FilledButton(
-              onPressed: () async {
-                HapticFeedback.heavyImpact();
-                Navigator.of(dialogContext).pop();
+          FilledButton(
+            onPressed: () async {
+              HapticFeedback.heavyImpact();
+              Navigator.of(dialogContext).pop();
 
-                // Show loading indicator
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(t.classes.students.removing),
+                      ],
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              }
+
+              try {
+                await ref
+                    .read(removeStudentControllerProvider.notifier)
+                    .remove(classId: classId, studentId: student.id);
+
                 if (context.mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Row(
-                        children: [
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                          const SizedBox(width: 16),
-                          Text(t.classes.students.removing),
-                        ],
+                      content: Text(
+                        t.classes.students.removeSuccess(
+                          studentName: student.fullName,
+                        ),
                       ),
-                      duration: const Duration(seconds: 2),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ),
+                  );
+                  ref
+                      .read(studentsControllerProvider(classId).notifier)
+                      .refresh();
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        t.classes.students.removeError(error: e.toString()),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                   );
                 }
-
-                try {
-                  await ref
-                      .read(removeStudentControllerProvider.notifier)
-                      .remove(classId: classId, studentId: student.id);
-
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          t.classes.students.removeSuccess(
-                            studentName: student.fullName,
-                          ),
-                        ),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                      ),
-                    );
-
-                    ref
-                        .read(studentsControllerProvider(classId).notifier)
-                        .refresh();
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          t.classes.students.removeError(error: e.toString()),
-                        ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                      ),
-                    );
-                  }
-                }
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: Text(t.classes.students.remove),
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
+            child: Text(t.classes.students.remove),
           ),
         ],
       ),
@@ -472,8 +570,8 @@ class _StudentsContent extends ConsumerWidget {
   }
 }
 
-/// Dialog shown after a CSV import operation completes.
-/// Displays the number of students created, any errors, and login credentials.
+// ── Import result dialog ──────────────────────────────────────────────────────
+
 class _ImportResultDialog extends StatefulWidget {
   final StudentImportResult result;
   final dynamic t;
@@ -485,7 +583,6 @@ class _ImportResultDialog extends StatefulWidget {
 }
 
 class _ImportResultDialogState extends State<_ImportResultDialog> {
-  // Map<studentId, isPasswordVisible>
   final Map<String, bool> _passwordVisibility = {};
 
   void _copyToClipboard(String text, String label) {
@@ -541,7 +638,7 @@ class _ImportResultDialogState extends State<_ImportResultDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Summary chip
+              // Summary
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
@@ -565,7 +662,7 @@ class _ImportResultDialogState extends State<_ImportResultDialog> {
                 ),
               ),
 
-              // Errors section
+              // Errors
               if (result.errors.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(
@@ -602,7 +699,7 @@ class _ImportResultDialogState extends State<_ImportResultDialog> {
                 ),
               ],
 
-              // Credentials section
+              // Credentials
               if (result.credentials.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(
@@ -643,7 +740,6 @@ class _ImportResultDialogState extends State<_ImportResultDialog> {
   }
 }
 
-/// Compact credential card for the import result dialog.
 class _CredentialCard extends StatelessWidget {
   final StudentCredential credential;
   final bool isPasswordVisible;
@@ -682,7 +778,6 @@ class _CredentialCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          // Username row
           Row(
             children: [
               Icon(LucideIcons.user, size: 14, color: colorScheme.primary),
@@ -705,7 +800,6 @@ class _CredentialCard extends StatelessWidget {
               ),
             ],
           ),
-          // Password row
           Row(
             children: [
               Icon(LucideIcons.lock, size: 14, color: colorScheme.primary),

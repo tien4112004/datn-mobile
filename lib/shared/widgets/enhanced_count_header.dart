@@ -32,6 +32,11 @@ class EnhancedCountHeader extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
 
+  /// When provided, the animated count badge is replaced by an export-CSV
+  /// icon button. The callback receives no arguments — callers are responsible
+  /// for showing the appropriate sheet/dialog.
+  final VoidCallback? onExportCsv;
+
   const EnhancedCountHeader({
     super.key,
     required this.icon,
@@ -43,6 +48,7 @@ class EnhancedCountHeader extends StatelessWidget {
     this.actionIcon,
     this.margin = const EdgeInsets.all(16),
     this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    this.onExportCsv,
   });
 
   @override
@@ -130,42 +136,53 @@ class EnhancedCountHeader extends StatelessWidget {
             ),
           ),
 
-          // Right side: Count badge and optional action
+          // Right side: export button OR animated count badge + optional action
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Count badge with animation
-              TweenAnimationBuilder<int>(
-                tween: IntTween(begin: 0, end: count),
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeOutCubic,
-                builder: (context, value, child) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colorScheme.primary.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      '$value',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
+              if (onExportCsv != null)
+                // Export CSV icon button replaces the count badge
+                IconButton(
+                  icon: Icon(
+                    LucideIcons.fileDown,
+                    color: colorScheme.onPrimaryContainer,
+                  ),
+                  onPressed: onExportCsv,
+                  tooltip: 'Export CSV',
+                )
+              else
+                // Animated count badge (default)
+                TweenAnimationBuilder<int>(
+                  tween: IntTween(begin: 0, end: count),
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
                       ),
-                    ),
-                  );
-                },
-              ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: colorScheme.primary.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        '$value',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  },
+                ),
 
               // Optional action button
               if (onActionTap != null) ...[

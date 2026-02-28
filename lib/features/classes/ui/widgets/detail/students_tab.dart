@@ -1,3 +1,5 @@
+import 'package:AIPrimary/features/students/domain/entity/student_credential.dart';
+import 'package:AIPrimary/features/students/domain/entity/student_import_result.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -6,6 +8,8 @@ import 'package:AIPrimary/features/students/states/controller_provider.dart';
 import 'package:AIPrimary/features/students/ui/widgets/student_tile.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:AIPrimary/shared/service/student_csv_service.dart';
+import 'package:AIPrimary/shared/services/service_pod.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_count_header.dart';
 import 'package:AIPrimary/shared/widgets/animated_list_item.dart';
@@ -42,20 +46,236 @@ class StudentsTab extends ConsumerWidget {
         onRetry: () =>
             ref.read(studentsControllerProvider(classId).notifier).refresh(),
       ),
-      floatingActionButton: (isStudent)
+      floatingActionButton: isStudent
           ? null
-          : Semantics(
-              label: t.classes.students.addStudent,
-              button: true,
-              hint: t.classes.students.addHint,
-              child: FloatingActionButton(
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  context.router.push(StudentCreateRoute(classId: classId));
-                },
-                child: const Icon(LucideIcons.userPlus),
-              ),
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // CSV actions button
+                Semantics(
+                  label: t.classes.students.csvActions,
+                  button: true,
+                  child: FloatingActionButton.small(
+                    heroTag: 'csv_actions_$classId',
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      _showCsvActionsSheet(context, ref, t);
+                    },
+                    tooltip: t.classes.students.csvActions,
+                    child: const Icon(LucideIcons.fileSpreadsheet),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Add single student button
+                Semantics(
+                  label: t.classes.students.addStudent,
+                  button: true,
+                  hint: t.classes.students.addHint,
+                  child: FloatingActionButton(
+                    heroTag: 'add_student_$classId',
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      context.router.push(StudentCreateRoute(classId: classId));
+                    },
+                    child: const Icon(LucideIcons.userPlus),
+                  ),
+                ),
+              ],
             ),
+    );
+  }
+
+  void _showCsvActionsSheet(BuildContext context, WidgetRef ref, dynamic t) {
+    final studentsState = ref.read(studentsControllerProvider(classId));
+    final students = studentsState.value?.value ?? [];
+    final csvService = StudentCsvService(ref.read(downloadServiceProvider));
+
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle indicator
+              Container(
+                width: 36,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Text(
+                  t.classes.students.csvActions,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              // Import from CSV
+              ListTile(
+                leading: const Icon(LucideIcons.upload),
+                title: Text(t.classes.students.importFromCsv),
+                subtitle: Text(t.classes.students.importHint),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _handleImportCsv(context, ref, t, csvService);
+                },
+              ),
+              // Export to CSV
+              ListTile(
+                leading: const Icon(LucideIcons.download),
+                title: Text(t.classes.students.exportToCsv),
+                subtitle: Text(t.classes.students.exportHint),
+                enabled: students.isNotEmpty,
+                onTap: students.isNotEmpty
+                    ? () {
+                        Navigator.of(sheetContext).pop();
+                        _handleExportCsv(context, students, t, csvService);
+                      }
+                    : null,
+              ),
+              // Download template
+              ListTile(
+                leading: const Icon(LucideIcons.fileDown),
+                title: Text(t.classes.students.downloadTemplate),
+                subtitle: Text(t.classes.students.downloadTemplateHint),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  _handleDownloadTemplate(context, t, csvService);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleImportCsv(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic t,
+    StudentCsvService csvService,
+  ) async {
+    final file = await csvService.pickCsvFile();
+    if (file == null) return;
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 16),
+            Text(t.classes.students.importing),
+          ],
+        ),
+        duration: const Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      final result = await ref
+          .read(importStudentsControllerProvider.notifier)
+          .importFromCsv(classId: classId, file: file);
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
+
+      await _showImportResultDialog(context, result, t);
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.importFailed(error: e.toString())),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleExportCsv(
+    BuildContext context,
+    List students,
+    dynamic t,
+    StudentCsvService csvService,
+  ) async {
+    try {
+      final savedPath = await csvService.exportStudentsToCsv(
+        students.cast(),
+        fileName: 'students_class_$classId.csv',
+      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.exportSaved(path: savedPath)),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.exportFailed(error: e.toString())),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleDownloadTemplate(
+    BuildContext context,
+    dynamic t,
+    StudentCsvService csvService,
+  ) async {
+    try {
+      final savedPath = await csvService.saveTemplate();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.templateSaved(path: savedPath)),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.classes.students.templateFailed(error: e.toString())),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _showImportResultDialog(
+    BuildContext context,
+    StudentImportResult result,
+    dynamic t,
+  ) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => _ImportResultDialog(result: result, t: t),
     );
   }
 }
@@ -245,6 +465,279 @@ class _StudentsContent extends ConsumerWidget {
               ),
               child: Text(t.classes.students.remove),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Dialog shown after a CSV import operation completes.
+/// Displays the number of students created, any errors, and login credentials.
+class _ImportResultDialog extends StatefulWidget {
+  final StudentImportResult result;
+  final dynamic t;
+
+  const _ImportResultDialog({required this.result, required this.t});
+
+  @override
+  State<_ImportResultDialog> createState() => _ImportResultDialogState();
+}
+
+class _ImportResultDialogState extends State<_ImportResultDialog> {
+  // Map<studentId, isPasswordVisible>
+  final Map<String, bool> _passwordVisibility = {};
+
+  void _copyToClipboard(String text, String label) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$label copied to clipboard'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final t = widget.t;
+    final result = widget.result;
+
+    return AlertDialog(
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: result.success
+                  ? colorScheme.primaryContainer
+                  : colorScheme.errorContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              result.success ? LucideIcons.circleCheck : LucideIcons.circleX,
+              color: result.success ? colorScheme.primary : colorScheme.error,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              t.classes.students.importResultTitle,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Summary chip
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: result.studentsCreated > 0
+                      ? colorScheme.primaryContainer
+                      : colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  t.classes.students.importResultMessage(
+                    count: result.studentsCreated,
+                  ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: result.studentsCreated > 0
+                        ? colorScheme.onPrimaryContainer
+                        : colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              // Errors section
+              if (result.errors.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text(
+                  t.classes.students.importResultErrors,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: colorScheme.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...result.errors.map(
+                  (error) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          LucideIcons.circleAlert,
+                          size: 14,
+                          color: colorScheme.error,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            error,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: colorScheme.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
+              // Credentials section
+              if (result.credentials.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text(
+                  t.classes.students.importResultCredentials,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...result.credentials.map(
+                  (cred) => _CredentialCard(
+                    credential: cred,
+                    isPasswordVisible:
+                        _passwordVisibility[cred.studentId] ?? false,
+                    onToggleVisibility: () => setState(() {
+                      _passwordVisibility[cred.studentId] =
+                          !(_passwordVisibility[cred.studentId] ?? false);
+                    }),
+                    onCopyUsername: () =>
+                        _copyToClipboard(cred.username, 'Username'),
+                    onCopyPassword: () =>
+                        _copyToClipboard(cred.password, 'Password'),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Done'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Compact credential card for the import result dialog.
+class _CredentialCard extends StatelessWidget {
+  final StudentCredential credential;
+  final bool isPasswordVisible;
+  final VoidCallback onToggleVisibility;
+  final VoidCallback onCopyUsername;
+  final VoidCallback onCopyPassword;
+
+  const _CredentialCard({
+    required this.credential,
+    required this.isPasswordVisible,
+    required this.onToggleVisibility,
+    required this.onCopyUsername,
+    required this.onCopyPassword,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            credential.fullName,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Username row
+          Row(
+            children: [
+              Icon(LucideIcons.user, size: 14, color: colorScheme.primary),
+              const SizedBox(width: 6),
+              Expanded(
+                child: SelectableText(
+                  credential.username,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(LucideIcons.copy, size: 16),
+                onPressed: onCopyUsername,
+                tooltip: 'Copy username',
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+              ),
+            ],
+          ),
+          // Password row
+          Row(
+            children: [
+              Icon(LucideIcons.lock, size: 14, color: colorScheme.primary),
+              const SizedBox(width: 6),
+              Expanded(
+                child: SelectableText(
+                  isPasswordVisible ? credential.password : '••••••••',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(
+                  isPasswordVisible ? LucideIcons.eyeOff : LucideIcons.eye,
+                  size: 16,
+                ),
+                onPressed: onToggleVisibility,
+                tooltip: isPasswordVisible ? 'Hide' : 'Show',
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+              ),
+              IconButton(
+                icon: const Icon(LucideIcons.copy, size: 16),
+                onPressed: onCopyPassword,
+                tooltip: 'Copy password',
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+              ),
+            ],
           ),
         ],
       ),

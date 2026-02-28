@@ -273,6 +273,48 @@ class DownloadService {
     yield* controller.stream;
   }
 
+  /// Saves [content] as a text file named [fileName] in the device Downloads
+  /// folder (Android) or app Documents folder (iOS).
+  ///
+  /// Returns the full path of the saved file.
+  Future<String> saveTextFile({
+    required String fileName,
+    required String content,
+  }) async {
+    final hasPermission = await checkStoragePermission();
+    if (!hasPermission) {
+      throw Exception('Storage permission denied');
+    }
+
+    final sanitized = _sanitizeFilename(fileName);
+
+    String downloadPath;
+    try {
+      final externalDir = await getExternalStorageDirectory();
+      if (externalDir != null) {
+        downloadPath = externalDir.path.replaceAll(
+          '/Android/data/com.example.aiprimary/files',
+          '/Download',
+        );
+      } else {
+        final docsDir = await getApplicationDocumentsDirectory();
+        downloadPath = docsDir.path;
+      }
+    } catch (_) {
+      final docsDir = await getApplicationDocumentsDirectory();
+      downloadPath = docsDir.path;
+    }
+
+    final directory = Directory(downloadPath);
+    if (!await directory.exists()) {
+      await directory.create(recursive: true);
+    }
+
+    final filePath = '$downloadPath/$sanitized';
+    await File(filePath).writeAsString(content);
+    return filePath;
+  }
+
   Future<bool> checkStoragePermission() async {
     try {
       PermissionStatus status;

@@ -68,6 +68,9 @@ class GenerationSettingsSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ...optionWidgets.expand(
+            (widget) => [widget, const SizedBox(height: 8)],
+          ),
           if (language != null && onLanguageChanged != null) ...[
             _buildLanguageSetting(language!, onLanguageChanged!, t),
             const SizedBox(height: 16),
@@ -76,9 +79,6 @@ class GenerationSettingsSheet extends ConsumerWidget {
             _buildModelSetting(selectedModel, onModelChanged!, modelType, t),
             const SizedBox(height: 24),
           ],
-          ...optionWidgets.expand(
-            (widget) => [widget, const SizedBox(height: 8)],
-          ),
         ],
       ),
     );

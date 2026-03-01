@@ -87,14 +87,16 @@ class PresentationFormController extends Notifier<PresentationFormState> {
     state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
-  void addFileUrl(String url) {
-    final updated = [...state.fileUrls, url];
-    state = state.copyWith(fileUrls: updated);
+  void addFile(String url, int bytes) {
+    final updatedUrls = [...state.fileUrls, url];
+    final updatedSizes = {...state.fileSizes, url: bytes};
+    state = state.copyWith(fileUrls: updatedUrls, fileSizes: updatedSizes);
   }
 
   void removeFileUrl(String url) {
-    final updated = state.fileUrls.where((u) => u != url).toList();
-    state = state.copyWith(fileUrls: updated);
+    final updatedUrls = state.fileUrls.where((u) => u != url).toList();
+    final updatedSizes = {...state.fileSizes}..remove(url);
+    state = state.copyWith(fileUrls: updatedUrls, fileSizes: updatedSizes);
   }
 
   // Outline management

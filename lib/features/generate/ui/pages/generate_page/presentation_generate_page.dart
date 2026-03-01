@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
@@ -38,6 +39,7 @@ class _PresentationGeneratePageState
   final TextEditingController _topicController = TextEditingController();
   final FocusNode _topicFocusNode = FocusNode();
   late final t = ref.watch(translationsPod);
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -85,6 +87,13 @@ class _PresentationGeneratePageState
         .updateTopic(_topicController.text);
   }
 
+  bool _wouldExceedLimit(int newBytes) {
+    final current = ref
+        .read(presentationFormControllerProvider)
+        .totalAttachedBytes;
+    return current + newBytes > PresentationFormState.maxTotalBytes;
+  }
+
   Future<void> _handleImageAttach() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -92,24 +101,36 @@ class _PresentationGeneratePageState
     );
     if (image == null) return;
 
+    final bytes = await image.length();
+    if (_wouldExceedLimit(bytes)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
     if (!mounted) return;
-    ref.read(loadingOverlayPod.notifier).state = true;
+    setState(() => _isUploading = true);
     try {
       final mediaService = ref.read(mediaServiceProvider);
       final response = await mediaService.uploadMedia(filePath: image.path);
       if (mounted) {
         ref
             .read(presentationFormControllerProvider.notifier)
-            .addFileUrl(response.cdnUrl);
+            .addFile(response.cdnUrl, bytes);
       }
     } catch (e) {
       if (mounted) {
-        SnackbarUtils.showError(context, 'Failed to upload image: $e');
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
       }
     } finally {
-      if (mounted) {
-        ref.read(loadingOverlayPod.notifier).state = false;
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -123,24 +144,35 @@ class _PresentationGeneratePageState
     final file = result.files.single;
     if (file.path == null) return;
 
+    if (_wouldExceedLimit(file.size)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
     if (!mounted) return;
-    ref.read(loadingOverlayPod.notifier).state = true;
+    setState(() => _isUploading = true);
     try {
       final mediaService = ref.read(mediaServiceProvider);
       final response = await mediaService.uploadMedia(filePath: file.path!);
       if (mounted) {
         ref
             .read(presentationFormControllerProvider.notifier)
-            .addFileUrl(response.cdnUrl);
+            .addFile(response.cdnUrl, file.size);
       }
     } catch (e) {
       if (mounted) {
-        SnackbarUtils.showError(context, 'Failed to upload file: $e');
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
       }
     } finally {
-      if (mounted) {
-        ref.read(loadingOverlayPod.notifier).state = false;
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -210,6 +242,7 @@ class _PresentationGeneratePageState
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
               attachedFileUrls: formState.fileUrls,
+              isUploading: _isUploading,
               onRemoveFile: (url) => ref
                   .read(presentationFormControllerProvider.notifier)
                   .removeFileUrl(url),

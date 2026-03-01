@@ -3,6 +3,7 @@ import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/generate/states/mindmap/mindmap_form_state.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
@@ -12,7 +13,6 @@ import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_op
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/suggestions/example_prompt_suggestions.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
-import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/models/language_enums.dart';
 import 'package:AIPrimary/shared/services/media_service_provider.dart';
@@ -37,6 +37,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
   final TextEditingController _topicController = TextEditingController();
   final FocusNode _topicFocusNode = FocusNode();
   late final t = ref.watch(translationsPod);
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -84,6 +85,11 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
         .updateTopic(_topicController.text);
   }
 
+  bool _wouldExceedLimit(int newBytes) {
+    final current = ref.read(mindmapFormControllerProvider).totalAttachedBytes;
+    return current + newBytes > MindmapFormState.maxTotalBytes;
+  }
+
   Future<void> _handleImageAttach() async {
     final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
@@ -91,24 +97,36 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     );
     if (image == null) return;
 
+    final bytes = await image.length();
+    if (_wouldExceedLimit(bytes)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
     if (!mounted) return;
-    ref.read(loadingOverlayPod.notifier).state = true;
+    setState(() => _isUploading = true);
     try {
       final mediaService = ref.read(mediaServiceProvider);
       final response = await mediaService.uploadMedia(filePath: image.path);
       if (mounted) {
         ref
             .read(mindmapFormControllerProvider.notifier)
-            .addFileUrl(response.cdnUrl);
+            .addFile(response.cdnUrl, bytes);
       }
     } catch (e) {
       if (mounted) {
-        SnackbarUtils.showError(context, 'Failed to upload image: $e');
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
       }
     } finally {
-      if (mounted) {
-        ref.read(loadingOverlayPod.notifier).state = false;
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -122,24 +140,35 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     final file = result.files.single;
     if (file.path == null) return;
 
+    if (_wouldExceedLimit(file.size)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
     if (!mounted) return;
-    ref.read(loadingOverlayPod.notifier).state = true;
+    setState(() => _isUploading = true);
     try {
       final mediaService = ref.read(mediaServiceProvider);
       final response = await mediaService.uploadMedia(filePath: file.path!);
       if (mounted) {
         ref
             .read(mindmapFormControllerProvider.notifier)
-            .addFileUrl(response.cdnUrl);
+            .addFile(response.cdnUrl, file.size);
       }
     } catch (e) {
       if (mounted) {
-        SnackbarUtils.showError(context, 'Failed to upload file: $e');
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
       }
     } finally {
-      if (mounted) {
-        ref.read(loadingOverlayPod.notifier).state = false;
-      }
+      if (mounted) setState(() => _isUploading = false);
     }
   }
 
@@ -174,6 +203,7 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
               attachedFileUrls: formState.fileUrls,
+              isUploading: _isUploading,
               onRemoveFile: (url) => ref
                   .read(mindmapFormControllerProvider.notifier)
                   .removeFileUrl(url),

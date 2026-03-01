@@ -26,6 +26,9 @@ class TopicInputBar extends ConsumerWidget {
   /// Called with the full CDN URL when the user taps the remove button.
   final void Function(String url)? onRemoveFile;
 
+  /// Whether a file upload is in progress — shows a spinner chip.
+  final bool isUploading;
+
   const TopicInputBar({
     super.key,
     required this.topicController,
@@ -37,6 +40,7 @@ class TopicInputBar extends ConsumerWidget {
     required this.hintText,
     this.attachedFileUrls = const [],
     this.onRemoveFile,
+    this.isUploading = false,
   });
 
   static const _imageExtensions = {'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'};
@@ -95,7 +99,7 @@ class TopicInputBar extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // File chips row
-                if (attachedFileUrls.isNotEmpty) ...[
+                if (attachedFileUrls.isNotEmpty || isUploading) ...[
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -103,6 +107,11 @@ class TopicInputBar extends ConsumerWidget {
                         for (int i = 0; i < attachedFileUrls.length; i++) ...[
                           if (i > 0) const SizedBox(width: 8),
                           _buildFileChip(context, attachedFileUrls[i]),
+                        ],
+                        if (isUploading) ...[
+                          if (attachedFileUrls.isNotEmpty)
+                            const SizedBox(width: 8),
+                          _buildUploadingChip(context),
                         ],
                       ],
                     ),
@@ -228,6 +237,33 @@ class TopicInputBar extends ConsumerWidget {
           ),
           _buildDeleteButton(context, url),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUploadingChip(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
       ),
     );
   }

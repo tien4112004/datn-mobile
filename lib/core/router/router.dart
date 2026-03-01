@@ -29,6 +29,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: PresentationListRoute.page, path: '/presentations'),
     AutoRoute(page: MindmapListRoute.page, path: '/mindmaps'),
     AutoRoute(page: ImageListRoute.page, path: '/images'),
+    AutoRoute(page: SharedWithMeListRoute.page, path: '/shared-with-me'),
 
     // Generate Routes
     AutoRoute(page: GenerateRoute.page, path: '/generate'),

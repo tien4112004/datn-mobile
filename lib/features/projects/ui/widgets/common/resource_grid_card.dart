@@ -104,17 +104,29 @@ class ResourceGridCard extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      DateFormatHelper.formatRelativeDate(
-                        ref: ref,
-                        updatedAt ?? DateFormatHelper.getNow(),
-                      ),
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant.withValues(
-                          alpha: 0.7,
-                        ),
-                      ),
-                    ),
+                    updatedAt == null
+                        ? const SizedBox.shrink()
+                        : Text(
+                            DateFormatHelper.formatRelativeDate(
+                              ref: ref,
+                              updatedAt!,
+                            ),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ),
+                    description == null
+                        ? const SizedBox.shrink()
+                        : Text(
+                            description!,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ),
                   ],
                 ),
               ),

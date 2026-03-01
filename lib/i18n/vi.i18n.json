@@ -196,6 +196,8 @@
     "no_recent_works": "Không có công việc gần đây",
     "shared_with_me": "Được chia sẻ với tôi",
     "no_shared_resources": "Không có tài nguyên được chia sẻ",
+    "search_shared": "Tìm kiếm tài nguyên được chia sẻ...",
+    "shared_by": "Chia sẻ bởi: $ownerName",
     "created_at": "Tạo lúc: $date",
     "edited": "Đã chỉnh sửa: $date",
     "untitled": "Chưa đặt tên",

@@ -1,9 +1,11 @@
+import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/projects/states/controller_provider.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/shared_resource_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,12 +23,22 @@ class SharedWithMeRow extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (title != null)
-          Text(
-            title!,
-            style: TextStyle(
-              fontSize: Themes.fontSize.s24,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title!,
+                style: TextStyle(
+                  fontSize: Themes.fontSize.s24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextButton(
+                onPressed: () =>
+                    context.router.push(const SharedWithMeListRoute()),
+                child: Text(t.home.dashboard.recentDocuments.viewAll),
+              ),
+            ],
           ),
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 160),

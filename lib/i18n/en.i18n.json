@@ -147,6 +147,8 @@
     "no_recent_works": "No recent projects",
     "shared_with_me": "Shared with me",
     "no_shared_resources": "No shared resources",
+    "search_shared": "Search shared resources...",
+    "shared_by": "Shared by: $ownerName",
     "created_at": "Created at: $date",
     "edited": "Edited: $date",
     "untitled": "Untitled",

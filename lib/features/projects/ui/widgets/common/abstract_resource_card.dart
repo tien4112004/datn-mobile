@@ -39,7 +39,7 @@ class AbstractDocumentCard extends ConsumerWidget {
           padding: const EdgeInsets.all(0.0),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
-              minHeight: 180,
+              minHeight: 100,
               minWidth: 140,
               maxWidth: 164,
             ),

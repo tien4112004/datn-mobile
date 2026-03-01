@@ -260,7 +260,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                     Navigator.of(context).pop();
                     context.router.pop(); // Return to previous screen
                   },
-                  child: const Text('OK'),
+                  child: Text(t.payment.callback.ok),
                 ),
               ],
             ),

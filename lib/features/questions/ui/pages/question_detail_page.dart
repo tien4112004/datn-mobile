@@ -187,7 +187,7 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
           IconButton(
             icon: const Icon(LucideIcons.send, size: 20),
             onPressed: () => _showPublishDialog(context, questionItem, t),
-            tooltip: 'Publish to Public Bank',
+            tooltip: t.questionBank.publishDialog.tooltip,
             style: IconButton.styleFrom(foregroundColor: colorScheme.secondary),
           ),
           IconButton(
@@ -212,14 +212,12 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
       builder: (dialogContext) {
         return AlertDialog(
           icon: const Icon(Icons.send_rounded, size: 40),
-          title: const Text('Publish to Public Bank'),
-          content: const Text(
-            'Submit this question for review to be added to the public bank?',
-          ),
+          title: Text(t.questionBank.publishDialog.title),
+          content: Text(t.questionBank.publishDialog.content),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(t.questionBank.publishDialog.cancel),
             ),
             FilledButton(
               onPressed: () async {
@@ -230,9 +228,9 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                       .publishQuestion(questionItem.id);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text(
-                          'Question submitted for review successfully',
+                          t.questionBank.publishDialog.successMessage,
                         ),
                       ),
                     );
@@ -240,12 +238,18 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to submit: $e')),
+                      SnackBar(
+                        content: Text(
+                          t.questionBank.publishDialog.failedMessage(
+                            error: e.toString(),
+                          ),
+                        ),
+                      ),
                     );
                   }
                 }
               },
-              child: const Text('Submit'),
+              child: Text(t.questionBank.publishDialog.submit),
             ),
           ],
         );

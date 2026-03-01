@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:AIPrimary/shared/widgets/custom_search_bar.dart';
@@ -32,8 +33,8 @@ class GenericResourceSearchPage<T> extends ConsumerStatefulWidget {
   itemBuilder;
   final String Function(T)? getItemTitle;
   final VoidCallback? onItemTap;
-  final String emptyStateMessage;
-  final String noResultsMessage;
+  final String? emptyStateMessage;
+  final String? noResultsMessage;
 
   const GenericResourceSearchPage({
     super.key,
@@ -43,8 +44,8 @@ class GenericResourceSearchPage<T> extends ConsumerStatefulWidget {
     required this.itemBuilder,
     this.getItemTitle,
     this.onItemTap,
-    this.emptyStateMessage = 'No resources available',
-    this.noResultsMessage = 'No results found',
+    this.emptyStateMessage,
+    this.noResultsMessage,
   });
 
   @override
@@ -58,6 +59,8 @@ class _GenericResourceSearchPageState<T>
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
+
     return Scaffold(
       appBar: CustomAppBar(
         leading: IconButton(
@@ -76,7 +79,7 @@ class _GenericResourceSearchPageState<T>
             CustomSearchBar(
               enabled: true,
               autoFocus: true,
-              hintText: 'Search ${widget.title.toLowerCase()}',
+              hintText: t.common.searchHint(title: widget.title.toLowerCase()),
               onChanged: (query) {
                 setState(() {
                   _searchQuery = query;
@@ -111,12 +114,17 @@ class _GenericResourceSearchPageState<T>
   }
 
   Widget _buildSearchResults(BuildContext context, List<T> resources) {
+    final t = ref.watch(translationsPod);
     // Filter resources based on search query
     final filtered = _searchQuery.isEmpty
         ? resources
         : resources
               .where((item) => widget.searchPredicate(item, _searchQuery))
               .toList();
+
+    final emptyMessage =
+        widget.emptyStateMessage ?? t.common.noResourcesAvailable;
+    final noResultsMessage = widget.noResultsMessage ?? t.common.noResultsFound;
 
     if (filtered.isEmpty) {
       return Center(
@@ -127,8 +135,8 @@ class _GenericResourceSearchPageState<T>
             const SizedBox(height: 16),
             Text(
               _searchQuery.isEmpty
-                  ? widget.emptyStateMessage
-                  : '${widget.noResultsMessage} for "$_searchQuery"',
+                  ? emptyMessage
+                  : '$noResultsMessage for "$_searchQuery"',
               style: TextStyle(
                 fontSize: Themes.fontSize.s16,
                 color: Colors.grey.shade600,

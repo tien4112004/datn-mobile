@@ -1,16 +1,19 @@
 import 'package:AIPrimary/features/students/domain/entity/student_credential.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A card widget displaying generated student credentials with copy functionality.
-class StudentCredentialCard extends StatelessWidget {
+class StudentCredentialCard extends ConsumerWidget {
   final StudentCredential credential;
 
   const StudentCredentialCard({super.key, required this.credential});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -52,24 +55,36 @@ class StudentCredentialCard extends StatelessWidget {
             // Credential details
             _CredentialRow(
               icon: LucideIcons.user,
-              label: 'Username',
+              label: t.students.credentials.username,
               value: credential.username,
-              onCopy: () =>
-                  _copyToClipboard(context, credential.username, 'Username'),
+              onCopy: () => _copyToClipboard(
+                context,
+                credential.username,
+                t.students.credentials.username,
+                t,
+              ),
             ),
             _CredentialRow(
               icon: LucideIcons.key,
-              label: 'Password',
+              label: t.students.credentials.password,
               value: credential.password,
-              onCopy: () =>
-                  _copyToClipboard(context, credential.password, 'Password'),
+              onCopy: () => _copyToClipboard(
+                context,
+                credential.password,
+                t.students.credentials.password,
+                t,
+              ),
             ),
             _CredentialRow(
               icon: LucideIcons.mail,
-              label: 'Email',
+              label: t.students.credentials.email,
               value: credential.email,
-              onCopy: () =>
-                  _copyToClipboard(context, credential.email, 'Email'),
+              onCopy: () => _copyToClipboard(
+                context,
+                credential.email,
+                t.students.credentials.email,
+                t,
+              ),
             ),
           ],
         ),
@@ -85,11 +100,16 @@ class StudentCredentialCard extends StatelessWidget {
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
 
-  void _copyToClipboard(BuildContext context, String text, String label) {
+  void _copyToClipboard(
+    BuildContext context,
+    String text,
+    String label,
+    dynamic t,
+  ) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$label copied to clipboard'),
+        content: Text(t.students.credentials.copiedToClipboard(label: label)),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -97,7 +117,7 @@ class StudentCredentialCard extends StatelessWidget {
   }
 }
 
-class _CredentialRow extends StatelessWidget {
+class _CredentialRow extends ConsumerWidget {
   final IconData icon;
   final String label;
   final String value;
@@ -111,7 +131,8 @@ class _CredentialRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -143,7 +164,7 @@ class _CredentialRow extends StatelessWidget {
           IconButton(
             icon: const Icon(LucideIcons.copy, size: 18),
             onPressed: onCopy,
-            tooltip: 'Copy $label',
+            tooltip: t.students.credentials.copy(label: label),
             visualDensity: VisualDensity.compact,
           ),
         ],

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:AIPrimary/features/students/data/dto/student_create_request_dto.dart';
 import 'package:AIPrimary/features/students/data/dto/student_update_request_dto.dart';
 import 'package:AIPrimary/features/students/data/repository/repository_provider.dart';
 import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/features/students/domain/entity/student_import_result.dart';
 import 'package:AIPrimary/features/students/states/student_list_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,4 +41,10 @@ final updateStudentControllerProvider =
 final removeStudentControllerProvider =
     AsyncNotifierProvider<RemoveStudentController, void>(
       () => RemoveStudentController(),
+    );
+
+/// Provider for importing students from a CSV file.
+final importStudentsControllerProvider =
+    AsyncNotifierProvider<ImportStudentsController, StudentImportResult?>(
+      () => ImportStudentsController(),
     );

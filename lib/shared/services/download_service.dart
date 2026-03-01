@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:downloadsfolder/downloadsfolder.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -271,6 +272,37 @@ class DownloadService {
     }
 
     yield* controller.stream;
+  }
+
+  /// Saves [content] as a text file named [fileName] in the device Downloads
+  /// folder and returns the saved file path.
+  ///
+  /// Uses the `downloadsfolder` package for reliable cross-platform access to
+  /// the public Downloads directory.
+  Future<String> saveTextFile({
+    required String fileName,
+    required String content,
+  }) async {
+    final hasPermission = await checkStoragePermission();
+    if (!hasPermission) {
+      throw Exception('Storage permission denied');
+    }
+
+    final sanitized = _sanitizeFilename(fileName);
+
+    // Write to a temp file first, then copy into the Downloads folder.
+    final tempDir = await getTemporaryDirectory();
+    final tempFile = File('${tempDir.path}/$sanitized');
+    await tempFile.writeAsString(content);
+
+    final success = await copyFileIntoDownloadFolder(tempFile.path, sanitized);
+    if (success != true) {
+      throw Exception('Failed to save file to Downloads folder');
+    }
+
+    // Return the final Downloads path.
+    final downloadsDir = await getDownloadDirectory();
+    return '${downloadsDir.path}/$sanitized';
   }
 
   Future<bool> checkStoragePermission() async {

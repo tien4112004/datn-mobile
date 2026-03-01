@@ -1,0 +1,3 @@
+fullName,dateOfBirth,gender,address,parentName,parentPhone,parentContactEmail
+Nguyen Van A,2010-01-15,MALE,123 Main Street,Nguyen Van Parent,0912345678,parent1@example.com
+Tran Thi B,2011-03-22,FEMALE,456 Secondary Street,Tran Thi Parent,0987654321,parent2@example.com

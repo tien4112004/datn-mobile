@@ -105,3 +105,26 @@ class RemoveStudentController extends AsyncNotifier<void> {
     });
   }
 }
+
+/// Controller for importing students from a CSV file.
+class ImportStudentsController extends AsyncNotifier<StudentImportResult?> {
+  @override
+  Future<StudentImportResult?> build() async => null;
+
+  /// Imports students from [file] into [classId] and refreshes the student list.
+  Future<StudentImportResult> importFromCsv({
+    required String classId,
+    required File file,
+  }) async {
+    state = const AsyncLoading();
+    late StudentImportResult result;
+    state = await AsyncValue.guard(() async {
+      result = await ref
+          .read(studentRepositoryProvider)
+          .importStudents(classId, file);
+      ref.invalidate(studentsControllerProvider(classId));
+      return result;
+    });
+    return result;
+  }
+}

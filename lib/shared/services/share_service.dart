@@ -8,6 +8,13 @@ class ShareService {
 
   ShareService(this.downloadService);
 
+  /// Shares an existing file at [filePath] via the system share sheet.
+  Future<void> shareFile({required String filePath, String? subject}) async {
+    await SharePlus.instance.share(
+      ShareParams(files: [XFile(filePath)], subject: subject),
+    );
+  }
+
   Future<void> shareImage({required String url, String? prompt}) async {
     try {
       final filename = 'AIPrimary';

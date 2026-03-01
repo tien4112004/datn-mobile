@@ -8,7 +8,8 @@ class PresentationGenerateServiceImpl implements PresentationGenerateService {
   @override
   Future<String> generateOutline(OutlineGenerateRequest outlineData) async {
     // Add business logic validations here
-    if (outlineData.topic.trim().isEmpty) {
+    final hasFiles = outlineData.fileUrls?.isNotEmpty == true;
+    if (outlineData.topic.trim().isEmpty && !hasFiles) {
       throw ArgumentError('Topic cannot be empty');
     }
 

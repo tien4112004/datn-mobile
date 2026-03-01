@@ -23,6 +23,14 @@ class MindmapFormState {
   /// The subject area for the content (optional, max 100 chars)
   final String? subject;
 
+  /// File URLs to use as source material for generation
+  final List<String> fileUrls;
+
+  /// File sizes in bytes keyed by CDN URL, used to enforce total size limits
+  final Map<String, int> fileSizes;
+
+  static const int maxTotalBytes = 10 * 1000 * 1000; // 10 MB (SI)
+
   const MindmapFormState({
     this.topic = '',
     this.selectedModel,
@@ -31,6 +39,8 @@ class MindmapFormState {
     this.maxBranchesPerNode = 5,
     this.grade,
     this.subject,
+    this.fileUrls = const [],
+    this.fileSizes = const {},
   });
 
   MindmapFormState copyWith({
@@ -44,6 +54,8 @@ class MindmapFormState {
     bool clearGrade = false,
     String? subject,
     bool clearSubject = false,
+    List<String>? fileUrls,
+    Map<String, int>? fileSizes,
   }) {
     return MindmapFormState(
       topic: topic ?? this.topic,
@@ -55,12 +67,18 @@ class MindmapFormState {
       maxBranchesPerNode: maxBranchesPerNode ?? this.maxBranchesPerNode,
       grade: clearGrade ? null : (grade ?? this.grade),
       subject: clearSubject ? null : (subject ?? this.subject),
+      fileUrls: fileUrls ?? this.fileUrls,
+      fileSizes: fileSizes ?? this.fileSizes,
     );
   }
 
+  int get totalAttachedBytes => fileSizes.values.fold(0, (a, b) => a + b);
+
   /// Validate if form is ready for submission
-  bool get isValid => topic.trim().isNotEmpty && selectedModel != null;
+  bool get isValid =>
+      (topic.trim().isNotEmpty || fileUrls.isNotEmpty) && selectedModel != null;
 
   /// Validate topic length
-  bool get isTopicValid => topic.trim().isNotEmpty && topic.length <= 500;
+  bool get isTopicValid =>
+      (topic.trim().isNotEmpty || fileUrls.isNotEmpty) && topic.length <= 500;
 }

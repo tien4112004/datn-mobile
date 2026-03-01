@@ -15,6 +15,8 @@ import 'package:AIPrimary/features/generate/states/mindmap/mindmap_generate_stat
 import 'package:AIPrimary/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:AIPrimary/features/generate/states/presentations/presentation_generate_state.dart';
 import 'package:AIPrimary/features/generate/states/questions/question_generate_form_state.dart';
+import 'package:AIPrimary/features/questions/states/question_generation_provider.dart';
+import 'package:AIPrimary/features/questions/states/question_generation_state.dart';
 import 'package:AIPrimary/features/generate/states/theme/theme_provider.dart';
 import 'package:AIPrimary/features/questions/domain/entity/generate_questions_request_entity.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
@@ -85,6 +87,37 @@ final questionGenerateFormControllerProvider =
     NotifierProvider<QuestionGenerateFormController, QuestionGenerateFormState>(
       QuestionGenerateFormController.new,
     );
+
+/// Thin async adapter so [TopicInputBar] can observe loading state from the
+/// question [StateNotifierProvider] as an [AsyncValue].
+///
+/// Uses [ref.listen] to manually push [AsyncLoading] / [AsyncData] to keep
+/// the outer [AsyncValue] in sync with the inner [QuestionGenerationState.isLoading].
+class _QuestionGenerateAsyncNotifier
+    extends AsyncNotifier<QuestionGenerationState> {
+  @override
+  Future<QuestionGenerationState> build() async {
+    // Listen for changes and manually reflect the isLoading flag.
+    ref.listen<QuestionGenerationState>(questionGenerationProvider, (
+      prev,
+      next,
+    ) {
+      if (next.isLoading) {
+        state = const AsyncLoading();
+      } else {
+        state = AsyncData(next);
+      }
+    });
+    // Seed with the current state (not loading on first build).
+    return ref.read(questionGenerationProvider);
+  }
+}
+
+final questionGenerateAsyncProvider =
+    AsyncNotifierProvider<
+      _QuestionGenerateAsyncNotifier,
+      QuestionGenerationState
+    >(_QuestionGenerateAsyncNotifier.new);
 
 /// Provider for tracking the active generator type.
 /// Defaults to presentation generator.

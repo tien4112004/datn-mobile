@@ -371,7 +371,7 @@
   "generate": {
     "enterTopicHint": "Bạn đang nghĩ gì?",
     "advancedSettings": "Cài đặt nâng cao",
-    "model":"Mô hình",
+    "model": "Mô hình",
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
@@ -429,7 +429,9 @@
       "error": "Lỗi",
       "failedToCreatePresentation": "Không thể tạo bài thuyết trình",
       "unknownError": "Đã xảy ra lỗi không xác định",
-      "retry": "Thử lại"
+      "retry": "Thử lại",
+      "fileSizeLimitExceeded": "Tổng dung lượng tệp đính kèm không được vượt quá 10 MB.",
+      "fileUploadFailed": "Tải tệp lên thất bại."
     },
     "outlineEditor": {
       "title": "Chỉnh sửa dàn ý",
@@ -1247,7 +1249,6 @@
       "addFirstQuestion": "Thêm câu hỏi đầu tiên",
       "addFirstQuestionMessage": "Sử dụng nút hành động để thêm câu hỏi đầu tiên."
     },
-
     "card": {
       "questions": "câu hỏi",
       "points": "điểm",
@@ -1255,7 +1256,6 @@
       "edit": "Sửa",
       "delete": "Xóa"
     },
-
     "dates": {
       "createdPrefix": "Tạo lúc",
       "createdOn": "Tạo ngày $date",
@@ -1263,7 +1263,6 @@
       "yesterday": "hôm qua",
       "daysAgo": "$count ngày trước"
     },
-
     "form": {
       "createTitle": "Tạo bài kiểm tra mới",
       "editTitle": "Sửa bài kiểm tra",
@@ -1281,7 +1280,6 @@
       "updateSuccess": "Cập nhật bài kiểm tra thành công",
       "error": "Lỗi: $error"
     },
-
     "deleteDialog": {
       "title": "Xóa bài kiểm tra",
       "message": "Bạn có chắc chắn muốn xóa \"$title\"?",
@@ -1296,20 +1294,17 @@
       "description": "Mô tả",
       "noDescription": "Không có mô tả"
     },
-
     "actionDock": {
       "cancel": "Hủy",
       "saveChanges": "Lưu thay đổi",
       "saving": "Đang lưu..."
     },
-
     "floatingMenu": {
       "addQuestion": "Thêm câu hỏi",
       "close": "Đóng",
       "fromBank": "Từ ngân hàng",
       "createNew": "Tạo mới"
     },
-
     "questionPicker": {
       "title": "Thêm câu hỏi",
       "fromBank": "Từ ngân hàng câu hỏi",
@@ -1318,7 +1313,6 @@
       "createNewDescription": "Tạo câu hỏi từ đầu",
       "cancel": "Hủy"
     },
-
     "pointsAssignment": {
       "title": "Gán điểm cho câu hỏi",
       "subtitle": "Đặt điểm cho mỗi câu hỏi trong bài kiểm tra",
@@ -1333,7 +1327,6 @@
       "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0",
       "contextBannerTitle(count)": "$count đoạn văn đọc sẽ được nhập kèm:"
     },
-
     "questionCard": {
       "options": "Tùy chọn",
       "optionsLabel": "Các lựa chọn",
@@ -1351,7 +1344,6 @@
       "collapse": "Thu gọn",
       "expand": "Mở rộng"
     },
-
     "filters": {
       "title": "Bộ lọc bài kiểm tra",
       "gradeLevel": "Khối lớp",
@@ -1362,7 +1354,6 @@
       "applyFilters": "Áp dụng bộ lọc",
       "searchHint": "Tìm kiếm bài kiểm tra..."
     },
-
     "matrixDashboard": {
       "title": "Ma trận đánh giá",
       "subtitle(actual, target, percentage)": "$actual trong $target câu hỏi ($percentage% hoàn thành)",
@@ -1378,7 +1369,6 @@
       "type": "Loại",
       "total": "Tổng"
     },
-
     "questionsSection": {
       "title": "Câu hỏi",
       "count": "$count ",
@@ -1391,7 +1381,6 @@
       "questions": "Câu hỏi",
       "editInfo": "Sửa thông tin"
     },
-
     "statuses": {
       "draft": "Bản nháp",
       "generating": "Đang tạo",
@@ -1399,7 +1388,6 @@
       "error": "Lỗi",
       "archived": "Đã lưu trữ"
     },
-
     "matrix": {
       "mc": "TN",
       "match": "Nối",
@@ -1412,7 +1400,6 @@
       "com": "TH",
       "appAbbr": "VD"
     },
-
     "detail": {
       "tabs": {
         "info": "Thông tin",
@@ -1503,7 +1490,6 @@
         }
       }
     },
-
     "context": {
       "readingPassage": "Đoạn văn đọc",
       "untitledContext": "Chưa có tiêu đề",

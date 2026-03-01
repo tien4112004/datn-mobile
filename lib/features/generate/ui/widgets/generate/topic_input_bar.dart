@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/coins/ui/widgets/coin_balance_indicator.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Bottom input bar for entering presentation topics with attach and generate actions.
 ///
@@ -13,22 +14,51 @@ import 'package:auto_route/auto_route.dart';
 class TopicInputBar extends ConsumerWidget {
   final TextEditingController topicController;
   final FocusNode topicFocusNode;
-  final VoidCallback onAttachFile;
+  final VoidCallback? onAttachFile;
   final VoidCallback onGenerate;
   final NotifierProvider formState;
   final AsyncNotifierProvider generateState;
   final String hintText;
 
+  /// Full CDN URLs of attached files to display as chips above the input.
+  final List<String> attachedFileUrls;
+
+  /// Called with the full CDN URL when the user taps the remove button.
+  final void Function(String url)? onRemoveFile;
+
+  /// Whether a file upload is in progress — shows a spinner chip.
+  final bool isUploading;
+
   const TopicInputBar({
     super.key,
     required this.topicController,
     required this.topicFocusNode,
-    required this.onAttachFile,
+    this.onAttachFile,
     required this.onGenerate,
     required this.formState,
     required this.generateState,
     required this.hintText,
+    this.attachedFileUrls = const [],
+    this.onRemoveFile,
+    this.isUploading = false,
   });
+
+  static const _imageExtensions = {'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'};
+
+  bool _isImageUrl(String url) {
+    final ext = url.split('.').last.split('?').first.toLowerCase();
+    return _imageExtensions.contains(ext);
+  }
+
+  /// Strips the UUID prefix from an uploaded filename.
+  /// Format: `<uuid>-<original-name>` → returns `<original-name>`.
+  String _displayName(String url) {
+    final filename = Uri.parse(url).pathSegments.lastOrNull ?? url;
+    final uuidPrefixPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}-',
+    );
+    return filename.replaceFirst(uuidPrefixPattern, '');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,17 +94,46 @@ class TopicInputBar extends ConsumerWidget {
           ),
           child: SafeArea(
             top: false,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildAttachButton(context),
-                const SizedBox(width: 8),
-                _buildTextInput(context),
-                const SizedBox(width: 8),
-                _buildGenerateButton(
-                  context,
-                  formState.isValid,
-                  generateStateAsync,
+                // File chips row
+                if (attachedFileUrls.isNotEmpty || isUploading) ...[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < attachedFileUrls.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 8),
+                          _buildFileChip(context, attachedFileUrls[i]),
+                        ],
+                        if (isUploading) ...[
+                          if (attachedFileUrls.isNotEmpty)
+                            const SizedBox(width: 8),
+                          _buildUploadingChip(context),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                // Input row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    onAttachFile != null
+                        ? _buildAttachButton(context)
+                        : const SizedBox.shrink(),
+                    const SizedBox(width: 8),
+                    _buildTextInput(context),
+                    const SizedBox(width: 8),
+                    _buildGenerateButton(
+                      context,
+                      formState.isValid,
+                      generateStateAsync,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -82,6 +141,183 @@ class TopicInputBar extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildFileChip(BuildContext context, String url) {
+    return _isImageUrl(url)
+        ? _buildImageChip(context, url)
+        : _buildDocumentChip(context, url);
+  }
+
+  Widget _buildImageChip(BuildContext context, String url) {
+    final colorScheme = Theme.of(context).colorScheme;
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Thumbnail
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              url,
+              width: chipSize,
+              height: chipSize,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => Container(
+                width: chipSize,
+                height: chipSize,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Icon(
+                  LucideIcons.imageOff,
+                  size: 24,
+                  color: colorScheme.primary.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+          ),
+          // Delete button
+          _buildDeleteButton(context, url),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDocumentChip(BuildContext context, String url) {
+    final name = _displayName(url);
+    final ext = url.split('.').last.split('?').first.toLowerCase();
+    final chipColor = _docColor(ext);
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Material(
+            color: chipColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: chipSize,
+              height: chipSize,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: chipColor.withValues(alpha: 0.25)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(_docIcon(ext), size: 22, color: chipColor),
+                  const SizedBox(height: 4),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: chipColor,
+                      height: 1.2,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _buildDeleteButton(context, url),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUploadingChip(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton(BuildContext context, String url) {
+    if (onRemoveFile == null) return const SizedBox.shrink();
+    final colorScheme = Theme.of(context).colorScheme;
+    return Positioned(
+      top: -6,
+      right: -6,
+      child: GestureDetector(
+        onTap: () => onRemoveFile!(url),
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: 0.3),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.close,
+            size: 11,
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _docColor(String ext) {
+    return switch (ext) {
+      'pdf' => const Color(0xFFE53935),
+      'doc' || 'docx' => const Color(0xFF1565C0),
+      'txt' => const Color(0xFF546E7A),
+      _ => const Color(0xFF546E7A),
+    };
+  }
+
+  IconData _docIcon(String ext) {
+    return switch (ext) {
+      'pdf' => LucideIcons.fileType,
+      'doc' || 'docx' => LucideIcons.fileText,
+      'txt' => LucideIcons.fileCode,
+      _ => LucideIcons.file,
+    };
   }
 
   /// Attach file button.

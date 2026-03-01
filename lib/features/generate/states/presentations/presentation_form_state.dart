@@ -27,6 +27,14 @@ class PresentationFormState {
   /// The subject area for the content (optional, max 100 chars)
   final String? subject;
 
+  /// File URLs to use as source material for generation
+  final List<String> fileUrls;
+
+  /// File sizes in bytes keyed by CDN URL, used to enforce total size limits
+  final Map<String, int> fileSizes;
+
+  static const int maxTotalBytes = 10 * 1000 * 1000; // 10 MB (SI)
+
   const PresentationFormState({
     this.topic = '',
     this.slideCount = 5,
@@ -40,6 +48,8 @@ class PresentationFormState {
     this.currentStep = 1,
     this.grade,
     this.subject,
+    this.fileUrls = const [],
+    this.fileSizes = const {},
   });
 
   PresentationFormState copyWith({
@@ -59,6 +69,8 @@ class PresentationFormState {
     bool clearGrade = false,
     String? subject,
     bool clearSubject = false,
+    List<String>? fileUrls,
+    Map<String, int>? fileSizes,
   }) {
     return PresentationFormState(
       topic: topic ?? this.topic,
@@ -75,10 +87,14 @@ class PresentationFormState {
       currentStep: currentStep ?? this.currentStep,
       grade: clearGrade ? null : (grade ?? this.grade),
       subject: clearSubject ? null : (subject ?? this.subject),
+      fileUrls: fileUrls ?? this.fileUrls,
+      fileSizes: fileSizes ?? this.fileSizes,
     );
   }
 
-  bool get isValid => topic.trim().isNotEmpty;
-  bool get isStep1Valid => topic.trim().isNotEmpty;
+  int get totalAttachedBytes => fileSizes.values.fold(0, (a, b) => a + b);
+
+  bool get isValid => topic.trim().isNotEmpty || fileUrls.isNotEmpty;
+  bool get isStep1Valid => topic.trim().isNotEmpty || fileUrls.isNotEmpty;
   bool get isStep2Valid => outline.isNotEmpty;
 }

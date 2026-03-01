@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/generate/states/presentations/presentation_form_state.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
@@ -15,8 +16,11 @@ import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/models/language_enums.dart';
+import 'package:AIPrimary/shared/services/media_service_provider.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -35,6 +39,7 @@ class _PresentationGeneratePageState
   final TextEditingController _topicController = TextEditingController();
   final FocusNode _topicFocusNode = FocusNode();
   late final t = ref.watch(translationsPod);
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -82,8 +87,99 @@ class _PresentationGeneratePageState
         .updateTopic(_topicController.text);
   }
 
+  bool _wouldExceedLimit(int newBytes) {
+    final current = ref
+        .read(presentationFormControllerProvider)
+        .totalAttachedBytes;
+    return current + newBytes > PresentationFormState.maxTotalBytes;
+  }
+
+  Future<void> _handleImageAttach() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (image == null) return;
+
+    final bytes = await image.length();
+    if (_wouldExceedLimit(bytes)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() => _isUploading = true);
+    try {
+      final mediaService = ref.read(mediaServiceProvider);
+      final response = await mediaService.uploadMedia(filePath: image.path);
+      if (mounted) {
+        ref
+            .read(presentationFormControllerProvider.notifier)
+            .addFile(response.cdnUrl, bytes);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploading = false);
+    }
+  }
+
+  Future<void> _handleDocumentAttach() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.single;
+    if (file.path == null) return;
+
+    if (_wouldExceedLimit(file.size)) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileSizeLimitExceeded,
+        );
+      }
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() => _isUploading = true);
+    try {
+      final mediaService = ref.read(mediaServiceProvider);
+      final response = await mediaService.uploadMedia(filePath: file.path!);
+      if (mounted) {
+        ref
+            .read(presentationFormControllerProvider.notifier)
+            .addFile(response.cdnUrl, file.size);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(
+          context,
+          t.generate.presentationGenerate.fileUploadFailed,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final formState = ref.watch(presentationFormControllerProvider);
+
     // Listen for generation completion
     ref.listen(presentationGenerateControllerProvider, (previous, next) {
       next.when(
@@ -104,11 +200,7 @@ class _PresentationGeneratePageState
                 .read(presentationFormControllerProvider.notifier)
                 .setOutline(state.outlineResponse!);
             // Navigate to customization page
-            if (context.router.current.name == PresentationGenerateRoute.name) {
-              context.router.push(const PresentationCustomizationRoute());
-            } else {
-              context.router.replace(const PresentationCustomizationRoute());
-            }
+            context.router.push(const PresentationCustomizationRoute());
           }
         },
         loading: () {
@@ -141,9 +233,19 @@ class _PresentationGeneratePageState
               topicFocusNode: _topicFocusNode,
               generateState: presentationGenerateControllerProvider,
               formState: presentationFormControllerProvider,
-              onAttachFile: () => AttachFileSheet.show(context: context, t: t),
+              onAttachFile: () => AttachFileSheet.show(
+                context: context,
+                t: t,
+                onDocumentTap: _handleDocumentAttach,
+                onImageTap: _handleImageAttach,
+              ),
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
+              attachedFileUrls: formState.fileUrls,
+              isUploading: _isUploading,
+              onRemoveFile: (url) => ref
+                  .read(presentationFormControllerProvider.notifier)
+                  .removeFileUrl(url),
             ),
           ],
         ),

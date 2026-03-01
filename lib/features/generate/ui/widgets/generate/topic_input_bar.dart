@@ -111,26 +111,102 @@ class TopicInputBar extends ConsumerWidget {
     );
   }
 
+  /// Strips the UUID prefix from an uploaded filename.
+  /// Format: `<uuid>-<original-name>` → returns `<original-name>`.
+  String _displayName(String name) {
+    // UUID pattern: 8-4-4-4-12 hex chars followed by a dash
+    final uuidPrefixPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}-',
+    );
+    return name.replaceFirst(uuidPrefixPattern, '');
+  }
+
   Widget _buildFileChip(BuildContext context, String name) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Chip(
-      avatar: Icon(LucideIcons.fileText, size: 14, color: colorScheme.primary),
-      label: Text(
-        name,
-        style: TextStyle(fontSize: 12, color: colorScheme.primary),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
+    final displayName = _displayName(name);
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Main square chip body
+          Material(
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () {},
+              child: Container(
+                width: chipSize,
+                height: chipSize,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.2),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      LucideIcons.fileText,
+                      size: 24,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      displayName,
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: colorScheme.primary,
+                        height: 1.2,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Delete button in top-right corner
+          if (onRemoveFile != null)
+            Positioned(
+              top: -6,
+              right: -6,
+              child: GestureDetector(
+                onTap: () => onRemoveFile!(name),
+                child: Container(
+                  width: 18,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: colorScheme.primary.withValues(alpha: 0.3),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.close,
+                    size: 11,
+                    color: colorScheme.primary.withValues(alpha: 0.8),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
-      deleteIcon: Icon(
-        Icons.close,
-        size: 14,
-        color: colorScheme.primary.withValues(alpha: 0.7),
-      ),
-      onDeleted: onRemoveFile != null ? () => onRemoveFile!(name) : null,
-      backgroundColor: colorScheme.primary.withValues(alpha: 0.08),
-      side: BorderSide(color: colorScheme.primary.withValues(alpha: 0.2)),
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      visualDensity: VisualDensity.compact,
     );
   }
 

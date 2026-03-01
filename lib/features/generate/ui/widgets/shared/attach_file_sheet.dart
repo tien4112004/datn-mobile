@@ -89,12 +89,34 @@ class AttachFileSheet extends StatelessWidget {
             ),
             child: const Icon(LucideIcons.link, color: Colors.orange),
           ),
-          title: Text(t.generate.presentationGenerate.link),
+          title: Row(
+            children: [
+              Text(t.generate.presentationGenerate.link),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: Colors.orange.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: const Text(
+                  'Coming soon',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.orange,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
           subtitle: Text(t.generate.presentationGenerate.linkDescription),
-          onTap: () {
-            Navigator.pop(context);
-            onLinkTap();
-          },
+          enabled: false,
+          onTap: null,
         ),
       ],
     );

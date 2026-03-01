@@ -208,12 +208,21 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
 
       if (!mounted) return;
 
+      // Reset processing state immediately when WebView closes
+      setState(() {
+        isProcessing = false;
+      });
+
       // Handle result
       if (result != null) {
         _handlePaymentResult(result, t);
       }
     } catch (e) {
       if (!mounted) return;
+
+      setState(() {
+        isProcessing = false;
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -223,12 +232,6 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
           backgroundColor: Colors.red,
         ),
       );
-    } finally {
-      if (mounted) {
-        setState(() {
-          isProcessing = false;
-        });
-      }
     }
   }
 

@@ -42,7 +42,6 @@ dependencies:
   lucide_icons_flutter: ^3.1.8
   permission_handler: ^11.3.1
   image_picker: ^1.1.2
-  file_picker: ^8.0.0
   loading_overlay: ^0.5.0
   device_info_plus: ^12.1.0
   intl_phone_number_input: ^0.7.5

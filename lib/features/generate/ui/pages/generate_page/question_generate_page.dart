@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_setti
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/states/questions/question_generate_form_state.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_widget_options.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:auto_route/auto_route.dart';
@@ -34,7 +35,22 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
   late final t = ref.watch(translationsPod);
 
   @override
+  void initState() {
+    super.initState();
+    final formState = ref.read(questionGenerateFormControllerProvider);
+    _topicController.text = formState.topic;
+    _topicController.addListener(_onTopicChanged);
+  }
+
+  void _onTopicChanged() {
+    ref
+        .read(questionGenerateFormControllerProvider.notifier)
+        .updateTopic(_topicController.text);
+  }
+
+  @override
   void dispose() {
+    _topicController.removeListener(_onTopicChanged);
     _topicController.dispose();
     _topicFocusNode.dispose();
     super.dispose();
@@ -121,7 +137,16 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
         child: Column(
           children: [
             Expanded(child: _buildMainContent(context, genState, formState)),
-            _buildBottomBar(context, genState, formState),
+            TopicInputBar(
+              topicController: _topicController,
+              topicFocusNode: _topicFocusNode,
+              formState: questionGenerateFormControllerProvider,
+              generateState: questionGenerateAsyncProvider,
+              onGenerate: _handleGenerate,
+              hintText: genState.generatedQuestions.isNotEmpty
+                  ? t.generate.questionGenerate.generateMoreHint
+                  : t.generate.enterTopicHint,
+            ),
           ],
         ),
       ),
@@ -314,124 +339,4 @@ class _QuestionGeneratePageState extends ConsumerState<QuestionGeneratePage> {
       ),
     );
   }
-
-  // ── Bottom input bar ────────────────────────────────────────────────────────
-
-  Widget _buildBottomBar(
-    BuildContext context,
-    QuestionGenerationState genState,
-    QuestionGenerateFormState formState,
-  ) {
-    final hasResults = genState.generatedQuestions.isNotEmpty;
-    final isLoading = genState.isLoading;
-    final cs = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            // Topic input
-            Expanded(child: _buildTextInput(context, hasResults)),
-            const SizedBox(width: 8),
-
-            // Generate button
-            _buildIconButton(
-              color: formState.isValid && !isLoading
-                  ? cs.primary
-                  : _disabledColor(context),
-              onTap: formState.isValid && !isLoading ? _handleGenerate : null,
-              isLoading: isLoading,
-              icon: Icons.arrow_upward_rounded,
-              iconColor: formState.isValid ? Colors.white : Colors.grey[500],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextInput(BuildContext context, bool hasResults) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 120),
-      decoration: BoxDecoration(
-        color: context.isDarkMode ? Colors.grey[800] : const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: TextField(
-        controller: _topicController,
-        focusNode: _topicFocusNode,
-        maxLines: null,
-        textInputAction: TextInputAction.newline,
-        onChanged: (value) => _formController.updateTopic(value),
-        decoration: InputDecoration(
-          hintText: hasResults
-              ? t.generate.questionGenerate.generateMoreHint
-              : t.generate.enterTopicHint,
-          hintStyle: TextStyle(
-            color: context.isDarkMode ? Colors.grey[500] : Colors.grey[400],
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 14,
-          ),
-        ),
-        style: TextStyle(
-          fontSize: 16,
-          color: context.isDarkMode ? Colors.white : Colors.grey[900],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildIconButton({
-    required Color? color,
-    required VoidCallback? onTap,
-    required bool isLoading,
-    required IconData icon,
-    Color? iconColor,
-  }) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      child: Material(
-        color: color,
-        borderRadius: BorderRadius.circular(24),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Container(
-            width: 48,
-            height: 48,
-            alignment: Alignment.center,
-            child: isLoading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
-                  )
-                : Icon(icon, color: iconColor ?? Colors.white, size: 20),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color? _disabledColor(BuildContext context) =>
-      context.isDarkMode ? Colors.grey[700] : Colors.grey[300];
 }

@@ -10,7 +10,6 @@ import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/image_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/image_widget_options.dart';
-import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/shared/pods/loading_overlay_pod.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
@@ -134,7 +133,6 @@ class _ImageGeneratePageState extends ConsumerState<ImageGeneratePage> {
               topicFocusNode: _promptFocusNode,
               generateState: imageGenerateControllerProvider,
               formState: imageFormControllerProvider,
-              onAttachFile: () => AttachFileSheet.show(context: context, t: t),
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
             ),

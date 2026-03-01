@@ -19,6 +19,7 @@ import 'package:AIPrimary/shared/services/media_service_provider.dart';
 import 'package:AIPrimary/shared/utils/provider_logo_utils.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -82,6 +83,34 @@ class _PresentationGeneratePageState
     ref
         .read(presentationFormControllerProvider.notifier)
         .updateTopic(_topicController.text);
+  }
+
+  Future<void> _handleImageAttach() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (image == null) return;
+
+    if (!mounted) return;
+    ref.read(loadingOverlayPod.notifier).state = true;
+    try {
+      final mediaService = ref.read(mediaServiceProvider);
+      final response = await mediaService.uploadMedia(filePath: image.path);
+      if (mounted) {
+        ref
+            .read(presentationFormControllerProvider.notifier)
+            .addFileUrl(response.cdnUrl);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackbarUtils.showError(context, 'Failed to upload image: $e');
+      }
+    } finally {
+      if (mounted) {
+        ref.read(loadingOverlayPod.notifier).state = false;
+      }
+    }
   }
 
   Future<void> _handleDocumentAttach() async {
@@ -159,11 +188,6 @@ class _PresentationGeneratePageState
       );
     });
 
-    // Build file display names from URLs (use filename from URL)
-    final fileNames = formState.fileUrls
-        .map((url) => _extractFileName(url))
-        .toList();
-
     return Scaffold(
       backgroundColor: Themes.theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -181,34 +205,19 @@ class _PresentationGeneratePageState
                 context: context,
                 t: t,
                 onDocumentTap: _handleDocumentAttach,
+                onImageTap: _handleImageAttach,
               ),
               onGenerate: _handleGenerate,
               hintText: t.generate.enterTopicHint,
-              attachedFileNames: fileNames,
-              onRemoveFile: (name) {
-                final url = formState.fileUrls.firstWhere(
-                  (u) => _extractFileName(u) == name,
-                  orElse: () => '',
-                );
-                if (url.isNotEmpty) {
-                  ref
-                      .read(presentationFormControllerProvider.notifier)
-                      .removeFileUrl(url);
-                }
-              },
+              attachedFileUrls: formState.fileUrls,
+              onRemoveFile: (url) => ref
+                  .read(presentationFormControllerProvider.notifier)
+                  .removeFileUrl(url),
             ),
           ],
         ),
       ),
     );
-  }
-
-  String _extractFileName(String url) {
-    try {
-      return Uri.parse(url).pathSegments.last;
-    } catch (_) {
-      return url;
-    }
   }
 
   Widget _buildMainContent(BuildContext context) {

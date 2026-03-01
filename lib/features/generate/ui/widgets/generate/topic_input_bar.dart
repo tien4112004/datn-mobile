@@ -14,30 +14,47 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 class TopicInputBar extends ConsumerWidget {
   final TextEditingController topicController;
   final FocusNode topicFocusNode;
-  final VoidCallback onAttachFile;
+  final VoidCallback? onAttachFile;
   final VoidCallback onGenerate;
   final NotifierProvider formState;
   final AsyncNotifierProvider generateState;
   final String hintText;
 
-  /// Attached file names/urls to display as chips above the input
-  final List<String> attachedFileNames;
+  /// Full CDN URLs of attached files to display as chips above the input.
+  final List<String> attachedFileUrls;
 
-  /// Called when the user taps the remove button on a file chip
-  final void Function(String fileName)? onRemoveFile;
+  /// Called with the full CDN URL when the user taps the remove button.
+  final void Function(String url)? onRemoveFile;
 
   const TopicInputBar({
     super.key,
     required this.topicController,
     required this.topicFocusNode,
-    required this.onAttachFile,
+    this.onAttachFile,
     required this.onGenerate,
     required this.formState,
     required this.generateState,
     required this.hintText,
-    this.attachedFileNames = const [],
+    this.attachedFileUrls = const [],
     this.onRemoveFile,
   });
+
+  static const _imageExtensions = {'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'};
+
+  bool _isImageUrl(String url) {
+    final ext = url.split('.').last.split('?').first.toLowerCase();
+    return _imageExtensions.contains(ext);
+  }
+
+  /// Strips the UUID prefix from an uploaded filename.
+  /// Format: `<uuid>-<original-name>` → returns `<original-name>`.
+  String _displayName(String url) {
+    final filename = Uri.parse(url).pathSegments.lastOrNull ?? url;
+    final uuidPrefixPattern = RegExp(
+      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}-',
+    );
+    return filename.replaceFirst(uuidPrefixPattern, '');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,21 +95,27 @@ class TopicInputBar extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // File chips row
-                if (attachedFileNames.isNotEmpty) ...[
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 4,
-                    children: attachedFileNames
-                        .map((name) => _buildFileChip(context, name))
-                        .toList(),
+                if (attachedFileUrls.isNotEmpty) ...[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (int i = 0; i < attachedFileUrls.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 8),
+                          _buildFileChip(context, attachedFileUrls[i]),
+                        ],
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                 ],
                 // Input row
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    _buildAttachButton(context),
+                    onAttachFile != null
+                        ? _buildAttachButton(context)
+                        : const SizedBox.shrink(),
                     const SizedBox(width: 8),
                     _buildTextInput(context),
                     const SizedBox(width: 8),
@@ -111,19 +134,14 @@ class TopicInputBar extends ConsumerWidget {
     );
   }
 
-  /// Strips the UUID prefix from an uploaded filename.
-  /// Format: `<uuid>-<original-name>` → returns `<original-name>`.
-  String _displayName(String name) {
-    // UUID pattern: 8-4-4-4-12 hex chars followed by a dash
-    final uuidPrefixPattern = RegExp(
-      r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}-',
-    );
-    return name.replaceFirst(uuidPrefixPattern, '');
+  Widget _buildFileChip(BuildContext context, String url) {
+    return _isImageUrl(url)
+        ? _buildImageChip(context, url)
+        : _buildDocumentChip(context, url);
   }
 
-  Widget _buildFileChip(BuildContext context, String name) {
+  Widget _buildImageChip(BuildContext context, String url) {
     final colorScheme = Theme.of(context).colorScheme;
-    final displayName = _displayName(name);
     const double chipSize = 64;
 
     return SizedBox(
@@ -132,82 +150,138 @@ class TopicInputBar extends ConsumerWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Main square chip body
-          Material(
-            color: colorScheme.primary.withValues(alpha: 0.08),
+          // Thumbnail
+          ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: () {},
-              child: Container(
+            child: Image.network(
+              url,
+              width: chipSize,
+              height: chipSize,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => Container(
                 width: chipSize,
                 height: chipSize,
                 decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: colorScheme.primary.withValues(alpha: 0.2),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      LucideIcons.fileText,
-                      size: 24,
-                      color: colorScheme.primary,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      displayName,
-                      style: TextStyle(
-                        fontSize: 9,
-                        color: colorScheme.primary,
-                        height: 1.2,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                child: Icon(
+                  LucideIcons.imageOff,
+                  size: 24,
+                  color: colorScheme.primary.withValues(alpha: 0.5),
                 ),
               ),
             ),
           ),
-          // Delete button in top-right corner
-          if (onRemoveFile != null)
-            Positioned(
-              top: -6,
-              right: -6,
-              child: GestureDetector(
-                onTap: () => onRemoveFile!(name),
-                child: Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: colorScheme.primary.withValues(alpha: 0.3),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.close,
-                    size: 11,
-                    color: colorScheme.primary.withValues(alpha: 0.8),
-                  ),
-                ),
-              ),
-            ),
+          // Delete button
+          _buildDeleteButton(context, url),
         ],
       ),
     );
+  }
+
+  Widget _buildDocumentChip(BuildContext context, String url) {
+    final name = _displayName(url);
+    final ext = url.split('.').last.split('?').first.toLowerCase();
+    final chipColor = _docColor(ext);
+    const double chipSize = 64;
+
+    return SizedBox(
+      width: chipSize,
+      height: chipSize,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Material(
+            color: chipColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: chipSize,
+              height: chipSize,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: chipColor.withValues(alpha: 0.25)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(_docIcon(ext), size: 22, color: chipColor),
+                  const SizedBox(height: 4),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: chipColor,
+                      height: 1.2,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          _buildDeleteButton(context, url),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton(BuildContext context, String url) {
+    if (onRemoveFile == null) return const SizedBox.shrink();
+    final colorScheme = Theme.of(context).colorScheme;
+    return Positioned(
+      top: -6,
+      right: -6,
+      child: GestureDetector(
+        onTap: () => onRemoveFile!(url),
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: 0.3),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+          child: Icon(
+            Icons.close,
+            size: 11,
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _docColor(String ext) {
+    return switch (ext) {
+      'pdf' => const Color(0xFFE53935),
+      'doc' || 'docx' => const Color(0xFF1565C0),
+      'txt' => const Color(0xFF546E7A),
+      _ => const Color(0xFF546E7A),
+    };
+  }
+
+  IconData _docIcon(String ext) {
+    return switch (ext) {
+      'pdf' => LucideIcons.fileType,
+      'doc' || 'docx' => LucideIcons.fileText,
+      'txt' => LucideIcons.fileCode,
+      _ => LucideIcons.file,
+    };
   }
 
   /// Attach file button.

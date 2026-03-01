@@ -1,10 +1,11 @@
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/features/projects/ui/widgets/desktop_hint_button.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
+import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MindmapDetail extends ConsumerStatefulWidget {
   final String mindmapId;
@@ -46,17 +47,18 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   Widget _buildContent({required String mindmapId}) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: const CustomAppBar(title: 'Mindmap Detail'),
       body: SafeArea(
         bottom: false,
         child: Stack(
           children: [
-            Positioned.fill(child: _buildWebView(mindmapId: widget.mindmapId)),
+            _buildWebView(mindmapId: widget.mindmapId),
             if (_isWebViewLoading)
               Container(
                 color: Colors.white,
                 child: const Center(child: CircularProgressIndicator()),
               ),
-            if (widget.onClose != null) _buildCloseButton(),
+            const DesktopHintDialog(),
           ],
         ),
       ),
@@ -83,28 +85,7 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
                 ],
               ),
             ),
-            if (widget.onClose != null) _buildCloseButton(),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCloseButton() {
-    return Positioned(
-      top: 16,
-      left: 16,
-      child: Material(
-        color: Colors.white.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(20),
-        elevation: 2,
-        child: InkWell(
-          onTap: widget.onClose,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Icon(LucideIcons.x, size: 20, color: Colors.grey.shade700),
-          ),
         ),
       ),
     );

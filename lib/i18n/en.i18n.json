@@ -197,6 +197,12 @@
         "error": "Failed to delete mindmap"
       }
     },
+    "desktopHint": {
+      "buttonLabel": "Edit Mode",
+      "dialogTitle": "Better on Desktop",
+      "dialogMessage": "The edit mode is designed for wide screens. For the full editing experience, open this on a laptop or PC monitor using the web version.",
+      "dialogAction": "Got it"
+    },
     "images": {
       "title": "Image",
       "search_images": "Search images...",

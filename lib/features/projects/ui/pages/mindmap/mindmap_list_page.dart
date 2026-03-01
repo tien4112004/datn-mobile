@@ -87,22 +87,21 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
             leading: Semantics(
-              label: 'Go back',
+              label: t.common.goBack,
               button: true,
-              hint: 'Double tap to return to previous page',
               child: IconButton(
                 icon: const Icon(LucideIcons.arrowLeft),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   context.router.maybePop();
                 },
-                tooltip: 'Back',
+                tooltip: t.common.back,
               ),
             ),
             actions: [
               IconButton(
                 icon: const Icon(LucideIcons.refreshCw),
-                tooltip: 'Refresh',
+                tooltip: t.common.refresh,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   pagingController.refresh();
@@ -312,7 +311,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
           padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              t.projects.no_more_mindmaps,
+              t.projects.mindmaps.noMore,
               style: const TextStyle(color: Colors.grey),
             ),
           ),
@@ -373,7 +372,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
           padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
-              t.projects.no_more_mindmaps,
+              t.projects.mindmaps.noMore,
               style: const TextStyle(color: Colors.grey),
             ),
           ),
@@ -462,14 +461,15 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   }
 }
 
-class _ErrorIndicator extends StatelessWidget {
+class _ErrorIndicator extends ConsumerWidget {
   final String error;
   final VoidCallback onRetry;
 
   const _ErrorIndicator({required this.error, required this.onRetry});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -479,7 +479,7 @@ class _ErrorIndicator extends StatelessWidget {
             const Icon(LucideIcons.circleAlert, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              'Failed to load mindmaps',
+              t.projects.mindmaps.failedToLoad,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -492,7 +492,7 @@ class _ErrorIndicator extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(LucideIcons.refreshCw),
-              label: const Text('Retry'),
+              label: Text(t.common.retry),
             ),
           ],
         ),
@@ -501,20 +501,21 @@ class _ErrorIndicator extends StatelessWidget {
   }
 }
 
-class _NewPageErrorIndicator extends StatelessWidget {
+class _NewPageErrorIndicator extends ConsumerWidget {
   final VoidCallback onRetry;
 
   const _NewPageErrorIndicator({required this.onRetry});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Center(
         child: TextButton.icon(
           onPressed: onRetry,
           icon: const Icon(LucideIcons.refreshCw, size: 16),
-          label: const Text('Tap to retry'),
+          label: Text(t.common.tapToRetry),
         ),
       ),
     );

@@ -180,9 +180,9 @@ class ImageResultPage extends ConsumerWidget {
       await shareService.shareImage(url: url, prompt: prompt);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to share image: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(t.common.failedToShare(error: e.toString()))),
+        );
       }
     }
   }

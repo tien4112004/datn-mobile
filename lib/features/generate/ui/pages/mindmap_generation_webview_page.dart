@@ -73,7 +73,9 @@ class _MindmapGenerationWebViewPageState
 
       // Create empty mindmap request
       final createRequest = CreateMindmapRequestDto(
-        title: formState.topic.isEmpty ? 'Untitled Mindmap' : formState.topic,
+        title: formState.topic.isEmpty
+            ? ref.read(translationsPod).projects.mindmaps.title
+            : formState.topic,
         description: '',
         nodes: [],
         edges: [],
@@ -103,14 +105,16 @@ class _MindmapGenerationWebViewPageState
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
+
     // Check platform support
     if (InAppWebViewPlatform.instance == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Generate Mindmap')),
-        body: const Center(
+        appBar: AppBar(title: Text(t.projects.mindmaps.generateMindmap)),
+        body: Center(
           child: Text(
-            'WebView is not supported on this platform.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            t.projects.mindmaps.webViewNotSupported,
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
       );
@@ -118,16 +122,16 @@ class _MindmapGenerationWebViewPageState
 
     // Show error if mindmap creation failed
     if (_error != null) {
-      return _buildErrorView();
+      return _buildErrorView(t);
     }
 
     // Show loading while waiting for mindmap ID
     if (_isLoading || _mindmapId == null) {
-      return _buildLoadingScaffold();
+      return _buildLoadingScaffold(t);
     }
 
     // Build WebView once we have the ID
-    final locale = ref.read(translationsPod).$meta.locale.languageCode;
+    final locale = t.$meta.locale.languageCode;
     final tokenParam = _accessToken != null ? '&token=$_accessToken' : '';
     final url =
         '${Config.mindmapBaseUrl}/mindmap/embed/$_mindmapId?mode=generate&locale=$locale$tokenParam';
@@ -136,35 +140,35 @@ class _MindmapGenerationWebViewPageState
       debugPrint('Opening mindmap generation webview: $url');
     }
 
-    return _buildWebViewScaffold(url);
+    return _buildWebViewScaffold(url, t);
   }
 
-  Widget _buildLoadingScaffold() {
+  Widget _buildLoadingScaffold(dynamic t) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Generate Mindmap'),
+        title: Text(t.projects.mindmaps.generateMindmap),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.router.pop(),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Creating mindmap...'),
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(t.projects.mindmaps.creatingMindmap),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildErrorView() {
+  Widget _buildErrorView(dynamic t) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Error'),
+        title: Text(t.common.error),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.router.pop(),
@@ -178,13 +182,16 @@ class _MindmapGenerationWebViewPageState
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              const Text(
-                'Failed to Create Mindmap',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                t.projects.mindmaps.failedToCreate,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                _error ?? 'Unknown error occurred',
+                _error ?? t.common.somethingWentWrong,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.grey),
               ),
@@ -196,12 +203,12 @@ class _MindmapGenerationWebViewPageState
                   });
                   _createMindmap();
                 },
-                child: const Text('Retry'),
+                child: Text(t.common.retry),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () => context.router.pop(),
-                child: const Text('Go Back'),
+                child: Text(t.common.goBack),
               ),
             ],
           ),
@@ -210,10 +217,14 @@ class _MindmapGenerationWebViewPageState
     );
   }
 
-  Widget _buildWebViewScaffold(String? url) {
+  Widget _buildWebViewScaffold(String? url, dynamic t) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isGenerationComplete ? 'Mindmap' : 'Generating Mindmap'),
+        title: Text(
+          _isGenerationComplete
+              ? t.projects.mindmaps.title
+              : t.projects.mindmaps.generatingMindmap,
+        ),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () =>
@@ -250,13 +261,13 @@ class _MindmapGenerationWebViewPageState
           if (!_isReactReady)
             Container(
               color: Theme.of(context).scaffoldBackgroundColor,
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Starting generation...'),
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16),
+                    Text(t.projects.mindmaps.startingGeneration),
                   ],
                 ),
               ),
@@ -299,7 +310,9 @@ class _MindmapGenerationWebViewPageState
           }
         } else {
           // Generation failed - set error and clear loading state
-          final errorMessage = data['error'] as String? ?? 'Generation failed';
+          final errorMessage =
+              data['error'] as String? ??
+              ref.read(translationsPod).common.somethingWentWrong;
           debugPrint('Generation error: $errorMessage');
           if (mounted) {
             setState(() {
@@ -366,17 +379,16 @@ class _MindmapGenerationWebViewPageState
   }
 
   void _handleClose() {
+    final t = ref.read(translationsPod);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cancel Generation?'),
-        content: const Text(
-          'Are you sure you want to cancel the mindmap generation?',
-        ),
+        title: Text(t.projects.mindmaps.cancelGenerationDialog.title),
+        content: Text(t.projects.mindmaps.cancelGenerationDialog.message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Continue'),
+            child: Text(t.projects.mindmaps.cancelGenerationDialog.continue_),
           ),
           TextButton(
             onPressed: () {
@@ -384,7 +396,7 @@ class _MindmapGenerationWebViewPageState
               context.router.pop();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Cancel Generation'),
+            child: Text(t.projects.mindmaps.cancelGenerationDialog.cancel),
           ),
         ],
       ),

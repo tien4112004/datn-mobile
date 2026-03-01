@@ -3,6 +3,7 @@ import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/projects/domain/entity/shared_resource.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/abstract_resource_card.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -41,11 +42,12 @@ class SharedResourceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final resourceType = _getResourceType(sharedResource.type);
 
     return AbstractDocumentCard(
       title: sharedResource.title,
-      description: sharedResource.ownerName,
+      description: t.projects.shared_by(ownerName: sharedResource.ownerName),
       resourceType: resourceType,
       thumbnail: sharedResource.thumbnailUrl,
       onTap: () =>

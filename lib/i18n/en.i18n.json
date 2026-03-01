@@ -64,7 +64,8 @@
       "lightDescription": "Always use light theme",
       "darkDescription": "Always use dark theme",
       "systemDescription": "Follow system settings"
-    }
+    },
+    "pageInDevelopment": "This page is in development"
   },
   "auth": {
     "or": "OR",
@@ -179,6 +180,11 @@
       "title": "Presentation",
       "search_presentations": "Search presentations...",
       "all_presentations": "All Presentations",
+      "failedToLoad": "Failed to load presentations",
+      "noMore": "No more presentations",
+      "loadingPresentation": "Loading presentation...",
+      "failedToLoadPresentation": "Failed to load presentation",
+      "presentationDetail": "Presentation Detail",
       "deleteDialog": {
         "title": "Delete Presentation",
         "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
@@ -192,6 +198,20 @@
       "all_mindmaps": "All Mindmaps",
       "webViewNotSupported": "WebView is not supported on this platform.",
       "loadingMindmap": "Loading mindmap...",
+      "generateMindmap": "Generate Mindmap",
+      "generatingMindmap": "Generating Mindmap",
+      "creatingMindmap": "Creating mindmap...",
+      "startingGeneration": "Starting generation...",
+      "failedToCreate": "Failed to Create Mindmap",
+      "cancelGenerationDialog": {
+        "title": "Cancel Generation?",
+        "message": "Are you sure you want to cancel the mindmap generation?",
+        "cancel": "Cancel Generation",
+        "continue_": "Continue"
+      },
+      "failedToLoad": "Failed to load mindmaps",
+      "noMore": "No more mindmaps",
+      "webViewLoadError": "WebView error",
       "deleteDialog": {
         "title": "Delete Mindmap",
         "message": "Are you sure you want to delete \"$title\"? This action cannot be undone.",
@@ -226,7 +246,8 @@
         "saved": "Image saved to gallery",
         "share_failed": "Failed to share image",
         "save_failed": "Failed to save image"
-      }
+      },
+      "delete": "Delete"
     },
     "resource_types": {
       "image": "Image",
@@ -255,6 +276,7 @@
     "coming_soon": "$type coming soon",
     "opening": "Opening $title",
     "unknown_date": "Unknown date",
+    "recently": "Recently",
     "minutes_ago": "$count minutes ago",
     "hours_ago": "$count hours ago",
     "yesterday": "Yesterday",
@@ -307,7 +329,22 @@
       "discard": "Discard"
     },
     "all": "All",
-    "filterBy": "Filter by $label"
+    "filterBy": "Filter by $label",
+    "done": "Done",
+    "goBack": "Go Back",
+    "submit": "Submit",
+    "noMore": "No more items",
+    "back": "Back",
+    "refresh": "Refresh",
+    "copy": "Copy",
+    "show": "Show",
+    "hide": "Hide",
+    "tapToRetry": "Tap to retry",
+    "searchHint": "Search $title",
+    "noResourcesAvailable": "No resources available",
+    "noResultsFound": "No results found",
+    "update": "Update",
+    "create": "Create"
   },
   "errors": {
     "network_error": "Network error occurred. Please try again.",
@@ -371,7 +408,7 @@
   "generate": {
     "enterTopicHint": "What is on your mind?",
     "advancedSettings": "Advanced Settings",
-    "model":"Mô hình",
+    "model": "Mô hình",
     "generatorTypes": {
       "presentation": "Presentation",
       "image": "Image",
@@ -861,6 +898,15 @@
       "manualGradingRequired": "Manual grading required",
       "expectedAnswerReference": "Expected Answer (Reference)",
       "referenceAnswer": "Reference Answer"
+    },
+    "publishDialog": {
+      "title": "Publish to Public Bank",
+      "tooltip": "Publish to Public Bank",
+      "content": "Submit this question for review to be added to the public bank?",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "successMessage": "Question submitted for review successfully",
+      "failedMessage": "Failed to submit: $error"
     }
   },
   "classes": {
@@ -1239,7 +1285,6 @@
     "viewMode": "View Mode",
     "editMode": "Edit Mode",
     "editAssignment": "Edit Assignment",
-
     "emptyState": {
       "noAssignments": "No assignments yet",
       "createFirstMessage": "Create your first assignment to get started",
@@ -1248,7 +1293,6 @@
       "addFirstQuestion": "Add your first Question",
       "addFirstQuestionMessage": "Use the Floating Action Button to add your first question."
     },
-
     "card": {
       "questions": "questions",
       "points": "points",
@@ -1256,7 +1300,6 @@
       "edit": "Edit",
       "delete": "Delete"
     },
-
     "dates": {
       "createdPrefix": "Created",
       "createdOn": "Created on $date",
@@ -1264,7 +1307,6 @@
       "yesterday": "yesterday",
       "daysAgo": "$count days ago"
     },
-
     "form": {
       "createTitle": "Create New Assignment",
       "editTitle": "Edit Assignment",
@@ -1282,7 +1324,6 @@
       "updateSuccess": "Assignment updated successfully",
       "error": "Error: $error"
     },
-
     "deleteDialog": {
       "title": "Delete Assignment",
       "message": "Are you sure you want to delete \"$title\"?",
@@ -1290,7 +1331,6 @@
       "delete": "Delete",
       "success": "Assignment deleted successfully"
     },
-
     "metadata": {
       "subject": "Subject",
       "gradeLevel": "Grade Level",
@@ -1298,20 +1338,17 @@
       "description": "Description",
       "noDescription": "No Description Provided"
     },
-
     "actionDock": {
       "cancel": "Cancel",
       "saveChanges": "Save Changes",
       "saving": "Saving..."
     },
-
     "floatingMenu": {
       "addQuestion": "Add Question",
       "close": "Close",
       "fromBank": "From Bank",
       "createNew": "Create New"
     },
-
     "questionPicker": {
       "title": "Add Questions",
       "fromBank": "From Question Bank",
@@ -1320,7 +1357,6 @@
       "createNewDescription": "Build a question from scratch",
       "cancel": "Cancel"
     },
-
     "pointsAssignment": {
       "title": "Assign Points to Questions",
       "subtitle": "Set points for each question in this assignment",
@@ -1335,7 +1371,6 @@
       "allPointsMustBeGreaterThanZero": "All points must be greater than 0",
       "contextBannerTitle(count)": "$count reading passage(s) will also be imported:"
     },
-
     "questionCard": {
       "options": "Options",
       "optionsLabel": "Options",
@@ -1353,7 +1388,6 @@
       "collapse": "Collapse",
       "expand": "Expand"
     },
-
     "filters": {
       "title": "Assignment Filters",
       "gradeLevel": "Grade Level",
@@ -1364,7 +1398,6 @@
       "applyFilters": "Apply Filters",
       "searchHint": "Search assignments..."
     },
-
     "matrixDashboard": {
       "title": "Assessment Matrix",
       "subtitle(actual, target, percentage)": "$actual of $target questions ($percentage% complete)",
@@ -1380,21 +1413,18 @@
       "type": "Type",
       "total": "Total"
     },
-
     "questionsSection": {
       "title": "Questions",
       "count": "$count ",
       "available": "$count  available",
       "generate": "Generate"
     },
-
     "infoHeader": {
       "subject": "Subject",
       "grade": "Grade",
       "questions": "Questions",
       "editInfo": "Edit Info"
     },
-
     "statuses": {
       "draft": "Draft",
       "generating": "Generating",
@@ -1402,7 +1432,6 @@
       "error": "Error",
       "archived": "Archived"
     },
-
     "matrix": {
       "mc": "MC",
       "match": "Match",
@@ -1415,7 +1444,6 @@
       "com": "COM",
       "appAbbr": "APP"
     },
-
     "detail": {
       "tabs": {
         "info": "Info",
@@ -1506,7 +1534,6 @@
         }
       }
     },
-
     "context": {
       "readingPassage": "Reading Passage",
       "untitledContext": "Untitled Context",
@@ -1775,6 +1802,17 @@
       "invalidEmail": "Invalid email address",
       "enrollmentDate": "Enrollment Date",
       "selectDate": "Select date"
+    },
+    "credentials": {
+      "dialogTitle": "Student Account Created",
+      "studentLabel": "Student",
+      "accountCredentials": "Account Credentials",
+      "username": "Username",
+      "password": "Password",
+      "email": "Email",
+      "notAvailable": "N/A",
+      "copiedToClipboard": "$label copied to clipboard",
+      "copy": "Copy $label"
     }
   },
   "home": {

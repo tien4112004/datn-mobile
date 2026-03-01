@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// A widget that renders a full presentation detail view using the
 /// React app's PresentationEmbedPage.
@@ -42,18 +43,22 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
+
     if (InAppWebViewPlatform.instance == null) {
-      return const Scaffold(
-        appBar: CustomAppBar(title: 'Presentation Detail'),
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: t.projects.presentations.presentationDetail,
+        ),
         body: Stack(
           children: [
             Center(
               child: Text(
-                'WebView is not supported on this platform.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                t.projects.mindmaps.webViewNotSupported,
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
             ),
-            DesktopHintDialog(),
+            const DesktopHintDialog(),
           ],
         ),
       );
@@ -68,8 +73,9 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   }
 
   Widget _buildContent(Presentation presentation) {
+    final t = ref.watch(translationsPod);
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Presentation Detail'),
+      appBar: CustomAppBar(title: t.projects.presentations.presentationDetail),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
@@ -88,19 +94,20 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   }
 
   Widget _buildLoading() {
+    final t = ref.watch(translationsPod);
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            const Center(
+            Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
                   Text(
-                    'Loading presentation...',
-                    style: TextStyle(color: Colors.grey),
+                    t.projects.presentations.loadingPresentation,
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
@@ -113,6 +120,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
   }
 
   Widget _buildError(Object error) {
+    final t = ref.watch(translationsPod);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -127,9 +135,12 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
                     color: Colors.red,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Failed to load presentation',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    t.projects.presentations.failedToLoadPresentation,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Padding(
@@ -145,7 +156,7 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
                     ElevatedButton.icon(
                       onPressed: widget.onRetry,
                       icon: const Icon(LucideIcons.rotateCw),
-                      label: const Text('Retry'),
+                      label: Text(t.common.retry),
                     ),
                   ],
                 ],

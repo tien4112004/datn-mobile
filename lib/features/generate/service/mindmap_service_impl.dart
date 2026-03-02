@@ -14,9 +14,10 @@ class MindmapServiceImpl implements MindmapService {
     int? maxBranchesPerNode,
     String? grade,
     String? subject,
+    List<String>? fileUrls,
   }) async {
     // Add business logic validations here
-    if (topic.trim().isEmpty) {
+    if (topic.trim().isEmpty && (fileUrls == null || fileUrls.isEmpty)) {
       throw ArgumentError('Topic cannot be empty');
     }
 
@@ -43,6 +44,7 @@ class MindmapServiceImpl implements MindmapService {
       maxBranchesPerNode: maxBranchesPerNode,
       grade: grade,
       subject: subject,
+      fileUrls: fileUrls,
     );
 
     // Call the repository to generate mindmap via API

@@ -31,6 +31,9 @@ class PresentationGenerateRequest {
   /// The subject area for the content (max 100 chars)
   final String? subject;
 
+  /// File URLs that were used during outline generation
+  final List<String>? fileUrls;
+
   const PresentationGenerateRequest({
     required this.model,
     required this.provider,
@@ -41,6 +44,7 @@ class PresentationGenerateRequest {
     this.others,
     this.grade,
     this.subject,
+    this.fileUrls,
   });
 
   factory PresentationGenerateRequest.fromJson(Map<String, dynamic> json) =>

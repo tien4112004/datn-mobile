@@ -28,6 +28,7 @@ class MindmapGenerateController extends AsyncNotifier<MindmapGenerateState> {
             maxBranchesPerNode: formState.maxBranchesPerNode,
             grade: formState.grade,
             subject: formState.subject,
+            fileUrls: formState.fileUrls.isNotEmpty ? formState.fileUrls : null,
           );
 
       return MindmapGenerateState.success(response);

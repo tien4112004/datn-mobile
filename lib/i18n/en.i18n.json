@@ -466,7 +466,9 @@
       "error": "Error",
       "failedToCreatePresentation": "Failed to Create Presentation",
       "unknownError": "Unknown error occurred",
-      "retry": "Retry"
+      "retry": "Retry",
+      "fileSizeLimitExceeded": "Total attachment size cannot exceed 10 MB.",
+      "fileUploadFailed": "Failed to upload file."
     },
     "outlineEditor": {
       "title": "Edit Outline",

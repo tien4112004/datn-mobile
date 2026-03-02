@@ -466,7 +466,9 @@
       "error": "Lỗi",
       "failedToCreatePresentation": "Không thể tạo bài thuyết trình",
       "unknownError": "Đã xảy ra lỗi không xác định",
-      "retry": "Thử lại"
+      "retry": "Thử lại",
+      "fileSizeLimitExceeded": "Tổng dung lượng tệp đính kèm không được vượt quá 10 MB.",
+      "fileUploadFailed": "Tải tệp lên thất bại."
     },
     "outlineEditor": {
       "title": "Chỉnh sửa dàn ý",

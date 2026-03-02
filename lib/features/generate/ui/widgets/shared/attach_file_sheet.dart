@@ -1,6 +1,5 @@
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
-import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -20,30 +19,21 @@ class AttachFileSheet extends StatelessWidget {
     required this.onLinkTap,
   });
 
-  static void show({required BuildContext context, required Translations t}) {
+  static void show({
+    required BuildContext context,
+    required Translations t,
+    VoidCallback? onDocumentTap,
+    VoidCallback? onImageTap,
+    VoidCallback? onLinkTap,
+  }) {
     PickerBottomSheet.show(
       context: context,
       title: t.generate.presentationGenerate.attachFiles,
       child: AttachFileSheet(
         t: t,
-        onDocumentTap: () {
-          SnackbarUtils.showInfo(
-            context,
-            t.generate.presentationGenerate.documentPickerComingSoon,
-          );
-        },
-        onImageTap: () {
-          SnackbarUtils.showInfo(
-            context,
-            t.generate.presentationGenerate.imagePickerComingSoon,
-          );
-        },
-        onLinkTap: () {
-          SnackbarUtils.showInfo(
-            context,
-            t.generate.presentationGenerate.linkInputComingSoon,
-          );
-        },
+        onDocumentTap: onDocumentTap ?? () {},
+        onImageTap: onImageTap ?? () {},
+        onLinkTap: onLinkTap ?? () {},
       ),
     );
   }
@@ -99,12 +89,34 @@ class AttachFileSheet extends StatelessWidget {
             ),
             child: const Icon(LucideIcons.link, color: Colors.orange),
           ),
-          title: Text(t.generate.presentationGenerate.link),
+          title: Row(
+            children: [
+              Text(t.generate.presentationGenerate.link),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: Colors.orange.withValues(alpha: 0.4),
+                  ),
+                ),
+                child: const Text(
+                  'Coming soon',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.orange,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
           subtitle: Text(t.generate.presentationGenerate.linkDescription),
-          onTap: () {
-            Navigator.pop(context);
-            onLinkTap();
-          },
+          enabled: false,
+          onTap: null,
         ),
       ],
     );

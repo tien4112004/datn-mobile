@@ -45,7 +45,12 @@ class AuthController extends AsyncNotifier<AuthState> {
       // Register FCM token with backend
       await _registerFcmToken();
 
-      return AuthState(isAuthenticated: true);
+      // Detect temporary student password — force a password change
+      final requiresPasswordChange = password.contains('Temp@');
+      return AuthState(
+        isAuthenticated: true,
+        requiresPasswordChange: requiresPasswordChange,
+      );
     });
   }
 

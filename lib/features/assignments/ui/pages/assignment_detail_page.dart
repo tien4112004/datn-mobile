@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/assignments/data/dto/api/api_matrix_dto.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/matrix_utils.dart';
@@ -49,7 +50,7 @@ class AssignmentDetailPage extends ConsumerStatefulWidget {
 }
 
 class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, GlobalHelper {
   bool _isEditMode = false;
   bool _isSaving = false;
   late TabController _tabController;
@@ -289,14 +290,8 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
         setState(() => _isSaving = false);
 
         final t = ref.read(translationsPod);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              t.assignments.detail.saveError(error: error.toString()),
-            ),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
+        showErrorSnack(
+          child: Text(t.assignments.detail.saveError(error: error.toString())),
         );
       }
     }
@@ -326,27 +321,19 @@ class _AssignmentDetailPageState extends ConsumerState<AssignmentDetailPage>
       if (!mounted) return;
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.assignments.detail.matrix.templateImported(
-              name: selectedTemplate.name,
-            ),
+      showInfoSnack(
+        child: Text(
+          t.assignments.detail.matrix.templateImported(
+            name: selectedTemplate.name,
           ),
-          backgroundColor: Colors.green.shade600,
-          behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e) {
       if (!mounted) return;
 
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.assignments.detail.matrix.templateImportError),
-          backgroundColor: Colors.red.shade600,
-          behavior: SnackBarBehavior.floating,
-        ),
+      showErrorSnack(
+        child: Text(t.assignments.detail.matrix.templateImportError),
       );
     }
   }

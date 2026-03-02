@@ -313,8 +313,28 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
       helpText: t.classes.postUpsert.selectDueDate,
     );
 
-    if (pickedDate != null && mounted) {
-      setState(() => _dueDate = pickedDate);
+    if (pickedDate == null || !mounted) return;
+
+    final initialTime = _dueDate != null
+        ? TimeOfDay(hour: _dueDate!.hour, minute: _dueDate!.minute)
+        : const TimeOfDay(hour: 23, minute: 59);
+
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+      helpText: t.classes.postUpsert.selectDueTime,
+    );
+
+    if (mounted) {
+      setState(() {
+        _dueDate = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime?.hour ?? 23,
+          pickedTime?.minute ?? 59,
+        );
+      });
     }
   }
 

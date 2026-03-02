@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/coin_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -42,10 +43,13 @@ class CoinPackageCard extends ConsumerWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: package.isPopular == true
-                ? LinearGradient(
+                ? const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.amber.shade50, Colors.amber.shade100],
+                    colors: [
+                      CoinColors.backgroundSubtle,
+                      CoinColors.backgroundLight,
+                    ],
                   )
                 : null,
           ),
@@ -70,8 +74,19 @@ class CoinPackageCard extends ConsumerWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.amber.shade700,
+                        gradient: const LinearGradient(
+                          colors: [CoinColors.accent, CoinColors.textDark],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                         borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: CoinColors.accent.withValues(alpha: 0.3),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
                         t.payment.coinPurchase.package.popular,
@@ -79,6 +94,7 @@ class CoinPackageCard extends ConsumerWidget {
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
@@ -89,10 +105,10 @@ class CoinPackageCard extends ConsumerWidget {
               // Coins display
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     LucideIcons.coins,
                     size: 32,
-                    color: Colors.amber.shade700,
+                    color: CoinColors.accent,
                   ),
                   const SizedBox(width: 12),
                   Column(
@@ -103,7 +119,7 @@ class CoinPackageCard extends ConsumerWidget {
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: CoinColors.textDark,
                             ),
                       ),
                       Text(

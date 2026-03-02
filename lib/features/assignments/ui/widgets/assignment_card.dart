@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_entity.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
@@ -342,7 +343,11 @@ class AssignmentCard extends ConsumerWidget {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.assignments.deleteDialog.success)),
+          SnackBar(
+            content: Text(t.assignments.deleteDialog.success),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Themes.errorColor,
+          ),
         );
       }
     }

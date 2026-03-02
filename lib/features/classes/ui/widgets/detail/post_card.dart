@@ -12,6 +12,7 @@ import 'package:AIPrimary/features/classes/ui/widgets/posts/post_header.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_pin_indicator.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_attachments_display.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resources_display.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/widgets/themed_card.dart';
@@ -31,7 +32,7 @@ class PostCard extends ConsumerStatefulWidget {
   ConsumerState<PostCard> createState() => _PostCardState();
 }
 
-class _PostCardState extends ConsumerState<PostCard> {
+class _PostCardState extends ConsumerState<PostCard> with GlobalHelper {
   bool _showComments = false;
 
   Future<void> _togglePin() async {
@@ -47,10 +48,26 @@ class _PostCardState extends ConsumerState<PostCard> {
           );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.classes.posts.pinError(error: e.toString())),
-          ),
+        showErrorSnack(
+          child: Text(t.classes.posts.pinError(error: e.toString())),
+        );
+      }
+    }
+  }
+
+  Future<void> _sendDeadlineReminder() async {
+    HapticFeedback.mediumImpact();
+    final t = ref.read(translationsPod);
+    try {
+      final repository = ref.read(postRepositoryProvider);
+      await repository.sendDeadlineReminder(widget.post.id);
+      if (mounted) {
+        showInfoSnack(child: Text(t.classes.postOptions.notifyStudents));
+      }
+    } catch (e) {
+      if (mounted) {
+        showErrorSnack(
+          child: Text(t.classes.posts.pinError(error: e.toString())),
         );
       }
     }
@@ -87,10 +104,8 @@ class _PostCardState extends ConsumerState<PostCard> {
             .deletePost(classId: widget.classEntity.id, postId: widget.post.id);
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(t.classes.posts.deleteError(error: e.toString())),
-            ),
+          showErrorSnack(
+            child: Text(t.classes.posts.deleteError(error: e.toString())),
           );
         }
       }
@@ -140,6 +155,10 @@ class _PostCardState extends ConsumerState<PostCard> {
                               );
                             },
                       onDelete: isStudent ? null : _deletePost,
+                      onNotifyStudents:
+                          (!isStudent && widget.post.type == PostType.exercise)
+                          ? _sendDeadlineReminder
+                          : null,
                     ),
 
                     // Post content

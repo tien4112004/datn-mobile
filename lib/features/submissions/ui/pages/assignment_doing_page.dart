@@ -17,6 +17,7 @@ import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -55,7 +56,8 @@ class AssignmentDoingPage extends ConsumerStatefulWidget {
       _AssignmentDoingPageState();
 }
 
-class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
+class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage>
+    with GlobalHelper<AssignmentDoingPage> {
   int _currentGroupIndex = 0;
   List<QuestionGroup> _questionGroups = [];
   DateTime? _startTime;
@@ -71,12 +73,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
     final theme = Theme.of(context);
 
     if (widget.postId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.submissions.errors.missingPostId),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
+      showErrorSnack(child: Text(t.submissions.errors.missingPostId));
       return;
     }
 
@@ -219,11 +216,8 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.submissions.errors.submitFailed(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
+      showErrorSnack(
+        child: Text(t.submissions.errors.submitFailed(error: e.toString())),
       );
     }
   }

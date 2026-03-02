@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/modify/matching_pair_card.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing matching question pairs
@@ -22,7 +23,8 @@ class MatchingSection extends ConsumerStatefulWidget {
   ConsumerState<MatchingSection> createState() => _MatchingSectionState();
 }
 
-class _MatchingSectionState extends ConsumerState<MatchingSection> {
+class _MatchingSectionState extends ConsumerState<MatchingSection>
+    with GlobalHelper<MatchingSection> {
   late List<MatchingPairData> _pairs;
 
   @override
@@ -48,12 +50,7 @@ class _MatchingSectionState extends ConsumerState<MatchingSection> {
   void _removePair(int index) {
     if (_pairs.length <= 2) {
       final t = ref.read(translationsPod);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.questionBank.matching.minPairsRequired),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      showInfoSnack(child: Text(t.questionBank.matching.minPairsRequired));
       return;
     }
 

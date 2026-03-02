@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:dio/dio.dart';
 import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:AIPrimary/features/auth/widgets/divider.dart';
 import 'package:AIPrimary/features/auth/widgets/sign_in_form.dart';
 import 'package:AIPrimary/features/auth/widgets/switch_page.dart';
+import 'package:AIPrimary/shared/exception/base_exception.dart';
 import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +36,29 @@ class _SignInPageState extends ConsumerState<SignInPage> with GlobalHelper {
         child: Consumer(
           builder: (context, ref, child) {
             final t = ref.watch(translationsPod);
+            ref.watch(authControllerPod);
 
             ref.listen(authControllerPod, (previous, next) {
+              if (next.hasError && previous?.hasError != true) {
+                final error = next.error;
+                final String message;
+                if (error is DioException) {
+                  message =
+                      error.error?.toString() ?? t.auth.signIn.signInError;
+                } else if (error is APIException) {
+                  message = error.errorMessage;
+                } else {
+                  message = t.auth.signIn.signInError;
+                }
+                showErrorSnack(child: Text(message));
+                return;
+              }
               if (!next.isLoading && next.value?.isAuthenticated == true) {
-                // Navigate to the home page
-                context.router.replaceAll([const HomeRoute()]);
+                if (next.value?.requiresPasswordChange == true) {
+                  context.router.push(ChangePasswordRoute(isForced: true));
+                } else {
+                  context.router.replaceAll([const HomeRoute()]);
+                }
               }
             });
 
@@ -93,15 +113,20 @@ class _SignInPageState extends ConsumerState<SignInPage> with GlobalHelper {
                                 WidgetRef ref,
                                 Widget? child,
                               ) {
+                                final isLoading = ref
+                                    .watch(authControllerPod)
+                                    .isLoading;
                                 final authControllerNotifier = ref.read(
                                   authControllerPod.notifier,
                                 );
 
                                 return GoogleAuthButton(
-                                  onPressed: () async {
-                                    await authControllerNotifier
-                                        .signInWithGoogle();
-                                  },
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          await authControllerNotifier
+                                              .signInWithGoogle();
+                                        },
                                   style: const AuthButtonStyle(
                                     iconSize: 20.0,
                                     padding: EdgeInsets.symmetric(vertical: 16),

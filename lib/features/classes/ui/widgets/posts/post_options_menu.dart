@@ -4,12 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-/// Options menu for post actions (pin, edit, delete)
+/// Options menu for post actions (pin, edit, delete, notify)
 class PostOptionsMenu extends ConsumerWidget {
   final bool isPinned;
   final VoidCallback onTogglePin;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback? onNotifyStudents;
 
   const PostOptionsMenu({
     super.key,
@@ -17,6 +18,7 @@ class PostOptionsMenu extends ConsumerWidget {
     required this.onTogglePin,
     required this.onEdit,
     required this.onDelete,
+    this.onNotifyStudents,
   });
 
   @override
@@ -39,9 +41,23 @@ class PostOptionsMenu extends ConsumerWidget {
             case 'delete':
               onDelete();
               break;
+            case 'notify':
+              onNotifyStudents?.call();
+              break;
           }
         },
         itemBuilder: (context) => [
+          if (onNotifyStudents != null)
+            PopupMenuItem(
+              value: 'notify',
+              child: Row(
+                children: [
+                  const Icon(LucideIcons.bell, size: 18),
+                  const SizedBox(width: 12),
+                  Text(t.classes.postOptions.notifyStudents),
+                ],
+              ),
+            ),
           PopupMenuItem(
             value: 'pin',
             child: Row(

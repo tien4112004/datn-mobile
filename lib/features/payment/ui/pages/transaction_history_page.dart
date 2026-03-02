@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/coin_colors.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -525,17 +526,17 @@ class _TransactionListItem extends StatelessWidget {
                   if (transaction.coinsAwarded != null)
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           LucideIcons.coins,
                           size: 16,
-                          color: Colors.amber.shade700,
+                          color: CoinColors.accent,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           '+${NumberFormat('#,###').format(transaction.coinsAwarded)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.amber.shade900,
+                            color: CoinColors.textDark,
                           ),
                         ),
                       ],

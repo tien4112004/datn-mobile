@@ -2,6 +2,7 @@ import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +19,8 @@ class PostEditDialog extends ConsumerStatefulWidget {
   ConsumerState<PostEditDialog> createState() => _PostEditDialogState();
 }
 
-class _PostEditDialogState extends ConsumerState<PostEditDialog> {
+class _PostEditDialogState extends ConsumerState<PostEditDialog>
+    with GlobalHelper<PostEditDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _contentController;
 
@@ -61,18 +63,12 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
 
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.classes.postDialog.updateSuccess)),
-        );
+        showSuccessSnack(child: Text(t.classes.postDialog.updateSuccess));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              t.classes.postDialog.updateError(error: e.toString()),
-            ),
-          ),
+        showErrorSnack(
+          child: Text(t.classes.postDialog.updateError(error: e.toString())),
         );
       }
     }
@@ -248,18 +244,12 @@ class _PostEditDialogState extends ConsumerState<PostEditDialog> {
 
         if (mounted) {
           Navigator.of(context).pop(); // Close edit dialog
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(t.classes.postDialog.deleteSuccess)),
-          );
+          showSuccessSnack(child: Text(t.classes.postDialog.deleteSuccess));
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                t.classes.postDialog.deleteError(error: e.toString()),
-              ),
-            ),
+          showErrorSnack(
+            child: Text(t.classes.postDialog.deleteError(error: e.toString())),
           );
         }
       }

@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/theme/coin_colors.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
@@ -25,22 +26,7 @@ class PaymentMethodsPage extends ConsumerWidget {
     final usageByTypeAsync = ref.watch(tokenUsageByRequestTypeProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.payment.paymentMethods.title),
-        actions: [
-          ElevatedButton.icon(
-            onPressed: () {
-              context.router.push(const CoinPurchaseRoute());
-            },
-            icon: const Icon(LucideIcons.plus, size: 18),
-            label: Text(t.payment.paymentMethods.buyCoin),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-          ),
-          const SizedBox(width: 16),
-        ],
-      ),
+      appBar: AppBar(title: Text(t.payment.paymentMethods.title)),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(userCoinBalanceProvider);
@@ -56,21 +42,19 @@ class PaymentMethodsPage extends ConsumerWidget {
               _buildBalanceCard(context, coinBalanceAsync, t),
               const SizedBox(height: 24),
 
-              Text(
-                t.payment.paymentMethods.usageByModel,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              _buildSectionHeader(
+                context,
+                icon: LucideIcons.cpu,
+                title: t.payment.paymentMethods.usageByModel,
               ),
               const SizedBox(height: 12),
               _buildUsageByModelSection(context, usageByModelAsync, t),
               const SizedBox(height: 24),
 
-              Text(
-                t.payment.paymentMethods.usageByType,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              _buildSectionHeader(
+                context,
+                icon: LucideIcons.layoutGrid,
+                title: t.payment.paymentMethods.usageByType,
               ),
               const SizedBox(height: 12),
               _buildUsageByTypeSection(context, usageByTypeAsync, t),
@@ -79,6 +63,25 @@ class PaymentMethodsPage extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
@@ -91,39 +94,130 @@ class PaymentMethodsPage extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.amber.shade400, Colors.amber.shade600],
+          colors: [CoinColors.amberGold, CoinColors.amberGoldLight],
         ),
         borderRadius: Themes.boxRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.amber.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: CoinColors.accent.withValues(alpha: 0.35),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        clipBehavior: Clip.hardEdge,
         children: [
-          Text(
-            t.payment.paymentMethods.currentBalance,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 12),
-          coinBalanceAsync.easyWhen(
-            data: (coinData) => Text(
-              '${NumberFormat('#,###').format(coinData.coin)} ${t.payment.paymentMethods.coinsLabel}',
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+          Positioned(
+            right: 40,
+            top: 0,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
               ),
             ),
+          ),
+          Positioned(
+            right: 1,
+            bottom: 1,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.06),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 200,
+            top: 80,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: CoinColors.backgroundLight,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      LucideIcons.coins,
+                      color: CoinColors.accent,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    t.payment.paymentMethods.currentBalance,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              coinBalanceAsync.easyWhen(
+                data: (coinData) => Text(
+                  NumberFormat('#,###').format(coinData.coin),
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                t.payment.paymentMethods.coinsLabel,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: FilledButton.icon(
+                  onPressed: () {
+                    context.router.push(const CoinPurchaseRoute());
+                  },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: CoinColors.accent,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  icon: const Icon(LucideIcons.plus, size: 16),
+                  label: Text(
+                    t.payment.paymentMethods.buyCoin,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: CoinColors.accent,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -228,6 +322,8 @@ class PaymentMethodsPage extends ConsumerWidget {
         return t.payment.paymentMethods.mindMapCreation;
       case 'presentation':
         return t.payment.paymentMethods.presentationGeneration;
+      case 'question':
+        return t.payment.paymentMethods.questionGeneration;
       default:
         return type;
     }
@@ -236,14 +332,16 @@ class PaymentMethodsPage extends ConsumerWidget {
   IconData _getRequestTypeIcon(String? type, Translations t) {
     if (type == null) return LucideIcons.circleQuestionMark;
     switch (type.toLowerCase()) {
-      case 'text':
-        return LucideIcons.fileText;
       case 'image':
         return LucideIcons.image;
       case 'mindmap':
         return LucideIcons.network;
       case 'presentation':
         return LucideIcons.presentation;
+      case 'question':
+        return LucideIcons.fileQuestionMark;
+      case 'outline':
+        return LucideIcons.fileText;
       default:
         return LucideIcons.circleQuestionMark;
     }

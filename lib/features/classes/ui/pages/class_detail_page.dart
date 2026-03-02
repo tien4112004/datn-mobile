@@ -246,6 +246,22 @@ class _ClassDetailPageState extends ConsumerState<ClassDetailPage>
                     },
                   ),
 
+                  // Change Password
+                  ListTile(
+                    leading: Icon(
+                      LucideIcons.keyRound,
+                      color: colorScheme.onSurface,
+                    ),
+                    title: Text(
+                      t.changePassword.title,
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                    onTap: () {
+                      Navigator.pop(context); // Close drawer
+                      context.router.push(ChangePasswordRoute(isForced: false));
+                    },
+                  ),
+
                   const Divider(),
 
                   // Logout

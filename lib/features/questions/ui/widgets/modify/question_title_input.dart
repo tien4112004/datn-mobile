@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/services/media_service_provider.dart';
 
@@ -22,7 +23,8 @@ class QuestionTitleInput extends ConsumerStatefulWidget {
   ConsumerState<QuestionTitleInput> createState() => _QuestionTitleInputState();
 }
 
-class _QuestionTitleInputState extends ConsumerState<QuestionTitleInput> {
+class _QuestionTitleInputState extends ConsumerState<QuestionTitleInput>
+    with GlobalHelper<QuestionTitleInput> {
   final ImagePicker _picker = ImagePicker();
   bool _isUploading = false;
 
@@ -47,12 +49,8 @@ class _QuestionTitleInputState extends ConsumerState<QuestionTitleInput> {
         } catch (e) {
           if (mounted) {
             setState(() => _isUploading = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(t.common.failedToUpload(error: e.toString())),
-                backgroundColor: Theme.of(context).colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-              ),
+            showErrorSnack(
+              child: Text(t.common.failedToUpload(error: e.toString())),
             );
           }
         }
@@ -60,13 +58,7 @@ class _QuestionTitleInputState extends ConsumerState<QuestionTitleInput> {
     } catch (e) {
       if (mounted) {
         setState(() => _isUploading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.common.failedToPick(error: e.toString())),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        showErrorSnack(child: Text(t.common.failedToPick(error: e.toString())));
       }
     }
   }

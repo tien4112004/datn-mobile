@@ -1,6 +1,7 @@
 // coverage:ignore-file
 
 import 'dart:async';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flash/flash.dart';
 import 'package:flash/flash_helper.dart';
@@ -207,26 +208,14 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(LucideIcons.circleAlert),
-    Color? indicatorColor = const Color(0xFFE57373),
-    Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
     if (context.mounted) {
-      context.showErrorBar(
-        content: child,
-        duration: duration,
-        position: position,
-        icon: icon,
-        indicatorColor: indicatorColor,
-        primaryActionBuilder: showCloseIcon
-            ? primaryActionBuilder ??
-                  (context, controller) {
-                    return IconButton(
-                      onPressed: controller.dismiss,
-                      icon: const Icon(LucideIcons.circleX),
-                    );
-                  }
-            : null,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: child,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.errorColor,
+        ),
       );
     }
   }
@@ -236,26 +225,14 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(LucideIcons.info),
-    Color? indicatorColor = const Color(0xFF64B5F6),
-    Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
     if (context.mounted) {
-      context.showInfoBar(
-        content: child,
-        duration: duration,
-        position: position,
-        icon: icon,
-        indicatorColor: indicatorColor,
-        primaryActionBuilder: showCloseIcon
-            ? primaryActionBuilder ??
-                  (context, controller) {
-                    return IconButton(
-                      onPressed: controller.dismiss,
-                      icon: const Icon(LucideIcons.circleX),
-                    );
-                  }
-            : null,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: child,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.infoColor,
+        ),
       );
     }
   }
@@ -265,26 +242,14 @@ mixin GlobalHelper<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     bool showCloseIcon = true,
     FlashPosition position = FlashPosition.bottom,
     Duration duration = const Duration(seconds: 3),
-    Icon? icon = const Icon(LucideIcons.circleCheck),
-    Color? indicatorColor = const Color(0xFF81C784),
-    Widget Function(BuildContext, FlashController<T>)? primaryActionBuilder,
   }) {
     if (context.mounted) {
-      context.showSuccessBar(
-        content: child,
-        duration: duration,
-        position: position,
-        icon: icon,
-        indicatorColor: indicatorColor,
-        primaryActionBuilder: showCloseIcon
-            ? primaryActionBuilder ??
-                  (context, controller) {
-                    return IconButton(
-                      onPressed: controller.dismiss,
-                      icon: const Icon(LucideIcons.circleX),
-                    );
-                  }
-            : null,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: child,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.successColor,
+        ),
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/modify/option_item_card.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Section for managing multiple choice question options
@@ -23,7 +24,8 @@ class MultipleChoiceSection extends ConsumerStatefulWidget {
       _MultipleChoiceSectionState();
 }
 
-class _MultipleChoiceSectionState extends ConsumerState<MultipleChoiceSection> {
+class _MultipleChoiceSectionState extends ConsumerState<MultipleChoiceSection>
+    with GlobalHelper<MultipleChoiceSection> {
   late List<MultipleChoiceOptionData> _options;
 
   @override
@@ -44,11 +46,8 @@ class _MultipleChoiceSectionState extends ConsumerState<MultipleChoiceSection> {
   void _removeOption(int index) {
     if (_options.length <= 2) {
       final t = ref.read(translationsPod);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.questionBank.multipleChoice.minOptionsRequired),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showInfoSnack(
+        child: Text(t.questionBank.multipleChoice.minOptionsRequired),
       );
       return;
     }

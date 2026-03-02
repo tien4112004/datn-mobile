@@ -8,6 +8,7 @@ import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_count_header.dart';
 import 'package:AIPrimary/shared/widgets/animated_list_item.dart';
 import 'package:AIPrimary/shared/widgets/custom_app_bar.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -181,6 +182,7 @@ class _StudentListContent extends ConsumerWidget {
                             Text(t.classes.students.removing),
                           ],
                         ),
+                        behavior: SnackBarBehavior.floating,
                         duration: const Duration(seconds: 2),
                       ),
                     );
@@ -200,9 +202,8 @@ class _StudentListContent extends ConsumerWidget {
                               studentName: student.fullName,
                             ),
                           ),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Themes.successColor,
                         ),
                       );
                     }
@@ -214,7 +215,8 @@ class _StudentListContent extends ConsumerWidget {
                           content: Text(
                             t.classes.students.removeError(error: e.toString()),
                           ),
-                          backgroundColor: Theme.of(context).colorScheme.error,
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Themes.errorColor,
                         ),
                       );
                     }

@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/features/assignments/domain/entity/api_matrix_entity.dart';
@@ -57,7 +58,9 @@ class AssignmentQuestionEditPage extends ConsumerStatefulWidget {
 
 class _AssignmentQuestionEditPageState
     extends ConsumerState<AssignmentQuestionEditPage>
-    with SingleTickerProviderStateMixin {
+    with
+        SingleTickerProviderStateMixin,
+        GlobalHelper<AssignmentQuestionEditPage> {
   final _formKey = GlobalKey<FormState>();
   late TabController _tabController;
   late TextEditingController _pointsController;
@@ -140,7 +143,7 @@ class _AssignmentQuestionEditPageState
     final t = ref.read(translationsPod);
     // Validate points
     if (_currentPoints <= 0) {
-      _showErrorSnackBar(t.assignments.pointsError);
+      showErrorSnack(child: Text(t.assignments.pointsError));
       return;
     }
 
@@ -148,7 +151,7 @@ class _AssignmentQuestionEditPageState
     final formState = ref.read(questionFormProvider);
     final validationError = formState.validate();
     if (validationError != null) {
-      _showErrorSnackBar(validationError);
+      showErrorSnack(child: Text(validationError));
       return;
     }
 
@@ -307,16 +310,6 @@ class _AssignmentQuestionEditPageState
       // Return special value to indicate deletion
       Navigator.pop(context, 'DELETE');
     }
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   @override

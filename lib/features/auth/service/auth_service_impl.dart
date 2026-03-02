@@ -67,7 +67,11 @@ class AuthServiceImpl implements AuthService {
         debugPrint('Sign-in error: ${e.errorMessage}');
         rethrow;
       }
-      // Wrap unexpected errors
+      if (e is DioException) {
+        // DioException already has a user-friendly message set by the interceptor
+        rethrow;
+      }
+      // Wrap truly unexpected errors
       throw APIException(
         code: 500,
         errorMessage: 'Unexpected error during sign-in: ${e.toString()}',
@@ -144,7 +148,10 @@ class AuthServiceImpl implements AuthService {
       if (e is APIException) {
         rethrow;
       }
-      // Wrap unexpected errors
+      if (e is DioException) {
+        rethrow;
+      }
+      // Wrap truly unexpected errors
       throw APIException(
         code: 500,
         errorMessage: 'Unexpected error during Google sign-in: ${e.toString()}',
@@ -175,7 +182,10 @@ class AuthServiceImpl implements AuthService {
       if (e is APIException) {
         rethrow;
       }
-      // Wrap unexpected errors
+      if (e is DioException) {
+        rethrow;
+      }
+      // Wrap truly unexpected errors
       throw UnexpectedException(
         errorCode: 'SIGNOUT_ERROR',
         httpCode: 500,
@@ -194,7 +204,10 @@ class AuthServiceImpl implements AuthService {
       if (e is APIException) {
         rethrow;
       }
-      // Wrap unexpected errors
+      if (e is DioException) {
+        rethrow;
+      }
+      // Wrap truly unexpected errors
       throw APIException(
         code: 500,
         errorMessage: 'Unexpected error during sign-up: ${e.toString()}',

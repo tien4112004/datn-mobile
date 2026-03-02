@@ -5,6 +5,7 @@ import 'package:AIPrimary/features/questions/states/question_bank_provider.dart'
 import 'package:AIPrimary/features/questions/states/question_form/question_form_provider.dart';
 import 'package:AIPrimary/features/questions/states/question_form/question_form_state.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/chapter_selection_dialog.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/modify/question_meta_row.dart';
@@ -33,7 +34,8 @@ class QuestionUpdatePage extends ConsumerStatefulWidget {
   ConsumerState<QuestionUpdatePage> createState() => _QuestionModifyPageState();
 }
 
-class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
+class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage>
+    with GlobalHelper<QuestionUpdatePage> {
   final _formKey = GlobalKey<FormState>();
 
   // This is always an edit page
@@ -158,7 +160,7 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     final validationError = formState.validate();
 
     if (validationError != null) {
-      _showErrorSnackBar(validationError);
+      showErrorSnack(child: Text(validationError));
       return;
     }
 
@@ -190,18 +192,10 @@ class _QuestionModifyPageState extends ConsumerState<QuestionUpdatePage> {
     } catch (e) {
       if (!mounted) return;
       final t = ref.read(translationsPod);
-      _showErrorSnackBar(t.questionBank.errors.saving(error: e.toString()));
+      showErrorSnack(
+        child: Text(t.questionBank.errors.saving(error: e.toString())),
+      );
     }
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   Future<void> _handleChapterSelection() async {

@@ -1,6 +1,7 @@
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/picker_bottom_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/setting_item.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/picker_button.dart';
 import 'package:auto_route/auto_route.dart';
@@ -56,7 +57,9 @@ class AssignmentQuestionCreatePage extends ConsumerStatefulWidget {
 
 class _AssignmentQuestionCreatePageState
     extends ConsumerState<AssignmentQuestionCreatePage>
-    with SingleTickerProviderStateMixin {
+    with
+        SingleTickerProviderStateMixin,
+        GlobalHelper<AssignmentQuestionCreatePage> {
   final _formKey = GlobalKey<FormState>();
   late TabController _tabController;
   late TextEditingController _pointsController;
@@ -111,7 +114,7 @@ class _AssignmentQuestionCreatePageState
     final t = ref.read(translationsPod);
     // Validate points
     if (_currentPoints <= 0) {
-      _showErrorSnackBar(t.assignments.pointsError);
+      showErrorSnack(child: Text(t.assignments.pointsError));
       return;
     }
 
@@ -120,7 +123,7 @@ class _AssignmentQuestionCreatePageState
     final validationError = formState.validate();
 
     if (validationError != null) {
-      _showErrorSnackBar(validationError);
+      showErrorSnack(child: Text(validationError));
       return;
     }
 
@@ -233,16 +236,6 @@ class _AssignmentQuestionCreatePageState
           ),
         );
     }
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   @override

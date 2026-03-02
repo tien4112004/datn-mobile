@@ -103,7 +103,7 @@ class AbstractDocumentCard extends ConsumerWidget {
                     ],
                     // Type
                     Text(
-                      t.projects.type(type: resourceType.getValue()),
+                      t.projects.type(type: resourceType.getLabel(t)),
                       style: TextStyle(
                         fontSize: Themes.fontSize.s12,
                         color: Colors.grey,

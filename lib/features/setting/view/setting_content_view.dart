@@ -21,9 +21,9 @@ class SettingContentView extends ConsumerWidget {
       autorouter.pushPath(path);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This page is in development'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text(ref.read(translationsPod).settings.pageInDevelopment),
+          duration: const Duration(seconds: 2),
         ),
       );
     }

@@ -75,22 +75,21 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
             leading: Semantics(
-              label: 'Go back',
+              label: t.common.goBack,
               button: true,
-              hint: 'Double tap to return to previous page',
               child: IconButton(
                 icon: const Icon(LucideIcons.arrowLeft),
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   context.router.maybePop();
                 },
-                tooltip: 'Back',
+                tooltip: t.common.back,
               ),
             ),
             actions: [
               IconButton(
                 icon: const Icon(LucideIcons.refreshCw),
-                tooltip: 'Refresh',
+                tooltip: t.common.refresh,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   pagingController.refresh();
@@ -212,6 +211,7 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
   }
 
   void _showMoreOptions(BuildContext context, ImageProjectMinimal image) {
+    final t = ref.read(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -224,7 +224,10 @@ class _ImageListPageState extends ConsumerState<ImageListPage> {
           children: [
             ListTile(
               leading: Icon(LucideIcons.trash2, color: colorScheme.error),
-              title: Text('Delete', style: TextStyle(color: colorScheme.error)),
+              title: Text(
+                t.projects.images.delete,
+                style: TextStyle(color: colorScheme.error),
+              ),
               onTap: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);

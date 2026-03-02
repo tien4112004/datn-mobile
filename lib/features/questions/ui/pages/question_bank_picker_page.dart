@@ -419,7 +419,7 @@ class _QuestionBankPickerPageState
                   child: Center(child: CircularProgressIndicator()),
                 ),
                 error: (error, stack) => SliverFillRemaining(
-                  child: Center(child: Text('Error: $error')),
+                  child: Center(child: Text('${t.common.error}: $error')),
                 ),
               ),
             ],

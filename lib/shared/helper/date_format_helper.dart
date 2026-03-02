@@ -32,7 +32,9 @@ class DateFormatHelper {
     final t = ref.read(translationsPod);
     final locale = _getLocale(ref);
 
-    if (difference.inMinutes < 60) {
+    if (difference.inMinutes < 1) {
+      return t.projects.recently;
+    } else if (difference.inMinutes < 60) {
       return t.projects.minutes_ago(count: difference.inMinutes);
     } else if (difference.inHours < 24) {
       return t.projects.hours_ago(count: difference.inHours);

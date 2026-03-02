@@ -130,7 +130,8 @@
       "lightDescription": "Luôn sử dụng giao diện sáng",
       "darkDescription": "Luôn sử dụng giao diện tối",
       "systemDescription": "Theo cài đặt hệ thống"
-    }
+    },
+    "pageInDevelopment": "Trang này đang được phát triển"
   },
   "common": {
     "loading": "Đang tải...",
@@ -179,7 +180,22 @@
     "optional": "(Tùy chọn)",
     "none": "Không",
     "all": "Tất cả",
-    "filterBy": "Lọc theo $label"
+    "filterBy": "Lọc theo $label",
+    "done": "Xong",
+    "goBack": "Quay lại",
+    "submit": "Gửi",
+    "noMore": "Không có thêm mục",
+    "back": "Quay lại",
+    "refresh": "Làm mới",
+    "copy": "Sao chép",
+    "show": "Hiện",
+    "hide": "Ẩn",
+    "tapToRetry": "Nhấn để thử lại",
+    "searchHint": "Tìm kiếm $title",
+    "noResourcesAvailable": "Không có tài nguyên",
+    "noResultsFound": "Không tìm thấy kết quả",
+    "update": "Cập nhật",
+    "create": "Tạo"
   },
   "homeGreeting": "Xin chào!",
   "upgradePlan": "Nâng cấp gói",
@@ -228,6 +244,11 @@
       "title": "Bài thuyết trình",
       "search_presentations": "Tìm kiếm bài thuyết trình...",
       "all_presentations": "Tất cả bài thuyết trình",
+      "failedToLoad": "Không thể tải bài thuyết trình",
+      "noMore": "Không còn bài thuyết trình",
+      "loadingPresentation": "Đang tải bài thuyết trình...",
+      "failedToLoadPresentation": "Không thể tải bài thuyết trình",
+      "presentationDetail": "Chi tiết bài thuyết trình",
       "deleteDialog": {
         "title": "Xóa bài thuyết trình",
         "message": "Bạn có chắc chắn muốn xóa \"$title\"? Hành động này không thể hoàn tác.",
@@ -241,6 +262,20 @@
       "all_mindmaps": "Tất cả sơ đồ tư duy",
       "webViewNotSupported": "WebView không được hỗ trợ trên nền tảng này.",
       "loadingMindmap": "Đang tải sơ đồ tư duy...",
+      "generateMindmap": "Tạo sơ đồ tư duy",
+      "generatingMindmap": "Đang tạo sơ đồ tư duy",
+      "creatingMindmap": "Đang tạo sơ đồ tư duy...",
+      "startingGeneration": "Đang bắt đầu tạo...",
+      "failedToCreate": "Không thể tạo sơ đồ tư duy",
+      "cancelGenerationDialog": {
+        "title": "Hủy tạo?",
+        "message": "Bạn có chắc muốn hủy quá trình tạo sơ đồ tư duy không?",
+        "cancel": "Hủy tạo",
+        "continue_": "Tiếp tục"
+      },
+      "failedToLoad": "Không thể tải sơ đồ tư duy",
+      "noMore": "Không còn sơ đồ tư duy",
+      "webViewLoadError": "Lỗi WebView",
       "deleteDialog": {
         "title": "Xóa sơ đồ tư duy",
         "message": "Bạn có chắc chắn muốn xóa \"$title\"? Hành động này không thể hoàn tác.",
@@ -275,7 +310,8 @@
         "saved": "Đã lưu hình ảnh vào thư viện",
         "share_failed": "Không thể chia sẻ hình ảnh",
         "save_failed": "Không thể lưu hình ảnh"
-      }
+      },
+      "delete": "Xóa"
     },
     "resource_types": {
       "image": "Hình ảnh",
@@ -304,6 +340,7 @@
     "coming_soon": "$type sắp ra mắt",
     "opening": "Đang mở $title",
     "unknown_date": "Không rõ ngày",
+    "recently": "Gần đây",
     "minutes_ago": "$count phút trước",
     "hours_ago": "$count giờ trước",
     "yesterday": "Hôm qua",
@@ -371,7 +408,7 @@
   "generate": {
     "enterTopicHint": "Bạn đang nghĩ gì?",
     "advancedSettings": "Cài đặt nâng cao",
-    "model":"Mô hình",
+    "model": "Mô hình",
     "generatorTypes": {
       "presentation": "Bài thuyết trình",
       "image": "Hình ảnh",
@@ -861,6 +898,15 @@
       "manualGradingRequired": "Yêu cầu chấm điểm thủ công",
       "expectedAnswerReference": "Đáp án mong đợi (Tham khảo)",
       "referenceAnswer": "Đáp án tham khảo"
+    },
+    "publishDialog": {
+      "title": "Xuất bản lên ngân hàng công cộng",
+      "tooltip": "Xuất bản lên ngân hàng công cộng",
+      "content": "Gửi câu hỏi này để xem xét và thêm vào ngân hàng công cộng?",
+      "cancel": "Hủy",
+      "submit": "Gửi",
+      "successMessage": "Câu hỏi đã được gửi để xem xét thành công",
+      "failedMessage": "Không thể gửi: $error"
     }
   },
   "classes": {
@@ -1247,7 +1293,6 @@
       "addFirstQuestion": "Thêm câu hỏi đầu tiên",
       "addFirstQuestionMessage": "Sử dụng nút hành động để thêm câu hỏi đầu tiên."
     },
-
     "card": {
       "questions": "câu hỏi",
       "points": "điểm",
@@ -1255,7 +1300,6 @@
       "edit": "Sửa",
       "delete": "Xóa"
     },
-
     "dates": {
       "createdPrefix": "Tạo lúc",
       "createdOn": "Tạo ngày $date",
@@ -1263,7 +1307,6 @@
       "yesterday": "hôm qua",
       "daysAgo": "$count ngày trước"
     },
-
     "form": {
       "createTitle": "Tạo bài kiểm tra mới",
       "editTitle": "Sửa bài kiểm tra",
@@ -1281,7 +1324,6 @@
       "updateSuccess": "Cập nhật bài kiểm tra thành công",
       "error": "Lỗi: $error"
     },
-
     "deleteDialog": {
       "title": "Xóa bài kiểm tra",
       "message": "Bạn có chắc chắn muốn xóa \"$title\"?",
@@ -1296,20 +1338,17 @@
       "description": "Mô tả",
       "noDescription": "Không có mô tả"
     },
-
     "actionDock": {
       "cancel": "Hủy",
       "saveChanges": "Lưu thay đổi",
       "saving": "Đang lưu..."
     },
-
     "floatingMenu": {
       "addQuestion": "Thêm câu hỏi",
       "close": "Đóng",
       "fromBank": "Từ ngân hàng",
       "createNew": "Tạo mới"
     },
-
     "questionPicker": {
       "title": "Thêm câu hỏi",
       "fromBank": "Từ ngân hàng câu hỏi",
@@ -1318,7 +1357,6 @@
       "createNewDescription": "Tạo câu hỏi từ đầu",
       "cancel": "Hủy"
     },
-
     "pointsAssignment": {
       "title": "Gán điểm cho câu hỏi",
       "subtitle": "Đặt điểm cho mỗi câu hỏi trong bài kiểm tra",
@@ -1333,7 +1371,6 @@
       "allPointsMustBeGreaterThanZero": "Tất cả điểm phải lớn hơn 0",
       "contextBannerTitle(count)": "$count đoạn văn đọc sẽ được nhập kèm:"
     },
-
     "questionCard": {
       "options": "Tùy chọn",
       "optionsLabel": "Các lựa chọn",
@@ -1351,7 +1388,6 @@
       "collapse": "Thu gọn",
       "expand": "Mở rộng"
     },
-
     "filters": {
       "title": "Bộ lọc bài kiểm tra",
       "gradeLevel": "Khối lớp",
@@ -1362,7 +1398,6 @@
       "applyFilters": "Áp dụng bộ lọc",
       "searchHint": "Tìm kiếm bài kiểm tra..."
     },
-
     "matrixDashboard": {
       "title": "Ma trận đánh giá",
       "subtitle(actual, target, percentage)": "$actual trong $target câu hỏi ($percentage% hoàn thành)",
@@ -1378,7 +1413,6 @@
       "type": "Loại",
       "total": "Tổng"
     },
-
     "questionsSection": {
       "title": "Câu hỏi",
       "count": "$count ",
@@ -1391,7 +1425,6 @@
       "questions": "Câu hỏi",
       "editInfo": "Sửa thông tin"
     },
-
     "statuses": {
       "draft": "Bản nháp",
       "generating": "Đang tạo",
@@ -1399,7 +1432,6 @@
       "error": "Lỗi",
       "archived": "Đã lưu trữ"
     },
-
     "matrix": {
       "mc": "TN",
       "match": "Nối",
@@ -1412,7 +1444,6 @@
       "com": "TH",
       "appAbbr": "VD"
     },
-
     "detail": {
       "tabs": {
         "info": "Thông tin",
@@ -1503,7 +1534,6 @@
         }
       }
     },
-
     "context": {
       "readingPassage": "Đoạn văn đọc",
       "untitledContext": "Chưa có tiêu đề",
@@ -1772,6 +1802,17 @@
       "invalidEmail": "Email không hợp lệ",
       "enrollmentDate": "Ngày nhập học",
       "selectDate": "Chọn ngày"
+    },
+    "credentials": {
+      "dialogTitle": "Tạo tài khoản học sinh thành công",
+      "studentLabel": "Học sinh",
+      "accountCredentials": "Thông tin đăng nhập",
+      "username": "Tên đăng nhập",
+      "password": "Mật khẩu",
+      "email": "Email",
+      "notAvailable": "N/A",
+      "copiedToClipboard": "Đã sao chép $label vào bộ nhớ tạm",
+      "copy": "Sao chép $label"
     }
   },
   "home": {

@@ -182,7 +182,7 @@ class ImageDisplayCard extends ConsumerWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(LucideIcons.rotateCw),
-                label: const Text('Retry'),
+                label: Text(t.common.retry),
               ),
             ],
           ],

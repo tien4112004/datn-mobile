@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// A reusable widget for displaying save/cancel action buttons at the bottom
 /// of forms.
 ///
 /// Provides a consistent button layout with cancel (outlined) and save (filled)
 /// buttons that handle loading states.
-class FormActionButtons extends StatelessWidget {
+class FormActionButtons extends ConsumerWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onSave;
   final bool isLoading;
@@ -26,7 +28,8 @@ class FormActionButtons extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     return Row(
       children: [
         Expanded(
@@ -38,7 +41,7 @@ class FormActionButtons extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text(cancelLabel ?? 'Cancel'),
+            child: Text(cancelLabel ?? t.common.cancel),
           ),
         ),
         const SizedBox(width: 16),
@@ -52,7 +55,9 @@ class FormActionButtons extends StatelessWidget {
               ),
             ),
             child: Text(
-              isEditing ? (updateLabel ?? 'Update') : (saveLabel ?? 'Create'),
+              isEditing
+                  ? (updateLabel ?? t.common.update)
+                  : (saveLabel ?? t.common.create),
             ),
           ),
         ),

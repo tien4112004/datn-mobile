@@ -375,28 +375,26 @@ class _PaymentWebViewPageState extends ConsumerState<PaymentWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete Payment'),
+        title: Text(t.payment.webview.title),
         leading: IconButton(
           icon: const Icon(LucideIcons.x),
           onPressed: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('Cancel Payment?'),
-                content: const Text(
-                  'Are you sure you want to cancel this payment?',
-                ),
+                title: Text(t.payment.webview.cancelDialog.title),
+                content: Text(t.payment.webview.cancelDialog.message),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('No'),
+                    child: Text(t.payment.webview.cancelDialog.no),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                       _handleCancel(Uri.parse(currentUrl));
                     },
-                    child: const Text('Yes, Cancel'),
+                    child: Text(t.payment.webview.cancelDialog.yesCancel),
                   ),
                 ],
               ),

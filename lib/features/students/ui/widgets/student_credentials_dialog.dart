@@ -1,11 +1,13 @@
 import 'package:AIPrimary/features/students/domain/entity/student.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Dialog to display student credentials after successful account creation.
 /// Shows username and password with copy functionality and security warning.
-class StudentCredentialsDialog extends StatefulWidget {
+class StudentCredentialsDialog extends ConsumerStatefulWidget {
   final Student student;
 
   const StudentCredentialsDialog({super.key, required this.student});
@@ -20,18 +22,20 @@ class StudentCredentialsDialog extends StatefulWidget {
   }
 
   @override
-  State<StudentCredentialsDialog> createState() =>
+  ConsumerState<StudentCredentialsDialog> createState() =>
       _StudentCredentialsDialogState();
 }
 
-class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
+class _StudentCredentialsDialogState
+    extends ConsumerState<StudentCredentialsDialog> {
   bool _isPasswordVisible = false;
 
   void _copyToClipboard(BuildContext context, String text, String label) {
+    final t = ref.read(translationsPod);
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$label copied to clipboard'),
+        content: Text(t.students.credentials.copiedToClipboard(label: label)),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -40,6 +44,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -61,7 +66,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Student Account Created',
+              t.students.credentials.dialogTitle,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -86,7 +91,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Student',
+                    t.students.credentials.studentLabel,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -105,7 +110,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
 
             // Credentials section
             Text(
-              'Account Credentials',
+              t.students.credentials.accountCredentials,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.primary,
@@ -115,21 +120,25 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
 
             // Username field
             _CredentialField(
-              label: 'Username',
-              value: widget.student.username ?? 'N/A',
+              label: t.students.credentials.username,
+              value:
+                  widget.student.username ??
+                  t.students.credentials.notAvailable,
               icon: LucideIcons.user,
               onCopy: () => _copyToClipboard(
                 context,
                 widget.student.username ?? '',
-                'Username',
+                t.students.credentials.username,
               ),
             ),
             const SizedBox(height: 12),
 
             // Password field
             _CredentialField(
-              label: 'Password',
-              value: widget.student.password ?? 'N/A',
+              label: t.students.credentials.password,
+              value:
+                  widget.student.password ??
+                  t.students.credentials.notAvailable,
               icon: LucideIcons.lock,
               isPassword: true,
               isPasswordVisible: _isPasswordVisible,
@@ -141,7 +150,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
               onCopy: () => _copyToClipboard(
                 context,
                 widget.student.password ?? '',
-                'Password',
+                t.students.credentials.password,
               ),
             ),
             const SizedBox(height: 20),
@@ -151,7 +160,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
       actions: [
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Done'),
+          child: Text(t.common.done),
         ),
       ],
     );
@@ -159,7 +168,7 @@ class _StudentCredentialsDialogState extends State<StudentCredentialsDialog> {
 }
 
 /// Widget for displaying a single credential field with copy functionality.
-class _CredentialField extends StatelessWidget {
+class _CredentialField extends ConsumerWidget {
   final String label;
   final String value;
   final IconData icon;
@@ -179,7 +188,8 @@ class _CredentialField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -225,13 +235,13 @@ class _CredentialField extends StatelessWidget {
                     size: 20,
                   ),
                   onPressed: onToggleVisibility,
-                  tooltip: isPasswordVisible ? 'Hide' : 'Show',
+                  tooltip: isPasswordVisible ? t.common.hide : t.common.show,
                   visualDensity: VisualDensity.compact,
                 ),
               IconButton(
                 icon: const Icon(LucideIcons.copy, size: 20),
                 onPressed: onCopy,
-                tooltip: 'Copy',
+                tooltip: t.common.copy,
                 visualDensity: VisualDensity.compact,
               ),
             ],

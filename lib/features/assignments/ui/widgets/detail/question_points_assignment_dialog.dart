@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/assignments/domain/entity/assignment_question_entity.dart';
 import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_entity.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/enum_localizations.dart';
@@ -44,7 +45,8 @@ class QuestionPointsAssignmentDialog extends ConsumerStatefulWidget {
 }
 
 class _QuestionPointsAssignmentDialogState
-    extends ConsumerState<QuestionPointsAssignmentDialog> {
+    extends ConsumerState<QuestionPointsAssignmentDialog>
+    with GlobalHelper {
   late final Map<String, TextEditingController> _pointsControllers;
   late final Map<String, double> _points;
   final _applyAllController = TextEditingController(text: '10');
@@ -84,12 +86,8 @@ class _QuestionPointsAssignmentDialogState
     final t = ref.read(translationsPod);
     final value = double.tryParse(_applyAllController.text) ?? 10.0;
     if (value <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.assignments.pointsAssignment.pointsMustBeGreaterThanZero,
-          ),
-        ),
+      showErrorSnack(
+        child: Text(t.assignments.pointsAssignment.pointsMustBeGreaterThanZero),
       );
       return;
     }
@@ -104,11 +102,9 @@ class _QuestionPointsAssignmentDialogState
     // Validate all points
     for (final entry in _points.entries) {
       if (entry.value <= 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              t.assignments.pointsAssignment.allPointsMustBeGreaterThanZero,
-            ),
+        showErrorSnack(
+          child: Text(
+            t.assignments.pointsAssignment.allPointsMustBeGreaterThanZero,
           ),
         );
         return;

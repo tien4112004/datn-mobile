@@ -26,23 +26,13 @@ class _SignInFormState extends ConsumerState<SignInForm> {
     super.dispose();
   }
 
-  void _handleForgotPassword() {
-    // TODO: Implement forgot password logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          ref.read(translationsPod).auth.signIn.forgotPasswordPressed,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
-    final authControllerNotifier = ref.watch(authControllerPod.notifier);
+    final isLoading = ref.watch(authControllerPod).isLoading;
+    final authControllerNotifier = ref.read(authControllerPod.notifier);
 
     return Form(
       key: _formKey,
@@ -87,36 +77,21 @@ class _SignInFormState extends ConsumerState<SignInForm> {
           ),
           const SizedBox(height: 12),
 
-          // Remember Me & Forgot Password
+          // Remember Me
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberMe,
-                    onChanged: (value) {
-                      setState(() {
-                        _rememberMe = value ?? false;
-                      });
-                    },
-                  ),
-                  Text(
-                    t.auth.signIn.rememberMe,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ],
+              Checkbox(
+                value: _rememberMe,
+                onChanged: (value) {
+                  setState(() {
+                    _rememberMe = value ?? false;
+                  });
+                },
               ),
-              TextButton(
-                onPressed: _handleForgotPassword,
-                child: Text(
-                  t.auth.signIn.forgotPassword,
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
+              Text(
+                t.auth.signIn.rememberMe,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.primary,
                 ),
               ),
             ],
@@ -125,23 +100,34 @@ class _SignInFormState extends ConsumerState<SignInForm> {
 
           // Sign In Button
           FilledButton(
-            onPressed: () => {
-              if (_formKey.currentState!.validate())
-                authControllerNotifier.signIn(
-                  _emailController.text,
-                  _passwordController.text,
-                ),
-            },
+            onPressed: isLoading
+                ? null
+                : () => {
+                    if (_formKey.currentState!.validate())
+                      authControllerNotifier.signIn(
+                        _emailController.text,
+                        _passwordController.text,
+                      ),
+                  },
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: const RoundedRectangleBorder(
                 borderRadius: Themes.boxRadius,
               ),
             ),
-            child: Text(
-              t.auth.signIn.signInButton,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            child: isLoading
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                  )
+                : Text(
+                    t.auth.signIn.signInButton,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
           ),
         ],
       ),

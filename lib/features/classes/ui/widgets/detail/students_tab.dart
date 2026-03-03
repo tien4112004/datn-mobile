@@ -6,6 +6,7 @@ import 'package:AIPrimary/features/students/domain/entity/student_import_result.
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/students/states/controller_provider.dart';
 import 'package:AIPrimary/features/students/ui/widgets/student_tile.dart';
@@ -231,6 +232,7 @@ class StudentsTab extends ConsumerWidget {
             Text(t.classes.students.importing),
           ],
         ),
+        behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 30),
       ),
     );
@@ -249,7 +251,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.importFailed(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.errorColor,
         ),
       );
     }
@@ -271,7 +274,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.exportSaved(path: savedPath)),
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.successColor,
           duration: const Duration(seconds: 4),
         ),
       );
@@ -280,7 +284,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.exportFailed(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.errorColor,
         ),
       );
     }
@@ -308,7 +313,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.exportFailed(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.errorColor,
         ),
       );
     }
@@ -325,7 +331,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.templateSaved(path: savedPath)),
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.successColor,
           duration: const Duration(seconds: 4),
         ),
       );
@@ -334,7 +341,8 @@ class StudentsTab extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.classes.students.templateFailed(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Themes.errorColor,
         ),
       );
     }

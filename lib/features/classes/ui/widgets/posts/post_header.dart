@@ -12,6 +12,7 @@ class PostHeader extends ConsumerWidget {
   final VoidCallback? onTogglePin;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final VoidCallback? onNotifyStudents;
 
   const PostHeader({
     super.key,
@@ -19,6 +20,7 @@ class PostHeader extends ConsumerWidget {
     this.onTogglePin,
     this.onEdit,
     this.onDelete,
+    this.onNotifyStudents,
   });
 
   @override
@@ -65,6 +67,7 @@ class PostHeader extends ConsumerWidget {
               onTogglePin: onTogglePin!,
               onEdit: onEdit!,
               onDelete: onDelete!,
+              onNotifyStudents: onNotifyStudents,
             ),
           ],
         ],

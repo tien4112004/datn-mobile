@@ -32,6 +32,25 @@
     "invalidPhoneNumber": "Please enter a valid phone number"
   },
   "passwordAndSecurity": "Password and Security",
+  "changePassword": {
+    "title": "Change Password",
+    "currentPassword": "Current Password",
+    "currentPasswordHint": "Enter your current password",
+    "newPassword": "New Password",
+    "newPasswordHint": "Enter your new password",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordHint": "Re-enter your new password",
+    "submit": "Change Password",
+    "success": "Password changed successfully",
+    "tempPasswordNotice": "You are using a temporary password. Please change it to continue.",
+    "validation": {
+      "enterCurrentPassword": "Please enter your current password",
+      "enterNewPassword": "Please enter your new password",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "confirmPassword": "Please confirm your new password",
+      "passwordsNotMatch": "Passwords do not match"
+    }
+  },
   "paymentMethods": "Payment Methods",
   "serverError": "Server error occurred. Please try again.",
   "navigation": {
@@ -1135,7 +1154,8 @@
       "linkedCount": "Linked $count $resource",
       "selectDueDate": "Select Due Date",
       "dueDate": "Due Date",
-      "dueDateHint": "Tap to set due date"
+      "dueDateHint": "Tap to set due date",
+      "selectDueTime": "Select Due Time"
     },
     "postOptions": {
       "label": "Post options",
@@ -1143,6 +1163,7 @@
       "pin": "Pin",
       "edit": "Edit",
       "delete": "Delete",
+      "notifyStudents": "Notify Students",
       "sectionTitle": "Options",
       "allowComments": "Allow comments",
       "allowCommentsDesc": "Let students comment on this post"
@@ -1925,7 +1946,8 @@
       "outlineGeneration": "Outline Generation",
       "imageGeneration": "Image Generation",
       "mindMapCreation": "Mind Map Creation",
-      "presentationGeneration": "Presentation Generation"
+      "presentationGeneration": "Presentation Generation",
+      "questionGeneration": "Question Generation"
     },
     "coinPurchase": {
       "title": "Purchase Coins",

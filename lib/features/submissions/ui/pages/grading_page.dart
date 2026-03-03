@@ -10,6 +10,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -27,7 +28,8 @@ class GradingPage extends ConsumerStatefulWidget {
   ConsumerState<GradingPage> createState() => _GradingPageState();
 }
 
-class _GradingPageState extends ConsumerState<GradingPage> {
+class _GradingPageState extends ConsumerState<GradingPage>
+    with GlobalHelper<GradingPage> {
   final Map<String, double> _questionScores = {};
   final Map<String, String> _questionFeedback = {};
   final TextEditingController _overallFeedbackController =
@@ -60,23 +62,15 @@ class _GradingPageState extends ConsumerState<GradingPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.submissions.grading.saveSuccess),
-          backgroundColor: Colors.green,
-        ),
-      );
+      showSuccessSnack(child: Text(t.submissions.grading.saveSuccess));
 
       // Navigate back
       context.router.maybePop();
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(t.submissions.grading.saveError(error: e.toString())),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
+      showErrorSnack(
+        child: Text(t.submissions.grading.saveError(error: e.toString())),
       );
     }
   }

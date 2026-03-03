@@ -55,4 +55,10 @@ abstract class PostRemoteDataSource {
     @Path('postId') String postId,
     @Body() PinPostRequestDto request,
   );
+
+  /// Sends a deadline reminder notification to all students in the class
+  @POST('/posts/{postId}/send-deadline-reminder')
+  Future<ServerResponseDto<void>> sendDeadlineReminder(
+    @Path('postId') String postId,
+  );
 }

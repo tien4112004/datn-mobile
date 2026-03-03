@@ -56,4 +56,7 @@ abstract class PostRepository {
 
   /// Toggles the pin status of a post
   Future<PostEntity> togglePin(String postId, bool pinned);
+
+  /// Sends a deadline reminder notification to all students
+  Future<void> sendDeadlineReminder(String postId);
 }

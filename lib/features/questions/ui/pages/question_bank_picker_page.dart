@@ -6,6 +6,7 @@ import 'package:AIPrimary/features/questions/domain/entity/question_bank_item_en
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_provider.dart';
 import 'package:AIPrimary/features/questions/states/question_bank_filter_state.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
@@ -33,8 +34,8 @@ class QuestionBankPickerPage extends ConsumerStatefulWidget {
       _QuestionBankPickerPageState();
 }
 
-class _QuestionBankPickerPageState
-    extends ConsumerState<QuestionBankPickerPage> {
+class _QuestionBankPickerPageState extends ConsumerState<QuestionBankPickerPage>
+    with GlobalHelper<QuestionBankPickerPage> {
   // Store full question objects instead of just IDs
   final Map<String, QuestionBankItemEntity> _selectedQuestions = {};
   final TextEditingController _searchController = TextEditingController();
@@ -74,9 +75,7 @@ class _QuestionBankPickerPageState
   Future<void> _handleContinue() async {
     if (_selectedQuestions.isEmpty) {
       final t = ref.read(translationsPod);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.questionBank.errors.selectAtLeastOne)),
-      );
+      showInfoSnack(child: Text(t.questionBank.errors.selectAtLeastOne));
       return;
     }
 

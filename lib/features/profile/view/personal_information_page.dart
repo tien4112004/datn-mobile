@@ -8,6 +8,7 @@ import 'package:AIPrimary/features/profile/controller/profile_controller.dart';
 import 'package:AIPrimary/features/profile/provider/avatar_provider.dart';
 import 'package:AIPrimary/features/setting/widget/profile_picture.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,8 @@ class PersonalInformationPage extends ConsumerStatefulWidget {
 }
 
 class _PersonalInformationPageState
-    extends ConsumerState<PersonalInformationPage> {
+    extends ConsumerState<PersonalInformationPage>
+    with GlobalHelper<PersonalInformationPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -157,22 +159,12 @@ class _PersonalInformationPageState
           .updateProfile(userId, request);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.profile.updateSuccess),
-            backgroundColor: Colors.green,
-          ),
-        );
+        showSuccessSnack(child: Text(t.profile.updateSuccess));
         setState(() => _isEditing = false);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.profile.updateError(error: e.toString())),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showErrorSnack(child: Text(t.profile.updateError(error: e.toString())));
       }
     } finally {
       if (mounted) {
@@ -199,21 +191,13 @@ class _PersonalInformationPageState
         await ref.read(avatarProvider.notifier).updateAvatar(image.path);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(t.profile.avatarUpdateSuccess),
-              backgroundColor: Colors.green,
-            ),
-          );
+          showSuccessSnack(child: Text(t.profile.avatarUpdateSuccess));
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.profile.avatarUpdateFailed(error: e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showErrorSnack(
+          child: Text(t.profile.avatarUpdateFailed(error: e.toString())),
         );
       }
     }
@@ -225,20 +209,12 @@ class _PersonalInformationPageState
       await ref.read(avatarProvider.notifier).clearAvatar();
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.profile.avatarRemoveSuccess),
-            backgroundColor: Colors.green,
-          ),
-        );
+        showSuccessSnack(child: Text(t.profile.avatarRemoveSuccess));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.profile.avatarUpdateFailed(error: e.toString())),
-            backgroundColor: Colors.red,
-          ),
+        showErrorSnack(
+          child: Text(t.profile.avatarUpdateFailed(error: e.toString())),
         );
       }
     }

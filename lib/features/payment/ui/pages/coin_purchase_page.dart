@@ -1,4 +1,5 @@
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +21,8 @@ class CoinPurchasePage extends ConsumerStatefulWidget {
   ConsumerState<CoinPurchasePage> createState() => _CoinPurchasePageState();
 }
 
-class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
+class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage>
+    with GlobalHelper<CoinPurchasePage> {
   String? selectedPackageId;
   String selectedGateway = 'SEPAY'; // Default gateway
   bool isProcessing = false;
@@ -224,12 +226,9 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
         isProcessing = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.payment.coinPurchase.failedToCreateCheckout(error: e.toString()),
-          ),
-          backgroundColor: Colors.red,
+      showErrorSnack(
+        child: Text(
+          t.payment.coinPurchase.failedToCreateCheckout(error: e.toString()),
         ),
       );
     }
@@ -269,24 +268,17 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
         break;
 
       case PaymentCallbackStatus.error:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result.message ?? t.payment.callback.paymentFailed),
-            backgroundColor: Colors.red,
-          ),
+        showErrorSnack(
+          child: Text(result.message ?? t.payment.callback.paymentFailed),
         );
         break;
 
       case PaymentCallbackStatus.cancelled:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.payment.callback.paymentCancelled)),
-        );
+        showInfoSnack(child: Text(t.payment.callback.paymentCancelled));
         break;
 
       case PaymentCallbackStatus.pending:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.payment.callback.paymentPending)),
-        );
+        showInfoSnack(child: Text(t.payment.callback.paymentPending));
         break;
     }
   }
@@ -322,14 +314,14 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage> {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Theme.of(context).colorScheme.primaryContainer
-                      : Colors.grey[100],
+                      : Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   icon,
                   color: isSelected
                       ? Theme.of(context).colorScheme.onPrimaryContainer
-                      : Colors.grey[600],
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 8),

@@ -65,7 +65,7 @@ class DueDateSection extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         dueDate != null
-                            ? '${dueDate!.day}/${dueDate!.month}/${dueDate!.year}'
+                            ? '${dueDate!.day}/${dueDate!.month}/${dueDate!.year} ${dueDate!.hour.toString().padLeft(2, '0')}:${dueDate!.minute.toString().padLeft(2, '0')}'
                             : translations.classes.postUpsert.dueDateHint,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: dueDate != null

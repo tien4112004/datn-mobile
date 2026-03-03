@@ -1,3 +1,5 @@
+import 'package:AIPrimary/core/theme/coin_colors.dart';
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,8 @@ class TransactionDetailPage extends ConsumerWidget {
                   content: Text(
                     t.payment.transactionDetail.transactionIdCopied,
                   ),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Themes.infoColor,
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -159,24 +163,27 @@ class TransactionDetailPage extends ConsumerWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.amber.shade50,
+                  color: CoinColors.backgroundLight,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: CoinColors.accent.withValues(alpha: 0.4),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       LucideIcons.coins,
                       size: 20,
-                      color: Colors.amber.shade700,
+                      color: CoinColors.accent,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       '+${NumberFormat('#,###').format(transaction.coinsAwarded)} ${t.payment.transactionDetail.coins}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: Colors.amber.shade900,
+                        color: CoinColors.textDarkest,
                       ),
                     ),
                   ],

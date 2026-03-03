@@ -6,6 +6,7 @@ import 'package:AIPrimary/features/questions/states/question_bank_provider.dart'
 import 'package:AIPrimary/shared/riverpod_ext/async_value_easy_when.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_error_state.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/utils/enum_localizations.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,8 @@ class QuestionDetailPage extends ConsumerStatefulWidget {
   ConsumerState<QuestionDetailPage> createState() => _QuestionDetailPageState();
 }
 
-class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
+class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage>
+    with GlobalHelper<QuestionDetailPage> {
   @override
   void initState() {
     super.initState();
@@ -227,22 +229,16 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
                       .read(questionBankProvider.notifier)
                       .publishQuestion(questionItem.id);
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          t.questionBank.publishDialog.successMessage,
-                        ),
-                      ),
+                    showInfoSnack(
+                      child: Text(t.questionBank.publishDialog.successMessage),
                     );
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          t.questionBank.publishDialog.failedMessage(
-                            error: e.toString(),
-                          ),
+                    showErrorSnack(
+                      child: Text(
+                        t.questionBank.publishDialog.failedMessage(
+                          error: e.toString(),
                         ),
                       ),
                     );

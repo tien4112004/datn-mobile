@@ -1,3 +1,4 @@
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -22,7 +23,8 @@ class AssignmentFormDialog extends ConsumerStatefulWidget {
       _AssignmentFormDialogState();
 }
 
-class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
+class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog>
+    with GlobalHelper {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
@@ -229,9 +231,7 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
 
         if (mounted) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(t.assignments.form.updateSuccess)),
-          );
+          showInfoSnack(child: Text(t.assignments.form.updateSuccess));
         }
       } else {
         final request = AssignmentCreateRequest(
@@ -260,22 +260,14 @@ class _AssignmentFormDialogState extends ConsumerState<AssignmentFormDialog> {
           );
 
           // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(t.assignments.form.createSuccess),
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          showInfoSnack(child: Text(t.assignments.form.createSuccess));
         }
       }
     } catch (e) {
       if (mounted) {
         final t = ref.read(translationsPod);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.assignments.form.error(error: e.toString())),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
+        showErrorSnack(
+          child: Text(t.assignments.form.error(error: e.toString())),
         );
       }
     }

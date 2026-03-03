@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/coin_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +31,7 @@ class CoinBalanceIndicator extends ConsumerWidget {
     VoidCallback? onTap,
   }) {
     return Material(
-      color: Colors.amber.shade50,
+      color: CoinColors.backgroundLight,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
@@ -40,14 +41,14 @@ class CoinBalanceIndicator extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(LucideIcons.coins, size: 16, color: Colors.amber.shade700),
+              const Icon(LucideIcons.coins, size: 16, color: CoinColors.accent),
               const SizedBox(width: 6),
               Text(
                 _formatBalance(balance),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
-                  color: Colors.amber.shade900,
+                  color: CoinColors.textDarkest,
                 ),
               ),
             ],
@@ -61,24 +62,24 @@ class CoinBalanceIndicator extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.amber.shade50,
+        color: CoinColors.backgroundLight,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(LucideIcons.coins, size: 16, color: Colors.amber.shade700),
+          const Icon(LucideIcons.coins, size: 16, color: CoinColors.accent),
           const SizedBox(width: 6),
           SizedBox(
             width: 40,
             height: 13,
             child: Shimmer.fromColors(
-              baseColor: Colors.amber.shade200,
-              highlightColor: Colors.amber.shade100,
-              child: Container(
+              baseColor: CoinColors.shimmerBase,
+              highlightColor: CoinColors.shimmerHighlight,
+              child: const DecoratedBox(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.all(Radius.circular(4)),
                 ),
               ),
             ),
@@ -100,14 +101,14 @@ class CoinBalanceIndicator extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(LucideIcons.coins, size: 16, color: Colors.grey.shade600),
+              Icon(LucideIcons.coins, size: 16, color: Colors.grey.shade500),
               const SizedBox(width: 6),
               Text(
                 '--',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
-                  color: Colors.grey.shade700,
+                  color: Colors.grey.shade600,
                 ),
               ),
             ],

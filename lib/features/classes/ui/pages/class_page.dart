@@ -1,3 +1,4 @@
+import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
@@ -179,6 +180,8 @@ class _ClassListContent extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(t.classes.deleteDialog.deleteSuccess),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Themes.successColor,
                     ),
                   );
                 }
@@ -189,7 +192,8 @@ class _ClassListContent extends ConsumerWidget {
                       content: Text(
                         t.classes.deleteDialog.deleteError(error: e.toString()),
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.error,
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Themes.errorColor,
                     ),
                   );
                 }

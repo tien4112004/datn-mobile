@@ -88,6 +88,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
+        final isLoading = ref.watch(authControllerPod).isLoading;
 
         return Form(
           key: _formKey,
@@ -245,8 +246,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
                 readOnly: true, // Prevents manual keyboard input
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
-                  // Format the date for display (requires `intl` package)
-                  text: DateFormatHelper.formatRelativeDate(
+                  text: DateFormatHelper.formatSimpleDate(
                     ref: ref,
                     _selectedDate,
                   ),
@@ -393,20 +393,28 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
 
               // Sign Up Button
               FilledButton(
-                onPressed: () => _handleSignUp(),
+                onPressed: isLoading ? null : () => _handleSignUp(),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: const RoundedRectangleBorder(
                     borderRadius: Themes.boxRadius,
                   ),
                 ),
-                child: Text(
-                  t.auth.signUp.signUpButton,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        t.auth.signUp.signUpButton,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ],
           ),

@@ -14,6 +14,7 @@ import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_header.dart';
 import 'package:AIPrimary/features/questions/ui/widgets/question_bank_list.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
+import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -27,7 +28,8 @@ class QuestionBankPage extends ConsumerStatefulWidget {
   ConsumerState<QuestionBankPage> createState() => _QuestionBankPageState();
 }
 
-class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
+class _QuestionBankPageState extends ConsumerState<QuestionBankPage>
+    with GlobalHelper<QuestionBankPage> {
   @override
   void initState() {
     super.initState();
@@ -198,8 +200,8 @@ class _QuestionBankPageState extends ConsumerState<QuestionBankPage> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 ref.read(questionBankProvider.notifier).deleteQuestion(item.id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(t.questionBank.deleteDialog.success)),
+                showSuccessSnack(
+                  child: Text(t.questionBank.deleteDialog.success),
                 );
               },
               child: Text(t.questionBank.actions.delete),

@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/auth/controllers/providers.dart';
 import 'package:flutter/material.dart';
@@ -71,15 +70,15 @@ class SettingContentView extends ConsumerWidget {
                         ),
                         icon: LucideIcons.user,
                       ),
-                      // SettingOption(
-                      //   title: t.passwordAndSecurity,
-                      //   onPressed: () => _navigateWithFallback(
-                      //     context,
-                      //     ref,
-                      //     'password-and-security',
-                      //   ),
-                      //   icon: LucideIcons.lock,
-                      // ),
+                      SettingOption(
+                        title: t.passwordAndSecurity,
+                        onPressed: () => _navigateWithFallback(
+                          context,
+                          ref,
+                          '/change-password',
+                        ),
+                        icon: LucideIcons.lock,
+                      ),
                       SettingOption(
                         title: t.paymentMethods,
                         onPressed: () => _navigateWithFallback(
@@ -88,6 +87,15 @@ class SettingContentView extends ConsumerWidget {
                           '/payment-methods',
                         ),
                         icon: LucideIcons.creditCard,
+                      ),
+                      SettingOption(
+                        title: t.payment.transactionHistory.title,
+                        onPressed: () => _navigateWithFallback(
+                          context,
+                          ref,
+                          '/transaction-history',
+                        ),
+                        icon: LucideIcons.receipt,
                       ),
                     ],
                   ),
@@ -139,20 +147,25 @@ class SettingContentView extends ConsumerWidget {
               height: 48.0,
               child: Consumer(
                 builder: (context, ref, child) {
+                  final isLoading = ref.watch(
+                    authControllerPod.select((s) => s.isLoading),
+                  );
                   return ElevatedButton(
-                    onPressed: () {
-                      try {
-                        ref.read(authControllerPod.notifier).signOut();
-                      } catch (e) {
-                        // Ignore
-                      } finally {
-                        context.router.replaceAll([const SignInRoute()]);
-                      }
-                    },
-                    child: Text(
-                      t.settings.logOut,
-                      style: const TextStyle(fontSize: 20),
-                    ),
+                    onPressed: isLoading
+                        ? null
+                        : () => ref.read(authControllerPod.notifier).signOut(),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator.adaptive(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(
+                            t.settings.logOut,
+                            style: const TextStyle(fontSize: 20),
+                          ),
                   );
                 },
               ),

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/features/auth/controllers/providers.dart';
+import 'package:dio/dio.dart';
 import 'package:AIPrimary/features/auth/widgets/divider.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:AIPrimary/features/auth/widgets/sign_up_form.dart';
@@ -31,8 +32,17 @@ class _SignUpPageState extends ConsumerState<SignUpPage> with GlobalHelper {
     return Consumer(
       builder: (context, ref, child) {
         final t = ref.watch(translationsPod);
+        final isLoading = ref.watch(authControllerPod).isLoading;
 
         ref.listen(authControllerPod, (previous, next) {
+          if (next.hasError) {
+            final error = next.error;
+            final message = error is DioException
+                ? (error.error?.toString() ?? 'Unknown error')
+                : error?.toString() ?? 'Unknown error';
+            showErrorSnack(child: Text(message));
+            return;
+          }
           if (!next.isLoading && next.value?.isSignedUp == true) {
             // Navigate to the sign-in page
             context.router.replace(const SignInRoute());
@@ -82,11 +92,13 @@ class _SignUpPageState extends ConsumerState<SignUpPage> with GlobalHelper {
 
                       // Google Sign In Button
                       GoogleAuthButton(
-                        onPressed: () async {
-                          await ref
-                              .read(authControllerPod.notifier)
-                              .signInWithGoogle();
-                        },
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                                await ref
+                                    .read(authControllerPod.notifier)
+                                    .signInWithGoogle();
+                              },
                         style: const AuthButtonStyle(
                           iconSize: 20.0,
                           padding: EdgeInsets.symmetric(vertical: 16),

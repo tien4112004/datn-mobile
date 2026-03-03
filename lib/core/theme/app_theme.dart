@@ -19,6 +19,12 @@ class Themes {
   static const Color primaryColorDark = Color(0xFF1976D2);
   static const Color primaryColorLight = Color(0xFF64B5F6);
 
+  // Notification Color
+  static const Color successColor = Color.fromARGB(255, 50, 235, 56);
+  static const Color errorColor = Color.fromARGB(255, 255, 48, 33);
+  static const Color warningColor = Color.fromARGB(255, 249, 167, 45);
+  static const Color infoColor = Color(0xFF2196F3);
+
   // Custom color scheme for the app
   static const FlexSchemeColor _lightColors = FlexSchemeColor(
     primary: primaryColor,

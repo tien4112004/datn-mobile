@@ -119,4 +119,9 @@ class PostRepositoryImpl implements PostRepository {
     );
     return response.data!.toEntity();
   }
+
+  @override
+  Future<void> sendDeadlineReminder(String postId) async {
+    await _remoteDataSource.sendDeadlineReminder(postId);
+  }
 }

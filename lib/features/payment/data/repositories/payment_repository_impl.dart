@@ -3,12 +3,19 @@ import 'package:AIPrimary/features/payment/data/repositories/payment_repository.
 import 'package:AIPrimary/features/payment/data/source/payment_remote_source.dart';
 import 'package:AIPrimary/features/payment/data/models/checkout_request_model.dart';
 import 'package:AIPrimary/features/payment/data/models/checkout_response_model.dart';
+import 'package:AIPrimary/features/payment/data/models/coin_package_model.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
 
 class PaymentRepositoryImpl implements PaymentRepository {
   final PaymentRemoteSource _remoteSource;
 
   PaymentRepositoryImpl(this._remoteSource);
+
+  @override
+  Future<List<CoinPackageModel>> getCoinPackages() async {
+    final response = await _remoteSource.getCoinPackages();
+    return (response.data ?? []).map((dto) => dto.toModel()).toList();
+  }
 
   @override
   Future<CheckoutResponseModel> createCheckout(

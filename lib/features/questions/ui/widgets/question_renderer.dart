@@ -198,7 +198,7 @@ class QuestionRenderer extends StatelessWidget {
       case QuestionMode.doing:
         return MatchingDoing(
           question: q,
-          answers: matchAnswer?.matches,
+          answers: matchAnswer?.matches ?? {},
           onAnswersChanged: onAnswerChange != null
               ? (matches) => onAnswerChange!(
                   MatchingAnswer(questionId: q.id, matches: matches),

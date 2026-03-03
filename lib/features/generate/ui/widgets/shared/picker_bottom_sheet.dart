@@ -57,7 +57,7 @@ class _PickerBottomSheetState extends State<PickerBottomSheet> {
       snapSizes: [0.5, 0.9],
       expand: true,
       builder: (context, scrollController) {
-        return Expanded(child: _buildContent(isDark, scrollController));
+        return SizedBox.expand(child: _buildContent(isDark, scrollController));
       },
     );
   }

@@ -8,6 +8,7 @@ import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 import 'package:AIPrimary/features/payment/ui/widgets/coin_package_card.dart';
 import 'package:AIPrimary/features/payment/data/models/payment_callback_result_model.dart';
 import 'package:AIPrimary/features/payment/data/models/checkout_request_model.dart';
+import 'package:AIPrimary/features/payment/data/models/coin_package_model.dart';
 import 'package:AIPrimary/features/coins/providers/coins_providers.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
 import 'package:AIPrimary/core/config/config.dart';
@@ -29,7 +30,7 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage>
 
   @override
   Widget build(BuildContext context) {
-    final packages = ref.watch(coinPackagesProvider);
+    final packagesAsync = ref.watch(coinPackagesProvider);
     final t = ref.watch(translationsPod);
 
     return Scaffold(
@@ -47,68 +48,10 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage>
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                // Payment Gateway Selection
-                Text(
-                  t.payment.coinPurchase.paymentMethod,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildGatewayCard(
-                        'SEPAY',
-                        t.payment.coinPurchase.gateways.bankTransfer,
-                        LucideIcons.building,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildGatewayCard(
-                        'PAYOS',
-                        t.payment.coinPurchase.gateways.qrCode,
-                        LucideIcons.qrCode,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                Text(
-                  t.payment.coinPurchase.choosePackage,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  t.payment.coinPurchase.choosePackageSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                ...packages.map((package) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: CoinPackageCard(
-                      package: package,
-                      isSelected: selectedPackageId == package.id,
-                      onTap: () {
-                        setState(() {
-                          selectedPackageId = package.id;
-                        });
-                      },
-                    ),
-                  );
-                }),
-              ],
+            child: packagesAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => _buildErrorState(t, error),
+              data: (packages) => _buildPackageList(context, t, packages),
             ),
           ),
 
@@ -164,19 +107,114 @@ class _CoinPurchasePageState extends ConsumerState<CoinPurchasePage>
     );
   }
 
+  Widget _buildErrorState(Translations t, Object error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            LucideIcons.circleX,
+            size: 48,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            t.payment.coinPurchase.failedToLoadPackages,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          FilledButton.tonal(
+            onPressed: () => ref.invalidate(coinPackagesProvider),
+            child: Text(t.common.retry),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPackageList(
+    BuildContext context,
+    Translations t,
+    List<CoinPackageModel> packages,
+  ) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // Payment Gateway Selection
+        Text(
+          t.payment.coinPurchase.paymentMethod,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildGatewayCard(
+                'SEPAY',
+                t.payment.coinPurchase.gateways.bankTransfer,
+                LucideIcons.building,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildGatewayCard(
+                'PAYOS',
+                t.payment.coinPurchase.gateways.qrCode,
+                LucideIcons.qrCode,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
+
+        Text(
+          t.payment.coinPurchase.choosePackage,
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          t.payment.coinPurchase.choosePackageSubtitle,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.outline,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        ...packages.map((package) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: CoinPackageCard(
+              package: package,
+              isSelected: selectedPackageId == package.id,
+              onTap: () {
+                setState(() {
+                  selectedPackageId = package.id;
+                });
+              },
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
   Future<void> _handlePurchase(Translations t) async {
     if (selectedPackageId == null) return;
+
+    final packages = ref.read(coinPackagesProvider).value ?? [];
+    final selectedPackage = packages.firstWhere(
+      (p) => p.id == selectedPackageId,
+    );
 
     setState(() {
       isProcessing = true;
     });
 
     try {
-      final packages = ref.read(coinPackagesProvider);
-      final selectedPackage = packages.firstWhere(
-        (p) => p.id == selectedPackageId,
-      );
-
       // Generate unique reference code
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final referenceCode =

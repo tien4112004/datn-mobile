@@ -1956,6 +1956,7 @@
       "choosePackageSubtitle": "Select the coin package that best suits your needs",
       "continueToPayment": "Continue to Payment",
       "failedToCreateCheckout": "Failed to create checkout: $error",
+      "failedToLoadPackages": "Failed to load coin packages",
       "gateways": {
         "bankTransfer": "Bank Transfer",
         "qrCode": "QR Code"
@@ -1965,23 +1966,13 @@
         "coins": "coins",
         "bonus": "bonus"
       },
-      "packages": {
-        "starter": {
-          "name": "Starter Pack",
-          "description": "Perfect for trying out"
-        },
-        "popular": {
-          "name": "Popular Pack",
-          "description": "Best value! +500 bonus coins"
-        },
-        "premium": {
-          "name": "Premium Pack",
-          "description": "Maximum savings! +1,500 bonus coins"
-        },
-        "ultimate": {
-          "name": "Ultimate Pack",
-          "description": "For power users! +5,000 bonus coins"
-        }
+      "packageNames": {
+        "basic20k": "Basic Pack",
+        "starter30k": "Starter Pack",
+        "standard50k": "Standard Pack",
+        "premium100k": "Premium Pack",
+        "deluxe200k": "Deluxe Pack",
+        "ultimate500k": "Ultimate Pack"
       }
     },
     "transactionHistory": {

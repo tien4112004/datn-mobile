@@ -30,7 +30,7 @@ class FillInBlankViewing extends ConsumerWidget {
       type: question.type,
       showHeader: showHeader,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             t.questionBank.viewing.viewingModeCorrectAnswers,

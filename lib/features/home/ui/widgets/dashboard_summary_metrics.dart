@@ -135,7 +135,7 @@ class _MetricCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(icon, color: iconColor, size: 28),
-                    if (badge != null) badge!,
+                    badge ?? const SizedBox.shrink(),
                   ],
                 ),
                 Column(

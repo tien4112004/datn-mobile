@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'coin_package_model.freezed.dart';
 
-/// Client-side model for predefined coin packages
+/// Client-side model for coin packages (UI + domain)
 @freezed
 abstract class CoinPackageModel with _$CoinPackageModel {
   const factory CoinPackageModel({

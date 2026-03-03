@@ -153,7 +153,7 @@ class DefaultErrorWidget extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 12),
-            if (retryButton != null) retryButton,
+            retryButton ?? const SizedBox.shrink(),
           ],
         ),
       ),

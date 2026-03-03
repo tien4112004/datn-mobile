@@ -1,8 +1,10 @@
 import 'package:AIPrimary/features/payment/data/models/checkout_request_model.dart';
 import 'package:AIPrimary/features/payment/data/models/checkout_response_model.dart';
+import 'package:AIPrimary/features/payment/data/models/coin_package_model.dart';
 import 'package:AIPrimary/features/payment/data/models/transaction_details_model.dart';
 
 abstract class PaymentRepository {
+  Future<List<CoinPackageModel>> getCoinPackages();
   Future<CheckoutResponseModel> createCheckout(CheckoutRequestModel request);
   Future<TransactionDetailsModel> getTransactionDetails(String transactionId);
   Future<List<TransactionDetailsModel>> getUserTransactions({

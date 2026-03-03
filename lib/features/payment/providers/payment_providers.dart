@@ -1,4 +1,4 @@
-import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/features/payment/data/source/payment_remote_source.dart';
 import 'package:AIPrimary/features/payment/data/repositories/payment_repository.dart';
@@ -9,6 +9,8 @@ import 'package:AIPrimary/features/payment/data/models/transaction_details_model
 import 'package:AIPrimary/features/payment/data/models/coin_package_model.dart';
 import 'package:AIPrimary/features/payment/domain/services/payment_status_polling_service.dart';
 import 'package:AIPrimary/shared/api_client/dio/dio_client_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/i18n/strings.g.dart';
 
 // Remote source provider
 final paymentRemoteSourceProvider = Provider<PaymentRemoteSource>((ref) {
@@ -27,44 +29,36 @@ final paymentStatusPollingServiceProvider =
       return PaymentStatusPollingService(repository);
     });
 
-// Predefined coin packages (client-side)
-final coinPackagesProvider = Provider<List<CoinPackageModel>>((ref) {
-  final t = ref.watch(translationsPod);
-  return [
-    CoinPackageModel(
-      id: 'starter',
-      name: t.payment.coinPurchase.packages.starter.name,
-      coins: 1000,
-      price: 50000, // 50,000 VND
-      description: t.payment.coinPurchase.packages.starter.description,
-    ),
-    CoinPackageModel(
-      id: 'popular',
-      name: t.payment.coinPurchase.packages.popular.name,
-      coins: 5000,
-      price: 200000, // 200,000 VND
-      bonusCoins: 500,
-      isPopular: true,
-      description: t.payment.coinPurchase.packages.popular.description,
-    ),
-    CoinPackageModel(
-      id: 'premium',
-      name: t.payment.coinPurchase.packages.premium.name,
-      coins: 10000,
-      price: 350000, // 350,000 VND
-      bonusCoins: 1500,
-      description: t.payment.coinPurchase.packages.premium.description,
-    ),
-    CoinPackageModel(
-      id: 'ultimate',
-      name: t.payment.coinPurchase.packages.ultimate.name,
-      coins: 25000,
-      price: 800000, // 800,000 VND
-      bonusCoins: 5000,
-      description: t.payment.coinPurchase.packages.ultimate.description,
-    ),
-  ];
-});
+// Coin packages from backend
+final coinPackagesProvider = FutureProvider.autoDispose<List<CoinPackageModel>>(
+  (ref) async {
+    final repository = ref.watch(paymentRepositoryProvider);
+    final t = ref.watch(translationsPod);
+    final packages = await repository.getCoinPackages();
+    debugPrint('packages: ${packages.first} ');
+    return packages
+        .map(
+          (p) => p.copyWith(
+            name: _localizedPackageName(p.name, t),
+            isPopular: p.name.toUpperCase() == 'PREMIUM_100K',
+          ),
+        )
+        .toList();
+  },
+);
+
+String _localizedPackageName(String name, Translations t) {
+  final names = t.payment.coinPurchase.packageNames;
+  return switch (name.toUpperCase()) {
+    'BASIC_20K' => names.basic20k,
+    'STARTER_30K' => names.starter30k,
+    'STANDARD_50K' => names.standard50k,
+    'PREMIUM_100K' => names.premium100k,
+    'DELUXE_200K' => names.deluxe200k,
+    'ULTIMATE_500K' => names.ultimate500k,
+    _ => name,
+  };
+}
 
 // Create checkout provider
 final createCheckoutProvider =

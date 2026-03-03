@@ -9,13 +9,13 @@ import 'matching_content_widget.dart';
 /// Matching Question in Doing Mode
 class MatchingDoing extends ConsumerStatefulWidget {
   final MatchingQuestion question;
-  final Map<String, String>? answers; // pairId -> selectedRightId
+  final Map<String, String> answers; // pairId -> selectedRightId
   final Function(Map<String, String>)? onAnswersChanged;
 
   const MatchingDoing({
     super.key,
     required this.question,
-    this.answers,
+    required this.answers,
     this.onAnswersChanged,
   });
 
@@ -30,9 +30,23 @@ class _MatchingDoingState extends ConsumerState<MatchingDoing> {
   @override
   void initState() {
     super.initState();
-    _selectedAnswers = Map.from(widget.answers ?? {});
+    _selectedAnswers = Map.from(widget.answers);
     // Store shuffled pairs instead of just text for image support
+    debugPrint(
+      "shuffle question: ${widget.question.data.pairs.map((e) => e.right)}",
+    );
     _shuffledRightPairs = List.from(widget.question.data.pairs)..shuffle();
+  }
+
+  @override
+  void didUpdateWidget(covariant MatchingDoing oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.question.id != widget.question.id) {
+      _selectedAnswers = Map.from(widget.answers);
+      _shuffledRightPairs = List.from(widget.question.data.pairs)..shuffle();
+    } else if (oldWidget.answers != widget.answers) {
+      _selectedAnswers = Map.from(widget.answers);
+    }
   }
 
   void _selectMatch(String pairId, String? rightPairId) {
@@ -144,6 +158,7 @@ class _MatchingDoingState extends ConsumerState<MatchingDoing> {
     ThemeData theme,
     Translations t,
   ) {
+    debugPrint("Right pair: ${_shuffledRightPairs.map((e) => e.right)}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: _shuffledRightPairs.map((rightPair) {

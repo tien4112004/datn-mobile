@@ -114,12 +114,8 @@ class _QuestionGenerateResultPageState
                 final item = questions[index];
                 return QuestionListCard(
                   item: item,
-                  showActions: true,
+                  showActions: false,
                   onTap: () => _showDetailSheet(item),
-                  onView: () => _showDetailSheet(item),
-                  onEdit: () => context.router.push(
-                    QuestionUpdateRoute(questionId: item.id),
-                  ),
                 );
               },
             ),

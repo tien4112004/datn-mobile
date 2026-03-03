@@ -34,23 +34,33 @@ class StudentRepositoryImpl implements StudentRepository {
   }
 
   @override
-  Future<List<Student>> getStudentsByClass(
-    String classId, {
-    int page = 1,
-    int size = 10,
-  }) async {
+  Future<List<Student>> getStudentsByClass(String classId) async {
     if (classId.trim().isEmpty) {
       throw ArgumentError('Class ID cannot be empty');
     }
-    final response = await _remoteSource.getStudentsByClass(
+    const pageSize = 100;
+    final firstResponse = await _remoteSource.getStudentsByClass(
       classId,
-      page,
-      size,
+      1,
+      pageSize,
     );
-    if (response.data == null) {
-      return [];
+    final firstPage = firstResponse.data ?? [];
+    final totalPages = firstResponse.pagination?.totalPages ?? 1;
+
+    if (totalPages <= 1) {
+      return firstPage.map((dto) => dto.toEntity()).toList();
     }
-    return response.data!.map((dto) => dto.toEntity()).toList();
+
+    final remaining = await Future.wait([
+      for (int p = 2; p <= totalPages; p++)
+        _remoteSource.getStudentsByClass(classId, p, pageSize),
+    ]);
+
+    final allStudents = firstPage.map((dto) => dto.toEntity()).toList();
+    for (final r in remaining) {
+      allStudents.addAll((r.data ?? []).map((dto) => dto.toEntity()));
+    }
+    return allStudents;
   }
 
   @override

@@ -105,7 +105,10 @@ class _ContextEditPageState extends ConsumerState<ContextEditPage> {
   void _onSave() {
     HapticFeedback.mediumImpact();
     final updatedContext = _buildUpdatedContext();
-    context.router.maybePop(updatedContext);
+    setState(() => _hasChanges = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.router.maybePop(updatedContext);
+    });
   }
 
   void _onUnlink() async {

@@ -18,11 +18,7 @@ abstract class StudentRepository {
   );
 
   /// Fetches all students enrolled in a specific class.
-  Future<List<Student>> getStudentsByClass(
-    String classId, {
-    int page = 1,
-    int size = 10,
-  });
+  Future<List<Student>> getStudentsByClass(String classId);
 
   /// Creates a new student and enrolls them in a class.
   Future<Student> createAndEnrollStudent(

@@ -631,6 +631,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage>
     switch (question.type) {
       case QuestionType.multipleChoice:
         return MultipleChoiceDoing(
+          key: ValueKey(questionId),
           question: question as MultipleChoiceQuestion,
           selectedAnswer: currentAnswer is MultipleChoiceAnswerEntity
               ? currentAnswer.selectedOptionId
@@ -647,6 +648,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage>
 
       case QuestionType.fillInBlank:
         return FillInBlankDoing(
+          key: ValueKey(questionId),
           question: question as FillInBlankQuestion,
           answers: currentAnswer is FillInBlankAnswerEntity
               ? currentAnswer.blankAnswers
@@ -663,6 +665,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage>
 
       case QuestionType.matching:
         return MatchingDoing(
+          key: ValueKey(questionId),
           question: question as MatchingQuestion,
           answers: currentAnswer is MatchingAnswerEntity
               ? currentAnswer.matchedPairs
@@ -676,6 +679,7 @@ class _AssignmentDoingPageState extends ConsumerState<AssignmentDoingPage>
 
       case QuestionType.openEnded:
         return OpenEndedDoing(
+          key: ValueKey(questionId),
           question: question as OpenEndedQuestion,
           answer: currentAnswer is OpenEndedAnswerEntity
               ? currentAnswer.response

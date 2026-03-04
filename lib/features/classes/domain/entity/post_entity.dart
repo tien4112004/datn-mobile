@@ -16,6 +16,8 @@ class PostEntity {
   final List<LinkedResourceEntity> linkedResources;
   final String? assignmentId;
   final DateTime? dueDate; // For exercise type posts
+  final DateTime? availableFrom; // When the exercise opens
+  final DateTime? availableUntil; // When the exercise closes
   final bool isPinned;
   final bool allowComments;
   final int commentCount;
@@ -35,6 +37,8 @@ class PostEntity {
     required this.linkedResources,
     this.assignmentId,
     this.dueDate,
+    this.availableFrom,
+    this.availableUntil,
     required this.isPinned,
     required this.allowComments,
     required this.commentCount,
@@ -56,6 +60,8 @@ class PostEntity {
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     DateTime? dueDate,
+    DateTime? availableFrom,
+    DateTime? availableUntil,
     bool? isPinned,
     bool? allowComments,
     int? commentCount,
@@ -75,6 +81,8 @@ class PostEntity {
       linkedResources: linkedResources ?? this.linkedResources,
       assignmentId: linkedLessonId ?? assignmentId,
       dueDate: dueDate ?? this.dueDate,
+      availableFrom: availableFrom ?? this.availableFrom,
+      availableUntil: availableUntil ?? this.availableUntil,
       isPinned: isPinned ?? this.isPinned,
       allowComments: allowComments ?? this.allowComments,
       commentCount: commentCount ?? this.commentCount,

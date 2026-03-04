@@ -1155,7 +1155,14 @@
       "selectDueDate": "Select Due Date",
       "dueDate": "Due Date",
       "dueDateHint": "Tap to set due date",
-      "selectDueTime": "Select Due Time"
+      "selectDueTime": "Select Due Time",
+      "availabilityWindow": "Availability Window",
+      "availableFrom": "Available From",
+      "availableFromHint": "Tap to set start date",
+      "selectAvailableFrom": "Select Start Date",
+      "availableUntil": "Available Until",
+      "availableUntilHint": "Tap to set end date",
+      "selectAvailableUntil": "Select End Date"
     },
     "postOptions": {
       "label": "Post options",

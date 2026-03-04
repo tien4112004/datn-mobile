@@ -300,41 +300,78 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     }
   }
 
-  Future<void> _pickDueDate() async {
-    final t = ref.read(translationsPod);
+  Future<DateTime?> _pickDateTime({
+    required String dateHelpText,
+    required String timeHelpText,
+    DateTime? initial,
+    TimeOfDay defaultTime = const TimeOfDay(hour: 23, minute: 59),
+  }) async {
     final now = DateTime.now();
-    final initialDate = _dueDate ?? now.add(const Duration(days: 7));
-
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: initialDate,
+      initialDate: initial ?? now.add(const Duration(days: 1)),
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
-      helpText: t.classes.postUpsert.selectDueDate,
+      helpText: dateHelpText,
     );
+    if (pickedDate == null || !mounted) return null;
 
-    if (pickedDate == null || !mounted) return;
-
-    final initialTime = _dueDate != null
-        ? TimeOfDay(hour: _dueDate!.hour, minute: _dueDate!.minute)
-        : const TimeOfDay(hour: 23, minute: 59);
+    final initialTime = initial != null
+        ? TimeOfDay(hour: initial.hour, minute: initial.minute)
+        : defaultTime;
 
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: initialTime,
-      helpText: t.classes.postUpsert.selectDueTime,
+      helpText: timeHelpText,
     );
+    if (!mounted) return null;
 
-    if (mounted) {
-      setState(() {
-        _dueDate = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime?.hour ?? 23,
-          pickedTime?.minute ?? 59,
-        );
-      });
+    return DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime?.hour ?? defaultTime.hour,
+      pickedTime?.minute ?? defaultTime.minute,
+    );
+  }
+
+  Future<void> _pickAvailableFrom() async {
+    final t = ref.read(translationsPod);
+    final result = await _pickDateTime(
+      dateHelpText: t.classes.postUpsert.selectAvailableFrom,
+      timeHelpText: t.classes.postUpsert.selectDueTime,
+      initial: _availableFrom,
+      defaultTime: const TimeOfDay(hour: 0, minute: 0),
+    );
+    if (result != null && mounted) {
+      setState(() => _availableFrom = result);
+    }
+  }
+
+  Future<void> _pickDueDate() async {
+    final t = ref.read(translationsPod);
+    final result = await _pickDateTime(
+      dateHelpText: t.classes.postUpsert.selectDueDate,
+      timeHelpText: t.classes.postUpsert.selectDueTime,
+      initial: _dueDate,
+      defaultTime: const TimeOfDay(hour: 23, minute: 59),
+    );
+    if (result != null && mounted) {
+      setState(() => _dueDate = result);
+    }
+  }
+
+  Future<void> _pickAvailableUntil() async {
+    final t = ref.read(translationsPod);
+    final result = await _pickDateTime(
+      dateHelpText: t.classes.postUpsert.selectAvailableUntil,
+      timeHelpText: t.classes.postUpsert.selectDueTime,
+      initial: _availableUntil,
+      defaultTime: const TimeOfDay(hour: 23, minute: 59),
+    );
+    if (result != null && mounted) {
+      setState(() => _availableUntil = result);
     }
   }
 
@@ -449,7 +486,9 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       quillController: _quillController,
                       editorFocusNode: _editorFocusNode,
                       isSubmitting: isSubmitting,
+                      availableFrom: _availableFrom,
                       dueDate: _dueDate,
+                      availableUntil: _availableUntil,
                       selectedAssignmentId: _selectedAssignmentId,
                       maxSubmissions: _maxSubmissions,
                       passingScore: _passingScore,
@@ -457,7 +496,9 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       showCorrectAnswers: _showCorrectAnswers,
                       showScoreImmediately: _showScoreImmediately,
                       linkedResourcesCount: _linkedResources.length,
+                      onPickAvailableFrom: _pickAvailableFrom,
                       onPickDueDate: _pickDueDate,
+                      onPickAvailableUntil: _pickAvailableUntil,
                       onPickAssignment: _pickAssignment,
                       onPickLinkedResource: _pickLinkedResource,
                       onMaxSubmissionsChanged: (value) =>

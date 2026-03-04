@@ -1155,7 +1155,14 @@
       "selectDueDate": "Chọn hạn nộp",
       "dueDate": "Hạn nộp",
       "dueDateHint": "Nhấn để đặt hạn nộp",
-      "selectDueTime": "Chọn giờ hạn nộp"
+      "selectDueTime": "Chọn giờ hạn nộp",
+      "availabilityWindow": "Thời gian mở đề",
+      "availableFrom": "Mở từ",
+      "availableFromHint": "Nhấn để đặt ngày mở",
+      "selectAvailableFrom": "Chọn ngày mở",
+      "availableUntil": "Đóng lúc",
+      "availableUntilHint": "Nhấn để đặt ngày đóng",
+      "selectAvailableUntil": "Chọn ngày đóng"
     },
     "postOptions": {
       "label": "Tùy chọn bài đăng",

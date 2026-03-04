@@ -42,6 +42,8 @@ class PostResponseDto {
   final List<LinkedResourceDto>? linkedResources;
   final String? assignmentId;
   final DateTime? dueDate;
+  final DateTime? availableFrom;
+  final DateTime? availableUntil;
   final bool isPinned;
   final bool allowComments;
   final int commentCount;
@@ -58,6 +60,8 @@ class PostResponseDto {
     this.linkedResources,
     this.assignmentId,
     this.dueDate,
+    this.availableFrom,
+    this.availableUntil,
     required this.isPinned,
     required this.allowComments,
     required this.commentCount,
@@ -87,6 +91,8 @@ extension PostResponseMapper on PostResponseDto {
         linkedResources?.map((dto) => dto.toEntity()).toList() ?? [],
     assignmentId: assignmentId,
     dueDate: dueDate,
+    availableFrom: availableFrom,
+    availableUntil: availableUntil,
     isPinned: isPinned,
     allowComments: allowComments,
     commentCount: commentCount,

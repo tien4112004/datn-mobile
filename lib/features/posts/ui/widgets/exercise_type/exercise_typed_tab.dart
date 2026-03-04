@@ -13,7 +13,9 @@ class ExerciseTypedTab extends StatelessWidget {
   final quill.QuillController quillController;
   final FocusNode editorFocusNode;
   final bool isSubmitting;
+  final DateTime? availableFrom;
   final DateTime? dueDate;
+  final DateTime? availableUntil;
   final String? selectedAssignmentId;
   final int? maxSubmissions;
   final double? passingScore;
@@ -21,7 +23,9 @@ class ExerciseTypedTab extends StatelessWidget {
   final bool showCorrectAnswers;
   final bool showScoreImmediately;
   final int linkedResourcesCount;
+  final VoidCallback onPickAvailableFrom;
   final VoidCallback onPickDueDate;
+  final VoidCallback onPickAvailableUntil;
   final VoidCallback onPickAssignment;
   final VoidCallback onPickLinkedResource;
   final ValueChanged<int?>? onMaxSubmissionsChanged;
@@ -36,7 +40,9 @@ class ExerciseTypedTab extends StatelessWidget {
     required this.quillController,
     required this.editorFocusNode,
     required this.isSubmitting,
+    required this.availableFrom,
     required this.dueDate,
+    required this.availableUntil,
     required this.selectedAssignmentId,
     required this.maxSubmissions,
     required this.passingScore,
@@ -44,7 +50,9 @@ class ExerciseTypedTab extends StatelessWidget {
     required this.showCorrectAnswers,
     required this.showScoreImmediately,
     required this.linkedResourcesCount,
+    required this.onPickAvailableFrom,
     required this.onPickDueDate,
+    required this.onPickAvailableUntil,
     required this.onPickAssignment,
     required this.onPickLinkedResource,
     this.onMaxSubmissionsChanged,
@@ -59,11 +67,15 @@ class ExerciseTypedTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Due Date Section
+        // Availability Window Section (availableFrom + dueDate + availableUntil)
         DueDateSection(
+          availableFrom: availableFrom,
           dueDate: dueDate,
+          availableUntil: availableUntil,
           isDisabled: isSubmitting,
+          onPickAvailableFrom: onPickAvailableFrom,
           onPickDueDate: onPickDueDate,
+          onPickAvailableUntil: onPickAvailableUntil,
           translations: translations,
         ),
         const SizedBox(height: 16),

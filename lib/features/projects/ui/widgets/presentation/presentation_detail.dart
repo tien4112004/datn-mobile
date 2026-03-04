@@ -50,16 +50,11 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
         appBar: CustomAppBar(
           title: t.projects.presentations.presentationDetail,
         ),
-        body: Stack(
-          children: [
-            Center(
-              child: Text(
-                t.projects.mindmaps.webViewNotSupported,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            ),
-            const DesktopHintDialog(),
-          ],
+        body: Center(
+          child: Text(
+            t.projects.mindmaps.webViewNotSupported,
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          ),
         ),
       );
     }
@@ -86,7 +81,9 @@ class _PresentationDetailState extends ConsumerState<PresentationDetail> {
                 color: Colors.white,
                 child: const Center(child: CircularProgressIndicator()),
               ),
-            const DesktopHintDialog(),
+            DesktopHintDialog(
+              hasEditPermission: presentation.permissions.contains('edit'),
+            ),
           ],
         ),
       ),

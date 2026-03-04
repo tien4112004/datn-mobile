@@ -1,4 +1,5 @@
 import 'package:AIPrimary/core/config/config.dart';
+import 'package:AIPrimary/features/projects/states/controller_provider.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/desktop_hint_button.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/widgets/authenticated_webview.dart';
@@ -45,6 +46,10 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
   }
 
   Widget _buildContent({required String mindmapId}) {
+    final mindmapAsync = ref.watch(mindmapByIdProvider(mindmapId));
+    final hasEditPermission =
+        mindmapAsync.asData?.value.permissions.contains('edit') ?? false;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const CustomAppBar(title: 'Mindmap Detail'),
@@ -58,7 +63,7 @@ class _MindmapDetailState extends ConsumerState<MindmapDetail> {
                 color: Colors.white,
                 child: const Center(child: CircularProgressIndicator()),
               ),
-            const DesktopHintDialog(),
+            DesktopHintDialog(hasEditPermission: hasEditPermission),
           ],
         ),
       ),

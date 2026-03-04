@@ -1,16 +1,17 @@
-import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
-import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Invisible widget that automatically shows a one-time dialog on first frame,
-/// reminding teachers that edit mode is better on the desktop web version.
+/// reminding users that edit mode is better on the desktop web version.
+/// Only shows when [hasEditPermission] is true.
 /// Renders nothing — place it anywhere inside a Stack or widget tree.
 class DesktopHintDialog extends ConsumerStatefulWidget {
-  const DesktopHintDialog({super.key});
+  const DesktopHintDialog({super.key, required this.hasEditPermission});
+
+  final bool hasEditPermission;
 
   @override
   ConsumerState<DesktopHintDialog> createState() => _DesktopHintDialogState();
@@ -22,7 +23,7 @@ class _DesktopHintDialogState extends ConsumerState<DesktopHintDialog> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      if (ref.read(userRolePod) != UserRole.teacher) return;
+      if (!widget.hasEditPermission) return;
       _showDialog(ref.read(translationsPod));
     });
   }

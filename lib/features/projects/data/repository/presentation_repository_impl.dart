@@ -25,13 +25,22 @@ class PresentationRepositoryImpl implements PresentationRepository {
 
   @override
   Future<Presentation> fetchPresentationById(String id) async {
-    final dtoResponse = await _remoteSource.fetchPresentationById(id);
+    final httpResponse = await _remoteSource.fetchPresentationById(id);
 
-    if (dtoResponse.data == null) {
+    if (httpResponse.data.data == null) {
       throw Exception('Presentation not found');
     }
 
-    return dtoResponse.data!.toEntity();
+    final entity = httpResponse.data.data!.toEntity();
+    entity.permissions = _parsePermissions(
+      httpResponse.response.headers.value('permission'),
+    );
+    return entity;
+  }
+
+  List<String> _parsePermissions(String? raw) {
+    if (raw == null || raw.isEmpty) return [];
+    return raw.split(',').map((p) => p.trim()).toList();
   }
 
   @override

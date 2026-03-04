@@ -6,6 +6,7 @@ class Mindmap {
   final List<MindmapEdge> edges;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  List<String> permissions;
 
   Mindmap({
     required this.id,
@@ -15,6 +16,7 @@ class Mindmap {
     required this.edges,
     this.createdAt,
     this.updatedAt,
+    this.permissions = const [],
   });
 
   String? get thumbnail => null;

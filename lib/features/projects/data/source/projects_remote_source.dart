@@ -12,8 +12,7 @@ import 'package:AIPrimary/features/projects/data/dto/recent_document_dto.dart';
 import 'package:AIPrimary/features/projects/data/dto/shared_resource_dto.dart';
 import 'package:AIPrimary/shared/api_client/response_dto/server_reponse_dto.dart';
 import 'package:dio/dio.dart';
-import 'package:retrofit/error_logger.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'projects_remote_source.g.dart';
 
@@ -26,9 +25,8 @@ abstract class ProjectsRemoteSource {
   Future<ServerResponseDto<List<PresentationMinimalDto>>> fetchPresentations();
 
   @GET("/presentations/{id}")
-  Future<ServerResponseDto<PresentationDto>> fetchPresentationById(
-    @Path("id") String id,
-  );
+  Future<HttpResponse<ServerResponseDto<PresentationDto>>>
+  fetchPresentationById(@Path("id") String id);
 
   @POST("/presentations")
   Future<ServerResponseDto<PresentationDto>> createPresentation(
@@ -68,7 +66,9 @@ abstract class ProjectsRemoteSource {
   Future<ServerResponseDto<List<MindmapMinimalDto>>> fetchMindmaps();
 
   @GET("/mindmaps/{id}")
-  Future<ServerResponseDto<MindmapDto>> fetchMindmapById(@Path("id") String id);
+  Future<HttpResponse<ServerResponseDto<MindmapDto>>> fetchMindmapById(
+    @Path("id") String id,
+  );
 
   // /mindmaps?page=1&pageSize=20&sort=desc
   @GET("/mindmaps")

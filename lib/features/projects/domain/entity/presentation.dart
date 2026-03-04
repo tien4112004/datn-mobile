@@ -10,6 +10,7 @@ class Presentation {
   Object metaData;
   DateTime deletedAt;
   Map<String, double> viewport;
+  List<String> permissions;
 
   Presentation({
     required this.id,
@@ -21,6 +22,7 @@ class Presentation {
     required this.metaData,
     required this.deletedAt,
     required this.viewport,
+    this.permissions = const [],
   });
 
   String? get thumbnail => null;

@@ -1588,7 +1588,7 @@
       "unlinkPassage": "Hủy liên kết đoạn văn",
       "linkReadingPassage": "Liên kết đoạn văn đọc",
       "deleteQuestionConfirm(number)": "Bạn có chắc muốn xóa câu hỏi $number khỏi bài kiểm tra này?",
-      "cancel": "Hủy",
+      "cancel": "Tiếp tục chỉnh sửa",
       "discard": "Bỏ thay đổi",
       "panelTitle": "Đoạn văn đọc",
       "panelDescription": "Tạo và quản lý đoạn văn đọc có thể dùng chung cho nhiều câu hỏi.",

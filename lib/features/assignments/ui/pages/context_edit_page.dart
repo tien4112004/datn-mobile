@@ -149,10 +149,12 @@ class _ContextEditPageState extends ConsumerState<ContextEditPage> {
       canPop: !_hasChanges,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        final router = context.router;
         final shouldPop = await _onWillPop();
         if (shouldPop && mounted) {
-          router.maybePop();
+          setState(() => _hasChanges = false);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) context.router.maybePop();
+          });
         }
       },
       child: Scaffold(
@@ -161,14 +163,16 @@ class _ContextEditPageState extends ConsumerState<ContextEditPage> {
           leading: IconButton(
             icon: const Icon(LucideIcons.arrowLeft),
             onPressed: () async {
-              final router = context.router;
               if (_hasChanges) {
                 final shouldPop = await _onWillPop();
                 if (shouldPop && mounted) {
-                  router.maybePop();
+                  setState(() => _hasChanges = false);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) context.router.maybePop();
+                  });
                 }
               } else {
-                router.maybePop();
+                context.router.maybePop();
               }
             },
           ),
@@ -336,14 +340,16 @@ class _ContextEditPageState extends ConsumerState<ContextEditPage> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () async {
-                      final router = context.router;
                       if (_hasChanges) {
                         final shouldPop = await _onWillPop();
                         if (shouldPop && mounted) {
-                          router.maybePop();
+                          setState(() => _hasChanges = false);
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (mounted) context.router.maybePop();
+                          });
                         }
                       } else {
-                        router.maybePop();
+                        context.router.maybePop();
                       }
                     },
                     style: OutlinedButton.styleFrom(

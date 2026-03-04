@@ -1588,7 +1588,7 @@
       "unlinkPassage": "Unlink passage",
       "linkReadingPassage": "Link Reading Passage",
       "deleteQuestionConfirm(number)": "Are you sure you want to remove question $number from this assignment?",
-      "cancel": "Cancel",
+      "cancel": "Keep Editing",
       "discard": "Discard",
       "panelTitle": "Reading Passages",
       "panelDescription": "Create and manage reading passages that can be shared across questions.",

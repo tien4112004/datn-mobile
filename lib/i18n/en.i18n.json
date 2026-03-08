@@ -1233,7 +1233,9 @@
       "selectAssignment": "Select assignment",
       "failedToLoad": "Failed to load",
       "loading": "Loading...",
-      "questionsCount": "$count Q"
+      "questionsCount": "$count Q",
+      "renameAssignment": "Rename Assignment",
+      "assignmentTitle": "Assignment title"
     },
     "editForm": {
       "editing": "Editing Class",

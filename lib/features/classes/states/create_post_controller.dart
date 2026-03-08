@@ -21,6 +21,7 @@ class CreatePostController extends AsyncNotifier<void> {
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     String? assignmentId,
+    String? assignmentTitle,
     DateTime? dueDate,
     bool? allowComments,
     // Assignment settings (only for Homework type posts)
@@ -44,6 +45,7 @@ class CreatePostController extends AsyncNotifier<void> {
         linkedResources: linkedResources,
         linkedLessonId: linkedLessonId,
         assignmentId: assignmentId,
+        assignmentTitle: assignmentTitle,
         dueDate: dueDate,
         allowComments: allowComments,
         maxSubmissions: maxSubmissions,

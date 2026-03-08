@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Assignment settings section for exercise posts
-class AssignmentSettingsSection extends ConsumerWidget {
+class AssignmentSettingsSection extends ConsumerStatefulWidget {
   final bool isDisabled;
+  final String? assignmentTitle;
   final int? maxSubmissions;
   final double? passingScore;
   final bool allowRetake;
   final bool showCorrectAnswers;
   final bool showScoreImmediately;
+  final ValueChanged<String>? onAssignmentTitleChanged;
   final ValueChanged<int?>? onMaxSubmissionsChanged;
   final ValueChanged<double?>? onPassingScoreChanged;
   final ValueChanged<bool>? onAllowRetakeChanged;
@@ -19,11 +21,13 @@ class AssignmentSettingsSection extends ConsumerWidget {
   const AssignmentSettingsSection({
     super.key,
     required this.isDisabled,
+    this.assignmentTitle,
     this.maxSubmissions,
     this.passingScore,
     required this.allowRetake,
     required this.showCorrectAnswers,
     required this.showScoreImmediately,
+    this.onAssignmentTitleChanged,
     this.onMaxSubmissionsChanged,
     this.onPassingScoreChanged,
     this.onAllowRetakeChanged,
@@ -32,7 +36,40 @@ class AssignmentSettingsSection extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AssignmentSettingsSection> createState() =>
+      _AssignmentSettingsSectionState();
+}
+
+class _AssignmentSettingsSectionState
+    extends ConsumerState<AssignmentSettingsSection> {
+  late final TextEditingController _titleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(
+      text: widget.assignmentTitle ?? '',
+    );
+  }
+
+  @override
+  void didUpdateWidget(AssignmentSettingsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Sync controller when assignment changes externally (e.g., re-selection)
+    if (oldWidget.assignmentTitle != widget.assignmentTitle &&
+        _titleController.text != (widget.assignmentTitle ?? '')) {
+      _titleController.text = widget.assignmentTitle ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final t = ref.watch(translationsPod);
@@ -55,6 +92,29 @@ class AssignmentSettingsSection extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
+              // Assignment Title
+              TextField(
+                controller: _titleController,
+                enabled: !widget.isDisabled,
+                decoration: InputDecoration(
+                  labelText: t.classes.assignmentSelection.assignmentTitle,
+                  hintText: t.classes.assignmentSelection.assignmentTitle,
+                  filled: true,
+                  fillColor: colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                onChanged: widget.onAssignmentTitleChanged,
+              ),
+
+              const SizedBox(height: 12),
+
               // Max Submissions
               Row(
                 children: [
@@ -67,7 +127,7 @@ class AssignmentSettingsSection extends ConsumerWidget {
                   SizedBox(
                     width: 100,
                     child: TextField(
-                      enabled: !isDisabled,
+                      enabled: !widget.isDisabled,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText:
@@ -85,7 +145,7 @@ class AssignmentSettingsSection extends ConsumerWidget {
                       ),
                       onChanged: (value) {
                         final parsed = int.tryParse(value);
-                        onMaxSubmissionsChanged?.call(parsed);
+                        widget.onMaxSubmissionsChanged?.call(parsed);
                       },
                     ),
                   ),
@@ -106,7 +166,7 @@ class AssignmentSettingsSection extends ConsumerWidget {
                   SizedBox(
                     width: 100,
                     child: TextField(
-                      enabled: !isDisabled,
+                      enabled: !widget.isDisabled,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         hintText: t.classes.assignmentSettings.passingScoreHint,
@@ -123,7 +183,7 @@ class AssignmentSettingsSection extends ConsumerWidget {
                       ),
                       onChanged: (value) {
                         final parsed = double.tryParse(value);
-                        onPassingScoreChanged?.call(parsed);
+                        widget.onPassingScoreChanged?.call(parsed);
                       },
                     ),
                   ),
@@ -137,8 +197,10 @@ class AssignmentSettingsSection extends ConsumerWidget {
               // Allow Retake
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                value: allowRetake,
-                onChanged: isDisabled ? null : onAllowRetakeChanged,
+                value: widget.allowRetake,
+                onChanged: widget.isDisabled
+                    ? null
+                    : widget.onAllowRetakeChanged,
                 title: Text(
                   t.classes.assignmentSettings.allowRetake,
                   style: theme.textTheme.bodyMedium,
@@ -154,8 +216,10 @@ class AssignmentSettingsSection extends ConsumerWidget {
               // Show Correct Answers
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                value: showCorrectAnswers,
-                onChanged: isDisabled ? null : onShowCorrectAnswersChanged,
+                value: widget.showCorrectAnswers,
+                onChanged: widget.isDisabled
+                    ? null
+                    : widget.onShowCorrectAnswersChanged,
                 title: Text(
                   t.classes.assignmentSettings.showCorrectAnswers,
                   style: theme.textTheme.bodyMedium,
@@ -171,8 +235,10 @@ class AssignmentSettingsSection extends ConsumerWidget {
               // Show Score Immediately
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                value: showScoreImmediately,
-                onChanged: isDisabled ? null : onShowScoreImmediatelyChanged,
+                value: widget.showScoreImmediately,
+                onChanged: widget.isDisabled
+                    ? null
+                    : widget.onShowScoreImmediatelyChanged,
                 title: Text(
                   t.classes.assignmentSettings.showScoreImmediately,
                   style: theme.textTheme.bodyMedium,

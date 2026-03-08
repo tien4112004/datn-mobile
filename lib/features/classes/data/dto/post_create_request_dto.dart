@@ -12,6 +12,7 @@ class PostCreateRequestDto {
   final List<LinkedResourceDto>? linkedResources;
   final String? linkedLessonId;
   final String? assignmentId;
+  final String? assignmentTitle;
   final DateTime? dueDate;
   final bool? allowComments;
 
@@ -31,6 +32,7 @@ class PostCreateRequestDto {
     this.linkedResources,
     this.linkedLessonId,
     this.assignmentId,
+    this.assignmentTitle,
     this.dueDate,
     this.allowComments,
     this.maxSubmissions,

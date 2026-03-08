@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:AIPrimary/features/classes/domain/entity/attachment_metadata.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Enhanced preview list showing file metadata for attachments
-class AttachmentPreviewList extends StatelessWidget {
+class AttachmentPreviewList extends ConsumerWidget {
   final List<AttachmentMetadata> attachments;
   final void Function(int index) onRemove;
 
@@ -15,9 +17,10 @@ class AttachmentPreviewList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (attachments.isEmpty) return const SizedBox.shrink();
 
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -35,7 +38,9 @@ class AttachmentPreviewList extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                'Attachments (${attachments.length}/10)',
+                t.classes.postActions.attachmentsHeader(
+                  count: attachments.length,
+                ),
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,

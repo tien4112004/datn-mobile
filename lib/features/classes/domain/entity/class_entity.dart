@@ -32,7 +32,7 @@ class ClassEntity {
   static const List<Color> _headerColors = [
     Color.fromARGB(255, 91, 169, 238), // Blue
     Color.fromARGB(255, 67, 160, 71), // Green
-    Color.fromARGB(255, 255, 192, 45), // Yellow
+    Color.fromARGB(255, 231, 186, 49), // Amber
     Color.fromARGB(255, 229, 57, 53), // Red
     Color.fromARGB(255, 142, 36, 170), // Purple
     Color.fromARGB(255, 0, 172, 193), // Cyan

@@ -1112,7 +1112,9 @@
       "deleteTitle": "Xóa bài đăng?",
       "deleteMessage": "Thao tác này sẽ xóa vĩnh viễn bài đăng và tất cả bình luận. Hành động này không thể hoàn tác.",
       "pinError": "Không thể ghim/bỏ ghim: $error",
-      "deleteError": "Không thể xóa bài đăng: $error"
+      "deleteError": "Không thể xóa bài đăng: $error",
+      "attachmentsCount(count)": "$count tệp đính kèm",
+      "linkedResourcesCount(count)": "$count tài nguyên đã liên kết"
     },
     "postDialog": {
       "createTitle": "Tạo bài đăng",
@@ -1194,7 +1196,8 @@
       "attachAssignment": "Đính kèm bài tập",
       "assignment": "Bài tập ($count)",
       "linkResource": "Liên kết tài nguyên",
-      "linked": "Đã liên kết ($count)"
+      "linked": "Đã liên kết ($count)",
+      "attachmentsHeader(count)": "Tệp đính kèm ($count/10)"
     },
     "resourceSelector": {
       "selectResources": "Chọn tài nguyên",

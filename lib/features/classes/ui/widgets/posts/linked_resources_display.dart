@@ -1,11 +1,13 @@
 import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resource_card.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Widget to display linked resources in a post
 /// Fetches resource details and displays them as interactive cards
-class LinkedResourcesDisplay extends StatelessWidget {
+class LinkedResourcesDisplay extends ConsumerWidget {
   final List<LinkedResourceEntity> linkedResources;
   final String postId; // Post ID for submission context
 
@@ -16,9 +18,10 @@ class LinkedResourcesDisplay extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (linkedResources.isEmpty) return const SizedBox.shrink();
 
+    final t = ref.watch(translationsPod);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -36,7 +39,9 @@ class LinkedResourcesDisplay extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                '${linkedResources.length} linked resource${linkedResources.length > 1 ? 's' : ''}',
+                t.classes.posts.linkedResourcesCount(
+                  count: linkedResources.length,
+                ),
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,

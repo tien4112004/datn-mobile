@@ -1112,7 +1112,9 @@
       "deleteTitle": "Delete Post?",
       "deleteMessage": "This will permanently delete this post and all its comments. This action cannot be undone.",
       "pinError": "Failed to toggle pin: $error",
-      "deleteError": "Failed to delete post: $error"
+      "deleteError": "Failed to delete post: $error",
+      "attachmentsCount(count)": "$count attachment(s)",
+      "linkedResourcesCount(count)": "$count linked resource(s)"
     },
     "postDialog": {
       "createTitle": "Create Post",
@@ -1194,7 +1196,8 @@
       "attachAssignment": "Attach Assignment",
       "assignment": "Assignment ($count)",
       "linkResource": "Link Resource",
-      "linked": "Linked ($count)"
+      "linked": "Linked ($count)",
+      "attachmentsHeader(count)": "Attachments ($count/10)"
     },
     "resourceSelector": {
       "selectResources": "Select Resources",

@@ -188,7 +188,6 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
           // Get file info
           final fileInfo = File(file.path);
           final fileSize = await fileInfo.length();
-          final fileName = file.name;
 
           // Upload file
           final response = await mediaService.uploadMedia(filePath: file.path);
@@ -198,7 +197,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
               _attachmentMetadata.add(
                 AttachmentMetadata(
                   cdnUrl: response.cdnUrl,
-                  fileName: fileName,
+                  fileName: response.originalFilename ?? file.name,
                   fileSize: fileSize,
                   extension: response.extension,
                   mediaType: response.mediaType,

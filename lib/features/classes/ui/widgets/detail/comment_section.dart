@@ -11,11 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Section displaying comments for a post with input field
 class CommentSection extends ConsumerWidget {
   final String postId;
+  final String classId;
   final bool allowComments;
 
   const CommentSection({
     super.key,
     required this.postId,
+    required this.classId,
     this.allowComments = true,
   });
 
@@ -54,7 +56,11 @@ class CommentSection extends ConsumerWidget {
 
           // Comment input
           if (allowComments)
-            CommentInput(postId: postId, enabled: allowComments),
+            CommentInput(
+              postId: postId,
+              classId: classId,
+              enabled: allowComments,
+            ),
         ],
       ),
     );

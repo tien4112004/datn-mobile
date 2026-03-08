@@ -87,6 +87,36 @@ class PresentationFormController extends Notifier<PresentationFormState> {
     state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
+  void toggleEducationMode() {
+    final turningOn = !state.isEducationMode;
+    state = state.copyWith(
+      isEducationMode: turningOn,
+      clearGradeLevel: !turningOn,
+      clearSubjectEnum: !turningOn,
+      clearChapter: true,
+    );
+  }
+
+  void updateEducationGrade(GradeLevel? grade) {
+    state = state.copyWith(
+      gradeLevel: grade,
+      clearGradeLevel: grade == null,
+      clearChapter: true,
+    );
+  }
+
+  void updateEducationSubject(Subject? subject) {
+    state = state.copyWith(
+      subjectEnum: subject,
+      clearSubjectEnum: subject == null,
+      clearChapter: true,
+    );
+  }
+
+  void updateChapter(String? chapter) {
+    state = state.copyWith(chapter: chapter, clearChapter: chapter == null);
+  }
+
   void addFile(String url, int bytes) {
     final updatedUrls = [...state.fileUrls, url];
     final updatedSizes = {...state.fileSizes, url: bytes};
@@ -135,8 +165,9 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       language: state.language,
       model: outlineModel.name,
       provider: outlineModel.provider,
-      grade: state.grade,
-      subject: state.subject,
+      grade: state.gradeLevel?.apiValue,
+      subject: state.subjectEnum?.apiValue,
+      chapter: state.isEducationMode ? state.chapter : null,
       fileUrls: state.fileUrls.isNotEmpty ? state.fileUrls : null,
     );
   }
@@ -202,8 +233,9 @@ class PresentationFormController extends Notifier<PresentationFormState> {
       outline: state.outline,
       presentation: presentationData,
       others: othersData,
-      grade: state.grade,
-      subject: state.subject,
+      grade: state.gradeLevel?.apiValue,
+      subject: state.subjectEnum?.apiValue,
+      chapter: state.isEducationMode ? state.chapter : null,
       fileUrls: state.fileUrls.isNotEmpty ? state.fileUrls : null,
     );
   }

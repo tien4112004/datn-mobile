@@ -7,6 +7,7 @@ import 'package:AIPrimary/features/generate/states/mindmap/mindmap_form_state.da
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/topic_input_bar.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/options/education_mode_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/mindmap_widget_options.dart';
@@ -352,6 +353,19 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          // Education Mode
+          EducationModeOptions(
+            isEducationMode: formState.isEducationMode,
+            gradeLevel: formState.gradeLevel,
+            subjectEnum: formState.subjectEnum,
+            chapter: formState.chapter,
+            onToggle: formController.toggleEducationMode,
+            onGradeChanged: formController.updateEducationGrade,
+            onSubjectChanged: formController.updateEducationSubject,
+            onChapterChanged: formController.updateChapter,
+            t: t,
+          ),
           const SizedBox(height: 20),
           // Quick Suggestions
           ExamplePromptSuggestions(
@@ -370,16 +384,16 @@ class _MindmapGeneratePageState extends ConsumerState<MindmapGeneratePage> {
     _topicFocusNode.unfocus();
     // Validate form before navigating
     final formState = ref.read(mindmapFormControllerProvider);
-    if (!formState.isValid) {
-      // Form requires topic or file, and model to be set
-      if (formState.topic.trim().isEmpty && formState.fileUrls.isEmpty) {
-        SnackbarUtils.showError(context, t.generate.enterTopicHint);
-      } else if (formState.selectedModel == null) {
-        SnackbarUtils.showError(
-          context,
-          t.generate.mindmapGenerate.selectModel,
-        );
-      }
+    if (formState.topic.trim().isEmpty && formState.fileUrls.isEmpty) {
+      SnackbarUtils.showError(context, t.generate.enterTopicHint);
+      return;
+    }
+    if (formState.selectedModel == null) {
+      SnackbarUtils.showError(context, t.generate.mindmapGenerate.selectModel);
+      return;
+    }
+    if (!formState.isEducationModeValid) {
+      SnackbarUtils.showError(context, t.generate.educationMode.selectChapter);
       return;
     }
     // Navigate to WebView generation page

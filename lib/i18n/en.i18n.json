@@ -425,6 +425,15 @@
     "USER_PROFILE_CREATION_FAILED": "Failed to create user profile"
   },
   "generate": {
+    "educationMode": {
+      "label": "Education Mode",
+      "selectSubject": "Select Subject",
+      "selectGrade": "Select Grade",
+      "selectChapter": "Select Chapter",
+      "chapter": "Chapter",
+      "selectSubjectAndGradeFirst": "Select subject and grade first",
+      "noChaptersAvailable": "No chapters available"
+    },
     "enterTopicHint": "What is on your mind?",
     "advancedSettings": "Advanced Settings",
     "model": "Mô hình",

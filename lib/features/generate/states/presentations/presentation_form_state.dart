@@ -1,5 +1,6 @@
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
 import 'package:AIPrimary/features/generate/enum/presentation_theme.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// State class representing the presentation generation form inputs.
 class PresentationFormState {
@@ -27,6 +28,18 @@ class PresentationFormState {
   /// The subject area for the content (optional, max 100 chars)
   final String? subject;
 
+  /// Whether education mode is enabled
+  final bool isEducationMode;
+
+  /// Typed grade level for education mode UI
+  final GradeLevel? gradeLevel;
+
+  /// Typed subject for education mode UI
+  final Subject? subjectEnum;
+
+  /// Selected chapter name for education mode
+  final String? chapter;
+
   /// File URLs to use as source material for generation
   final List<String> fileUrls;
 
@@ -48,6 +61,10 @@ class PresentationFormState {
     this.currentStep = 1,
     this.grade,
     this.subject,
+    this.isEducationMode = false,
+    this.gradeLevel,
+    this.subjectEnum,
+    this.chapter,
     this.fileUrls = const [],
     this.fileSizes = const {},
   });
@@ -69,6 +86,13 @@ class PresentationFormState {
     bool clearGrade = false,
     String? subject,
     bool clearSubject = false,
+    bool? isEducationMode,
+    GradeLevel? gradeLevel,
+    bool clearGradeLevel = false,
+    Subject? subjectEnum,
+    bool clearSubjectEnum = false,
+    String? chapter,
+    bool clearChapter = false,
     List<String>? fileUrls,
     Map<String, int>? fileSizes,
   }) {
@@ -87,6 +111,10 @@ class PresentationFormState {
       currentStep: currentStep ?? this.currentStep,
       grade: clearGrade ? null : (grade ?? this.grade),
       subject: clearSubject ? null : (subject ?? this.subject),
+      isEducationMode: isEducationMode ?? this.isEducationMode,
+      gradeLevel: clearGradeLevel ? null : (gradeLevel ?? this.gradeLevel),
+      subjectEnum: clearSubjectEnum ? null : (subjectEnum ?? this.subjectEnum),
+      chapter: clearChapter ? null : (chapter ?? this.chapter),
       fileUrls: fileUrls ?? this.fileUrls,
       fileSizes: fileSizes ?? this.fileSizes,
     );
@@ -94,7 +122,11 @@ class PresentationFormState {
 
   int get totalAttachedBytes => fileSizes.values.fold(0, (a, b) => a + b);
 
-  bool get isValid => topic.trim().isNotEmpty || fileUrls.isNotEmpty;
-  bool get isStep1Valid => topic.trim().isNotEmpty || fileUrls.isNotEmpty;
+  bool get hasContent => topic.trim().isNotEmpty || fileUrls.isNotEmpty;
+  bool get isEducationModeValid =>
+      !isEducationMode ||
+      (gradeLevel != null && subjectEnum != null && chapter != null);
+  bool get isValid => hasContent && isEducationModeValid;
+  bool get isStep1Valid => hasContent && isEducationModeValid;
   bool get isStep2Valid => outline.isNotEmpty;
 }

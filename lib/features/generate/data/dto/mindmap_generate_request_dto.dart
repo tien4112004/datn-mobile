@@ -34,6 +34,9 @@ class MindmapGenerateRequestDto {
   /// File URLs to use as source material for generation
   final List<String>? fileUrls;
 
+  /// The chapter name for education mode
+  final String? chapter;
+
   const MindmapGenerateRequestDto({
     required this.topic,
     required this.model,
@@ -44,6 +47,7 @@ class MindmapGenerateRequestDto {
     this.grade,
     this.subject,
     this.fileUrls,
+    this.chapter,
   });
 
   factory MindmapGenerateRequestDto.fromJson(Map<String, dynamic> json) =>

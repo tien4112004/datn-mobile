@@ -64,6 +64,36 @@ class MindmapFormController extends Notifier<MindmapFormState> {
     state = state.copyWith(subject: subject, clearSubject: subject == null);
   }
 
+  void toggleEducationMode() {
+    final turningOn = !state.isEducationMode;
+    state = state.copyWith(
+      isEducationMode: turningOn,
+      clearGradeLevel: !turningOn,
+      clearSubjectEnum: !turningOn,
+      clearChapter: true,
+    );
+  }
+
+  void updateEducationGrade(GradeLevel? grade) {
+    state = state.copyWith(
+      gradeLevel: grade,
+      clearGradeLevel: grade == null,
+      clearChapter: true,
+    );
+  }
+
+  void updateEducationSubject(Subject? subject) {
+    state = state.copyWith(
+      subjectEnum: subject,
+      clearSubjectEnum: subject == null,
+      clearChapter: true,
+    );
+  }
+
+  void updateChapter(String? chapter) {
+    state = state.copyWith(chapter: chapter, clearChapter: chapter == null);
+  }
+
   void addFile(String url, int bytes) {
     final updatedUrls = [...state.fileUrls, url];
     final updatedSizes = {...state.fileSizes, url: bytes};

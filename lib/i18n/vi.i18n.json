@@ -425,6 +425,15 @@
     "USER_PROFILE_CREATION_FAILED": "Tạo hồ sơ người dùng thất bại"
   },
   "generate": {
+    "educationMode": {
+      "label": "Chế độ giáo dục",
+      "selectSubject": "Chọn môn học",
+      "selectGrade": "Chọn lớp",
+      "selectChapter": "Chọn chương",
+      "chapter": "Chương",
+      "selectSubjectAndGradeFirst": "Vui lòng chọn môn học và lớp trước",
+      "noChaptersAvailable": "Không có chương nào"
+    },
     "enterTopicHint": "Bạn đang nghĩ gì?",
     "advancedSettings": "Cài đặt nâng cao",
     "model": "Mô hình",

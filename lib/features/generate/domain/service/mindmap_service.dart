@@ -12,6 +12,7 @@ abstract interface class MindmapService {
     int? maxBranchesPerNode,
     String? grade,
     String? subject,
+    String? chapter,
     List<String>? fileUrls,
   });
 }

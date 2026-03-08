@@ -1,4 +1,5 @@
 import 'package:AIPrimary/features/generate/domain/entity/ai_model.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 
 /// State class representing the mindmap generation form inputs.
 class MindmapFormState {
@@ -23,6 +24,18 @@ class MindmapFormState {
   /// The subject area for the content (optional, max 100 chars)
   final String? subject;
 
+  /// Whether education mode is enabled
+  final bool isEducationMode;
+
+  /// Typed grade level for education mode UI
+  final GradeLevel? gradeLevel;
+
+  /// Typed subject for education mode UI
+  final Subject? subjectEnum;
+
+  /// Selected chapter name for education mode
+  final String? chapter;
+
   /// File URLs to use as source material for generation
   final List<String> fileUrls;
 
@@ -39,6 +52,10 @@ class MindmapFormState {
     this.maxBranchesPerNode = 5,
     this.grade,
     this.subject,
+    this.isEducationMode = false,
+    this.gradeLevel,
+    this.subjectEnum,
+    this.chapter,
     this.fileUrls = const [],
     this.fileSizes = const {},
   });
@@ -54,6 +71,13 @@ class MindmapFormState {
     bool clearGrade = false,
     String? subject,
     bool clearSubject = false,
+    bool? isEducationMode,
+    GradeLevel? gradeLevel,
+    bool clearGradeLevel = false,
+    Subject? subjectEnum,
+    bool clearSubjectEnum = false,
+    String? chapter,
+    bool clearChapter = false,
     List<String>? fileUrls,
     Map<String, int>? fileSizes,
   }) {
@@ -67,6 +91,10 @@ class MindmapFormState {
       maxBranchesPerNode: maxBranchesPerNode ?? this.maxBranchesPerNode,
       grade: clearGrade ? null : (grade ?? this.grade),
       subject: clearSubject ? null : (subject ?? this.subject),
+      isEducationMode: isEducationMode ?? this.isEducationMode,
+      gradeLevel: clearGradeLevel ? null : (gradeLevel ?? this.gradeLevel),
+      subjectEnum: clearSubjectEnum ? null : (subjectEnum ?? this.subjectEnum),
+      chapter: clearChapter ? null : (chapter ?? this.chapter),
       fileUrls: fileUrls ?? this.fileUrls,
       fileSizes: fileSizes ?? this.fileSizes,
     );
@@ -74,9 +102,15 @@ class MindmapFormState {
 
   int get totalAttachedBytes => fileSizes.values.fold(0, (a, b) => a + b);
 
+  bool get isEducationModeValid =>
+      !isEducationMode ||
+      (gradeLevel != null && subjectEnum != null && chapter != null);
+
   /// Validate if form is ready for submission
   bool get isValid =>
-      (topic.trim().isNotEmpty || fileUrls.isNotEmpty) && selectedModel != null;
+      (topic.trim().isNotEmpty || fileUrls.isNotEmpty) &&
+      selectedModel != null &&
+      isEducationModeValid;
 
   /// Validate topic length
   bool get isTopicValid =>

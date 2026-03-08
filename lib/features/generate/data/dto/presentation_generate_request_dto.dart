@@ -34,6 +34,9 @@ class PresentationGenerateRequest {
   /// File URLs that were used during outline generation
   final List<String>? fileUrls;
 
+  /// The chapter name for education mode
+  final String? chapter;
+
   const PresentationGenerateRequest({
     required this.model,
     required this.provider,
@@ -45,6 +48,7 @@ class PresentationGenerateRequest {
     this.grade,
     this.subject,
     this.fileUrls,
+    this.chapter,
   });
 
   factory PresentationGenerateRequest.fromJson(Map<String, dynamic> json) =>

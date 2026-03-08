@@ -1,10 +1,8 @@
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/shared/post_editor_section.dart';
-import 'package:AIPrimary/features/posts/ui/widgets/shared/post_actions_section.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/exercise_type/due_date_section.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/exercise_type/assignment_selection_section.dart';
 import 'package:AIPrimary/features/posts/ui/widgets/exercise_type/assignment_settings_section.dart';
-import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 
@@ -17,6 +15,7 @@ class ExerciseTypedTab extends StatelessWidget {
   final DateTime? dueDate;
   final DateTime? availableUntil;
   final String? selectedAssignmentId;
+  final String? assignmentTitle;
   final int? maxSubmissions;
   final double? passingScore;
   final bool allowRetake;
@@ -27,6 +26,7 @@ class ExerciseTypedTab extends StatelessWidget {
   final VoidCallback onPickDueDate;
   final VoidCallback onPickAvailableUntil;
   final VoidCallback onPickAssignment;
+  final ValueChanged<String>? onAssignmentTitleChanged;
   final VoidCallback onPickLinkedResource;
   final ValueChanged<int?>? onMaxSubmissionsChanged;
   final ValueChanged<double?>? onPassingScoreChanged;
@@ -44,6 +44,7 @@ class ExerciseTypedTab extends StatelessWidget {
     required this.dueDate,
     required this.availableUntil,
     required this.selectedAssignmentId,
+    this.assignmentTitle,
     required this.maxSubmissions,
     required this.passingScore,
     required this.allowRetake,
@@ -54,6 +55,7 @@ class ExerciseTypedTab extends StatelessWidget {
     required this.onPickDueDate,
     required this.onPickAvailableUntil,
     required this.onPickAssignment,
+    this.onAssignmentTitleChanged,
     required this.onPickLinkedResource,
     this.onMaxSubmissionsChanged,
     this.onPassingScoreChanged,
@@ -92,11 +94,13 @@ class ExerciseTypedTab extends StatelessWidget {
         if (selectedAssignmentId != null) ...[
           AssignmentSettingsSection(
             isDisabled: isSubmitting,
+            assignmentTitle: assignmentTitle,
             maxSubmissions: maxSubmissions,
             passingScore: passingScore,
             allowRetake: allowRetake,
             showCorrectAnswers: showCorrectAnswers,
             showScoreImmediately: showScoreImmediately,
+            onAssignmentTitleChanged: onAssignmentTitleChanged,
             onMaxSubmissionsChanged: onMaxSubmissionsChanged,
             onPassingScoreChanged: onPassingScoreChanged,
             onAllowRetakeChanged: onAllowRetakeChanged,
@@ -105,18 +109,6 @@ class ExerciseTypedTab extends StatelessWidget {
           ),
           const SizedBox(height: 16),
         ],
-
-        // Link Resource button (assignments)
-        PostActionsSection(
-          selectedType: PostType.exercise,
-          attachmentsCount: 0,
-          linkedResourcesCount: linkedResourcesCount,
-          isLoading: isSubmitting,
-          isUploading: false,
-          onPickAttachment: () {}, // Not used for exercise type
-          onPickLinkedResource: onPickLinkedResource,
-        ),
-        const SizedBox(height: 16),
 
         // Rich Text Editor
         PostEditorSection(

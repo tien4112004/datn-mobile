@@ -23,6 +23,7 @@ abstract class PostRepository {
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     String? assignmentId,
+    String? assignmentTitle,
     DateTime? dueDate,
     bool? allowComments,
     // Assignment settings (only for Homework type posts)

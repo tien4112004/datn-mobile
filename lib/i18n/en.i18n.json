@@ -84,7 +84,18 @@
       "darkDescription": "Always use dark theme",
       "systemDescription": "Follow system settings"
     },
-    "pageInDevelopment": "This page is in development"
+    "pageInDevelopment": "This page is in development",
+    "systemPrompt": {
+      "title": "Personalization Prompt",
+      "description": "Set a global rule for all AI generations. The AI will follow this instruction for every response.",
+      "placeholder": "E.g., Always respond in a formal academic tone. Use bullet points for lists.",
+      "save": "Save",
+      "delete": "Delete",
+      "saveSuccess": "Personalization prompt saved",
+      "deleteSuccess": "Personalization prompt deleted",
+      "errorSaving": "Failed to save prompt. Please try again."
+    },
+    "aiSettings": "AI Settings"
   },
   "auth": {
     "or": "OR",
@@ -670,6 +681,15 @@
       "generateMore": "Generate More",
       "savedSuccess": "Questions saved to bank",
       "saveFailed(error)": "Failed to save: $error"
+    },
+    "educationMode": {
+      "label": "Education Mode",
+      "selectSubject": "Select Subject",
+      "selectGrade": "Select Grade",
+      "selectChapter": "Select Chapter",
+      "chapter": "Chapter",
+      "selectSubjectAndGradeFirst": "Select subject and grade first",
+      "noChaptersAvailable": "No chapters available"
     }
   },
   "questionBank": {

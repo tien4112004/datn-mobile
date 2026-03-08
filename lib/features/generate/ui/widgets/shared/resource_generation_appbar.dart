@@ -1,6 +1,7 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/generate/enum/generator_type.dart';
 import 'package:AIPrimary/features/generate/states/controller_provider.dart';
+import 'package:AIPrimary/features/setting/widget/bottom_sheet/system_prompt_bottom_sheet.dart';
 import 'package:AIPrimary/i18n/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,6 +46,13 @@ class _ResourceGenerationAppBarState extends State<ResourceGenerationAppBar> {
           const SizedBox(width: 12),
           // Generator type dropdown
           Expanded(child: _buildGeneratorDropdown(context)),
+          IconButton(
+            onPressed: () => showSystemPromptBottomSheet(context),
+            icon: const Icon(LucideIcons.sparkles, size: 20),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            tooltip: 'Personalization Prompt',
+          ),
         ],
       ),
     );

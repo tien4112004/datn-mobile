@@ -150,7 +150,18 @@
       "darkDescription": "Luôn sử dụng giao diện tối",
       "systemDescription": "Theo cài đặt hệ thống"
     },
-    "pageInDevelopment": "Trang này đang được phát triển"
+    "pageInDevelopment": "Trang này đang được phát triển",
+    "systemPrompt": {
+      "title": "Tùy chỉnh Prompt",
+      "description": "Đặt quy tắc toàn cục cho tất cả các tạo nội dung AI. AI sẽ tuân theo hướng dẫn này cho mọi phản hồi.",
+      "placeholder": "Ví dụ: Luôn phản hồi theo phong cách học thuật trang trọng. Sử dụng danh sách dấu chấm cho các danh mục.",
+      "save": "Lưu",
+      "delete": "Xóa",
+      "saveSuccess": "Đã lưu prompt tùy chỉnh",
+      "deleteSuccess": "Đã xóa prompt tùy chỉnh",
+      "errorSaving": "Không thể lưu prompt. Vui lòng thử lại."
+    },
+    "aiSettings": "Cài đặt AI"
   },
   "common": {
     "user": "Người dùng",
@@ -670,6 +681,15 @@
       "generateMore": "Tạo thêm",
       "savedSuccess": "Đã lưu câu hỏi vào ngân hàng",
       "saveFailed(error)": "Lưu thất bại: $error"
+    },
+    "educationMode": {
+      "label": "Chế độ giáo dục",
+      "selectSubject": "Chọn môn học",
+      "selectGrade": "Chọn lớp",
+      "selectChapter": "Chọn chương",
+      "chapter": "Chương",
+      "selectSubjectAndGradeFirst": "Vui lòng chọn môn học và lớp trước",
+      "noChaptersAvailable": "Không có chương nào"
     }
   },
   "questionBank": {

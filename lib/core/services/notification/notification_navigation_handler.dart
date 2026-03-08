@@ -6,7 +6,10 @@ import 'package:AIPrimary/features/assignments/domain/repository/assignment_repo
 import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
 import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 import 'package:AIPrimary/features/notification/domain/entity/resource_type.dart';
+import 'package:AIPrimary/features/classes/states/class_banner_provider.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class NotificationNavigationHandler {
   NotificationNavigationHandler._();
@@ -62,6 +65,7 @@ class NotificationNavigationHandler {
     AppNotification notification,
     BuildContext context, {
     required AssignmentRepository assignmentRepository,
+    required WidgetRef ref,
   }) async {
     final router = AutoRouter.of(context);
     final classId = notification.data?['classId'];
@@ -80,8 +84,13 @@ class NotificationNavigationHandler {
           postId: referenceId,
         );
       } catch (_) {
-        // Fetch failed — fall back to class feed
-        if (classId != null) route = ClassDetailRoute(classId: classId);
+        if (classId != null) {
+          final t = ref.read(translationsPod);
+          ref
+              .read(classBannerProvider(classId).notifier)
+              .show(t.notifications.contentDeleted);
+          route = ClassDetailRoute(classId: classId);
+        }
       }
     } else {
       route = _getRouteForType(

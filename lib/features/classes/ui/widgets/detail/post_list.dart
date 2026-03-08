@@ -2,6 +2,7 @@ import 'package:AIPrimary/features/auth/domain/entities/user_role.dart';
 import 'package:AIPrimary/features/classes/domain/entity/class_entity.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/providers/post_paging_controller_pod.dart';
+import 'package:AIPrimary/features/classes/states/class_banner_provider.dart';
 import 'package:AIPrimary/features/posts/ui/pages/create_post_page.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_card.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
@@ -57,65 +58,128 @@ class _PostListState extends ConsumerState<PostList> {
       postPagingControllerPod(widget.classEntity.id),
     );
 
+    final bannerMessage = ref.watch(classBannerProvider(widget.classEntity.id));
+
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: PagingListener(
-          controller: pagingController,
-          builder: (context, state, fetchNextPage) =>
-              PagedListView<int, PostEntity>.separated(
-                padding: const EdgeInsets.only(bottom: 80),
-                separatorBuilder: (context, index) => const SizedBox(height: 0),
-                state: state,
-                fetchNextPage: fetchNextPage,
-                builderDelegate: PagedChildBuilderDelegate(
-                  itemBuilder: (context, item, index) {
-                    return AnimatedListItem(
-                      index: index,
-                      child: PostCard(
-                        key: ValueKey(item.id),
-                        post: item,
-                        classEntity: widget.classEntity,
-                      ),
-                    );
-                  },
-                  firstPageErrorIndicatorBuilder: (context) =>
-                      EnhancedErrorState(
-                        title: t.classes.posts.loadError,
-                        message: state.error?.toString() ?? '',
-                        onRetry: () => pagingController.refresh(),
-                      ),
-                  noItemsFoundIndicatorBuilder: (context) => EnhancedEmptyState(
-                    icon: LucideIcons.messageSquare,
-                    title: t.classes.posts.emptyTitle,
-                    message: t.classes.posts.emptyDescription,
-                    actionLabel: isStudent ? null : t.classes.posts.createFirst,
-                    onAction: isStudent ? null : _navigateToCreatePost,
-                  ),
-                  newPageProgressIndicatorBuilder: (context) => const Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Center(
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+      body: Column(
+        children: [
+          if (bannerMessage != null)
+            Material(
+              color: Theme.of(context).colorScheme.errorContainer,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
                     ),
-                  ),
-                  noMoreItemsIndicatorBuilder: (context) => Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Center(
+                    const SizedBox(width: 12),
+                    Expanded(
                       child: Text(
-                        t.classes.posts.noMore,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        bannerMessage,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () => ref
+                          .read(
+                            classBannerProvider(widget.classEntity.id).notifier,
+                          )
+                          .clear(),
+                      child: Icon(
+                        Icons.close,
+                        size: 22,
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-        ),
+            ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: PagingListener(
+                controller: pagingController,
+                builder: (context, state, fetchNextPage) =>
+                    PagedListView<int, PostEntity>.separated(
+                      padding: const EdgeInsets.only(bottom: 80),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 0),
+                      state: state,
+                      fetchNextPage: fetchNextPage,
+                      builderDelegate: PagedChildBuilderDelegate(
+                        itemBuilder: (context, item, index) {
+                          return AnimatedListItem(
+                            index: index,
+                            child: PostCard(
+                              key: ValueKey(item.id),
+                              post: item,
+                              classEntity: widget.classEntity,
+                            ),
+                          );
+                        },
+                        firstPageErrorIndicatorBuilder: (context) =>
+                            EnhancedErrorState(
+                              title: t.classes.posts.loadError,
+                              message: state.error?.toString() ?? '',
+                              onRetry: () => pagingController.refresh(),
+                            ),
+                        noItemsFoundIndicatorBuilder: (context) =>
+                            EnhancedEmptyState(
+                              icon: LucideIcons.messageSquare,
+                              title: t.classes.posts.emptyTitle,
+                              message: t.classes.posts.emptyDescription,
+                              actionLabel: isStudent
+                                  ? null
+                                  : t.classes.posts.createFirst,
+                              onAction: isStudent
+                                  ? null
+                                  : _navigateToCreatePost,
+                            ),
+                        newPageProgressIndicatorBuilder: (context) =>
+                            const Padding(
+                              padding: EdgeInsets.all(24),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        noMoreItemsIndicatorBuilder: (context) => Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Center(
+                            child: Text(
+                              t.classes.posts.noMore,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: isStudent
           ? null

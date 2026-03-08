@@ -141,6 +141,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage>
                       assignmentRepository: ref.read(
                         assignmentRepositoryProvider,
                       ),
+                      ref: ref,
                     );
                   },
                 );

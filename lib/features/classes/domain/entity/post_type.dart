@@ -26,16 +26,6 @@ enum PostType {
     }
   }
 
-  /// Returns user-facing display name
-  String get displayName {
-    switch (this) {
-      case PostType.post:
-        return 'Post';
-      case PostType.exercise:
-        return 'Exercise';
-    }
-  }
-
   /// Converts API string to PostType enum
   static PostType fromName(String value) {
     switch (value) {

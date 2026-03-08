@@ -1,3 +1,4 @@
+import 'package:AIPrimary/features/classes/data/dto/post_response_dto.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
 import 'package:AIPrimary/features/classes/domain/entity/linked_resource_entity.dart';
 
@@ -12,7 +13,7 @@ class PostEntity {
   final String? authorAvatarUrl;
   final String content;
   final PostType type;
-  final List<String> attachments;
+  final List<PostAttachmentDto> attachments;
   final List<LinkedResourceEntity> linkedResources;
   final String? assignmentId;
   final DateTime? dueDate; // For exercise type posts
@@ -56,7 +57,7 @@ class PostEntity {
     String? authorAvatarUrl,
     String? content,
     PostType? type,
-    List<String>? attachments,
+    List<PostAttachmentDto>? attachments,
     List<LinkedResourceEntity>? linkedResources,
     String? linkedLessonId,
     DateTime? dueDate,

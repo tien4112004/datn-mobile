@@ -11,13 +11,4 @@ extension PostTypeUIExtension on PostType {
         return LucideIcons.clipboardList;
     }
   }
-
-  String get createPageLabel {
-    switch (this) {
-      case PostType.post:
-        return 'Post';
-      case PostType.exercise:
-        return 'Exercise';
-    }
-  }
 }

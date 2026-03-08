@@ -1,15 +1,18 @@
 import 'package:AIPrimary/features/classes/domain/entity/post_type.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// Chip displaying the type of a post with Material 3 styling
-class PostTypeChip extends StatelessWidget {
+class PostTypeChip extends ConsumerWidget {
   final PostType type;
 
   const PostTypeChip({super.key, required this.type});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsPod);
     final colorScheme = Theme.of(context).colorScheme;
     final config = _getConfig(type, colorScheme);
 
@@ -26,7 +29,7 @@ class PostTypeChip extends StatelessWidget {
           Icon(config.icon, size: 14, color: config.iconColor),
           const SizedBox(width: 6),
           Text(
-            type.displayName,
+            type.getLocalizedName(t),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,

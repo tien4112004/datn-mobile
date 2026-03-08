@@ -8,6 +8,7 @@ class MediaResponse {
   final String cdnUrl;
   final String extension;
   final String mediaType;
+  final String? originalFilename;
   final int? fileSize;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -17,6 +18,7 @@ class MediaResponse {
     required this.cdnUrl,
     required this.extension,
     required this.mediaType,
+    this.originalFilename,
     this.fileSize,
     this.createdAt,
     this.updatedAt,
@@ -27,6 +29,7 @@ class MediaResponse {
     String? cdnUrl,
     String? extension,
     String? mediaType,
+    String? originalFilename,
     int? fileSize,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -36,6 +39,7 @@ class MediaResponse {
       cdnUrl: cdnUrl ?? this.cdnUrl,
       extension: extension ?? this.extension,
       mediaType: mediaType ?? this.mediaType,
+      originalFilename: originalFilename ?? this.originalFilename,
       fileSize: fileSize,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -49,6 +53,7 @@ class MediaResponse {
       cdnUrl: data['cdnUrl'],
       extension: data['extension'],
       mediaType: data['mediaType'],
+      originalFilename: data['originalFilename'] as String?,
       fileSize: data['fileSize'] != null ? data['fileSize'] as int? : null,
       createdAt: data['createdAt'] == null
           ? null

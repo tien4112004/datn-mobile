@@ -5,6 +5,22 @@ import 'package:AIPrimary/features/classes/data/dto/linked_resource_dto.dart';
 
 part 'post_response_dto.g.dart';
 
+/// Attachment item returned in post responses
+class PostAttachmentDto {
+  final String name;
+  final String url;
+
+  const PostAttachmentDto({required this.name, required this.url});
+
+  factory PostAttachmentDto.fromJson(Map<String, dynamic> json) =>
+      PostAttachmentDto(
+        name: json['name'] as String,
+        url: json['url'] as String,
+      );
+
+  Map<String, dynamic> toJson() => {'name': name, 'url': url};
+}
+
 /// Author response dto
 @JsonSerializable()
 class AuthorResponseDto {
@@ -38,7 +54,7 @@ class PostResponseDto {
   final AuthorResponseDto author;
   final String content;
   final String type;
-  final List<String>? attachments;
+  final List<PostAttachmentDto>? attachments;
   final List<LinkedResourceDto>? linkedResources;
   final String? assignmentId;
   final DateTime? dueDate;
@@ -86,7 +102,7 @@ extension PostResponseMapper on PostResponseDto {
     authorAvatarUrl: author.avatarUrl,
     content: content,
     type: PostType.fromName(type),
-    attachments: attachments ?? [],
+    attachments: attachments ?? const [],
     linkedResources:
         linkedResources?.map((dto) => dto.toEntity()).toList() ?? [],
     assignmentId: assignmentId,

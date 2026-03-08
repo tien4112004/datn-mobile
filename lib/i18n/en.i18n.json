@@ -302,6 +302,8 @@
     "days_ago": "$count days ago"
   },
   "common": {
+    "user": "User",
+    "you": "You",
     "loading": "Loading...",
     "error": "Error",
     "retry": "Try Again",
@@ -1107,7 +1109,14 @@
       "deleteTitle": "Delete Comment?",
       "deleteMessage": "This action cannot be undone.",
       "deleteSuccess": "Comment deleted successfully",
-      "deleteError": "Failed to delete comment: $error"
+      "deleteError": "Failed to delete comment: $error",
+      "mention": {
+        "title": "Mention a post",
+        "searchHint": "Search posts...",
+        "noPosts": "No posts in this class yet",
+        "noResults": "No posts match \"$query\"",
+        "referencedPost": "Referenced Post"
+      }
     },
     "posts": {
       "emptyTitle": "No Posts Yet",

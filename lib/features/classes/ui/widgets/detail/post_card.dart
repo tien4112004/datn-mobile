@@ -12,6 +12,7 @@ import 'package:AIPrimary/features/classes/ui/widgets/posts/post_header.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_pin_indicator.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/post_attachments_display.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/posts/linked_resources_display.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -19,7 +20,6 @@ import 'package:AIPrimary/shared/widgets/themed_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// Material 3 card displaying a class post with expandable comments
 class PostCard extends ConsumerStatefulWidget {
@@ -128,7 +128,10 @@ class _PostCardState extends ConsumerState<PostCard> with GlobalHelper {
             Semantics(
               label: t.classes.posts.semanticLabel(
                 postType: widget.post.type.getLocalizedName(t),
-                timeAgo: timeago.format(widget.post.createdAt),
+                timeAgo: DateFormatHelper.formatRelativeDate(
+                  widget.post.createdAt,
+                  ref: ref,
+                ),
               ),
               child: ThemedCard(
                 borderColor: widget.post.isPinned
@@ -203,6 +206,7 @@ class _PostCardState extends ConsumerState<PostCard> with GlobalHelper {
                     if (_showComments && widget.post.allowComments)
                       CommentSection(
                         postId: widget.post.id,
+                        classId: widget.classEntity.id,
                         allowComments: widget.post.allowComments,
                       ),
                   ],

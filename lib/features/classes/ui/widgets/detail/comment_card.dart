@@ -3,11 +3,12 @@ import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_actions.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_author_info.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_avatar.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/rich_comment_content.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 /// Card displaying an individual comment
 class CommentCard extends ConsumerWidget {
@@ -19,9 +20,10 @@ class CommentCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final userState = ref.watch(userControllerPod);
+    final t = ref.watch(translationsPod);
 
     // Determine author name from comment's user data
-    final authorName = comment.authorName ?? 'User';
+    final authorName = comment.authorName ?? t.common.user;
 
     // Check if current user (compare by email)
     final currentUserEmail = userState.value?.email;
@@ -37,7 +39,7 @@ class CommentCard extends ConsumerWidget {
 
     return Semantics(
       label:
-          'Comment by $authorName, posted ${timeago.format(comment.createdAt ?? DateFormatHelper.getNow())}',
+          'Comment by $authorName, posted ${DateFormatHelper.formatRelativeDate(comment.createdAt ?? DateFormatHelper.getNow(), ref: ref)}',
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -62,7 +64,10 @@ class CommentCard extends ConsumerWidget {
                         )
                       : const SizedBox.shrink(),
                   const SizedBox(height: 4),
-                  Text(comment.content, style: theme.textTheme.bodyMedium),
+                  RichCommentContent(
+                    content: comment.content,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
               ),
             ),

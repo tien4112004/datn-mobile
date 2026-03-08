@@ -153,6 +153,8 @@
     "pageInDevelopment": "Trang này đang được phát triển"
   },
   "common": {
+    "user": "Người dùng",
+    "you": "Bạn",
     "loading": "Đang tải...",
     "error": "Lỗi",
     "retry": "Thử lại",
@@ -1107,7 +1109,14 @@
       "deleteTitle": "Xóa bình luận?",
       "deleteMessage": "Hành động này không thể hoàn tác.",
       "deleteSuccess": "Đã xóa bình luận thành công",
-      "deleteError": "Không thể xóa bình luận: $error"
+      "deleteError": "Không thể xóa bình luận: $error",
+      "mention": {
+        "title": "Đề cập đến bài đăng",
+        "searchHint": "Tìm kiếm bài đăng...",
+        "noPosts": "Chưa có bài đăng nào trong lớp này",
+        "noResults": "Không tìm thấy bài đăng khớp với \"$query\"",
+        "referencedPost": "Bài đăng được đề cập"
+      }
     },
     "posts": {
       "emptyTitle": "Chưa có bài đăng nào",

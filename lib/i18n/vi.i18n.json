@@ -1251,7 +1251,9 @@
       "selectAssignment": "Chọn bài tập",
       "failedToLoad": "Tải thất bại",
       "loading": "Đang tải...",
-      "questionsCount": "$count Q"
+      "questionsCount": "$count Q",
+      "renameAssignment": "Đổi tên bài tập",
+      "assignmentTitle": "Tên bài tập"
     },
     "editForm": {
       "editing": "Đang chỉnh sửa lớp học",

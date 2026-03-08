@@ -44,6 +44,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
   // Exercise-specific state
   DateTime? _dueDate;
   String? _selectedAssignmentId;
+  String? _assignmentTitle;
   int? _maxSubmissions;
   bool _allowRetake = true;
   bool _showCorrectAnswers = true;
@@ -106,6 +107,11 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
             // Assignment-specific fields (for exercise posts)
             assignmentId: _selectedType == PostType.exercise
                 ? _selectedAssignmentId
+                : null,
+            assignmentTitle:
+                _selectedType == PostType.exercise &&
+                    _selectedAssignmentId != null
+                ? _assignmentTitle
                 : null,
             maxSubmissions: _selectedType == PostType.exercise
                 ? _maxSubmissions
@@ -253,6 +259,8 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
     if (result != null && mounted) {
       setState(() {
         _selectedAssignmentId = result.id;
+        _assignmentTitle =
+            result.title; // pre-fill with selected assignment name
       });
     }
   }
@@ -490,6 +498,7 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       dueDate: _dueDate,
                       availableUntil: _availableUntil,
                       selectedAssignmentId: _selectedAssignmentId,
+                      assignmentTitle: _assignmentTitle,
                       maxSubmissions: _maxSubmissions,
                       passingScore: _passingScore,
                       allowRetake: _allowRetake,
@@ -500,6 +509,8 @@ class _CreatePostPageState extends ConsumerState<CreatePostPage> {
                       onPickDueDate: _pickDueDate,
                       onPickAvailableUntil: _pickAvailableUntil,
                       onPickAssignment: _pickAssignment,
+                      onAssignmentTitleChanged: (value) =>
+                          setState(() => _assignmentTitle = value),
                       onPickLinkedResource: _pickLinkedResource,
                       onMaxSubmissionsChanged: (value) =>
                           setState(() => _maxSubmissions = value),

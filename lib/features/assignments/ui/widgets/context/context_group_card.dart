@@ -20,9 +20,9 @@ class ContextGroupCard extends ConsumerWidget {
   /// Questions that belong to this context
   final List<AssignmentQuestionEntity> questions;
 
-  /// The 0-based starting index of this group in the flat questions list.
-  /// Used for correct callback indices.
-  final int startIndex;
+  /// The original flat-list indices for each question in [questions].
+  /// Must be the same length as [questions]. Used for correct callback indices.
+  final List<int> originalIndices;
 
   /// The 1-based starting question number for display.
   final int startingDisplayNumber;
@@ -56,7 +56,7 @@ class ContextGroupCard extends ConsumerWidget {
     super.key,
     required this.context,
     required this.questions,
-    required this.startIndex,
+    required this.originalIndices,
     required this.startingDisplayNumber,
     this.isEditMode = false,
     this.onEditContext,
@@ -141,10 +141,11 @@ class ContextGroupCard extends ConsumerWidget {
                         ? subtopicNameMap[questions[i].topicId!]
                         : null,
                     onEdit: onEditQuestion != null
-                        ? () => onEditQuestion!(questions[i], startIndex + i)
+                        ? () =>
+                              onEditQuestion!(questions[i], originalIndices[i])
                         : null,
                     onDelete: onDeleteQuestion != null
-                        ? () => onDeleteQuestion!(startIndex + i)
+                        ? () => onDeleteQuestion!(originalIndices[i])
                         : null,
                   ),
               ],

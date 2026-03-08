@@ -212,7 +212,7 @@ class QuestionsTab extends ConsumerWidget {
                       key: ValueKey('context_${groupItem.context!.id}'),
                       context: groupItem.context!,
                       questions: groupItem.groupQuestions!,
-                      startIndex: groupItem.groupOriginalIndices!.first,
+                      originalIndices: groupItem.groupOriginalIndices!,
                       startingDisplayNumber: groupItem.groupDisplayStart!,
                       isEditMode: isEditMode,
                       subtopicNameMap: subtopicNameMap,

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class OptionChip extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String? logoPath;
 
   const OptionChip({
@@ -20,39 +20,43 @@ class OptionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDisabled = onTap == null;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: ThemeDecorations.chipDecoration(context),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (logoPath != null)
-              Image.asset(logoPath!, width: 18, height: 18)
-            else
+      child: Opacity(
+        opacity: isDisabled ? 0.5 : 1.0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: ThemeDecorations.chipDecoration(context),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (logoPath != null)
+                Image.asset(logoPath!, width: 18, height: 18)
+              else
+                Icon(
+                  icon,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: context.isDarkMode ? Colors.white : Colors.grey[800],
+                ),
+              ),
+              const SizedBox(width: 4),
               Icon(
-                icon,
+                Icons.keyboard_arrow_down,
                 size: 18,
-                color: Theme.of(context).colorScheme.primary,
+                color: context.secondaryTextColor,
               ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: context.isDarkMode ? Colors.white : Colors.grey[800],
-              ),
-            ),
-            const SizedBox(width: 4),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: 18,
-              color: context.secondaryTextColor,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

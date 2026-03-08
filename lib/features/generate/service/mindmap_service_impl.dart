@@ -14,6 +14,7 @@ class MindmapServiceImpl implements MindmapService {
     int? maxBranchesPerNode,
     String? grade,
     String? subject,
+    String? chapter,
     List<String>? fileUrls,
   }) async {
     // Add business logic validations here
@@ -44,6 +45,7 @@ class MindmapServiceImpl implements MindmapService {
       maxBranchesPerNode: maxBranchesPerNode,
       grade: grade,
       subject: subject,
+      chapter: chapter,
       fileUrls: fileUrls,
     );
 

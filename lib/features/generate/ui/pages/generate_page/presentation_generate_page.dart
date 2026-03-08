@@ -7,6 +7,7 @@ import 'package:AIPrimary/features/generate/states/controller_provider.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/generation_settings_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/general_picker_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/presentation_picker_options.dart';
+import 'package:AIPrimary/features/generate/ui/widgets/options/education_mode_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/options/presentation_widget_options.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/shared/attach_file_sheet.dart';
 import 'package:AIPrimary/features/generate/ui/widgets/generate/option_chip.dart';
@@ -380,6 +381,19 @@ class _PresentationGeneratePageState
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          // Education Mode
+          EducationModeOptions(
+            isEducationMode: formState.isEducationMode,
+            gradeLevel: formState.gradeLevel,
+            subjectEnum: formState.subjectEnum,
+            chapter: formState.chapter,
+            onToggle: formController.toggleEducationMode,
+            onGradeChanged: formController.updateEducationGrade,
+            onSubjectChanged: formController.updateEducationSubject,
+            onChapterChanged: formController.updateChapter,
+            t: t,
+          ),
           const SizedBox(height: 20),
           // Quick Suggestions
           ExamplePromptSuggestions(
@@ -396,6 +410,11 @@ class _PresentationGeneratePageState
 
   void _handleGenerate() {
     _topicFocusNode.unfocus();
+    final formState = ref.read(presentationFormControllerProvider);
+    if (!formState.isEducationModeValid) {
+      SnackbarUtils.showError(context, t.generate.educationMode.selectChapter);
+      return;
+    }
     final formController = ref.read(
       presentationFormControllerProvider.notifier,
     );

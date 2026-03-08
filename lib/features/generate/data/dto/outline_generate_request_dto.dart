@@ -19,6 +19,9 @@ class OutlineGenerateRequest {
   /// File URLs to use as source material for generation
   final List<String>? fileUrls;
 
+  /// The chapter name for education mode
+  final String? chapter;
+
   const OutlineGenerateRequest({
     required this.topic,
     required this.slideCount,
@@ -28,6 +31,7 @@ class OutlineGenerateRequest {
     this.grade,
     this.subject,
     this.fileUrls,
+    this.chapter,
   });
 
   factory OutlineGenerateRequest.fromJson(Map<String, dynamic> json) =>
@@ -48,6 +52,7 @@ class OutlineGenerateRequest {
     String? grade,
     String? subject,
     List<String>? fileUrls,
+    String? chapter,
   }) {
     return OutlineGenerateRequest(
       topic: topic ?? this.topic,
@@ -58,6 +63,7 @@ class OutlineGenerateRequest {
       grade: grade ?? this.grade,
       subject: subject ?? this.subject,
       fileUrls: fileUrls ?? this.fileUrls,
+      chapter: chapter ?? this.chapter,
     );
   }
 }

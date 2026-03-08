@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/core/router/router_pod.dart';
 import 'package:AIPrimary/features/setting/widget/bottom_sheet/language_bottom_sheet.dart';
+import 'package:AIPrimary/features/setting/widget/bottom_sheet/system_prompt_bottom_sheet.dart';
 import 'package:AIPrimary/features/setting/widget/bottom_sheet/theme_bottom_sheet.dart';
 import 'package:AIPrimary/features/setting/widget/setting_category/setting_option.dart';
 import 'package:AIPrimary/features/setting/widget/setting_profile_picture.dart';
@@ -111,6 +112,16 @@ class SettingContentView extends ConsumerWidget {
                         title: t.settings.theme,
                         onPressed: () => showThemeBottomSheet(context, ref),
                         icon: LucideIcons.palette,
+                      ),
+                    ],
+                  ),
+                  SettingSection(
+                    title: t.settings.aiSettings,
+                    options: [
+                      SettingOption(
+                        title: t.settings.systemPrompt.title,
+                        onPressed: () => showSystemPromptBottomSheet(context),
+                        icon: LucideIcons.sparkles,
                       ),
                     ],
                   ),

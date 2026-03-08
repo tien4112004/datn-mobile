@@ -1,6 +1,7 @@
 enum NotificationType {
   post,
   assignment,
+  assignmentDeadline,
   comment,
   grade,
   announcement,
@@ -15,6 +16,8 @@ enum NotificationType {
         return NotificationType.post;
       case 'ASSIGNMENT':
         return NotificationType.assignment;
+      case 'ASSIGNMENT_DEADLINE':
+        return NotificationType.assignmentDeadline;
       case 'COMMENT':
         return NotificationType.comment;
       case 'GRADE':
@@ -30,7 +33,7 @@ enum NotificationType {
       case 'SHARED_MINDMAP':
         return NotificationType.sharedMindmap;
       default:
-        throw ArgumentError('Unknown NotificationType: $value');
+        return NotificationType.system;
     }
   }
 

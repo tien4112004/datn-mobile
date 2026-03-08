@@ -1969,7 +1969,9 @@
   "notifications": {
     "title": "Notifications",
     "markAllRead": "Mark all read",
-    "retry": "Retry"
+    "retry": "Retry",
+    "empty": "No notifications yet",
+    "contentDeleted": "This content is no longer available"
   },
   "questions": {
     "question": "Question",

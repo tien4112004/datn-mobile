@@ -7,6 +7,7 @@ import 'package:AIPrimary/features/auth/domain/services/auth_service.dart';
 import 'package:AIPrimary/features/auth/service/service_provider.dart';
 import 'package:AIPrimary/features/auth/controllers/auth_state.dart';
 import 'package:AIPrimary/features/notification/service/service_provider.dart';
+import 'package:AIPrimary/features/notification/states/notification_controller.dart';
 import 'package:AIPrimary/features/payment/providers/payment_providers.dart';
 import 'package:AIPrimary/features/projects/states/controller_provider.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
@@ -110,6 +111,7 @@ class AuthController extends AsyncNotifier<AuthState> {
       await _clearUserProfile();
 
       ref.invalidate(userControllerPod);
+      ref.invalidate(notificationControllerProvider);
       ref.invalidate(sharedResourcesControllerProvider);
       ref.invalidate(recentDocumentsControllerProvider);
       ref.invalidate(presentationsControllerProvider);

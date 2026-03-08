@@ -1,9 +1,43 @@
 import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
 import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NotificationItem extends StatelessWidget {
+/// Parses a single markdown line into a list of [TextSpan]s,
+/// handling **bold** and *italic* inline markers.
+List<TextSpan> _parseInline(String text, TextStyle base) {
+  final spans = <TextSpan>[];
+  final pattern = RegExp(r'\*\*(.+?)\*\*|\*(.+?)\*|_(.+?)_');
+  int last = 0;
+  for (final m in pattern.allMatches(text)) {
+    if (m.start > last) {
+      spans.add(TextSpan(text: text.substring(last, m.start), style: base));
+    }
+    if (m.group(1) != null) {
+      spans.add(
+        TextSpan(
+          text: m.group(1),
+          style: base.copyWith(fontWeight: FontWeight.w600),
+        ),
+      );
+    } else {
+      spans.add(
+        TextSpan(
+          text: m.group(2) ?? m.group(3),
+          style: base.copyWith(fontStyle: FontStyle.italic),
+        ),
+      );
+    }
+    last = m.end;
+  }
+  if (last < text.length) {
+    spans.add(TextSpan(text: text.substring(last), style: base));
+  }
+  return spans.isEmpty ? [TextSpan(text: text, style: base)] : spans;
+}
+
+class NotificationItem extends ConsumerWidget {
   final AppNotification notification;
   final VoidCallback? onTap;
 
@@ -15,6 +49,8 @@ class NotificationItem extends StatelessWidget {
         return Icons.article_outlined;
       case NotificationType.assignment:
         return Icons.assignment_outlined;
+      case NotificationType.assignmentDeadline:
+        return Icons.alarm_outlined;
       case NotificationType.comment:
         return Icons.comment_outlined;
       case NotificationType.grade:
@@ -39,6 +75,8 @@ class NotificationItem extends StatelessWidget {
         return colorScheme.primary;
       case NotificationType.assignment:
         return Colors.orange;
+      case NotificationType.assignmentDeadline:
+        return Colors.deepOrange;
       case NotificationType.comment:
         return Colors.green;
       case NotificationType.grade:
@@ -56,25 +94,61 @@ class NotificationItem extends StatelessWidget {
     }
   }
 
-  String _formatTimeAgo(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
+  Widget _buildMarkdownBody(BuildContext context, String body) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final baseColor = colorScheme.onSurfaceVariant;
+    final lines = body.split('\n');
+    final widgets = <Widget>[];
 
-    if (difference.inMinutes < 1) {
-      return 'Just now';
-    } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
-    } else {
-      return DateFormat('MMM d').format(dateTime);
+    for (final raw in lines) {
+      final line = raw.trimRight();
+      if (line.isEmpty) continue;
+
+      TextStyle style;
+      String content;
+
+      if (line.startsWith('### ')) {
+        content = line.substring(4);
+        style = TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: baseColor,
+        );
+      } else if (line.startsWith('## ')) {
+        content = line.substring(3);
+        style = TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: baseColor,
+        );
+      } else if (line.startsWith('# ')) {
+        content = line.substring(2);
+        style = TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: baseColor,
+        );
+      } else {
+        content = line;
+        style = TextStyle(fontSize: 12, color: baseColor);
+      }
+
+      widgets.add(
+        RichText(
+          text: TextSpan(children: _parseInline(content, style)),
+          maxLines: null,
+        ),
+      );
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final iconColor = _getIconColor(context);
 
@@ -128,19 +202,14 @@ class NotificationItem extends StatelessWidget {
                   ),
                   if (notification.body != null) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      notification.body!,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    _buildMarkdownBody(context, notification.body!),
                   ],
                   const SizedBox(height: 4),
                   Text(
-                    _formatTimeAgo(notification.createdAt),
+                    DateFormatHelper.formatRelativeDate(
+                      notification.createdAt,
+                      ref: ref,
+                    ),
                     style: TextStyle(
                       fontSize: 12,
                       color: colorScheme.onSurfaceVariant,

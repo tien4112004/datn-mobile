@@ -12,6 +12,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:AIPrimary/core/router/auto_route_observer.dart';
+import 'package:AIPrimary/core/router/page_route_observer.dart';
 import 'package:AIPrimary/core/router/router_pod.dart';
 import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
 import 'package:AIPrimary/core/theme/app_theme.dart';
@@ -94,7 +95,7 @@ class _AppState extends ConsumerState<App> with GlobalHelper {
           themeMode: currentTheme,
           routerConfig: approuter.config(
             placeholder: (context) => const SizedBox.shrink(),
-            navigatorObservers: () => [RouterObserver()],
+            navigatorObservers: () => [RouterObserver(), pageRouteObserver],
           ),
           locale: translations.$meta.locale.flutterLocale,
           supportedLocales: AppLocaleUtils.supportedLocales,

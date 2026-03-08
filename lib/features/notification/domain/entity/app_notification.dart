@@ -6,6 +6,7 @@ class AppNotification {
   final String? body;
   final NotificationType type;
   final String? referenceId;
+  final Map<String, String>? data;
   final bool isRead;
   final DateTime createdAt;
 
@@ -15,6 +16,7 @@ class AppNotification {
     this.body,
     required this.type,
     this.referenceId,
+    this.data,
     required this.isRead,
     required this.createdAt,
   });
@@ -25,6 +27,7 @@ class AppNotification {
     String? body,
     NotificationType? type,
     String? referenceId,
+    Map<String, String>? data,
     bool? isRead,
     DateTime? createdAt,
   }) {
@@ -34,6 +37,7 @@ class AppNotification {
       body: body ?? this.body,
       type: type ?? this.type,
       referenceId: referenceId ?? this.referenceId,
+      data: data ?? this.data,
       isRead: isRead ?? this.isRead,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -46,6 +50,7 @@ class AppNotification {
       'body': body,
       'type': type.toString(),
       'referenceId': referenceId,
+      'data': data,
       'isRead': isRead,
       'createdAt': createdAt.toIso8601String(),
     };

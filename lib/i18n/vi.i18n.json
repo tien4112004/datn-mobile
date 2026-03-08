@@ -1969,7 +1969,9 @@
   "notifications": {
     "title": "Thông báo",
     "markAllRead": "Đánh dấu tất cả đã đọc",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "empty": "Chưa có thông báo nào",
+    "contentDeleted": "Nội dung này không còn tồn tại"
   },
   "questions": {
     "question": "Câu hỏi",

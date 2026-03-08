@@ -11,6 +11,7 @@ class AppNotificationDto {
   final String? body;
   final String type;
   final String? referenceId;
+  final Map<String, dynamic>? data;
   final bool isRead;
   final DateTime createdAt;
 
@@ -20,6 +21,7 @@ class AppNotificationDto {
     this.body,
     required this.type,
     this.referenceId,
+    this.data,
     required this.isRead,
     required this.createdAt,
   });
@@ -38,6 +40,7 @@ extension AppNotificationDtoMapper on AppNotificationDto {
       body: body,
       type: NotificationType.fromString(type),
       referenceId: referenceId,
+      data: data?.map((k, v) => MapEntry(k, v?.toString() ?? '')),
       isRead: isRead,
       createdAt: createdAt,
     );
@@ -52,6 +55,7 @@ extension AppNotificationEntityMapper on AppNotification {
       body: body,
       type: type.toApiValue(),
       referenceId: referenceId,
+      data: data,
       isRead: isRead,
       createdAt: createdAt,
     );

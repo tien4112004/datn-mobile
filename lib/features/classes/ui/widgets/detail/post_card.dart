@@ -203,6 +203,7 @@ class _PostCardState extends ConsumerState<PostCard> with GlobalHelper {
                     if (_showComments && widget.post.allowComments)
                       CommentSection(
                         postId: widget.post.id,
+                        classId: widget.classEntity.id,
                         allowComments: widget.post.allowComments,
                       ),
                   ],

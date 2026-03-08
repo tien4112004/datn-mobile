@@ -3,6 +3,7 @@ import 'package:AIPrimary/features/classes/domain/entity/comment_entity.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_actions.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_author_info.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/comment_avatar.dart';
+import 'package:AIPrimary/features/classes/ui/widgets/detail/rich_comment_content.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:AIPrimary/shared/pods/user_profile_pod.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,10 @@ class CommentCard extends ConsumerWidget {
                         )
                       : const SizedBox.shrink(),
                   const SizedBox(height: 4),
-                  Text(comment.content, style: theme.textTheme.bodyMedium),
+                  RichCommentContent(
+                    content: comment.content,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
               ),
             ),

@@ -1,8 +1,10 @@
+import 'package:AIPrimary/shared/helper/date_format_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 
 /// Displays comment author name and timestamp
-class CommentAuthorInfo extends StatelessWidget {
+class CommentAuthorInfo extends ConsumerWidget {
   final String authorName;
   final DateTime createdAt;
   final bool isCurrentUser;
@@ -15,14 +17,15 @@ class CommentAuthorInfo extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = ref.watch(translationsPod);
 
     return Row(
       children: [
         Text(
-          isCurrentUser ? 'You' : authorName,
+          isCurrentUser ? t.common.you : authorName,
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w600,
             color: isCurrentUser ? colorScheme.primary : null,
@@ -30,7 +33,7 @@ class CommentAuthorInfo extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Text(
-          timeago.format(createdAt),
+          DateFormatHelper.formatRelativeDate(createdAt, ref: ref),
           style: theme.textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),

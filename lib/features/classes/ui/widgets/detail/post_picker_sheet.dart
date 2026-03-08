@@ -2,6 +2,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/classes/domain/entity/post_entity.dart';
 import 'package:AIPrimary/features/classes/states/posts_provider.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_mention_parser.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -57,6 +58,7 @@ class _PostPickerSheetState extends ConsumerState<PostPickerSheet> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final primaryColor = Themes.primaryColor;
+    final t = ref.watch(translationsPod);
     final postsAsync = ref.watch(postsControllerProvider(widget.classId));
 
     return DraggableScrollableSheet(
@@ -104,7 +106,7 @@ class _PostPickerSheetState extends ConsumerState<PostPickerSheet> {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      'Mention a post',
+                      t.classes.comments.mention.title,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -128,7 +130,7 @@ class _PostPickerSheetState extends ConsumerState<PostPickerSheet> {
                   autofocus: true,
                   onChanged: (v) => setState(() => _query = v),
                   decoration: InputDecoration(
-                    hintText: 'Search posts…',
+                    hintText: t.classes.comments.mention.searchHint,
                     prefixIcon: const Icon(LucideIcons.search, size: 18),
                     suffixIcon: _query.isNotEmpty
                         ? IconButton(
@@ -185,8 +187,10 @@ class _PostPickerSheetState extends ConsumerState<PostPickerSheet> {
                               const SizedBox(height: 12),
                               Text(
                                 _query.isEmpty
-                                    ? 'No posts in this class yet'
-                                    : 'No posts match "$_query"',
+                                    ? t.classes.comments.mention.noPosts
+                                    : t.classes.comments.mention.noResults(
+                                        query: _query,
+                                      ),
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: colorScheme.onSurfaceVariant,
                                 ),

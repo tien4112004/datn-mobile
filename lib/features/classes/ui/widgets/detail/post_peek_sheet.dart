@@ -1,6 +1,8 @@
 import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/classes/ui/widgets/detail/post_mention_parser.dart';
+import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 /// A "peek" bottom sheet that shows a referenced post's preview when a
@@ -8,16 +10,17 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 ///
 /// Displays the [PostMentionSegment.previewTitle] (the post content snippet
 /// embedded in the mention token) in a styled, dismissible sheet.
-class PostPeekSheet extends StatelessWidget {
+class PostPeekSheet extends ConsumerWidget {
   final PostMentionSegment mention;
 
   const PostPeekSheet({super.key, required this.mention});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final primaryColor = Themes.primaryColor;
+    final t = ref.watch(translationsPod);
 
     // Padding for the keyboard: when isScrollControlled is true the sheet can
     // slide under the keyboard, so we push it up by the keyboard inset height.
@@ -73,7 +76,7 @@ class PostPeekSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'Referenced Post',
+                        t.classes.comments.mention.referencedPost,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: colorScheme.onSurface,

@@ -1,3 +1,5 @@
+import 'package:AIPrimary/core/router/page_route_observer.dart';
+import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/services/notification/notification_navigation_handler.dart';
@@ -15,7 +17,8 @@ class NotificationListPage extends ConsumerStatefulWidget {
       _NotificationListPageState();
 }
 
-class _NotificationListPageState extends ConsumerState<NotificationListPage> {
+class _NotificationListPageState extends ConsumerState<NotificationListPage>
+    with RouteAware {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -23,16 +26,31 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
     super.initState();
     _scrollController.addListener(_onScroll);
 
-    // Load notifications on init
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationControllerProvider.notifier).refresh();
     });
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) {
+      pageRouteObserver.subscribe(this, route);
+    }
+  }
+
+  @override
   void dispose() {
+    pageRouteObserver.unsubscribe(this);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  /// Called when this page is revealed after a route above it is popped.
+  @override
+  void didPopNext() {
+    ref.read(notificationControllerProvider.notifier).refresh();
   }
 
   void _onScroll() {
@@ -87,7 +105,7 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      t.classes.comments.noComments,
+                      t.notifications.empty,
                       style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
@@ -120,6 +138,9 @@ class _NotificationListPageState extends ConsumerState<NotificationListPage> {
                     NotificationNavigationHandler.navigateFromAppNotification(
                       notification,
                       context,
+                      assignmentRepository: ref.read(
+                        assignmentRepositoryProvider,
+                      ),
                     );
                   },
                 );

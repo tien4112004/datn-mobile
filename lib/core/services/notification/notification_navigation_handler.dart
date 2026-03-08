@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:AIPrimary/core/router/router.gr.dart';
+import 'package:AIPrimary/features/assignments/domain/repository/assignment_repository.dart';
 import 'package:AIPrimary/features/notification/domain/entity/app_notification.dart';
 import 'package:AIPrimary/features/notification/domain/entity/notification_type.dart';
 import 'package:AIPrimary/features/notification/domain/entity/resource_type.dart';
@@ -54,14 +55,43 @@ class NotificationNavigationHandler {
     });
   }
 
-  /// For UI list taps - context is available, navigate immediately
-  static void navigateFromAppNotification(
+  /// For UI list taps - context is available, navigate immediately.
+  /// [assignmentRepository] is required to resolve postId → assignmentId for
+  /// ASSIGNMENT notifications.
+  static Future<void> navigateFromAppNotification(
     AppNotification notification,
-    BuildContext context,
-  ) {
+    BuildContext context, {
+    required AssignmentRepository assignmentRepository,
+  }) async {
     final router = AutoRouter.of(context);
-    final route = _getRouteForType(notification.type, notification.referenceId);
-    if (route != null) {
+    final classId = notification.data?['classId'];
+    final referenceId = notification.referenceId;
+
+    PageRouteInfo? route;
+
+    if (notification.type == NotificationType.assignment &&
+        referenceId != null) {
+      try {
+        final assignment = await assignmentRepository.getAssignmentByPostId(
+          referenceId,
+        );
+        route = AssignmentPreviewRoute(
+          assignmentId: assignment.assignmentId,
+          postId: referenceId,
+        );
+      } catch (_) {
+        // Fetch failed — fall back to class feed
+        if (classId != null) route = ClassDetailRoute(classId: classId);
+      }
+    } else {
+      route = _getRouteForType(
+        notification.type,
+        referenceId,
+        classId: classId,
+      );
+    }
+
+    if (route != null && context.mounted) {
       router.push(route);
     }
   }
@@ -96,10 +126,11 @@ class NotificationNavigationHandler {
     // Primary: type + referenceId (consistent with AppNotification entity)
     final typeString = data['type'] as String?;
     final referenceId = data['referenceId'] as String?;
+    final classId = data['classId'] as String?;
 
     if (typeString != null) {
       final type = NotificationType.fromString(typeString);
-      return _getRouteForType(type, referenceId);
+      return _getRouteForType(type, referenceId, classId: classId);
     }
 
     // Fallback: Legacy resourceType + documentId format (backward compatibility)
@@ -132,10 +163,11 @@ class NotificationNavigationHandler {
 
   static PageRouteInfo? _getRouteForType(
     NotificationType type,
-    String? referenceId,
-  ) {
+    String? referenceId, {
+    String? classId,
+  }) {
     debugPrint(
-      'Getting route for notification type: $type, referenceId: $referenceId',
+      'Getting route for notification type: $type, referenceId: $referenceId, classId: $classId',
     );
     switch (type) {
       case NotificationType.sharedPresentation:
@@ -147,14 +179,24 @@ class NotificationNavigationHandler {
         return MindmapDetailRoute(mindmapId: referenceId);
 
       case NotificationType.assignment:
+        // Handled separately in navigateFromAppNotification (requires async post fetch)
+        if (classId != null) return ClassDetailRoute(classId: classId);
+        return null;
+
+      case NotificationType.assignmentDeadline:
       case NotificationType.grade:
         if (referenceId == null) return null;
         return AssignmentDetailRoute(assignmentId: referenceId);
 
       case NotificationType.post:
+        // referenceId is the postId; classId comes from notification data
+        final resolvedClassId = classId ?? referenceId;
+        if (resolvedClassId == null) return null;
+        return ClassDetailRoute(classId: resolvedClassId);
+
       case NotificationType.comment:
         if (referenceId == null) return null;
-        return ClassDetailRoute(classId: referenceId);
+        return ClassDetailRoute(classId: classId ?? referenceId);
 
       case NotificationType.announcement:
       case NotificationType.reminder:

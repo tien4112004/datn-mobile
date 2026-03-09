@@ -94,10 +94,10 @@ class _LoaderChildState extends State<LoaderChild>
     duration: const Duration(seconds: 2),
     vsync: this,
   )..repeat(reverse: true);
-  late final Animation<double> _animation = CurvedAnimation(
-    parent: _controller,
-    curve: Curves.elasticOut,
-  );
+  late final Animation<double> _animation = Tween<double>(
+    begin: 0,
+    end: 1,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
   @override
   void dispose() {
     _controller.dispose();
@@ -113,9 +113,13 @@ class _LoaderChildState extends State<LoaderChild>
           alignment: AlignmentDirectional.center,
           children: [
             Center(
-              child: RotationTransition(
-                turns: _animation,
-                child: const FlutterLogo(size: 100),
+              child: ScaleTransition(
+                scale: _animation,
+                child: Image.asset(
+                  'assets/images/app_logo/main-icon.png',
+                  width: 100,
+                  height: 100,
+                ),
               ),
             ),
             const Positioned(

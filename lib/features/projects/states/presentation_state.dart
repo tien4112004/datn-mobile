@@ -29,16 +29,53 @@ class PresentationState {
 class PresentationFilterState {
   final String? searchQuery;
   final SortOption? sortOption;
+  final GradeLevel? gradeFilter;
+  final Subject? subjectFilter;
+  final String? chapterFilter;
 
-  const PresentationFilterState({this.searchQuery, this.sortOption});
+  const PresentationFilterState({
+    this.searchQuery,
+    this.sortOption,
+    this.gradeFilter,
+    this.subjectFilter,
+    this.chapterFilter,
+  });
 
   PresentationFilterState copyWith({
-    String? searchQuery,
-    SortOption? sortOption,
+    Object? searchQuery = _undefined,
+    Object? sortOption = _undefined,
+    Object? gradeFilter = _undefined,
+    Object? subjectFilter = _undefined,
+    Object? chapterFilter = _undefined,
   }) {
     return PresentationFilterState(
-      searchQuery: searchQuery ?? this.searchQuery,
-      sortOption: sortOption ?? this.sortOption,
+      searchQuery: searchQuery == _undefined
+          ? this.searchQuery
+          : searchQuery as String?,
+      sortOption: sortOption == _undefined
+          ? this.sortOption
+          : sortOption as SortOption?,
+      gradeFilter: gradeFilter == _undefined
+          ? this.gradeFilter
+          : gradeFilter as GradeLevel?,
+      subjectFilter: subjectFilter == _undefined
+          ? this.subjectFilter
+          : subjectFilter as Subject?,
+      chapterFilter: chapterFilter == _undefined
+          ? this.chapterFilter
+          : chapterFilter as String?,
     );
   }
+
+  PresentationFilterState clearFilters() {
+    return PresentationFilterState(sortOption: sortOption);
+  }
+
+  bool get hasActiveFilters =>
+      (searchQuery != null && searchQuery!.isNotEmpty) ||
+      gradeFilter != null ||
+      subjectFilter != null ||
+      chapterFilter != null;
 }
+
+const Object _undefined = Object();

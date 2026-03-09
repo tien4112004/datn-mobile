@@ -2,6 +2,7 @@ import 'package:AIPrimary/core/theme/app_theme.dart';
 import 'package:AIPrimary/features/projects/enum/resource_type.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/common/thumbnail.dart';
 import 'package:AIPrimary/shared/helper/date_format_helper.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,8 @@ class AbstractResourceTile extends ConsumerWidget {
     this.onTap,
     this.onMoreOptions,
     required this.resourceType,
+    this.grade,
+    this.subject,
   });
 
   final String title;
@@ -26,11 +29,16 @@ class AbstractResourceTile extends ConsumerWidget {
   final VoidCallback? onTap;
   final VoidCallback? onMoreOptions;
   final ResourceType resourceType;
+  final String? grade;
+  final String? subject;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsPod);
-    debugPrint('Building AbstractResourceTile for $title');
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final gradeEnum = grade != null ? GradeLevel.fromApiValue(grade!) : null;
+    final subjectEnum = subject != null ? Subject.fromApiValue(subject!) : null;
     return InkWell(
       onTap: onTap,
       borderRadius: Themes.boxRadius,
@@ -84,19 +92,28 @@ class AbstractResourceTile extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 8),
-                  if (description != null) ...[
-                    Text(
-                      description!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  if (gradeEnum != null || subjectEnum != null) ...[
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: [
+                        if (gradeEnum != null)
+                          _MetadataLabel(
+                            label: gradeEnum.getLocalizedName(t),
+                            color: colorScheme.primaryContainer,
+                            textColor: colorScheme.onPrimaryContainer,
+                          ),
+                        if (subjectEnum != null)
+                          _MetadataLabel(
+                            label: subjectEnum.getLocalizedName(t),
+                            color: colorScheme.secondaryContainer,
+                            textColor: colorScheme.onSecondaryContainer,
+                          ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
                   ],
+                  const SizedBox(height: 4),
                   Text(
                     DateFormatHelper.formatRelativeDate(
                       ref: ref,
@@ -114,6 +131,37 @@ class AbstractResourceTile extends ConsumerWidget {
               tooltip: t.students.tile.moreActions,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetadataLabel extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color textColor;
+
+  const _MetadataLabel({
+    required this.label,
+    required this.color,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: textColor,
         ),
       ),
     );

@@ -26,12 +26,18 @@ class PresentationServiceImpl implements PresentationService {
     int pageSize = 20,
     String? search,
     SortOption? sort,
+    String? grade,
+    String? subject,
+    String? chapter,
   }) {
     return _repo.fetchPresentationMinimalsPaged(
       pageKey,
       pageSize: pageSize,
       search: search,
       sort: sort?.toApiValue() ?? 'desc',
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }

@@ -21,6 +21,9 @@ class MindmapServiceImpl implements MindmapService {
     int pageSize, {
     String? search,
     SortOption? sort,
+    String? grade,
+    String? subject,
+    String? chapter,
   }) {
     // Convert SortOption to API sort string
     String sortOrder = 'desc';
@@ -47,6 +50,9 @@ class MindmapServiceImpl implements MindmapService {
       pageSize: 10,
       sort: sortOrder,
       search: search,
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }

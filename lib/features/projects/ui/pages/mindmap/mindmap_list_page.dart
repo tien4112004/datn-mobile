@@ -9,9 +9,11 @@ import 'package:AIPrimary/features/projects/states/mindmap_paging_controller_pod
 import 'package:AIPrimary/features/projects/ui/widgets/common/project_loading_skeleton.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/mindmap/mindmap_tile.dart';
 import 'package:AIPrimary/features/projects/ui/widgets/mindmap/mindmap_grid_card.dart';
+import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:AIPrimary/shared/pods/view_preference_pod.dart';
 import 'package:AIPrimary/shared/utils/snackbar_utils.dart';
+import 'package:AIPrimary/shared/widgets/chapter_filter_chip.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:AIPrimary/shared/widgets/enhanced_empty_state.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,9 @@ class MindmapListPage extends ConsumerStatefulWidget {
 
 class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   SortOption? _sortOption;
+  GradeLevel? _gradeFilter;
+  Subject? _subjectFilter;
+  String? _chapterFilter;
   late TextEditingController _searchController;
   Timer? _debounce;
 
@@ -41,9 +46,8 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
     _searchController = TextEditingController();
     // Initialize filter with default sort
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(mindmapFilterProvider.notifier).state = MindmapFilterState(
-        sortOption: _sortOption,
-      );
+      ref.read(mindmapFilterProvider.notifier).state =
+          const MindmapFilterState();
     });
   }
 
@@ -57,13 +61,57 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
   void _onSearchChanged(String query) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      // Update filter state which will trigger the paging controller to refresh
-      final currentFilter = ref.read(mindmapFilterProvider);
-      ref.read(mindmapFilterProvider.notifier).state = MindmapFilterState(
-        searchQuery: query,
-        sortOption: currentFilter.sortOption,
-      );
+      ref.read(mindmapFilterProvider.notifier).state = ref
+          .read(mindmapFilterProvider)
+          .copyWith(searchQuery: query);
     });
+  }
+
+  void _updateFilter({
+    GradeLevel? grade,
+    bool clearGrade = false,
+    Subject? subject,
+    bool clearSubject = false,
+    String? chapter,
+    bool clearChapter = false,
+    SortOption? sortOption,
+    bool clearSort = false,
+  }) {
+    setState(() {
+      if (clearGrade) {
+        _gradeFilter = null;
+        _subjectFilter = null;
+        _chapterFilter = null;
+      } else if (grade != null) {
+        _gradeFilter = grade;
+        _chapterFilter = null; // reset chapter when grade changes
+      }
+      if (clearSubject) {
+        _subjectFilter = null;
+        _chapterFilter = null;
+      } else if (subject != null) {
+        _subjectFilter = subject;
+        _chapterFilter = null; // reset chapter when subject changes
+      }
+      if (clearChapter) {
+        _chapterFilter = null;
+      } else if (chapter != null) {
+        _chapterFilter = chapter;
+      }
+      if (clearSort) {
+        _sortOption = null;
+      } else if (sortOption != null) {
+        _sortOption = sortOption;
+      }
+    });
+
+    ref.read(mindmapFilterProvider.notifier).state = MindmapFilterState(
+      searchQuery: ref.read(mindmapFilterProvider).searchQuery,
+      sortOption: _sortOption,
+      gradeFilter: _gradeFilter,
+      subjectFilter: _subjectFilter,
+      chapterFilter: _chapterFilter,
+    );
   }
 
   @override
@@ -82,7 +130,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 200,
+            expandedHeight: 240,
             floating: false,
             backgroundColor: colorScheme.surface,
             surfaceTintColor: colorScheme.surface,
@@ -133,16 +181,11 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() {});
-                                  // Update filter and the paging controller will auto-refresh
-                                  final currentFilter = ref.read(
-                                    mindmapFilterProvider,
-                                  );
                                   ref
                                       .read(mindmapFilterProvider.notifier)
-                                      .state = MindmapFilterState(
-                                    searchQuery: '',
-                                    sortOption: currentFilter.sortOption,
-                                  );
+                                      .state = ref
+                                      .read(mindmapFilterProvider)
+                                      .copyWith(searchQuery: '');
                                 },
                               )
                             : null,
@@ -173,6 +216,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                       children: [
                         Expanded(
                           child: GenericFiltersBar(
+                            useWrap: true,
                             filters: [
                               FilterConfig<SortOption>(
                                 label: t.projects.common_list.filter_sort,
@@ -183,26 +227,67 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
                                     (option).displayName(t),
                                 iconBuilder: (option) => (option).icon,
                                 onChanged: (value) {
-                                  setState(() {
-                                    _sortOption = value;
-                                  });
-                                  // Update filter state with sort option
-                                  final currentFilter = ref.read(
-                                    mindmapFilterProvider,
-                                  );
-                                  ref
-                                      .read(mindmapFilterProvider.notifier)
-                                      .state = MindmapFilterState(
-                                    searchQuery: currentFilter.searchQuery,
+                                  _updateFilter(
                                     sortOption: value,
+                                    clearSort: value == null,
                                   );
+                                },
+                              ),
+                              FilterConfig<GradeLevel>(
+                                label: t.projects.common_list.filter_grade,
+                                icon: LucideIcons.graduationCap,
+                                selectedValue: _gradeFilter,
+                                options: GradeLevel.values,
+                                displayNameBuilder: (g) =>
+                                    g.getLocalizedName(t),
+                                onChanged: (value) {
+                                  if (value == null) {
+                                    _updateFilter(clearGrade: true);
+                                  } else {
+                                    _updateFilter(grade: value);
+                                  }
+                                },
+                              ),
+                              FilterConfig<Subject>(
+                                label: t.projects.common_list.filter_subject,
+                                icon: LucideIcons.bookOpen,
+                                selectedValue: _subjectFilter,
+                                options: Subject.values,
+                                displayNameBuilder: (s) =>
+                                    s.getLocalizedName(t),
+                                onChanged: (value) {
+                                  if (value == null) {
+                                    _updateFilter(clearSubject: true);
+                                  } else {
+                                    _updateFilter(subject: value);
+                                  }
+                                },
+                              ),
+                            ],
+                            trailing: [
+                              ChapterFilterChip(
+                                grade: _gradeFilter,
+                                subject: _subjectFilter,
+                                selectedChapter: _chapterFilter,
+                                onChanged: (chapter) {
+                                  if (chapter == null) {
+                                    _updateFilter(clearChapter: true);
+                                  } else {
+                                    _updateFilter(chapter: chapter);
+                                  }
                                 },
                               ),
                             ],
                             onClearFilters: () {
+                              _searchController.clear();
                               setState(() {
                                 _sortOption = null;
+                                _gradeFilter = null;
+                                _subjectFilter = null;
+                                _chapterFilter = null;
                               });
+                              ref.read(mindmapFilterProvider.notifier).state =
+                                  const MindmapFilterState();
                             },
                           ),
                         ),
@@ -269,7 +354,7 @@ class _MindmapListPageState extends ConsumerState<MindmapListPage> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 0.95,
+        childAspectRatio: 0.85,
       ),
       builderDelegate: PagedChildBuilderDelegate<MindmapMinimal>(
         itemBuilder: (context, item, index) => MindmapGridCard(

@@ -10,6 +10,9 @@ class PresentationMinimalDto {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? thumbnail;
+  String? grade;
+  String? subject;
+  String? chapter;
 
   PresentationMinimalDto({
     required this.id,
@@ -17,6 +20,9 @@ class PresentationMinimalDto {
     this.createdAt,
     this.updatedAt,
     this.thumbnail,
+    this.grade,
+    this.subject,
+    this.chapter,
   });
 
   factory PresentationMinimalDto.fromJson(Map<String, dynamic> json) =>
@@ -33,6 +39,9 @@ extension PresentationMinimalMapper on PresentationMinimalDto {
       createdAt: createdAt?.toLocal(),
       updatedAt: updatedAt?.toLocal(),
       thumbnail: thumbnail,
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }
@@ -45,6 +54,9 @@ extension PresentationMinimalDtoMapper on PresentationMinimal {
       createdAt: createdAt,
       updatedAt: updatedAt,
       thumbnail: thumbnail,
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }

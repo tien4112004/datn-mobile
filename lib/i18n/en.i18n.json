@@ -190,6 +190,7 @@
       "filter_all": "All",
       "filter_subject": "Subject",
       "filter_grade": "Grade",
+      "filter_chapter": "Chapter",
       "sort_date_created_asc": "Date Created (Oldest First)",
       "sort_date_created_desc": "Date Created (Newest First)",
       "sort_name_asc": "Name (A-Z)",

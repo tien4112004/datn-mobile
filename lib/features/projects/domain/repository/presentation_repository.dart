@@ -11,6 +11,9 @@ abstract class PresentationRepository {
     int pageSize = 10,
     String sort = "desc",
     String? search,
+    String? grade,
+    String? subject,
+    String? chapter,
   });
 
   Future<void> deletePresentation(String id);

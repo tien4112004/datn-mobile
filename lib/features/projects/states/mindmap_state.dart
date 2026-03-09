@@ -29,13 +29,53 @@ class MindmapState {
 class MindmapFilterState {
   final String? searchQuery;
   final SortOption? sortOption;
+  final GradeLevel? gradeFilter;
+  final Subject? subjectFilter;
+  final String? chapterFilter;
 
-  const MindmapFilterState({this.searchQuery, this.sortOption});
+  const MindmapFilterState({
+    this.searchQuery,
+    this.sortOption,
+    this.gradeFilter,
+    this.subjectFilter,
+    this.chapterFilter,
+  });
 
-  MindmapFilterState copyWith({String? searchQuery, SortOption? sortOption}) {
+  MindmapFilterState copyWith({
+    Object? searchQuery = _mindmapUndefined,
+    Object? sortOption = _mindmapUndefined,
+    Object? gradeFilter = _mindmapUndefined,
+    Object? subjectFilter = _mindmapUndefined,
+    Object? chapterFilter = _mindmapUndefined,
+  }) {
     return MindmapFilterState(
-      searchQuery: searchQuery ?? this.searchQuery,
-      sortOption: sortOption ?? this.sortOption,
+      searchQuery: searchQuery == _mindmapUndefined
+          ? this.searchQuery
+          : searchQuery as String?,
+      sortOption: sortOption == _mindmapUndefined
+          ? this.sortOption
+          : sortOption as SortOption?,
+      gradeFilter: gradeFilter == _mindmapUndefined
+          ? this.gradeFilter
+          : gradeFilter as GradeLevel?,
+      subjectFilter: subjectFilter == _mindmapUndefined
+          ? this.subjectFilter
+          : subjectFilter as Subject?,
+      chapterFilter: chapterFilter == _mindmapUndefined
+          ? this.chapterFilter
+          : chapterFilter as String?,
     );
   }
+
+  MindmapFilterState clearFilters() {
+    return MindmapFilterState(sortOption: sortOption);
+  }
+
+  bool get hasActiveFilters =>
+      (searchQuery != null && searchQuery!.isNotEmpty) ||
+      gradeFilter != null ||
+      subjectFilter != null ||
+      chapterFilter != null;
 }
+
+const Object _mindmapUndefined = Object();

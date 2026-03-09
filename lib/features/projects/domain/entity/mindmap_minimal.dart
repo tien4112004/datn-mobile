@@ -5,6 +5,9 @@ class MindmapMinimal {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? thumbnail;
+  final String? grade;
+  final String? subject;
+  final String? chapter;
 
   const MindmapMinimal({
     required this.id,
@@ -13,6 +16,9 @@ class MindmapMinimal {
     this.createdAt,
     this.updatedAt,
     this.thumbnail,
+    this.grade,
+    this.subject,
+    this.chapter,
   });
 
   MindmapMinimal copyWith({
@@ -22,6 +28,9 @@ class MindmapMinimal {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? thumbnail,
+    String? grade,
+    String? subject,
+    String? chapter,
   }) {
     return MindmapMinimal(
       id: id ?? this.id,
@@ -30,6 +39,9 @@ class MindmapMinimal {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       thumbnail: thumbnail ?? this.thumbnail,
+      grade: grade ?? this.grade,
+      subject: subject ?? this.subject,
+      chapter: chapter ?? this.chapter,
     );
   }
 }

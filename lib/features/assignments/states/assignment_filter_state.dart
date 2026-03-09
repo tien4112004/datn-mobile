@@ -6,11 +6,13 @@ class AssignmentFilterState {
   final String? searchQuery;
   final GradeLevel? gradeLevelFilter;
   final Subject? subjectFilter;
+  final String? chapterFilter;
 
   const AssignmentFilterState({
     this.searchQuery,
     this.gradeLevelFilter,
     this.subjectFilter,
+    this.chapterFilter,
   });
 
   /// Get filter parameters for API calls
@@ -19,6 +21,7 @@ class AssignmentFilterState {
       search: searchQuery,
       gradeLevel: gradeLevelFilter?.apiValue,
       subject: subjectFilter?.apiValue,
+      chapter: chapterFilter,
     );
   }
 
@@ -27,6 +30,7 @@ class AssignmentFilterState {
     Object? searchQuery = _undefinedAssignment,
     Object? gradeLevelFilter = _undefinedAssignment,
     Object? subjectFilter = _undefinedAssignment,
+    Object? chapterFilter = _undefinedAssignment,
   }) {
     return AssignmentFilterState(
       searchQuery: searchQuery == _undefinedAssignment
@@ -38,6 +42,9 @@ class AssignmentFilterState {
       subjectFilter: subjectFilter == _undefinedAssignment
           ? this.subjectFilter
           : subjectFilter as Subject?,
+      chapterFilter: chapterFilter == _undefinedAssignment
+          ? this.chapterFilter
+          : chapterFilter as String?,
     );
   }
 
@@ -50,7 +57,8 @@ class AssignmentFilterState {
   bool get hasActiveFilters =>
       searchQuery != null && searchQuery!.isNotEmpty ||
       gradeLevelFilter != null ||
-      subjectFilter != null;
+      subjectFilter != null ||
+      chapterFilter != null;
 
   /// Get count of active filters (for UI badge)
   int get activeFilterCount {
@@ -58,6 +66,7 @@ class AssignmentFilterState {
     if (searchQuery != null && searchQuery!.isNotEmpty) count++;
     if (gradeLevelFilter != null) count++;
     if (subjectFilter != null) count++;
+    if (chapterFilter != null) count++;
     return count;
   }
 }
@@ -70,6 +79,12 @@ class AssignmentFilterParams {
   final String? search;
   final String? gradeLevel;
   final String? subject;
+  final String? chapter;
 
-  const AssignmentFilterParams({this.search, this.gradeLevel, this.subject});
+  const AssignmentFilterParams({
+    this.search,
+    this.gradeLevel,
+    this.subject,
+    this.chapter,
+  });
 }

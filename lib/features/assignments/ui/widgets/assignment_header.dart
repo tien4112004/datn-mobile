@@ -1,6 +1,7 @@
 import 'package:AIPrimary/features/assignments/states/controller_provider.dart';
 import 'package:AIPrimary/shared/models/cms_enums.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
+import 'package:AIPrimary/shared/widgets/chapter_filter_chip.dart';
 import 'package:AIPrimary/shared/widgets/generic_filters_bar.dart';
 import 'package:AIPrimary/shared/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,10 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         options: GradeLevel.values,
         selectedValue: filterState.gradeLevelFilter,
         onChanged: (value) {
-          filterNotifier.state = filterState.copyWith(gradeLevelFilter: value);
+          filterNotifier.state = filterState.copyWith(
+            gradeLevelFilter: value,
+            chapterFilter: null,
+          );
           assignmentsController.loadAssignmentsWithFilter();
         },
         displayNameBuilder: (value) => value.getLocalizedName(t),
@@ -44,7 +48,10 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
         options: Subject.values,
         selectedValue: filterState.subjectFilter,
         onChanged: (value) {
-          filterNotifier.state = filterState.copyWith(subjectFilter: value);
+          filterNotifier.state = filterState.copyWith(
+            subjectFilter: value,
+            chapterFilter: null,
+          );
           assignmentsController.loadAssignmentsWithFilter();
         },
         displayNameBuilder: (value) => value.getLocalizedName(t),
@@ -78,6 +85,19 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
           const SizedBox(height: 12),
           GenericFiltersBar(
             filters: filterConfigs,
+            trailing: [
+              ChapterFilterChip(
+                grade: filterState.gradeLevelFilter,
+                subject: filterState.subjectFilter,
+                selectedChapter: filterState.chapterFilter,
+                onChanged: (chapter) {
+                  filterNotifier.state = filterState.copyWith(
+                    chapterFilter: chapter,
+                  );
+                  assignmentsController.loadAssignmentsWithFilter();
+                },
+              ),
+            ],
             onClearFilters: () {
               HapticFeedback.lightImpact();
               filterNotifier.state = filterState.clearFilters();
@@ -89,5 +109,4 @@ class _AssignmentHeaderState extends ConsumerState<AssignmentHeader> {
       ),
     );
   }
-
 }

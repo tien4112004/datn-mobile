@@ -11,6 +11,9 @@ abstract class AssignmentRepository {
     int page = 1,
     int size = 10,
     String? search,
+    String? gradeLevel,
+    String? subject,
+    String? chapter,
   });
 
   /// Gets a single assignment by ID.

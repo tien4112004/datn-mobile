@@ -11,6 +11,9 @@ class MindmapMinimalDto {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? thumbnail;
+  final String? grade;
+  final String? subject;
+  final String? chapter;
 
   MindmapMinimalDto({
     required this.id,
@@ -19,6 +22,9 @@ class MindmapMinimalDto {
     this.createdAt,
     this.updatedAt,
     this.thumbnail,
+    this.grade,
+    this.subject,
+    this.chapter,
   });
 
   factory MindmapMinimalDto.fromJson(Map<String, dynamic> json) =>
@@ -36,6 +42,9 @@ extension MindmapMinimalMapper on MindmapMinimalDto {
       createdAt: createdAt?.toLocal(),
       updatedAt: updatedAt?.toLocal(),
       thumbnail: thumbnail,
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }
@@ -49,6 +58,9 @@ extension MindmapMinimalDtoMapper on MindmapMinimal {
       createdAt: createdAt,
       updatedAt: updatedAt,
       thumbnail: thumbnail,
+      grade: grade,
+      subject: subject,
+      chapter: chapter,
     );
   }
 }

@@ -25,6 +25,8 @@ class PresentationGridCard extends ConsumerWidget {
       resourceType: ResourceType.presentation,
       onTap: onTap,
       onMoreOptions: onMoreOptions,
+      grade: presentation.grade,
+      subject: presentation.subject,
     );
   }
 }

@@ -25,6 +25,8 @@ class MindmapTile extends ConsumerWidget {
       onTap: onTap,
       onMoreOptions: onMoreOptions,
       thumbnail: mindmap.thumbnail,
+      grade: mindmap.grade,
+      subject: mindmap.subject,
     );
   }
 }

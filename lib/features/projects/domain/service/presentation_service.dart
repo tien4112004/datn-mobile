@@ -12,5 +12,8 @@ abstract interface class PresentationService {
     int pageSize = 20,
     String? search,
     SortOption? sort,
+    String? grade,
+    String? subject,
+    String? chapter,
   });
 }

@@ -25,6 +25,9 @@ final mindmapPagingControllerPod =
                 ? null
                 : currentFilterState.searchQuery,
             sort: currentFilterState.sortOption,
+            grade: currentFilterState.gradeFilter?.apiValue,
+            subject: currentFilterState.subjectFilter?.apiValue,
+            chapter: currentFilterState.chapterFilter,
           );
         },
       );
@@ -32,7 +35,10 @@ final mindmapPagingControllerPod =
       // Listen to filter changes and refresh
       ref.listen(mindmapFilterProvider, (previous, next) {
         if (previous?.searchQuery != next.searchQuery ||
-            previous?.sortOption != next.sortOption) {
+            previous?.sortOption != next.sortOption ||
+            previous?.gradeFilter != next.gradeFilter ||
+            previous?.subjectFilter != next.subjectFilter ||
+            previous?.chapterFilter != next.chapterFilter) {
           pagingController.refresh();
         }
       });

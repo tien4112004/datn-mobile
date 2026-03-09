@@ -49,6 +49,9 @@ class PresentationRepositoryImpl implements PresentationRepository {
     int pageSize = 10,
     String sort = "desc",
     String? search,
+    String? grade,
+    String? subject,
+    String? chapter,
   }) {
     return _remoteSource
         .fetchPresentationMinimalsPaged(
@@ -56,6 +59,9 @@ class PresentationRepositoryImpl implements PresentationRepository {
           pageSize: pageSize,
           sort: sort,
           search: search,
+          grade: grade,
+          subject: subject,
+          chapter: chapter,
         )
         .then(
           (dtoResponse) =>

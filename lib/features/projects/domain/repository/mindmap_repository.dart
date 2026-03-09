@@ -11,6 +11,9 @@ abstract class MindmapRepository {
     int pageSize = 10,
     String sort = "desc",
     String? search,
+    String? grade,
+    String? subject,
+    String? chapter,
   });
 
   Future<void> deleteMindmap(String id);

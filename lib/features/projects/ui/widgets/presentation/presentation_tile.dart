@@ -25,6 +25,8 @@ class PresentationTile extends ConsumerWidget {
       onTap: onTap,
       onMoreOptions: onMoreOptions,
       thumbnail: presentation.thumbnail,
+      grade: presentation.grade,
+      subject: presentation.subject,
     );
   }
 }

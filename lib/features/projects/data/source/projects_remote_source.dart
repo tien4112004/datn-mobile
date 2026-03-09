@@ -44,6 +44,9 @@ abstract class ProjectsRemoteSource {
     @Query("pageSize") int pageSize = 10,
     @Query("sort") String sort = "desc",
     @Query("search") String? search,
+    @Query("grade") String? grade,
+    @Query("subject") String? subject,
+    @Query("chapter") String? chapter,
   });
 
   // Image endpoints
@@ -77,6 +80,9 @@ abstract class ProjectsRemoteSource {
     @Query("pageSize") int pageSize = 10,
     @Query("sort") String sort = "desc",
     @Query("search") String? search,
+    @Query("grade") String? grade,
+    @Query("subject") String? subject,
+    @Query("chapter") String? chapter,
   });
 
   @POST("/mindmaps")

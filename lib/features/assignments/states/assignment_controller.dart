@@ -19,11 +19,9 @@ class AssignmentsController extends AsyncNotifier<AssignmentListResult> {
       page: _currentPage,
       size: 20,
       search: filterParams.search,
-      // TODO: Pass other filter params when API supports them
-      // status: filterParams.status,
-      // gradeLevel: filterParams.gradeLevel,
-      // subject: filterParams.subject,
-      // difficulty: filterParams.difficulty,
+      gradeLevel: filterParams.gradeLevel,
+      subject: filterParams.subject,
+      chapter: filterParams.chapter,
     );
   }
 

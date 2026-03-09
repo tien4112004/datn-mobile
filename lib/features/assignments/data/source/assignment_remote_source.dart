@@ -19,14 +19,17 @@ abstract class AssignmentRemoteSource {
     @Body() AssignmentCreateRequest request,
   );
 
-  /// Get paginated list of assignments with optional search
+  /// Get paginated list of assignments with optional search and filters
   /// GET /assignments
   @GET('/assignments')
   Future<ServerResponseDto<List<AssignmentResponse>>> getAssignments(
     @Query('page') int page,
     @Query('size') int size,
-    @Query('search') String? search,
-  );
+    @Query('search') String? search, {
+    @Query('grade') String? gradeLevel,
+    @Query('subject') String? subject,
+    @Query('chapter') String? chapter,
+  });
 
   /// Get assignment by ID
   /// GET /assignments/{id}

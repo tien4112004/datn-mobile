@@ -26,6 +26,8 @@ class MindmapGridCard extends ConsumerWidget {
       resourceType: ResourceType.mindmap,
       onTap: onTap,
       onMoreOptions: onMoreOptions,
+      grade: mindmap.grade,
+      subject: mindmap.subject,
     );
   }
 }

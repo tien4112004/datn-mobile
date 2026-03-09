@@ -17,8 +17,18 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
     int page = 1,
     int size = 10,
     String? search,
+    String? gradeLevel,
+    String? subject,
+    String? chapter,
   }) async {
-    final response = await _remoteSource.getAssignments(page, size, search);
+    final response = await _remoteSource.getAssignments(
+      page,
+      size,
+      search,
+      gradeLevel: gradeLevel,
+      subject: subject,
+      chapter: chapter,
+    );
 
     // Map response data to domain entities
     final assignments =

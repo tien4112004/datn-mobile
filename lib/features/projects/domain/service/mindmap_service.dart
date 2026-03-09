@@ -12,5 +12,8 @@ abstract class MindmapService {
     int pageSize, {
     String? search,
     SortOption? sort,
+    String? grade,
+    String? subject,
+    String? chapter,
   });
 }

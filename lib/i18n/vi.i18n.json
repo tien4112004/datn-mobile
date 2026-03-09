@@ -256,6 +256,7 @@
       "filter_all": "Tất cả",
       "filter_subject": "Môn học",
       "filter_grade": "Khối lớp",
+      "filter_chapter": "Chương",
       "sort_date_created_asc": "Ngày tạo (Cũ nhất)",
       "sort_date_created_desc": "Ngày tạo (Mới nhất)",
       "sort_name_asc": "Tên (A-Z)",

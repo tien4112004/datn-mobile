@@ -10,7 +10,6 @@ import 'package:AIPrimary/shared/helper/global_helper.dart';
 import 'package:AIPrimary/shared/pods/translation_pod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 @RoutePage()
 class SignUpPage extends ConsumerStatefulWidget {
@@ -59,10 +58,10 @@ class _SignUpPageState extends ConsumerState<SignUpPage> with GlobalHelper {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Logo or App Name
-                      Icon(
-                        LucideIcons.bookOpen,
-                        size: 64,
-                        color: colorScheme.primary,
+                      Image.asset(
+                        'assets/images/app_logo/main-icon.png',
+                        width: 82,
+                        height: 82,
                       ),
                       const SizedBox(height: 16),
                       Text(

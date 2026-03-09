@@ -1,11 +1,11 @@
 name: AIPrimary
-description: ""
+description: ''
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
-  flutter: ">=3.8.0"
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.8.0'
 
 dependencies:
   auto_route: ^10.1.2
@@ -77,6 +77,7 @@ dependencies:
   file_picker: ^8.1.6
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.3
   flutter_test:
     sdk: flutter
   auto_route_generator: ^10.2.4
@@ -93,9 +94,24 @@ dev_dependencies:
   flutter_pre_commit: ^0.2.4
   dart_quill_delta: ^10.8.3
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: 'assets/images/app_logo/main-icon.png'
+  web:
+    generate: true
+    image_path: 'assets/images/app_logo/main-icon.png'
+  windows:
+    generate: true
+    image_path: 'assets/images/app_logo/main-icon.png'
+  macos:
+    generate: true
+    image_path: 'assets/images/app_logo/main-icon.png'
+
 flutter:
   uses-material-design: true
   assets:
     - assets/
     - assets/images/providers/
     - assets/templates/
+    - assets/images/app_logo/

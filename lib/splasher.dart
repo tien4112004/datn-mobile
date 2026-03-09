@@ -28,10 +28,8 @@ class _SplasherState extends ConsumerState<Splasher> {
       if (typeString == null) return;
       try {
         final type = NotificationType.fromString(typeString);
-        debugPrint('Notification type: $type');
         if (type == NotificationType.sharedPresentation ||
             type == NotificationType.sharedMindmap) {
-          debugPrint('Shared resource notification received');
           ref.read(sharedResourcesControllerProvider.notifier).refresh();
         }
       } catch (_) {

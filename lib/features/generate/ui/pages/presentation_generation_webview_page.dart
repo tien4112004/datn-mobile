@@ -355,17 +355,8 @@ class _PresentationGenerationWebViewPageState
             Future.delayed(const Duration(milliseconds: 500), () {
               if (mounted && _presentationId != null) {
                 context.router.replaceAll([
-                  MainWrapperRoute(
-                    children: [
-                      ProjectsRoute(
-                        children: [
-                          PresentationDetailRoute(
-                            presentationId: _presentationId!,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  MainWrapperRoute(children: [const ProjectsRoute()]),
+                  PresentationDetailRoute(presentationId: _presentationId!),
                 ]);
               }
             });

@@ -1,30 +1,44 @@
-# DATN Mobile
+# AI Primary Mobile
 
-A Flutter mobile application project.
+An AI-powered educational mobile application built with Flutter. AI Primary helps educators generate learning content (presentations, mindmaps, images, questions), manage classes and students, track assignments and submissions, and monitor student performance — all from a single mobile app.
+
+## Features
+
+- **AI Content Generation** — Create presentations, mindmaps, images, and assessment questions using AI
+- **Class Management** — Create and manage classes, enroll students, post announcements
+- **Assignments & Grading** — Create assignments, track submissions, and grade with feedback
+- **Student Analytics** — Monitor performance metrics and identify at-risk students
+- **Question Bank** — Build and manage reusable question sets
+- **Resource Library** — Organize presentations, mindmaps, and generated images
+- **Push Notifications** — Real-time updates via Firebase Cloud Messaging
+- **Coin System** — In-app credits for accessing premium AI features
+- **Multi-language** — English and Vietnamese support
+- **Dark/Light Theme** — Adaptive theming with Flex Color Scheme
+
+## Tech Stack
+
+| Category | Technology |
+|---|---|
+| Framework | Flutter 3.8+ / Dart 3.8+ |
+| State Management | Riverpod 3 + Flutter Hooks |
+| Navigation | AutoRoute 10 |
+| HTTP Client | Dio + Retrofit (code-gen) |
+| Local Storage | Hive CE, Shared Preferences, Flutter Secure Storage |
+| Push Notifications | Firebase Cloud Messaging |
+| UI Components | Shadcn UI, Flutter Quill, Syncfusion Calendar, FL Chart |
+| i18n | Slang |
+| Code Generation | build_runner, Freezed, JSON Serializable |
+| Linting | Flutter Lints, Riverpod Lint, Custom Lint |
+| Scaffolding | Mason (riverpod_simple_architecture) |
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed on your development machine:
+- **Flutter SDK** >= 3.8.0 — [Install](https://flutter.dev/docs/get-started/install)
+- **Dart SDK** >= 3.8.0 (bundled with Flutter)
+- **Android Studio** (Android, min SDK 26 / Android 8.0+) or **Xcode** (iOS, macOS only)
+- **Git**
 
-### Required Software
-
-- **Flutter SDK**: Version 3.8.0 or higher (latest stable recommended)
-  - Download from [flutter.dev](https://flutter.dev/docs/get-started/install)
-  - Ensure Flutter is added to your PATH
-
-- **Dart SDK**: Comes bundled with Flutter (version 3.8.0+)
-
-- **Android Studio** or **Xcode** (for mobile development):
-  - Android Studio for Android development
-  - Xcode for iOS development (macOS only)
-
-- **Git**: For version control
-
-### Development Tools
-
-- **Visual Studio Code** (recommended) with Flutter extensions
-- **Android Emulator** or **iOS Simulator** for testing
-- **Physical device** for testing (optional but recommended)
+Recommended: **VS Code** with Flutter/Dart extensions, plus an Android Emulator or iOS Simulator.
 
 ## Getting Started
 
@@ -35,9 +49,7 @@ git clone <repository-url>
 cd datn_mobile
 ```
 
-### 2. Quick Setup
-
-This project includes a Makefile and initialization script for easy setup.
+### 2. Setup
 
 #### Option A: Using Makefile (Recommended)
 
@@ -53,218 +65,190 @@ This will automatically:
 - Run Slang for translations
 - Analyze the project
 
-#### Option B: Manual Setup
+#### Option B: Using init script
 
 ```bash
-# Make init script executable and run it
 chmod +x init.sh
 ./init.sh
 ```
 
 #### Option C: Step by Step
 
-1. Copy config file (if not exists):
 ```bash
+# 1. Copy config file
 cp lib/core/config/config.dart.sample lib/core/config/config.dart
-```
 
-2. Install dependencies:
-```bash
+# 2. Install dependencies
 flutter pub get
-```
 
-3. Setup pre-commit hooks:
-```bash
+# 3. Setup pre-commit hooks
 dart pub global activate flutter_pre_commit
 flutter_pre_commit install
-```
 
-4. Generate code:
-```bash
-dart run build_runner build
-```
+# 4. Generate code
+dart run build_runner build --delete-conflicting-outputs
 
-5. Generate translations:
-```bash
+# 5. Generate translations
 dart run slang
 ```
 
-### 3. Running the Application
-
-#### Run with VS Code:
-1. Open `main.dart` file.
-2. Press `F5` or go to the Run and Debug section and start debugging.
-3. Select the target device (if prompted).
-
-#### Using Makefile:
+### 3. Run the App
 
 ```bash
-# Run in debug mode
+# Debug mode
 make run-dev
 
-# Run in release mode
-make run-prod
-```
-
-#### Using Flutter CLI:
-
-```bash
-# Development mode
-flutter run
-
-# Debug mode with specific device
-flutter run -d <device_id>
-
 # Release mode
+make run-prod
+
+# Or directly with Flutter CLI
+flutter run
+flutter run -d <device_id>
 flutter run --release
 ```
 
 ### 4. Testing
 
-#### Using Makefile:
-
 ```bash
 make test
-```
 
-#### Using Flutter CLI:
-
-```bash
-# Run all tests
-flutter test
-
-# Run tests with coverage
+# Or with coverage
 flutter test --coverage
-
-# Run specific test file
-flutter test test/path/to/test_file.dart
 ```
 
-### 5. Code Analysis and Formatting
-
-#### Using Makefile:
+### 5. Code Quality
 
 ```bash
-# Run static analysis
-make analyze
-
-# Format code
-make format
+make analyze       # Static analysis
+make format        # Format code
 ```
 
-#### Using Flutter CLI:
+### 6. Build for Production
 
 ```bash
-# Run static analysis
-flutter analyze
+make build-apk     # Android APK
+make build-ios     # iOS (macOS only)
 
-# Format code
-dart format .
-
-# Run custom lints
-flutter packages pub run custom_lint
-
-# Run specific lints
-flutter packages pub run custom_lint --packages riverpod_lint
-```
-
-### 6. Building for Production
-
-#### Using Makefile:
-
-```bash
-# Build Android APK
-make build-apk
-
-# Build iOS app
-make build-ios
-```
-
-#### Using Flutter CLI:
-
-```bash
-# Android APK
+# Or using Flutter CLI
 flutter build apk --release
-
-# Android App Bundle
 flutter build appbundle --release
-
-# iOS (macOS only)
 flutter build ios --release
 ```
 
 ## Makefile Commands
 
-The project includes a Makefile for common tasks:
-
-```bash
-make help          # Show all available commands
-make init          # Initialize project (run init.sh)
-make clean         # Clean build artifacts
-make get           # Get Flutter dependencies
-make build-runner  # Run build_runner for code generation
-make slang         # Run Slang for translations
-make analyze       # Analyze code for issues
-make format        # Format code
-make test          # Run tests
-make run-dev       # Run app in debug mode
-make run-prod      # Run app in release mode
-make build-apk     # Build Android APK
-make build-ios     # Build iOS app
-make hooks         # Setup pre-commit hooks
+```
+make help          Show all available commands
+make init          Initialize project (run init.sh)
+make clean         Clean build artifacts
+make get           Get Flutter dependencies
+make build-runner  Run build_runner for code generation
+make slang         Run Slang for translations
+make slang-clean   Remove Slang generated files
+make analyze       Analyze code for issues
+make format        Format code
+make test          Run tests
+make run-dev       Run app in debug mode
+make run-prod      Run app in release mode
+make build-apk     Build Android APK
+make build-ios     Build iOS app
+make hooks         Setup pre-commit hooks
+make add pub=<pkg> Add a Flutter package
 ```
 
 ## Project Structure
 
 ```
 lib/
-├── app/                    # App-level configuration
-├── core/                   # Core functionality (config, storage, router, theme)
+├── app/                    # App-level configuration and Material App
+├── core/                   # Core infrastructure
+│   ├── config/             #   API configuration
+│   ├── local_storage/      #   AppStorage (SharedPreferences)
+│   ├── router/             #   AutoRoute navigation
+│   ├── secure_storage/     #   Encrypted credential storage
+│   ├── services/           #   Core services (notifications)
+│   └── theme/              #   App theming
 ├── features/               # Feature modules
-├── shared/                 # Shared components and utilities
-├── i18n/                   # Internationalization files
-└── main.dart              # Application entry point
+│   ├── auth/               #   Authentication (sign-in/up, OAuth)
+│   ├── home/               #   Dashboard
+│   ├── generate/           #   AI content generation
+│   ├── projects/           #   Resource management
+│   ├── classes/            #   Class management
+│   ├── students/           #   Student management
+│   ├── assignments/        #   Assignment/exam management
+│   ├── submissions/        #   Submission tracking & grading
+│   ├── posts/              #   Class announcements
+│   ├── questions/          #   Question bank
+│   ├── payment/            #   Payment & coin purchase
+│   ├── coins/              #   Coin system
+│   ├── notification/       #   Notifications
+│   ├── profile/            #   User profile
+│   ├── setting/            #   App settings
+│   └── splash/             #   Splash screen
+├── shared/                 # Shared code
+│   ├── api_client/         #   Dio HTTP client & interceptors
+│   ├── exception/          #   Exception handling
+│   ├── extension/          #   Dart extensions
+│   ├── helper/             #   Utility helpers
+│   ├── models/             #   Shared data models
+│   ├── pods/               #   Global Riverpod providers
+│   ├── riverpod_ext/       #   Riverpod extensions
+│   ├── services/           #   Shared services
+│   ├── utils/              #   Utilities
+│   └── widgets/            #   Reusable UI components
+├── i18n/                   # Internationalization (en, vi)
+├── const/                  # App constants
+├── main.dart               # Entry point
+├── bootstrap.dart          # App initialization
+├── init.dart               # System initialization
+└── splasher.dart           # Splash screen with setup
 ```
 
 ## Development Workflow
 
-1. **Before starting development**: Run `make init` or `make get && make build-runner`
-2. **Before committing**: Ensure `flutter_pre_commit` passes all checks (runs automatically)
+1. **Before starting**: Run `make init` or `make get && make build-runner`
+2. **Before committing**: Pre-commit hooks run automatically via `flutter_pre_commit`
 3. **When adding new models/routes**: Run `make build-runner`
 4. **When updating translations**: Run `make slang`
-5. **Clean build**: Run `make clean` then `make get`
+5. **Clean rebuild**: Run `make clean` then `make init`
 
-## Continuous Integration
+## CI/CD
 
-This project includes a GitHub Actions CI workflow that:
-- Runs on push/PR to main and develop branches
-- Installs Flutter and dependencies
-- Generates required code
-- Runs analysis, formatting, and lint checks
-- Executes all tests with coverage
-- Builds the application for Android
+GitHub Actions workflow (manual trigger via `workflow_dispatch`):
 
-## Contributing
+**Build job:**
+- Installs Flutter and dependencies (with pub cache)
+- Generates code (build_runner, Slang)
+- Runs static analysis
+- Executes tests with coverage
+- Uploads coverage to Codecov
 
-1. Ensure all prerequisites are installed
-2. Run `make init` to set up the project
-3. Make your changes
-4. Run `make test` and `make analyze` to ensure they pass
-5. Commit your changes (pre-commit hooks will run automatically)
-6. Push and create a pull request
+**Lint job:**
+- Runs custom_lint checks
+- Runs riverpod_lint checks
 
 ## Troubleshooting
 
-### Common Issues
+| Issue | Solution |
+|---|---|
+| Build runner conflicts | `make clean` then `make build-runner` |
+| Dependency conflicts | Delete `pubspec.lock` and run `make get` |
+| Flutter setup issues | Run `flutter doctor` |
+| Pre-commit failures | Run `flutter_pre_commit` manually for details |
+| Full clean rebuild | `make clean` followed by `make init` |
 
-1. **Build runner conflicts**: Run `make clean` then `make build-runner`
-2. **Dependency conflicts**: Delete `pubspec.lock` and run `make get`
-3. **Flutter doctor issues**: Run `flutter doctor` to diagnose setup problems
-4. **Pre-commit failures**: Run `flutter_pre_commit` manually to see detailed error messages
-5. **Clean rebuild**: Run `make clean` followed by `make init`
+## Developer Guides
 
-### Getting Help
+See `dev_guide/` for implementation examples:
+- `create_page_guide.md` — How to create a new page/feature
+- `home_page_implementation.md` — Home page architecture
+- `home_page_i18n_implementation.md` — Adding translations
+- `recent_documents_enhancement.md` — Feature enhancement example
 
-- Check the [Flutter documentation](https://flutter.dev/docs)
-- Review project-specific architecture documentation in `/architecture`
-- Create an issue in the repository for project-specific problems
+## Contributing
+
+1. Run `make init` to set up the project
+2. Make your changes
+3. Run `make test` and `make analyze`
+4. Commit (pre-commit hooks run automatically)
+5. Push and create a pull request
